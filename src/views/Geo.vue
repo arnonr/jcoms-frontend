@@ -1165,7 +1165,7 @@ export default defineComponent({
       });
     };
     calYear();
-    console.log(selectOptions.value.years);
+    // console.log(selectOptions.value.years);
 
     // Fetch Data
     const fetchItems = () => {
@@ -1442,7 +1442,6 @@ export default defineComponent({
     };
     const chartEvents = <any>{
       select: () => {
-        console.log("FREEDOM");
         onDetailModal();
       },
     };
@@ -1456,13 +1455,13 @@ export default defineComponent({
       { deep: true }
     );
 
-    watch(
-      [search.value],
-      () => {
-        console.log(search.value.year);
-      },
-      { deep: true }
-    );
+    // watch(
+    //   [search.value],
+    //   () => {
+    //     console.log(search.value.year);
+    //   },
+    //   { deep: true }
+    // );
 
     // Mounted
     onMounted(() => {

@@ -1543,7 +1543,7 @@ export default defineComponent({
       });
     };
     calYear();
-    console.log(selectOptions.value.years);
+    // console.log(selectOptions.value.years);
 
     // Fetch Data
     const fetchItems = () => {

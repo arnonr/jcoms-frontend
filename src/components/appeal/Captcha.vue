@@ -127,6 +127,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import axios from "axios";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
+import ApiService from "@/core/services/ApiService";
 
 export default defineComponent({
   name: "captcha",
@@ -181,7 +182,7 @@ export default defineComponent({
 
     // Event
     const onCaptchaModal = () => {
-      //   captchaModalObj.value.show();
+      captchaModalObj.value.show();
       // otpModalObj.value.show();
     };
 
@@ -193,7 +194,7 @@ export default defineComponent({
       }, 5000);
     };
 
-    const onSendOTP = () => {
+    const onSendOTP = async () => {
       // generate otp แล้วเก็บใน storage
       otpWrong.value = "d-none";
 
@@ -214,21 +215,23 @@ export default defineComponent({
       btnSendOtpDisabled.value = true;
       btnConfirmOtpDisabled.value = false;
 
-      let params = {
+      //   Send otp backend
+      let api = {
+        type: "post",
+        url: "sms/send-sms/",
+      };
+      await ApiService[api.type](api.url, {
         msisdn: otpData.value.phone,
-        message: `รหัสยืนยันของคุณคือ ${store.otp}`,
-        sender: "สำนักงานจเรตำรวจ",
-        force: "standard",
-        // Shorten_url: true,
-        // tracking_url: true,
-        // expire:
-      };
-      let auth = {
-        username: "tRYlZ4Ddn8dOKUwCRBgASLMg5vDMLQ",
-        password: "4F5ioK0jg9ZmQ0h8KpYzCgrFqc9mLC",
-      };
-      //   axios.post(`https://api-v2.thaibulksms.com/sms`, params, { auth: auth });
-      // h
+        message: `OTP จากภายใน 2 นาที ของคุณคือ ${otpData.value.code}`,
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
     };
 
     const onConfirmOTP = () => {

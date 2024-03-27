@@ -107,7 +107,7 @@
                 ><br />
                 <span>ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : </span><br />
                 <span class="fst-italic"
-                  >http://localhost:5173/jcoms/tracking</span
+                  >{{ APP_BASE_URL }}/jcoms/tracking</span
                 >
                 <div class="separator separator-dotted my-2"></div>
               </div>
@@ -245,7 +245,7 @@ export default defineComponent({
       otpConfirmModalObj.value.show();
     };
 
-    const onSendOTP = () => {
+    const onSendOTP = async () => {
       // generate otp แล้วเก็บใน storage
       otpWrong.value = "d-none";
 
@@ -266,18 +266,24 @@ export default defineComponent({
       btnSendOtpDisabled.value = true;
       btnConfirmOtpDisabled.value = false;
 
-      let params = {
+      //   Send otp backend
+      let api = {
+        type: "post",
+        url: "sms/send-sms/",
+      };
+
+      await ApiService[api.type](api.url, {
         msisdn: otpData.value.phone,
-        message: `รหัสยืนยันของคุณคือ ${store.otp}`,
-        sender: "สำนักงานจเรตำรวจ",
-        force: "standard",
-      };
-      let auth = {
-        username: "tRYlZ4Ddn8dOKUwCRBgASLMg5vDMLQ",
-        password: "4F5ioK0jg9ZmQ0h8KpYzCgrFqc9mLC",
-      };
-      //   axios.post(`https://api-v2.thaibulksms.com/sms`, params, { auth: auth });
-      // h
+        message: `OTP จากภายใน 2 นาที ของคุณคือ ${store.otp}`,
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
     };
 
     const onConfirmOTP = async () => {
@@ -316,7 +322,6 @@ export default defineComponent({
     };
 
     const onSaveComplainant = async () => {
-      console.log(props.item);
       let data_complainant_item = {
         card_photo:
           props.item.card_photo != null ? props.item.card_photo : null,
@@ -355,8 +360,6 @@ export default defineComponent({
         secret_key: props.r,
         // รุป
       };
-
-      console.log(data_complainant_item);
 
       let api = {
         type: "postFormData",
@@ -577,7 +580,7 @@ export default defineComponent({
         api.url + result_complaint.value.complaint_id,
         eval_data
       )
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
@@ -586,9 +589,31 @@ export default defineComponent({
           useToast("ร้องเรียนเสร็จสิ้น", "success");
           emit("close-otp-modal");
 
-          setTimeout(() => {
-            router.push({ name: "home" });
-          }, 1000);
+          let api_sms = {
+            type: "post",
+            url: "sms/send-sms/",
+          };
+
+          await ApiService[api_sms.type](api_sms.url, {
+            msisdn: otpData.value.phone,
+            message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านรียบร้อยแล้ว เลขคำร้องของท่าน (JCOM No.) : ${
+              result_complaint.jcoms_no
+            } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${
+              import.meta.env.VITE_APP_BASE_URL
+            }/jcoms/tracking`,
+          })
+            .then(({ data }) => {
+              if (data.msg != "success") {
+                throw new Error("ERROR");
+              }
+
+              setTimeout(() => {
+                router.push({ name: "home" });
+              }, 1000);
+            })
+            .catch(({ response }) => {
+              console.log(response);
+            });
         })
         .catch(({ response }) => {
           console.log(response);
@@ -642,6 +667,7 @@ export default defineComponent({
       evalModalObj,
       rating,
       setRating,
+      APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
 
       onOTPModal,
       onSendOTP,

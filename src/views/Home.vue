@@ -133,7 +133,6 @@ export default defineComponent({
           type_id: hm.id,
         },
       });
-      console.log("click");
     };
 
     return {
