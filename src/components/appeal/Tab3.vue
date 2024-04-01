@@ -33,8 +33,8 @@
               <span>ชื่อ-นามสกุล : </span>
               <span class="fst-italic"
                 >{{ complainant_item.prefix_name_id?.name_th
-                }}{{ complainant_item.first_name }}
-                {{ complainant_item.last_name }}</span
+                }}{{ complainant_item.firstname }}
+                {{ complainant_item.lastname }}</span
               >
               <div class="separator separator-dotted my-2"></div>
             </div>
@@ -61,16 +61,18 @@
                     : ""
                 }}{{
                   complainant_item.building
-                    ? "หมู่บ้าน " + complainant_item.building
+                    ? " หมู่บ้าน " + complainant_item.building
                     : ""
                 }}{{
-                  complainant_item.moo ? "หมู่ที่ " + complainant_item.moo : ""
+                  complainant_item.moo
+                    ? " หมู่ที่ " + complainant_item.moo
+                    : ""
                 }}{{
                   complainant_item.soi
-                    ? "ตรอก/ซอย " + complainant_item.soi
+                    ? " ตรอก/ซอย " + complainant_item.soi
                     : ""
                 }}{{
-                  complainant_item.road ? "ถนน " + complainant_item.road : ""
+                  complainant_item.road ? " ถนน " + complainant_item.road : ""
                 }}
               </span>
               <div class="separator separator-dotted my-2"></div>
@@ -109,7 +111,11 @@
               <br />
               <span class="fst-italic">
                 <img
-                  :src="new_item.preview_card_photo"
+                  :src="
+                    new_item.preview_card_photo !== null
+                      ? new_item.preview_card_photo
+                      : complainant_item.card_photo_old
+                  "
                   class="mt-5 w-100 w-md-50"
                 />
               </span>

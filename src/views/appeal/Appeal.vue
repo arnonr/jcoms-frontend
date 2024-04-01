@@ -33,6 +33,8 @@
               @update-phone-number-data="
                 () => {
                   change_phone_number = true;
+                  captcha_modal = true;
+                  first_action = false;
                 }
               "
             />
@@ -109,13 +111,21 @@
   <div id="captcha">
     <Captcha
       :item="complainant_item"
+      v-if="captcha_modal"
       :complaint_item="item"
       :change_phone_number="change_phone_number"
       :errors="complainant_item_errors"
+      :first_action="first_action"
       @update-phone-number-data="
         (new_phone) => {
           complainant_item.phone_number = new_phone;
           change_phone_number = false;
+          fetchComplainant();
+        }
+      "
+      @close-captcha-modal="
+        () => {
+          captcha_modal = false;
         }
       "
     />
@@ -125,6 +135,7 @@
     <Otp
       :item="complainant_item"
       :complaint_item="item"
+      :is_complainant_old="is_complainant_old"
       :accused="accused"
       :complant_type="complant_type"
       :r="r"
@@ -154,12 +165,20 @@ import { useRoute } from "vue-router";
 // Use Address Composables
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
 
+// Import Dayjs
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+dayjs.extend(buddhistEra);
+
 // Import Component
 import Tab1 from "@/components/appeal/Tab1.vue";
 import Tab2 from "@/components/appeal/Tab2.vue";
 import Tab3 from "@/components/appeal/Tab3.vue";
 import Captcha from "@/components/appeal/Captcha.vue";
 import Otp from "@/components/appeal/Otp.vue";
+
+import ApiService from "@/core/services/ApiService";
 
 interface accused_itf {
   id: any;
@@ -360,9 +379,9 @@ export default defineComponent({
       address_all: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
         .label("จังหวัด/อำเภอ/ตำบล"),
-      card_photo: Yup.string()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("รูปถ่ายตนเองพร้อมบัตร"),
+      //   card_photo: Yup.string()
+      //     .required("${path} จำเป็นต้องระบุ")
+      //     .label("รูปถ่ายตนเองพร้อมบัตร"),
       email: Yup.string().label("อีเมล"),
       line_id: Yup.string().label("Line ID"),
     });
@@ -384,6 +403,7 @@ export default defineComponent({
       card_photo: [],
       email: "",
       line_id: "",
+      card_photo_old: null,
     });
     const complainant_item_errors = ref<any>({
       phone_number: { error: 0, text: "" },
@@ -406,7 +426,92 @@ export default defineComponent({
     });
     const change_phone_number = ref<boolean>(false);
 
+    const is_complainant_old = ref<boolean>(false);
     //Fetch
+    const fetchComplainant = () => {
+      const params = {
+        phone_number: complainant_item.value.phone_number,
+      };
+      ApiService.query("complainant", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          if (data.data.length != 0) {
+            complainant_item.value = {
+              id: data.data[0].id,
+              phone_number: data.data[0].phone_number,
+              card_type:
+                data.data[0].card_type != null
+                  ? {
+                      name:
+                        data.data[0].card_type == 2
+                          ? "หนังสือเดินทาง"
+                          : "หมายเลขบัตรประชาชน",
+                      value: data.data[0].card_type,
+                    }
+                  : "-",
+
+              id_card: data.data[0].id_card,
+              prefix_name_id:
+                data.data[0].prefix_name_id != null
+                  ? {
+                      name_th: data.data[0].prefix_name.name_th,
+                      id: data.data[0].prefix_name_id,
+                    }
+                  : null,
+              firstname: data.data[0].firstname,
+              lastname: data.data[0].lastname,
+              birthday: data.data[0].birthday
+                ? dayjs(data.data[0].birthday).format("YYYY-MM-DD")
+                : null,
+              occupation_text: data.data[0].occupation_text,
+              house_number: data.data[0].house_number,
+              building: data.data[0].building,
+              moo: data.data[0].moo,
+              soi: data.data[0].soi,
+              road: data.data[0].road,
+              address_all:
+                data.data[0].sub_district_id != null
+                  ? {
+                      label:
+                        data.data[0].sub_district.name_th +
+                        " > " +
+                        data.data[0].district.name_th +
+                        " > " +
+                        data.data[0].province.name_th +
+                        " > " +
+                        data.data[0].postal_code,
+                      province_th: data.data[0].province.name_th,
+                      district_th: data.data[0].district.name_th,
+                      sub_district_th: data.data[0].sub_district.name_th,
+                      post_code: data.data[0].postal_code,
+                      sub_district_id: data.data[0].sub_district_id,
+                      district_id: data.data[0].district_id,
+                      province_id: data.data[0].province_id,
+                    }
+                  : null,
+              province_id: data.data[0].province_id,
+              district_id: data.data[0].district_id,
+              sub_district_id: data.data[0].sub_district_id,
+              postal_code: data.data[0].postal_code,
+              card_photo_old: data.data[0].card_photo,
+              email: data.data[0].email,
+              line_id: data.data[0].line_id,
+            };
+
+            is_complainant_old.value = true;
+          } else {
+            is_complainant_old.value = false;
+          }
+
+          //   complainant_item.value
+        })
+        .catch(({ response }) => {
+          is_complainant_old.value = false;
+          console.log(response.data.errors);
+        });
+    };
 
     // Event
     const nextTodoId = ref(1);
@@ -496,9 +601,31 @@ export default defineComponent({
             complainant_item_errors.value[fieldName].error = 1;
             complainant_item_errors.value[fieldName].text = errorMessage;
           });
+
+          if (
+            complainant_item.value.card_photo == null &&
+            complainant_item.value.card_photo_old == null
+          ) {
+            complainant_item_errors.value["card_photo"].error = 1;
+            complainant_item_errors.value["card_photo"].text =
+              "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
+          }
+
           useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
           return false;
         }
+
+        if (
+          complainant_item.value.card_photo == null &&
+          complainant_item.value.card_photo_old == null
+        ) {
+          complainant_item_errors.value["card_photo"].error = 1;
+          complainant_item_errors.value["card_photo"].text =
+            "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
+          return false;
+        }
+        //     .required("${path} จำเป็นต้องระบุ")
+        //     .label("รูปถ่ายตนเองพร้อมบัตร"),
 
         if (complainant_item.value.card_type.value == 1) {
           let check = validateThaiCitizenId(complainant_item.value.id_card);
@@ -527,7 +654,6 @@ export default defineComponent({
       return true;
     };
     const onTab2Validate = async () => {
-
       item_errors.value = {
         complaint_type_id: { error: 0, text: "" },
         is_anonymous: { error: 0, text: "" },
@@ -562,7 +688,8 @@ export default defineComponent({
         lastname: { error: 0, text: "" },
         organization_all: { error: 0, text: "" },
       };
-
+      
+      
       try {
         await validationItemSchema.validate(item.value, {
           abortEarly: false,
@@ -610,6 +737,8 @@ export default defineComponent({
     };
 
     const otp_modal = ref(false);
+    const captcha_modal = ref(true);
+    const first_action = ref(true);
     const onComplete = () => {
       otp_modal.value = true;
       return false;
@@ -634,6 +763,9 @@ export default defineComponent({
       tab_index,
       policy_checkbox,
       otp_modal,
+      captcha_modal,
+      first_action,
+      is_complainant_old,
 
       onTab1Validate,
       onIncreaseAccused,
@@ -642,6 +774,7 @@ export default defineComponent({
       beforeTabSwitch2,
       onTabChange,
       onComplete,
+      fetchComplainant,
     };
   },
 });

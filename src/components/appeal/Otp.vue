@@ -51,7 +51,7 @@
                     otpCountdown > 0 ? otpCountdown + " วินาที" : "หมดเวลา"
                   }}</span
                   ><br />
-                  <span>OTP TEST : {{ otpData.code }}</span>
+                  <span> (Ref: {{ otp_secret_key }})</span>
                 </label>
                 <input
                   type="text"
@@ -102,8 +102,10 @@
               <div class="col-md-12 text-center">
                 <span>สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว</span
                 ><br />
-                <span>เลขคำร้องของท่าน (JCOM No.) : </span>
-                <span class="fst-italic">{{ result_complaint.jcoms_no }}</span
+                <span>เลขคำร้องของท่าน (JCOM No.) : </span><br />
+                <span class="fst-italic fs-3 text-success">{{
+                  result_complaint.jcoms_no
+                }}</span
                 ><br />
                 <span>ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : </span><br />
                 <span class="fst-italic"
@@ -206,6 +208,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    is_complainant_old: {
+      type: Boolean,
+      required: true,
+    },
   },
   components: { StarRating },
   setup(props, context) {
@@ -222,6 +228,8 @@ export default defineComponent({
       phone: "",
       code: "",
     });
+
+    const otp_secret_key = ref<any>(null);
     const rating = ref(0);
     const result_complaint = ref<any>({
       complainant_id: null,
@@ -245,83 +253,106 @@ export default defineComponent({
       otpConfirmModalObj.value.show();
     };
 
+    const getRandomEnglishCharacter = () => {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      return characters.charAt(randomIndex);
+    };
+
+    const generateRandomEnglishString = (length: any) => {
+      let result = "";
+
+      for (let i = 0; i < length; i++) {
+        const randomChar = getRandomEnglishCharacter();
+        result += randomChar;
+      }
+
+      return result;
+    };
+
     const onSendOTP = async () => {
       // generate otp แล้วเก็บใน storage
       otpWrong.value = "d-none";
 
-      let digits = "0123456789";
-      let otpLength = 4;
-      otpData.value.code = "";
-      for (let i = 1; i <= otpLength; i++) {
-        let index = Math.floor(Math.random() * digits.length);
-        otpData.value.code = otpData.value.code + digits[index];
-      }
+      otp_secret_key.value = generateRandomEnglishString(4);
 
-      store.setOTP({
-        phone: otpData.value.phone,
-        code: otpData.value.code,
-      });
-
-      otpCountdown.value = 120;
-      btnSendOtpDisabled.value = true;
-      btnConfirmOtpDisabled.value = false;
-
-      //   Send otp backend
-      let api = {
+      let api_1 = {
         type: "post",
-        url: "sms/send-sms/",
+        url: "sms/send-otp",
       };
 
-      await ApiService[api.type](api.url, {
-        msisdn: otpData.value.phone,
-        message: `OTP จากภายใน 2 นาที ของคุณคือ ${store.otp}`,
+      await ApiService[api_1.type](api_1.url, {
+        phone_number: props.item.phone_number,
+        otp_secret: otp_secret_key.value,
       })
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
+          otpCountdown.value = 120;
+          btnSendOtpDisabled.value = true;
+          btnConfirmOtpDisabled.value = false;
         })
         .catch(({ response }) => {
           console.log(response);
         });
+
+      //   Send otp backend
     };
 
     const onConfirmOTP = async () => {
       btnConfirmOtpDisabled.value = true;
-      if (otpData.value.code == otpDataCheck.value.code) {
-        try {
-          await onSaveComplainant();
-          await onSaveComplaint();
-          await onSaveAccused();
-          //   await onFetchComplaint();
 
-          // All data saved successfully
-          Swal.fire({
-            text: "ยืนยัน OTP สำเร็จ",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "ตกลง",
-            heightAuto: false,
-            customClass: {
-              confirmButton: "btn fw-semibold btn-light-primary",
-            },
-          }).then(() => {
-            // Save Complaint and Send SMS
-            otpConfirmModalObj.value.hide();
-            otpWrong.value = "d-none";
-            onEvalModal();
-          });
-        } catch (error) {
+      let api_2 = {
+        type: "post",
+        url: "sms/verify-otp",
+      };
+
+      await ApiService[api_2.type](api_2.url, {
+        otp: otpDataCheck.value.code,
+        otp_secret: otp_secret_key.value,
+        phone_number: props.item.phone_number,
+      })
+        .then(async ({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+
+          try {
+            await onSaveComplainant();
+            await onSaveComplaint();
+            await onSaveAccused();
+
+            Swal.fire({
+              text: "ยืนยัน OTP สำเร็จ",
+              icon: "success",
+              buttonsStyling: false,
+              confirmButtonText: "ตกลง",
+              heightAuto: false,
+              customClass: {
+                confirmButton: "btn fw-semibold btn-light-primary",
+              },
+            }).then(() => {
+              // Save Complaint and Send SMS
+              otpConfirmModalObj.value.hide();
+              otpWrong.value = "d-none";
+              onEvalModal();
+            });
+          } catch (error) {
+            btnConfirmOtpDisabled.value = false;
+            console.error("Error saving data:", error);
+          }
+        })
+        .catch(({ response }) => {
           btnConfirmOtpDisabled.value = false;
-          console.error("Error saving data:", error);
-        }
-      } else {
-        btnConfirmOtpDisabled.value = false;
-        otpWrong.value = "d-block";
-      }
+          otpWrong.value = "d-block";
+          useToast("OTP ไม่ถูกต้อง", "error");
+          console.log(response);
+        });
     };
 
     const onSaveComplainant = async () => {
+      //
       let data_complainant_item = {
         card_photo:
           props.item.card_photo != null ? props.item.card_photo : null,
@@ -333,7 +364,7 @@ export default defineComponent({
         firstname: props.item.firstname,
         lastname: props.item.lastname,
         birthday: props.item.birthday
-          ? dayjs(props.item.birthday).locale("th").format("YYYY-MM-DD")
+          ? dayjs(props.item.birthday).format("YYYY-MM-DD")
           : "",
         occupation_id: null,
         occupation_text: props.item.occupation_text,
@@ -349,6 +380,7 @@ export default defineComponent({
         sub_district_id: props.item.sub_district_id,
         district_id: props.item.district_id,
         province_id: props.item.province_id,
+        // complainant_type : null
         complainant_type: props.complant_type.id == 4 ? 2 : 1,
         position_id: props.complant_type.id == 4 ? null : null,
         section_id: props.complant_type.id == 4 ? null : null,
@@ -356,7 +388,8 @@ export default defineComponent({
         bureau_id: props.complant_type.id == 4 ? null : null,
         division_id: props.complant_type.id == 4 ? null : null,
         agency_id: props.complant_type.id == 4 ? null : null,
-        created_by: props.item.firstname,
+        created_by: props.item.firstname + " " + props.item.lastname,
+        updated_by: props.item.firstname + " " + props.item.lastname,
         secret_key: props.r,
         // รุป
       };
@@ -367,12 +400,18 @@ export default defineComponent({
         textToast: "เพิ่มข้อมูลเสร็จสิ้น",
       };
 
+      if (props.is_complainant_old == true) {
+        api = {
+          type: "putFormData",
+          url: "complainant/" + props.item.id,
+          textToast: "แก้ไขข้อมูลเสร็จสิ้น",
+        };
+      }
       await ApiService[api.type](api.url, data_complainant_item)
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-
           //   await
           result_complaint.value.complainant_id = data.id;
         })
@@ -400,12 +439,15 @@ export default defineComponent({
         date_time = date_time.format("YYYY-MM-DD HH:mm:ss");
       }
 
+      console.log(props.complaint_item)
+
       let data_item = {
-        complaint_type_id: props.complaint_item.id,
+        complaint_type_id:
+          props.complaint_item.complaint_topic.complaint_type_id,
         complainant_id: result_complaint.value.complainant_id,
-        is_anonymous: props.complaint_item.is_anonymous.value,
-        complaint_title: props.complaint_item.complainant_title,
-        complaint_detail: props.complaint_item.complainant_detail,
+        is_anonymous: props.complaint_item.is_anonymous, //props.complaint_item.is_anonymous.value,
+        complaint_title: props.complaint_item.complaint_title,
+        complaint_detail: props.complaint_item.complaint_detail,
         complaint_channel_ids: props.complaint_item.complaint_channel_all,
         incident_date: props.complaint_item.incident_date
           ? dayjs(props.complaint_item.incident_date).format("YYYY-MM-DD")
@@ -419,13 +461,18 @@ export default defineComponent({
         //   : null,
         location_coordinates: props.complaint_item.location_coordinates,
         incident_location: props.complaint_item.incident_location,
-        day_time: props.complaint_item.day_time.id,
+        day_time: props.complaint_item.day_time.value,
         complaint_channel_id: props.complaint_item.complaint_channel_id.id,
         inspector_id: props.complaint_item.inspector_id,
         bureau_id: props.complaint_item.bureau_id,
         division_id: props.complaint_item.division_id,
         agency_id: props.complaint_item.agency_id,
-        topic_type_id: props.complaint_item.topic_type_id,
+
+        topic_type_id: props.complaint_item.complaint_topic.topic_type_id,
+
+        topic_category_id:
+          props.complaint_item.complaint_topic.topic_category_id,
+
         house_number: "",
         building: "",
         moo: "",
@@ -436,7 +483,8 @@ export default defineComponent({
         district_id: props.complaint_item.district_id,
         province_id: props.complaint_item.province_id,
         state_id: 1,
-        created_by: props.item.firstname,
+        created_by:
+          props.item.firstname + " " + props.item.lastname,
       };
 
       let api = {
@@ -463,7 +511,7 @@ export default defineComponent({
       for (let i = 0; i < props.accused.length; i++) {
         let data_accused_item = {
           prefix_name_id: props.accused[i].prefix_name_id
-            ? props.accused[i].prefix_name_id.value
+            ? props.accused[i].prefix_name_id.id
             : null,
           firstname: props.accused[i].firstname,
           lastname: props.accused[i].lastname,
@@ -668,7 +716,7 @@ export default defineComponent({
       rating,
       setRating,
       APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
-
+      otp_secret_key,
       onOTPModal,
       onSendOTP,
       onConfirmOTP,

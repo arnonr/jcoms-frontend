@@ -346,6 +346,11 @@
             }}</span>
           </div>
           <img :src="previewImage" class="mt-5 w-100 w-md-50" />
+          <img
+            :src="previewImage == null ? item.card_photo_old : null"
+            alt=""
+            class="mt-5 w-100 w-md-50"
+          />
         </div>
       </div>
     </div>
@@ -354,7 +359,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch, defineEmits } from "vue";
+import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
 import ApiService from "@/core/services/ApiService";
 // Import Vue-select
 import vSelect from "vue-select";
@@ -486,12 +491,24 @@ export default defineComponent({
     watch(
       () => props.item.address_all,
       (value: any) => {
-        props.item.province_id = value.province_id;
-        props.item.district_id = value.district_id;
-        props.item.sub_district_id = value.sub_district_id;
-        props.item.postal_code = value.post_code;
+        if (value == null) {
+          props.item.province_id = null;
+          props.item.district_id = null;
+          props.item.sub_district_id = null;
+          props.item.postal_code = null;
+        } else {
+          props.item.province_id = value.province_id;
+          props.item.district_id = value.district_id;
+          props.item.sub_district_id = value.sub_district_id;
+          props.item.postal_code = value.post_code;
+        }
       }
     );
+
+    watchEffect(() => {
+      // เพิ่มการตอบสนองต่อการเปลี่ยนแปลงของ count ที่นี่
+      item.value = props.item;
+    });
 
     // Return
     return {

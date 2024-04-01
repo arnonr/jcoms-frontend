@@ -1,69 +1,34 @@
 <template>
   <div>
-    <!-- Modal Captcha -->
-    <div
-      class="modal fade"
-      tabindex="-1"
-      ref="captchaModalRef"
-      id="captcha-modal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-    >
-      <div class="modal-dialog modal-dialog-centered modal-xs">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">ตรวจสอบ</h3>
-          </div>
-
-          <div class="modal-body mx-auto pb-10 pt-10">
-            <vue-recaptcha
-              v-show="showRecaptcha"
-              sitekey="6LdeSpwpAAAAAOBv4gXwHsVRvstiq6juHnGMxZcT"
-              size="normal"
-              theme="light"
-              hl="en"
-              :loading-timeout="loadingTimeout"
-              @verify="recaptchaVerified"
-              @expire="recaptchaExpired"
-              @fail="recaptchaFailed"
-              @error="recaptchaError"
-              ref="vueRecaptcha"
-            >
-            </vue-recaptcha>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Modal OTP -->
     <div
       class="modal fade"
       tabindex="-1"
-      ref="otpModalRef"
-      id="otp-modal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
+      ref="otpConfirmModalRef"
+      id="otp-confirm-modal"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 class="modal-title">ยืนยันตัวตนด้วย SMS</h3>
+            <h3 class="modal-title">ยืนยัน OTP</h3>
           </div>
 
           <div class="modal-body">
             <div class="row">
-              <label for="otp_data_phone" class="required form-label"
-                >หมายเลขโทรศัพท์</label
+              <div
+                class="mb-4 col-12 col-lg-12 d-flex justify-content-center align-items-center"
               >
-              <div class="mb-7 col-12 col-lg-12 d-flex">
-                <input
-                  type="text"
-                  class="form-control me-2"
-                  placeholder="หมายเลขโทรศัพท์"
-                  aria-label="หมายเลขโทรศัพท์"
-                  v-model="otpData.phone"
-                />
-
+                <div class="text-center">
+                  หมายเลขโทรศัพท์ : {{ otp_send.phone_number_res }}<br />
+                  (Ref:
+                  {{
+                    otp_secret_key != null
+                      ? otp_secret_key
+                      : otp_send.otp_secret
+                  }})
+                </div>
+              </div>
+              <div class="d-flex justify-content-center align-items-cente mb-7">
                 <button
                   class="btn btn-success"
                   @click="onSendOTP"
@@ -83,9 +48,7 @@
                   รหัส OTP ที่คุณได้รับทาง SMS จะหมดอายุภายใน
                   <span class="text-primary">{{
                     otpCountdown > 0 ? otpCountdown + " วินาที" : "หมดเวลา"
-                  }}</span
-                  ><br />
-                  <span> (Ref: {{ otp_secret_key }})</span>
+                  }}</span>
                 </label>
                 <input
                   type="text"
@@ -106,12 +69,7 @@
                 >
                   ยืนยัน
                 </button>
-
-                <button
-                  class="btn btn-secondary ms-3"
-                  @click="onCancel"
-                  v-if="first_action == false"
-                >
+                <button class="btn btn-secondary ms-3" @click="onCancel">
                   ยกเลิก
                 </button>
               </div>
@@ -127,52 +85,33 @@
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref, onMounted, watch } from "vue";
 import { useOTPStore, type Otp } from "@/stores/otp";
-// Import Recaptcha
-import vueRecaptcha from "vue3-recaptcha2";
+import type { PropType } from "vue";
 // Import SweetAlert2
 import Swal from "sweetalert2/dist/sweetalert2.js";
 // Import Axios
 import axios from "axios";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
+// Import Dayjs
+import dayjs from "dayjs";
+import { useRouter } from "vue-router";
 import ApiService from "@/core/services/ApiService";
 // Use Toast Composables
 import useToast from "@/composables/useToast";
 
 export default defineComponent({
-  name: "captcha",
+  name: "tracking-otp",
   props: {
-    item: {
+    otp_send: {
       type: Object,
-      required: true,
-    },
-    complaint_item: {
-      type: Object,
-      required: true,
-    },
-    errors: {
-      type: Object,
-      required: true,
-    },
-    change_phone_number: {
-      type: Boolean,
-      required: true,
-    },
-    first_action: {
-      type: Boolean,
       required: true,
     },
   },
-  components: {
-    vueRecaptcha,
-  },
+  components: {},
   setup(props, context) {
     // Variable
+    const router = useRouter();
     const emit = context.emit;
-
-    const onChangePhoneNumber = () => {
-      emit("update-phone-number-data", otpData.value.phone);
-    };
 
     const store = useOTPStore();
     const otpData = ref<any>({
@@ -185,29 +124,17 @@ export default defineComponent({
     });
 
     const otp_secret_key = ref<any>(null);
-    let showRecaptcha = ref(true);
     let loadingTimeout = ref(30000);
-    const captchaModalRef = ref<any>(null);
-    const captchaModalObj = ref<any>(null);
-    const otpModalRef = ref<any>(null);
-    const otpModalObj = ref<any>(null);
+    const otpConfirmModalRef = ref<any>(null);
+    const otpConfirmModalObj = ref<any>(null);
     const btnSendOtpDisabled = ref<any>(false);
     const btnConfirmOtpDisabled = ref<any>(true);
     const otpCountdown = ref<any>(0);
     const otpWrong = ref<any>("d-none");
 
     // Event
-    const onCaptchaModal = () => {
-      //   captchaModalObj.value.show();
-      otpModalObj.value.show();
-    };
-
     const onOTPModal = () => {
-      otpModalObj.value.show();
-
-      setTimeout(() => {
-        captchaModalObj.value.hide();
-      }, 5000);
+      otpConfirmModalObj.value.show();
     };
 
     const getRandomEnglishCharacter = () => {
@@ -230,16 +157,16 @@ export default defineComponent({
     const onSendOTP = async () => {
       // generate otp แล้วเก็บใน storage
       otpWrong.value = "d-none";
-
+      // Generate a random string of 4 English characters
       otp_secret_key.value = generateRandomEnglishString(4);
 
-      let api_1 = {
+      let api = {
         type: "post",
-        url: "sms/send-otp",
+        url: "complaint/get-otp-tracking",
       };
 
-      await ApiService[api_1.type](api_1.url, {
-        phone_number: otpData.value.phone,
+      await ApiService[api.type](api.url, {
+        ...props.otp_send,
         otp_secret: otp_secret_key.value,
       })
         .then(({ data }) => {
@@ -258,23 +185,22 @@ export default defineComponent({
     const onConfirmOTP = async () => {
       btnConfirmOtpDisabled.value = true;
 
-      let api_2 = {
+      let api = {
         type: "post",
-        url: "sms/verify-otp",
+        url: "complaint/verify-otp-tracking",
       };
 
-      await ApiService[api_2.type](api_2.url, {
+      await ApiService[api.type](api.url, {
         otp: otpDataCheck.value.code,
-        otp_secret: otp_secret_key.value,
-        phone_number: otpData.value.phone,
+        otp_secret:
+          otp_secret_key.value != null
+            ? otp_secret_key.value
+            : props.otp_send.otp_secret,
       })
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          
-          onChangePhoneNumber();
-          otpWrong.value = "d-none";
 
           Swal.fire({
             text: "ยืนยัน OTP สำเร็จ",
@@ -286,7 +212,10 @@ export default defineComponent({
               confirmButton: "btn fw-semibold btn-light-primary",
             },
           }).then(() => {
-            otpModalObj.value.hide();
+            emit("close-otp-modal");
+            otpConfirmModalObj.value.hide();
+            emit("fetch-complaint", data.data.complainant_uuid);
+            otpWrong.value = "d-none";
           });
         })
         .catch(({ response }) => {
@@ -297,34 +226,20 @@ export default defineComponent({
         });
     };
 
-    const recaptchaVerified = (res: any) => {
-      captchaModalObj.value.hide();
-      otpModalObj.value.show();
-    };
-
-    const recaptchaExpired = (res: any) => {
-      console.log(res);
-    };
-
-    const recaptchaFailed = (res: any) => {
-      console.log(res);
-    };
-
-    const recaptchaError = (reason: any) => {
-      console.log(reason);
-    };
-
     const onCancel = () => {
-      otpModalObj.value.hide();
-      captchaModalObj.value.hide();
-      emit("close-captcha-modal");
+      otpConfirmModalObj.value.hide();
+      otpWrong.value = "d-none";
+      emit("close-otp-modal");
     };
 
     // Mounted
     onMounted(() => {
-      captchaModalObj.value = new Modal(captchaModalRef.value, {});
-      otpModalObj.value = new Modal(otpModalRef.value, {});
-      onCaptchaModal();
+      otpConfirmModalObj.value = new Modal(otpConfirmModalRef.value, {});
+      otpData.value.code = props.otp_send.opt_code;
+      onOTPModal();
+      otpCountdown.value = 120;
+      btnSendOtpDisabled.value = true;
+      btnConfirmOtpDisabled.value = false;
     });
 
     // Watch
@@ -346,45 +261,11 @@ export default defineComponent({
       { immediate: true }
     );
 
-    // watch(
-    //   props.change_phone_number,
-    //   (value: any) => {
-    //     if (props.change_phone_number == true) {
-    //       otpModalObj.value.show();
-    //     }
-    //   },
-    //   { immediate: true }
-    // );
-
-    watch(
-      () => props.change_phone_number,
-      (newValue, oldValue) => {
-        // ทำสิ่งที่ต้องการเมื่อ propValue มีการเปลี่ยนแปลง
-
-        if (newValue == true) {
-          otpData.value = {
-            phone: "",
-            code: "",
-          };
-
-          otpDataCheck.value = {
-            phone: "",
-            code: "",
-          };
-          otpCountdown.value = 0;
-          otpModalObj.value.show();
-        }
-      }
-    );
-
     // Return
     return {
-      showRecaptcha,
       loadingTimeout,
-      captchaModalRef,
-      captchaModalObj,
-      otpModalRef,
-      otpModalObj,
+      otpConfirmModalRef,
+      otpConfirmModalObj,
       otpData,
       otpDataCheck,
       btnSendOtpDisabled,
@@ -393,15 +274,11 @@ export default defineComponent({
       otpWrong,
       otp_secret_key,
 
-      onCaptchaModal,
+      APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
       onOTPModal,
       onSendOTP,
       onConfirmOTP,
       onCancel,
-      recaptchaVerified,
-      recaptchaExpired,
-      recaptchaFailed,
-      recaptchaError,
     };
   },
 });
