@@ -32,3 +32,6 @@ coverage
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+.env
+vite.config.ts
