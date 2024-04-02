@@ -622,7 +622,7 @@ export default defineComponent({
       emit("decrease-accused", index);
     };
 
-    const coords = ref({ lat: 51.5072, lng: 0.1276 });
+    const coords = ref({ lat: 13.7563, lng: 100.5018 });
     const markerDetails = ref({
       id: 1,
       position: coords.value,
