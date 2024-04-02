@@ -629,13 +629,21 @@ export default defineComponent({
     });
     const getUserLocation = () => {
       // Check if geolocation is supported by the browser
+      navigator.geolocation.getCurrentPosition((position) => {
+        coords.value.lat = position.coords.latitude;
+        coords.value.lng = position.coords.longitude;
+      });
+
       const isSupported = "navigator" in window && "geolocation" in navigator;
       if (isSupported) {
+        console.log("FREEDOM")
         // Retrieve the user's current position
         navigator.geolocation.getCurrentPosition((position) => {
           coords.value.lat = position.coords.latitude;
           coords.value.lng = position.coords.longitude;
         });
+      }else{
+        console.log("FREEDOM1")
       }
     };
 
@@ -747,7 +755,6 @@ export default defineComponent({
             }
           }
         }
-
       },
       { deep: true }
     );
