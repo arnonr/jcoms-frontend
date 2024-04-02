@@ -390,7 +390,6 @@ export default defineComponent({
         agency_id: props.complant_type.id == 4 ? null : null,
         created_by: props.item.firstname + " " + props.item.lastname,
         updated_by: props.item.firstname + " " + props.item.lastname,
-        secret_key: props.r,
         // รุป
       };
 
@@ -483,6 +482,7 @@ export default defineComponent({
         district_id: props.complaint_item.district_id,
         province_id: props.complaint_item.province_id,
         state_id: 1,
+        secret_key: props.r,
         created_by: props.item.firstname + " " + props.item.lastname,
       };
 

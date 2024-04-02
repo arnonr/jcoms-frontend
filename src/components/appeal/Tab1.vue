@@ -345,9 +345,17 @@
               errors.card_photo.text
             }}</span>
           </div>
-          <img :src="previewImage" class="mt-5 w-100 w-md-50" />
           <img
-            :src="previewImage == null ? item.card_photo_old : null"
+            :src="previewImage"
+            class="mt-5 w-100 w-md-50"
+            v-if="previewImage"
+          />
+          <img
+            :src="
+              previewImage == null && item.card_photo_old != null
+                ? item.card_photo_old
+                : null
+            "
             alt=""
             class="mt-5 w-100 w-md-50"
           />
