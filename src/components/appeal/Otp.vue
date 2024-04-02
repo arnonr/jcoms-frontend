@@ -149,7 +149,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { defineComponent, ref, onMounted, onUnmounted, watch } from "vue";
 import { useOTPStore, type Otp } from "@/stores/otp";
 import type { PropType } from "vue";
 // Import SweetAlert2
@@ -439,7 +439,7 @@ export default defineComponent({
         date_time = date_time.format("YYYY-MM-DD HH:mm:ss");
       }
 
-      console.log(props.complaint_item)
+      console.log(props.complaint_item);
 
       let data_item = {
         complaint_type_id:
@@ -483,8 +483,7 @@ export default defineComponent({
         district_id: props.complaint_item.district_id,
         province_id: props.complaint_item.province_id,
         state_id: 1,
-        created_by:
-          props.item.firstname + " " + props.item.lastname,
+        created_by: props.item.firstname + " " + props.item.lastname,
       };
 
       let api = {
@@ -615,7 +614,7 @@ export default defineComponent({
       // save Eval
       let eval_data = {
         complaint_satisfaction: rating.value,
-        complaint_satisfaction_at: dayjs().format("YYYY-MM-DD"),
+        complaint_satisfaction_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       };
       //   fetch
       let api = {
@@ -673,6 +672,11 @@ export default defineComponent({
       otpConfirmModalObj.value = new Modal(otpConfirmModalRef.value, {});
       onOTPModal();
       evalModalObj.value = new Modal(evalModalRef.value, {});
+    });
+
+    onUnmounted(() => {
+      otpConfirmModalObj.value.hide();
+      evalModalObj.value.hide();
     });
 
     // Watch

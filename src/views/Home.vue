@@ -14,7 +14,7 @@
       <div class="col-xl-6 mt-3" v-for="(hm, idx) in home_menus" :key="idx">
         <div class="card card-xl-stretch" :class="[`bg-${hm.bgColor}`]">
           <div
-            class="card-body d-flex align-items-center pt-2 pb-4 cursor-pointer"
+            class="card-body d-flex align-items-center pt-4 pb-6 cursor-pointer"
             :class="[`text-${hm.textColor}`, `text-hover-${hm.textHoverColor}`]"
             @click="onRouterLink(hm)"
           >

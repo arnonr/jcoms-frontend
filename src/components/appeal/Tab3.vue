@@ -249,7 +249,7 @@
             <label
               class="form-check-label ms-3 text-primary fw-bold fs-3"
               for="checkboxCentered"
-              >นโนบายข้อมูลส่วนบุคคลและ พรบ. คุ้มครองข้อมูล</label
+              >ยอมรับ นโนบายข้อมูลส่วนบุคคลและ พรบ. คุ้มครองข้อมูล</label
             >
           </div>
         </div>

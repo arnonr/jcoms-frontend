@@ -125,7 +125,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { defineComponent, ref, onMounted, onUnmounted, watch } from "vue";
 import { useOTPStore, type Otp } from "@/stores/otp";
 // Import Recaptcha
 import vueRecaptcha from "vue3-recaptcha2";
@@ -272,7 +272,7 @@ export default defineComponent({
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          
+
           onChangePhoneNumber();
           otpWrong.value = "d-none";
 
@@ -325,6 +325,11 @@ export default defineComponent({
       captchaModalObj.value = new Modal(captchaModalRef.value, {});
       otpModalObj.value = new Modal(otpModalRef.value, {});
       onCaptchaModal();
+    });
+
+    onUnmounted(() => {
+      otpModalObj.value.hide();
+      captchaModalObj.value.hide();
     });
 
     // Watch

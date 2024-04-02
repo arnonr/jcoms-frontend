@@ -368,25 +368,25 @@ export default defineComponent({
       birthday: Yup.date()
         .required("${path} จำเป็นต้องระบุ")
         .label("วัน/เดือน/ปีเกิด"),
-      occupation_text: Yup.string().label("อาชีพ"),
+      occupation_text: Yup.string().nullable().label("อาชีพ"),
       house_number: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
         .label("บ้านเลขที่"),
-      building: Yup.string().label("หมู่บ้าน"),
-      moo: Yup.string().label("หมู่ที่"),
-      soi: Yup.string().label("ซอย"),
-      road: Yup.string().label("ถนน"),
+      building: Yup.string().nullable().label("หมู่บ้าน"),
+      moo: Yup.string().nullable().label("หมู่ที่"),
+      soi: Yup.string().nullable().label("ซอย"),
+      road: Yup.string().nullable().label("ถนน"),
       address_all: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
         .label("จังหวัด/อำเภอ/ตำบล"),
       //   card_photo: Yup.string()
       //     .required("${path} จำเป็นต้องระบุ")
       //     .label("รูปถ่ายตนเองพร้อมบัตร"),
-      email: Yup.string().label("อีเมล"),
-      line_id: Yup.string().label("Line ID"),
+      email: Yup.string().nullable().label("อีเมล"),
+      line_id: Yup.string().nullable().label("Line ID"),
     });
     const complainant_item = ref<any>({
-      phone_number: "0802112900",
+      phone_number: "",
       card_type: null,
       id_card: "",
       prefix_name_id: null,
@@ -688,8 +688,7 @@ export default defineComponent({
         lastname: { error: 0, text: "" },
         organization_all: { error: 0, text: "" },
       };
-      
-      
+
       try {
         await validationItemSchema.validate(item.value, {
           abortEarly: false,

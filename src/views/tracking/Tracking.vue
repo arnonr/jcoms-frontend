@@ -103,7 +103,14 @@
                       }}</span>
                       <span v-else></span>
                     </td>
-                    <td class="text-center">{{ it.state.name_th == 'เรื่องร้องเรียนใหม่ (ยังไม่รับเรื่อง)' ? 'รอรับเรื่อง' : it.state.name_th }}</td>
+                    <td class="text-center">
+                      {{
+                        it.state.name_th ==
+                        "เรื่องร้องเรียนใหม่ (ยังไม่รับเรื่อง)"
+                          ? "รอรับเรื่อง"
+                          : it.state.name_th
+                      }}
+                    </td>
                     <td class="text-center">
                       <button
                         class="btn btn-success"
@@ -114,7 +121,7 @@
                           }
                         "
                       >
-                       รายละเอียด
+                        รายละเอียด
                       </button>
                     </td>
                   </tr>
@@ -188,7 +195,7 @@ export default defineComponent({
   components: {
     dayjs,
     Otp,
-    Detail
+    Detail,
   },
   setup() {
     // Variable
@@ -380,15 +387,16 @@ export default defineComponent({
 
       if (accused != null && accused.length != 0) {
         accused.forEach((x: any, idx: number) => {
+          if (x.firstname == null) {
+            return;
+          }
           if (idx != 0) {
             text = text + ", ";
           }
-          text =
-            text +
-            showPrefix(x.prefix_name_id) +
-            x.firstname +
-            " " +
-            x.lastname;
+
+          let fn = x.firstname;
+          let ln = x.lastname != null ? x.lastname : "";
+          text = text + showPrefix(x.prefix_name_id) + fn + " " + ln;
         });
       }
       return text;
