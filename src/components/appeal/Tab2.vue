@@ -629,21 +629,20 @@ export default defineComponent({
     });
     const getUserLocation = () => {
       // Check if geolocation is supported by the browser
-      navigator.geolocation.getCurrentPosition((position) => {
-        coords.value.lat = position.coords.latitude;
-        coords.value.lng = position.coords.longitude;
-      });
-
       const isSupported = "navigator" in window && "geolocation" in navigator;
       if (isSupported) {
-        console.log("FREEDOM2")
+        console.log("FREEDOM2");
         // Retrieve the user's current position
-        navigator.geolocation.getCurrentPosition((position) => {
-          coords.value.lat = position.coords.latitude;
-          coords.value.lng = position.coords.longitude;
-        });
-      }else{
-        console.log("FREEDOM1")
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            coords.value.lat = position.coords.latitude;
+            coords.value.lng = position.coords.longitude;
+          },
+          (error) => {
+            console.error(error);
+            // จัดการข้อผิดพลาดที่เกิดขึ้น
+          }
+        );
       }
     };
 
