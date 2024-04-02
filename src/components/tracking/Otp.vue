@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { defineComponent, ref, onMounted, onUnmounted, watch } from "vue";
 import { useOTPStore, type Otp } from "@/stores/otp";
 import type { PropType } from "vue";
 // Import SweetAlert2
@@ -240,6 +240,10 @@ export default defineComponent({
       otpCountdown.value = 120;
       btnSendOtpDisabled.value = true;
       btnConfirmOtpDisabled.value = false;
+    });
+
+    onUnmounted(() => {
+      otpConfirmModalObj.value.hide();
     });
 
     // Watch

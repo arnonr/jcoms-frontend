@@ -253,7 +253,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { defineComponent, ref, onMounted, onUnmounted, watch } from "vue";
 import ApiService from "@/core/services/ApiService";
 
 // Import Dayjs
@@ -443,6 +443,10 @@ export default defineComponent({
       fetchAccused();
       detailModalObj.value = new Modal(detailModalRef.value, {});
       onDetailModal();
+    });
+
+    onUnmounted(() => {
+      detailModalObj.value.hide();
     });
 
     // Watch
