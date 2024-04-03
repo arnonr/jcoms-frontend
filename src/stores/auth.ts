@@ -39,16 +39,24 @@ export const useAuthStore = defineStore("auth", () => {
     return ApiService.post("user/login", credentials)
       .then(({ data }) => {
         setAuth(data);
+        localStorage.setItem(
+          "userData",
+          JSON.stringify({
+            ...data.data,
+          })
+        );
+        localStorage.setItem('id_token',data.data.token)
+       
       })
       .catch(({ response }) => {
-        // console.log(response.data.msg)
-        // errors.value = response.data.msg
         setError(response.data.msg);
       });
   }
 
   function logout() {
     purgeAuth();
+    localStorage.removeItem("userData");
+    localStorage.removeItem('id_token')
   }
 
   function register(credentials: User) {
@@ -73,18 +81,24 @@ export const useAuthStore = defineStore("auth", () => {
 
   function verifyAuth() {
     if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.post("verify_token", { api_token: JwtService.getToken() })
-        .then(({ data }) => {
-          setAuth(data);
-        })
-        .catch(({ response }) => {
-          setError(response.data.errors);
-          purgeAuth();
-        });
+      console.log("FREEDOM");
     } else {
-      purgeAuth();
+      console.log("FREEDOM1");
     }
+    // const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    // if (JwtService.getToken()) {
+    //   ApiService.setHeader();
+    //   ApiService.post("verify_token", { api_token: JwtService.getToken() })
+    //     .then(({ data }) => {
+    //       setAuth(data);
+    //     })
+    //     .catch(({ response }) => {
+    //       setError(response.data.errors);
+    //       purgeAuth();
+    //     });
+    // } else {
+    //   purgeAuth();
+    // }
   }
 
   return {
