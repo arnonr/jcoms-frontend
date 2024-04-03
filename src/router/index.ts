@@ -45,7 +45,7 @@ const routes: Array<RouteRecordRaw> = [
     // redirect: "/dashboard",
     component: () => import("@/layouts/default-layout/DefaultLayout.vue"),
     meta: {
-    //   middleware: "auth",
+      //   middleware: "auth",
     },
     children: [
       {
@@ -481,21 +481,27 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: "/sign-up",
-        name: "sign-up",
-        component: () =>
-          import("@/views/crafted/authentication/basic-flow/SignUp.vue"),
-        meta: {
-          pageTitle: "Sign Up",
-        },
-      },
-      {
         path: "/password-reset",
         name: "password-reset",
         component: () =>
           import("@/views/crafted/authentication/basic-flow/PasswordReset.vue"),
         meta: {
           pageTitle: "Password reset",
+        },
+      },
+    ],
+  },
+  {
+    path: "/",
+    component: () => import("@/layouts/Auth1Layout.vue"),
+    children: [
+      {
+        path: "/sign-up",
+        name: "sign-up",
+        component: () =>
+          import("@/views/crafted/authentication/basic-flow/SignUp.vue"),
+        meta: {
+          pageTitle: "Sign Up",
         },
       },
     ],

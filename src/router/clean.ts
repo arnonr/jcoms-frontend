@@ -23,7 +23,6 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: ["Dashboards"],
         },
       },
-      
     ],
   },
   {
@@ -40,21 +39,27 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: "/sign-up",
-        name: "sign-up",
-        component: () =>
-          import("@/views/crafted/authentication/basic-flow/SignUp.vue"),
-        meta: {
-          pageTitle: "Sign Up",
-        },
-      },
-      {
         path: "/password-reset",
         name: "password-reset",
         component: () =>
           import("@/views/crafted/authentication/basic-flow/PasswordReset.vue"),
         meta: {
           pageTitle: "Password reset",
+        },
+      },
+    ],
+  },
+  {
+    path: "/",
+    component: () => import("@/layouts/default-layout/DefaultLayout.vue"),
+    children: [
+      {
+        path: "/sign-up",
+        name: "sign-up",
+        component: () =>
+          import("@/views/crafted/authentication/basic-flow/SignUp.vue"),
+        meta: {
+          pageTitle: "Sign Up",
         },
       },
     ],

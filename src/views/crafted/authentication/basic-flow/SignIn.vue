@@ -16,26 +16,7 @@
           ระบบบริหารจัดการเรื่องร้องเรียน<br />เจ้าหน้าที่ตำรวจ
         </h1>
         <!--end::Title-->
-
-        <!--begin::Link-->
-        <!-- <div class="text-gray-500 fw-semibold fs-4">
-          New Here?
-
-          <router-link to="/sign-up" class="link-primary fw-bold">
-            Create an Account
-          </router-link>
-        </div> -->
-        <!--end::Link-->
       </div>
-      <!--begin::Heading-->
-
-      <!-- <div class="mb-10 bg-light-info p-8 rounded">
-        <div class="text-info">
-          Use account <strong>admin@demo.com</strong> and password
-          <strong>demo</strong> to continue.
-        </div>
-      </div> -->
-
       <!--begin::Input group-->
       <div class="fv-row mb-10">
         <!--begin::Label-->
@@ -116,9 +97,13 @@
         <!--end::Submit button-->
       </div>
       <!--end::Actions-->
-      <div class="text-start">
-        <router-link to="/password-reset" class="link-primary fs-6 fw-bold">
+      <div class="text-start d-flex justify-content-between">
+        <router-link to="/sign-up" class="link-primary fs-6 fw-bold">
           เจ้าหน้าที่สมัครใช้งาน
+        </router-link>
+
+        <router-link to="/home" class="link-primary fs-6 fw-bold">
+          กลับหน้าหลัก
         </router-link>
       </div>
     </VForm>
@@ -135,6 +120,8 @@ import { useAuthStore, type User } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import * as Yup from "yup";
+// import Api Service
+import ApiService from "@/core/services/ApiService";
 
 export default defineComponent({
   name: "sign-in",
@@ -188,7 +175,7 @@ export default defineComponent({
         });
       } else {
         Swal.fire({
-          text: error[0] as string,
+          text: error.toString().replaceAll(",", ""),
           icon: "error",
           buttonsStyling: false,
           confirmButtonText: "Try again!",

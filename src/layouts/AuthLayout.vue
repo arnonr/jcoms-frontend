@@ -16,8 +16,7 @@
       <!--end::Form-->
 
       <!--begin::Footer-->
-      <div class="d-flex flex-center flex-wrap px-5">
-        <!--begin::Links-->
+      <!-- <div class="d-flex flex-center flex-wrap px-5">
         <div class="d-flex fw-semibold text-primary fs-base">
           <a href="#" class="px-5" target="_blank">Terms</a>
 
@@ -25,8 +24,7 @@
 
           <a href="#" class="px-5" target="_blank">Contact Us</a>
         </div>
-        <!--end::Links-->
-      </div>
+      </div> -->
       <!--end::Footer-->
     </div>
     <!--end::Body-->
@@ -54,8 +52,10 @@
         <!--end::Logo-->
 
         <!--begin::Image-->
+        <!-- w-275px w-md-50 w-xl-500px  -->
         <img
-          class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20"
+          class="d-none d-lg-block mx-auto mb-10 mb-lg-20"
+          style="width:60%"
           :src="getAssetPath('media/misc/7966.jpg')"
           alt=""
         />
