@@ -631,7 +631,6 @@ export default defineComponent({
       // Check if geolocation is supported by the browser
       const isSupported = "navigator" in window && "geolocation" in navigator;
       if (isSupported) {
-        console.log("FREEDOM2");
         // Retrieve the user's current position
         navigator.geolocation.getCurrentPosition(
           (position) => {

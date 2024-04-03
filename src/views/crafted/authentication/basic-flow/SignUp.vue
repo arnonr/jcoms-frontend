@@ -834,9 +834,6 @@ export default defineComponent({
 
     const onSaveUser = async () => {
       //
-
-      console.log(item.value);
-      //   console.log(data_item);
       let data_item = {
         file_attach:
           item.value.file_attach != null ? item.value.file_attach : null,
@@ -869,7 +866,6 @@ export default defineComponent({
         updated_by: item.value.firstname + " " + item.value.lastname,
         // รุป
       };
-      console.log(data_item);
 
       let api = {
         type: "postFormData",

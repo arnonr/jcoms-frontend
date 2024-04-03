@@ -81,9 +81,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   function verifyAuth() {
     if (JwtService.getToken()) {
-      console.log("FREEDOM");
     } else {
-      console.log("FREEDOM1");
     }
     // const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     // if (JwtService.getToken()) {

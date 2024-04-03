@@ -24,7 +24,7 @@
               data-bs-parent="#accordionFlushExample"
             >
               <div class="accordion-body" style="padding: 0">
-                <DetailComplaint />
+                <!-- <DetailComplaint /> -->
                 <hr />
               </div>
             </div>

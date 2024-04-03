@@ -438,8 +438,6 @@ export default defineComponent({
         date_time = date_time.format("YYYY-MM-DD HH:mm:ss");
       }
 
-      console.log(props.complaint_item);
-
       let data_item = {
         complaint_type_id:
           props.complaint_item.complaint_topic.complaint_type_id,

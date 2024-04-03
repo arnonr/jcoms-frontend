@@ -19,6 +19,9 @@ import { initKtIcon } from "@/core/plugins/keenthemes";
 import "@/core/plugins/prismjs";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 
+import { abilitiesPlugin } from "@casl/vue";
+import ability from "./services/ability";
+
 const app = createApp(App);
 
 app.use(createPinia());
@@ -36,6 +39,10 @@ app.use(VueGoogleMaps, {
     libraries: "places", // หรือ 'places,drawing,visualization' ตามที่คุณต้องการ
   },
   autobindAllEvents: true,
+});
+
+app.use(abilitiesPlugin, ability, {
+  useGlobalProperties: true,
 });
 
 ApiService.init(app);

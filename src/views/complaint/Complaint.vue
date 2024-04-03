@@ -29,17 +29,17 @@
               id="txt-search-complain-title"
               name="txt-search-complain-title"
               class="form-control"
-              v-model="search.complain_title"
+              v-model="search.complaint_title"
             />
           </div>
           <div class="col-12 col-md-4 my-2">
-            <label for="">เลขคำร้องเรียน</label>
+            <label for="">เลขคำร้องเรียน (Jcom No)</label>
             <input
               type="text"
               id="txt-search-complain-code"
               name="txt-search-complain-code"
               class="form-control"
-              v-model="search.complain_code"
+              v-model="search.jcoms_no"
             />
           </div>
           <div class="col-12 col-md-4 my-2">
@@ -67,12 +67,12 @@
           <div class="col-12 col-md-4 my-2">
             <label for="">สถานะเรื่องร้องเรียน</label>
             <v-select
-              id="slt-search-proceed-state"
-              name="slt-search-proceed-state"
-              label="name"
+              id="slt-search-state-id"
+              name="slt-search-state-id"
+              label="name_th"
               placeholder="สถานะเรื่องร้องเรียน"
-              :options="selectOptions.proceed_states"
-              v-model="search.proceed_state_id"
+              :options="selectOptions.states"
+              v-model="search.state_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -83,7 +83,7 @@
             <v-select
               id="slt-search-bureau-id"
               name="slt-search-bureau-id"
-              label="name"
+              label="name_th"
               placeholder="บช./ภ."
               :options="selectOptions.bureaus"
               v-model="search.bureau_id"
@@ -97,7 +97,7 @@
             <v-select
               id="slt-search-division-id"
               name="slt-search-division-id"
-              label="name"
+              label="name_th"
               placeholder="บก./ภ.จว."
               :options="selectOptions.divisions"
               v-model="search.division_id"
@@ -111,7 +111,7 @@
             <v-select
               id="slt-search-agency-id"
               name="slt-search-agency-id"
-              label="name"
+              label="name_th"
               placeholder="หน่วยงาน(สถานีตำรวจ)"
               :options="selectOptions.agencies"
               v-model="search.agency_id"
@@ -146,7 +146,7 @@
 
     <div class="row">
       <div class="col-12 mb-3 mt-5">
-        <h4>เรื่องร้องเรียนทั้งหมด {{ 1200 }} เรื่อง</h4>
+        <h4>เรื่องร้องเรียนทั้งหมด {{ totalItems }} เรื่อง</h4>
       </div>
       <div
         class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-4"
@@ -210,23 +210,47 @@
         <table class="table table-bordered table-striped" style="width: 100%">
           <thead class="bg-color-police">
             <tr>
-              <th
-                v-for="(hd, idx) in tableHeader"
-                :key="idx"
-                class="text-center text-white"
-              >
-                {{ hd.columnName }}
-              </th>
+              <th class="text-center text-white">วันที่ร้องเรียน</th>
+              <th class="text-center text-white">รหัสคำร้อง</th>
+              <th class="text-center text-white">ลักษณะความผิด</th>
+              <th class="text-center text-white">เรื่องร้องเรียน</th>
+              <th class="text-center text-white">ผู้ถูกร้อง</th>
+              <th class="text-center text-white">หน่วยงานถูกร้อง</th>
+              <th class="text-center text-white">สถานะ</th>
+              <th class="text-center text-white">จัดการข้อมูล</th>
             </tr>
           </thead>
           <tbody v-if="items.length != 0">
             <tr v-for="(it, idx) in items" :key="idx">
-              <td class="text-center">15 ก.พ. 67</td>
-              <td class="text-center">A001</td>
-              <td>โดนเจ้าหน้าที่ทำร้าย</td>
-              <td>พล.ต.อ. อานนท์ รักจักร์</td>
-              <td>สถานีตำรวจภูธรเจาะไอ้ร้อง</td>
-              <td class="text-center">บก. ดำเนินการ</td>
+              <td class="text-center">
+                {{ convert_date(it.created_at) }}
+              </td>
+              <td class="text-center">{{ it.jcoms_no }}</td>
+
+              <td class="text-center">{{ it.topic_type?.name_th }}</td>
+              <td>{{ it.complaint_title }}</td>
+              <td>{{ showAccused(it.accused) }}</td>
+              <td>
+                <span v-if="it.agency_id">{{ it.agency.name_th }}</span>
+                <span v-else-if="it.division_id">{{
+                  it.division.name_th
+                }}</span>
+                <span v-else-if="it.bureau_id">{{ it.bureau.name_th }}</span>
+                <span v-else-if="it.inspector_id">{{
+                  it.inspector.name_th
+                }}</span>
+                <span v-else></span>
+              </td>
+              <td class="text-center">
+                <span
+                  class="badge p-2 text-white"
+                  :style="`background-color: ${
+                    showState(it.state_id).bg_color
+                  };`"
+                  >{{ showState(it.state_id).name_th }}</span
+                >
+              </td>
+
               <td class="text-center">
                 <div class="dropdown">
                   <button
@@ -248,7 +272,7 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        @click="onDetailModal()"
+                        @click="onDetailModal(it)"
                         >รายละเอียด</a
                       >
                     </li>
@@ -264,7 +288,7 @@
                       <a
                         class="dropdown-item cursor-pointer"
                         @click="onReceiveModal()"
-                        >รับเรื่อง</a
+                        >ฝรท. รับเรื่อง</a
                       >
                     </li>
                     <li>
@@ -320,6 +344,7 @@
         <div class="col-xxl-12">
           <div class="tp-pagination mt-30">
             <BlogPagination
+              :totalItems="totalItems"
               :totalPage="totalPage"
               :currentPage="currentPage"
               @update:currentPage="currentPage = $event"
@@ -401,7 +426,7 @@
                 id="dp-search-startdate-2"
                 name="dp-search-startdate-2"
                 class="form-control"
-                v-model="search.start_date"
+                v-model="search.create_from"
                 :enable-time-picker="false"
                 locale="th"
                 auto-apply
@@ -421,7 +446,7 @@
                 id="dp-search-enddate-2"
                 name="dp-search-enddate-2"
                 class="form-control"
-                v-model="search.end_date"
+                v-model="search.create_to"
                 :enable-time-picker="false"
                 locale="th"
                 auto-apply
@@ -444,7 +469,7 @@
               name="txt-search-complain-title-2"
               type="text"
               class="form-control"
-              v-model="search.complain_title"
+              v-model="search.complaint_title"
             />
           </div>
 
@@ -489,10 +514,10 @@
               <v-select
                 id="slt-search-proceed-state-2"
                 name="slt-search-procees-state-2"
-                label="name"
+                label="name_th"
                 placeholder="สถานะเรื่องร้องเรียน"
-                :options="selectOptions.proceed_states"
-                v-model="search.proceed_state_id"
+                :options="selectOptions.states"
+                v-model="search.state_id"
                 class="form-control"
                 :clearable="true"
               ></v-select>
@@ -502,14 +527,17 @@
           <h4>ค้นหาจากข้อมูลหน่วยงาน</h4>
           <hr />
           <div class="mb-7">
-            <label for="">ฝ่ายรับเรื่องร้องเรียน : </label>
-            <input
-              id="slt-search-proceed-state-2"
-              name="slt-search-procees-state-2"
-              type="text"
+            <label for="">กต</label>
+            <v-select
+              id="slt-search-inspector-id-2"
+              name="slt-search-inspector-id-2"
+              label="name_th"
+              placeholder="กต."
+              :options="selectOptions.inspectors"
+              v-model="search.inspector_id"
               class="form-control"
-              v-model="search.complain_code"
-            />
+              :clearable="true"
+            ></v-select>
           </div>
 
           <div class="mb-7">
@@ -517,7 +545,7 @@
             <v-select
               id="slt-search-bureau-id-2"
               name="slt-search-bureau-id-2"
-              label="name"
+              label="name_th"
               placeholder="บช./ภ."
               :options="selectOptions.bureaus"
               v-model="search.bureau_id"
@@ -531,7 +559,7 @@
             <v-select
               id="slt-search-division-id-2"
               name="slt-search-division-id-2"
-              label="name"
+              label="name_th"
               placeholder="บก./ภ.จว."
               :options="selectOptions.divisions"
               v-model="search.division_id"
@@ -545,7 +573,7 @@
             <v-select
               id="slt-search-agency-id-2"
               name="slt-search-agency-id-2"
-              label="name"
+              label="name_th"
               placeholder="หน่วยงาน(สถานีตำรวจ)"
               :options="selectOptions.agencies"
               v-model="search.agency"
@@ -583,10 +611,10 @@
             <v-select
               id="slt-search-province-id-2"
               name="slt-search-province-id-2"
-              label="name"
+              label="name_th"
               placeholder="จังหวัด"
-              :options="selectOptions.complain_statuses"
-              v-model="search.complain_status"
+              :options="selectOptions.provinces"
+              v-model="search.province_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -597,10 +625,10 @@
             <v-select
               id="slt-search-district-id-2"
               name="slt-search-district-id-2"
-              label="name"
+              label="name_th"
               placeholder="อำเภอ"
-              :options="selectOptions.complain_statuses"
-              v-model="search.complain_status"
+              :options="selectOptions.districts"
+              v-model="search.district_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -611,10 +639,10 @@
             <v-select
               id="slt-search-sub-district-id-2"
               name="slt-search-sub-district-id-2"
-              label="name"
+              label="name_th"
               placeholder="ตำบล"
-              :options="selectOptions.complain_statuses"
-              v-model="search.complain_status"
+              :options="selectOptions.subdistricts"
+              v-model="search.sub_district_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -627,10 +655,10 @@
             <v-select
               id="slt-search-complain-type-id-2"
               name="slt-search-complain-type-id-2"
-              label="name"
+              label="name_th"
               placeholder="หมวดหมู่เรื่อง"
-              :options="selectOptions.complain_types"
-              v-model="search.complain_type_id"
+              :options="selectOptions.complaint_types"
+              v-model="search.complaint_type_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -641,10 +669,10 @@
             <v-select
               id="slt-search-topic-type-id-2"
               name="slt-search-topic-type-id-2"
-              label="name"
+              label="name_th"
               placeholder="ประเภทเรื่อง"
-              :options="selectOptions.topic_types"
-              v-model="search.topic_type_id"
+              :options="selectOptions.topic_categories"
+              v-model="search.topic_category_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -654,10 +682,10 @@
             <v-select
               id="slt-search-topic-category-id-2"
               name="slt-search-topic-category-id-2"
-              label="name"
+              label="name_th"
+              :options="selectOptions.topic_types"
+              v-model="search.topic_type_id"
               placeholder="ลักษณะเรื่อง"
-              :options="selectOptions.topic_categories"
-              v-model="search.topic_category_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -668,13 +696,13 @@
 
           <div class="row">
             <div class="col-md-6 mb-7">
-              <label for="">เลขที่คำร้องเรียน : </label>
+              <label for="">เลขที่คำร้องเรียน (Jcom No): </label>
               <input
                 id="slt-search-complain-code-2"
                 name="slt-search-complain-code-2"
                 type="text"
                 class="form-control"
-                v-model="search.complain_code"
+                v-model="search.jcoms_no"
               />
             </div>
             <div class="col-md-6 mb-7">
@@ -718,10 +746,10 @@
             <v-select
               id="slt-search-complain-channel-id"
               name="slt-search-complain-channel-id"
-              label="name"
+              label="name_th"
               placeholder="ช่องทางการรับเรื่อง"
-              :options="selectOptions.complain_channels"
-              v-model="search.complain_channel_id"
+              :options="selectOptions.complaint_channels"
+              v-model="search.complaint_channel_id"
               class="form-control"
               :clearable="true"
             ></v-select>
@@ -973,7 +1001,7 @@
         </div>
 
         <div class="modal-body">
-          <DetailComplaint />
+          <DetailComplaint :item="item" v-if="Object.keys(item).length !== 0" />
         </div>
       </div>
     </div>
@@ -982,10 +1010,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, onUnmounted, ref, watch } from "vue";
 // import { getAssetPath } from "@/core/helpers/assets";
 import { useRouter } from "vue-router";
 import useAddressData from "@/composables/useAddressData";
+import useStateData from "@/composables/useStateData";
 // import useStatusData from "@/composables/useStatusData";
 // import useOrganizationData from "@/composables/useOrganizationData";
 // Import Validate
@@ -1027,6 +1056,8 @@ import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
 
+import { useAbility } from "@casl/vue";
+
 export default defineComponent({
   name: "complaint",
   components: {
@@ -1052,6 +1083,9 @@ export default defineComponent({
   },
   setup() {
     // Variable
+    const ability = useAbility();
+    // console.log(ability);
+
     const router = useRouter();
     let addModalRef = ref<any>(null);
     let addModalObj = ref<any>(null);
@@ -1136,6 +1170,8 @@ export default defineComponent({
       },
     ]);
 
+    let states = useStateData().states;
+
     const address_all = ref([]);
     address_all.value = useAddressData().addresses.map((el) => {
       el.label =
@@ -1163,7 +1199,7 @@ export default defineComponent({
         { name: "รอรายงานผล", value: 3 },
         { name: "เสร็จสิ้น", value: 4 },
       ],
-      identity_types: [
+      is_anonymouses: [
         { name: "ระบุตัวตน", value: 1 },
         { name: "ไม่ระบุตัวตน", value: 2 },
       ],
@@ -1184,31 +1220,50 @@ export default defineComponent({
           value: 2,
         },
       ],
+      states: [],
       perPage: [
         { title: "20", value: 20 },
         { title: "40", value: 40 },
         { title: "60", value: 60 },
       ],
+      inspectors: [],
+      bureaus: [],
+      divisions: [],
+      agency: [],
+      provinces: [],
+      districts: [],
+      subdistricts: [],
+      complaint_types: [],
+      topic_categories: [],
+      topic_types: [],
+      prefix_names: [],
     });
-    const item = ref({
-      organization: "",
-      type_of_document_id: "",
-      type_of_identity: 1,
-      name: "",
-      id_number: "",
-      id_file: "",
-      address_all: "",
-      prefix_name_1: "",
-    });
+    const item = ref<any>({});
     const search = ref<any>({
-      year: "",
-      day: "",
-      title: "",
-      code: "",
-      organization: "",
-      name: "",
-      complain_type: "",
-      complain_code: "",
+      year: null,
+      complaint_title: "",
+      jcoms_no: "",
+      complainant_fullname: "",
+      accused_fullname: "",
+      state_id: null,
+      inspector_id: null,
+      bureau_id: null,
+      division_id: null,
+      agency_id: null,
+      create_from: null,
+      create_to: null,
+      is_anonymous: null,
+      incident_date: null,
+      province_id: null,
+      district_id: null,
+      sub_district_id: null,
+      complaint_type_id: null,
+      topic_category_id: null,
+      topic_type_id: null,
+      pol_no: "",
+      receive_no: "",
+      forward_no: "",
+      complaint_channel_id: null,
     });
     const items = ref<any>([]);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -1218,6 +1273,7 @@ export default defineComponent({
     const totalItems = ref(0);
     const json_data = ref([]);
     const submitButton = ref<HTMLButtonElement | null>(null);
+
     //Create form validation object
     const login = Yup.object().shape({
       email: Yup.string().email().required().label("Email"),
@@ -1241,68 +1297,306 @@ export default defineComponent({
     // console.log(selectOptions.value.years);
 
     // Fetch Data
-    const fetchItems = () => {
+    const fetchPrefixName = async () => {
+      let api = {
+        type: "query",
+        url: "prefix-name",
+      };
+
+      // ส่งไรไป ID phone เก็บ tracking_state ไว้  มี ID หรือเบอร์โทร
+      await ApiService[api.type](api.url, {
+        params: { is_active: 1, perPage: 500 },
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.prefix_names = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    };
+
+    const fetchState = () => {
+      const params = {
+        perPage: 100,
+      };
+      ApiService.query("state", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.states = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchInspector = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+      };
+      ApiService.query("inspector", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.inspectors = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchBureau = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        inspector_id: search.value.inspector_id?.id ?? undefined,
+      };
+      ApiService.query("bureau", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.bureaus = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchDivision = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        bureau_id: search.value.bureau_id?.id ?? undefined,
+      };
+      ApiService.query("division", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.divisions = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchAgency = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        division_id: search.value.division_id?.id ?? undefined,
+      };
+      ApiService.query("agency", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.agencies = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchProvince = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+      };
+      ApiService.query("province", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.provinces = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchDistrict = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        province_id: search.value.province_id?.id ?? undefined,
+      };
+      ApiService.query("district", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.districts = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchSubdistrict = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        district_id: search.value.district_id?.id ?? undefined,
+      };
+      ApiService.query("sub-district", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.subdistricts = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchComplaintType = () => {
+      const params = {
+        perPage: 100000,
+      };
+      ApiService.query("complaint-type", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.complaint_types = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchTopicCategory = () => {
+      const params = {
+        perPage: 100000,
+        complaint_type_id: search.value.complaint_type_id?.id ?? undefined,
+      };
+      ApiService.query("topic-category", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.topic_categories = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchTopicType = () => {
+      const params = {
+        perPage: 100000,
+        topic_category_id: search.value.topic_category_id?.id ?? undefined,
+      };
+      ApiService.query("topic-type", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.topic_types = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchComplaintChannel = () => {
+      const params = {
+        perPage: 100000,
+      };
+      ApiService.query("complaint-channel", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.complaint_channels = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
+    const fetchItems = async () => {
       const params = {
         perPage: perPage.value,
         currentPage: currentPage.value,
+        orderBy: "created_at",
+        order: "desc",
         ...search.value,
-        // group_id: search.value.group_id ? search.value.group_id.id : undefined,
+        year: search.value.year?.value ?? undefined,
+        state_id: search.value.state_id?.id ?? undefined,
+        inspector_id: search.value.inspector_id?.id ?? undefined,
+        bureau_id: search.value.bureau_id?.id ?? undefined,
+        division_id: search.value.division_id?.id ?? undefined,
+        agency_id: search.value.agency_id?.id ?? undefined,
+        is_anonymous: search.value.is_anonymous?.value ?? undefined,
+        province_id: search.value.province_id?.id ?? undefined,
+        district_id: search.value.district_id?.id ?? undefined,
+        sub_district_id: search.value.sub_district_id?.id ?? undefined,
+        complaint_type_id: search.value.complaint_type_id?.id ?? undefined,
+        topic_category_id: search.value.topic_category_id?.id ?? undefined,
+        topic_type_id: search.value.topic_type_id?.id ?? undefined,
+        complaint_channel_id:
+          search.value.complaint_channel_id?.id ?? undefined,
+        incident_date: search.value.incident_date
+          ? dayjs(search.value.incident_date).format("YYYY-MM-DD")
+          : undefined,
+        create_from: search.value.create_from
+          ? dayjs(search.value.create_from).format("YYYY-MM-DD")
+          : undefined,
+        create_to: search.value.create_to
+          ? dayjs(search.value.create_to).format("YYYY-MM-DD")
+          : undefined,
       };
 
-      items.value = [
-        {
-          created_at: "10/10/2566",
-          complian_code: "A001",
-          complian_type: "โดนเจ้าหน้าที่ทำร้าย",
-          complian_name: "พล.ต.อ. อานนท์ รักจักร์",
-          complain_organization: "สถานีตำรวจภูธรเจาะไอ้ร้อง",
-          status: "รบก. ดำเนินการ",
-          manage: "จัดการข้อมูล",
-        },
-        {
-          created_at: "10/10/2566",
-          complian_code: "A002",
-          complian_type: "โดนเจ้าหน้าที่ทำร้าย",
-          complian_name: "พล.ต.อ. อานนท์ รักจักร์",
-          complain_organization: "สถานีตำรวจภูธรเจาะไอ้ร้อง",
-          status: "บก. ดำเนินการ",
-          manage: "จัดการข้อมูล",
-        },
-        {
-          created_at: "10/10/2566",
-          complian_code: "A002",
-          complian_type: "โดนเจ้าหน้าที่ทำร้าย",
-          complian_name: "พล.ต.อ. อานนท์ รักจักร์",
-          complain_organization: "สถานีตำรวจภูธรเจาะไอ้ร้อง",
-          status: "บก. ดำเนินการ",
-          manage: "จัดการข้อมูล",
-        },
-      ];
+      let api = {
+        type: "query",
+        url: "complaint/",
+      };
 
-      //   ApiService.query("complain", { params: params })
-      //     .then(async (response) => {
-      //       // .then(({ data }) => {
-      //       //   if (data.msg != "success") {
-      //       //     throw new Error("ERROR");
-      //       //   }
-      //       // items.value = data.data;
-      //       //   items.value = response;
-      //       //   totalPage.value = data.totalPage;
-      //       //   totalItems.value = data.totalData;
-      //       //   json_data.value = await fetchItemsExport();
-      //       //   items.value = [
-      //       //     {
-      //       //       created_at: dayjs('2023-01-01').locale("th").format("DD"),
-      //       //       complain_code: "123456",
-      //       //     },
-      //       //     {
-      //       //       created_at: dayjs('2023-01-01').locale("th").format("DD")
-      //       //     },
-      //       //   ];
-      //     })
-      //     .catch(({ response }) => {
-      //       console.log(response.data.errors);
-      //     });
+      await ApiService[api.type](api.url, {
+        params: params,
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          items.value = data.data;
+          totalPage.value = data.totalPage;
+          totalItems.value = data.totalData;
+          currentPage.value = data.currentPage;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      await ApiService[api.type](api.url + "count", {
+        params: { ...params, state_id: 1 },
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          cardStatus.value[0].total = data.totalCount.toString();
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
     };
 
     const fetchItemsExport = async () => {
@@ -1340,36 +1634,6 @@ export default defineComponent({
         orderBy: "created_at",
         order: "desc",
       };
-
-      //   if (useCookie("user").value.level == 3) {
-      //     params["department_id"] = useCookie("user").value.department_id;
-      //   }
-
-      //   let data = await $fetch(
-      //     `${runtimeConfig.public.apiBase}/holder-history`,
-      //     {
-      //       params: params,
-      //     }
-      //   ).catch((error) => error.data);
-
-      //   return data.data.map((e) => {
-      //     return {
-      //       หมายเลขครุภัณฑ์: e.asset.asset_code,
-      //       ชื่อครุภัณฑ์: e.asset.asset_name,
-      //       รายละเอียด: e.asset.asset_detail,
-      //       ประเภทครุภัณฑ์: e.asset.asset_type_id
-      //         ? selectOptions.value.asset_types_array[e.asset.asset_type_id]
-      //         : "",
-      //       ผู้ใช้งานเดิม: e.previous_holder_name,
-      //       ผู้ใช้งานใหม่: e.holder_name,
-      //       วันที่ขอเปลี่ยน:
-      //         e.created_at != null
-      //           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
-      //           : "-",
-      //       ผู้แจ้ง: e.created_user?.name,
-      //       สถานะ: selectOptions.value.holder_statuses[e.status].name,
-      //     };
-      //   });
     };
 
     // Event
@@ -1377,7 +1641,32 @@ export default defineComponent({
       fetchItems();
     };
     const onClear = async () => {
-      search.value = {};
+      search.value = {
+        year: selectOptions.value.years[0],
+        complaint_title: "",
+        jcoms_no: "",
+        complainant_fullname: "",
+        accused_fullname: "",
+        state_id: null,
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        agency_id: null,
+        create_from: null,
+        create_to: null,
+        is_anonymous: null,
+        incident_date: null,
+        province_id: null,
+        district_id: null,
+        sub_district_id: null,
+        complaint_type_id: null,
+        topic_category_id: null,
+        topic_type_id: null,
+        pol_no: "",
+        receive_no: "",
+        forward_no: "",
+        complaint_channel_id: null,
+      };
     };
     const onExport = async () => {
       //   setTimeout(async () => {
@@ -1474,7 +1763,8 @@ export default defineComponent({
     const onEditModal = () => {
       editModalObj.value.show();
     };
-    const onDetailModal = () => {
+    const onDetailModal = (it: any) => {
+      item.value = it;
       detailModalObj.value.show();
     };
     const onReceiveModal = () => {
@@ -1499,6 +1789,17 @@ export default defineComponent({
       trackModalObj.value.show();
     };
 
+    const showState = (state: number) => {
+      let find_state = states.find((x: any) => {
+        return state == x.id;
+      });
+
+      return {
+        name_th: find_state.name_th,
+        bg_color: find_state.bg_color,
+      };
+    };
+
     // Watch
     watch(
       [currentPage],
@@ -1516,9 +1817,62 @@ export default defineComponent({
     //   { deep: true }
     // );
 
+    const convert_date = (date: any) => {
+      return dayjs(date).locale("th").format("DD MMM BBBB");
+    };
+
+    const showAccused = (accused: any) => {
+      let text = "";
+
+      if (accused != null && accused.length != 0) {
+        accused.forEach((x: any, idx: number) => {
+          if (x.firstname == null) {
+            return;
+          }
+          if (idx != 0) {
+            text = text + ", ";
+          }
+
+          let fn = x.firstname;
+          let ln = x.lastname != null ? x.lastname : "";
+          text = text + showPrefix(x.prefix_name_id) + fn + " " + ln;
+        });
+      }
+      return text;
+    };
+
+    const showPrefix = (prefix_name_id: any) => {
+      let text = "";
+
+      if (prefix_name_id != null) {
+        let prefix_name: any;
+        prefix_name = selectOptions.value.prefix_names.find((x: any) => {
+          return prefix_name_id == x.id;
+        });
+        if (prefix_name) {
+          return prefix_name.name_th;
+        }
+      }
+      return text;
+    };
+
+    fetchPrefixName();
+    fetchState();
+    fetchInspector();
+    fetchBureau();
+    // fetchDivision();
+    // fetchAgency();
+    fetchProvince();
+    // fetchDistrict();
+    // fetchSubdistrict();
+    fetchComplaintType();
+    // fetchTopicCategory();
+    // fetchTopicType();
+    fetchComplaintChannel();
+    fetchItems();
+
     // Mounted
     onMounted(() => {
-      console.log(userData);
       addModalObj.value = new Modal(addModalRef.value, {});
       editModalObj.value = new Modal(editModalRef.value, {});
       detailModalObj.value = new Modal(detailModalRef.value, {});
@@ -1530,8 +1884,103 @@ export default defineComponent({
       sendReportModalObj.value = new Modal(sendReportModalRef.value, {});
 
       search.value.year = selectOptions.value.years[0];
-      fetchItems();
     });
+
+    onUnmounted(() => {
+      addModalObj.value.hide();
+      editModalObj.value.hide();
+      detailModalObj.value.hide();
+      receiveModalObj.value.hide();
+      receive2ModalObj.value.hide();
+      sendModalObj.value.hide();
+      trackModalObj.value.hide();
+      receiveReportModalObj.value.hide();
+      sendReportModalObj.value.hide();
+    });
+
+    // watch
+
+    watch(
+      () => search.value.inspector_id,
+      () => {
+        search.value.bureau_id = null;
+        search.value.division_id = null;
+        search.value.agency_id = null;
+        fetchBureau();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => search.value.bureau_id,
+      () => {
+        search.value.division_id = null;
+        search.value.agency_id = null;
+        search.value.bureau_id == null
+          ? (selectOptions.value.divisions = [])
+          : fetchDivision();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => search.value.division_id,
+      () => {
+        search.value.agency_id = null;
+        search.value.division_id == null
+          ? (selectOptions.value.agencies = [])
+          : fetchAgency();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => search.value.province_id,
+      () => {
+        search.value.district_id = null;
+        search.value.sub_district_id = null;
+        search.value.province_id == null
+          ? (selectOptions.value.districts = [])
+          : fetchDistrict();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => search.value.district_id,
+      () => {
+        search.value.sub_district_id = null;
+        search.value.district_id == null
+          ? (selectOptions.value.subdistricts = [])
+          : fetchSubdistrict();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => search.value.complaint_type_id,
+      () => {
+        search.value.topic_category_id = null;
+        search.value.topic_type_id = null;
+
+        search.value.complaint_type_id == null
+          ? (selectOptions.value.topic_categories = [])
+          : fetchTopicCategory();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => search.value.topic_category_id,
+      () => {
+        search.value.topic_type_id = null;
+
+        search.value.topic_category_id == null
+          ? (selectOptions.value.topic_types = [])
+          : fetchTopicType();
+      },
+      { deep: true }
+    );
 
     return {
       cardStatus,
@@ -1557,6 +2006,7 @@ export default defineComponent({
       trackModalRef,
       receiveReportModalRef,
       sendReportModalRef,
+      showState,
 
       onSearch,
       onClear,
@@ -1570,6 +2020,9 @@ export default defineComponent({
       onTrackModal,
       onReceiveReportModal,
       onSendReportModal,
+      ability,
+      showAccused,
+      convert_date,
     };
   },
 });
@@ -1601,3 +2054,6 @@ export default defineComponent({
   background-color: #800001;
 }
 </style>
+
+<!-- Get ข้อมูล count -->
+<!-- สิทธิ์การมองเห็น เมนูย่อย และข้อมูลกับ Filter -->

@@ -1,21 +1,25 @@
 <template>
-  <nav aria-label="..." class="py-5">
-    <ul class="pagination">
-      <li :class="`page-item ${prevBtnClass}`">
-        <a class="page-link" @click="onChangePage('prev')">Previous</a>
-      </li>
-      <li
-        v-for="(it, index) in numPage"
-        :key="index"
-        :class="props.currentPage == it ? 'page-item active' : 'page-item'"
-      >
-        <a @click="onChangePage(it)" class="page-link">{{ it }}</a>
-      </li>
-      <li :class="`page-item ${nextBtnClass}`">
-        <a class="page-link" @click="onChangePage('next')">Next</a>
-      </li>
-    </ul>
-  </nav>
+  <div class="d-flex justify-content-between">
+    <div class="text-muted">จำนวนทั้งหมด {{ totalItems }} รายการ</div>
+    <nav aria-label="..." class="py-5">
+      <ul class="pagination">
+        <li :class="`page-item ${prevBtnClass}`">
+          <a class="page-link" @click="onChangePage('prev')">Previous</a>
+        </li>
+        <li
+          v-for="(it, index) in numPage"
+          :key="index"
+          :class="props.currentPage == it ? 'page-item active' : 'page-item'"
+        >
+          <a @click="onChangePage(it)" class="page-link">{{ it }}</a>
+        </li>
+        <li :class="`page-item ${nextBtnClass}`">
+          <a class="page-link" @click="onChangePage('next')">Next</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="text-muted">จำนวนหน้าทั้งหมด {{ totalPage }} หน้า</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -29,7 +33,7 @@ export default defineComponent({
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
 import { getAssetPath } from "@/core/helpers/assets";
-const props = defineProps(["currentPage", "totalPage"]);
+const props = defineProps(["currentPage", "totalPage", "totalItems"]);
 const emit = defineEmits(["update:currentPage"]);
 const prevBtnClass = ref("");
 const nextBtnClass = ref("");
