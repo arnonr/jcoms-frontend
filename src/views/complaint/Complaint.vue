@@ -296,7 +296,7 @@
                             openSendModal = true;
                           }
                         "
-                        >ฝรท. ส่งต่อเรื่อง</a
+                        >ส่งต่อเรื่อง</a
                       >
                     </li>
                   </ul>
@@ -799,7 +799,6 @@
   <div id="send-modal">
     <SendComplaint
       :complaint_id="item.id"
-      
       v-if="openSendModal == true"
       @close-modal="
         () => {

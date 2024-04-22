@@ -97,6 +97,20 @@ export default () => {
       state_id: 18,
     },
   ];
+  const orders = [
+    {
+      value: 1,
+      name: "พิจารณาดำเนินการตามอำนาจหน้าที่",
+    },
+    {
+      value: 2,
+      name: "เป็นข้อมูลในการปฏิบัติราชการ",
+    },
+    {
+      value: 3,
+      name: "เร่งรัดติตตามผล",
+    },
+  ];
 
   return {
     publishes,
@@ -107,5 +121,6 @@ export default () => {
     is_anonymouses,
     card_types,
     receive_statuses,
+    orders,
   };
 };

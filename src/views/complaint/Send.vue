@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">ส่งต่อเรื่อง</h3>
+          <h3 class="modal-title">ส่งต่อเรื่อง ({{ header }})</h3>
           <button
             @click="onClose"
             type="button"
@@ -50,18 +50,26 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-12">
-                <label for="surname" class="required form-label"
-                  >หน่วยงานส่งต่อ</label
+                <label for="organization_all" class="form-label"
+                  >หน่วยงาน</label
                 >
                 <v-select
-                  label="name"
-                  name="id"
-                  placeholder="ห้วงเวลาเกิดเหตุ"
+                  name="accused_organization_all"
+                  placeholder="หน่วยงาน/Organization"
+                  :options="selectOptions.organizations"
                   class="form-control"
                   :clearable="false"
-                  v-model="item.organization"
+                  v-model="item.organization_all"
                 >
                 </v-select>
+                <div
+                  class="d-block mt-1"
+                  v-if="item_errors.organization_all.error == 1"
+                >
+                  <span role="alert" class="text-danger">{{
+                    item_errors.organization_all.text
+                  }}</span>
+                </div>
               </div>
 
               <div class="mb-7 col-12 col-lg-6">
@@ -70,6 +78,7 @@
                 >
                 <input
                   type="text"
+                  v-model="item.forward_doc_no"
                   class="form-control"
                   placeholder=""
                   aria-label=""
@@ -80,6 +89,7 @@
                 <label for="surname" class="form-label">วันที่หนังสือ</label>
 
                 <VueDatePicker
+                  v-model="item.forward_doc_date"
                   :enable-time-picker="false"
                   :locale="'th'"
                   auto-apply
@@ -96,11 +106,13 @@
                 </VueDatePicker>
               </div>
 
-              <div class="mb-7 col-12 col-lg-4">
+              <div class="mb-7 col-12 col-lg-12">
                 <label for="">ข้อสั่งการ : </label>
                 <v-select
+                  v-model="item.order_id"
                   id="slt-search-order-id-2"
                   name="slt-search-order-2"
+                  :options="selectOptions.orders"
                   label="name"
                   placeholder="ข้อสั่งการ"
                   class="form-control"
@@ -111,6 +123,7 @@
               <div class="mb-7 col-12 col-lg-12">
                 <label for="">หมายเหตุ : </label>
                 <input
+                  v-model="item.order_detail"
                   type="text"
                   class="form-control"
                   placeholder="หมายเหตุ"
@@ -163,6 +176,7 @@ dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
 
 import useBasicData from "@/composables/useBasicData";
+import useOrganizationData from "@/composables/useOrganizationData";
 // Import Component
 import DetailComplaint from "./Detail.vue";
 
@@ -189,8 +203,12 @@ export default defineComponent({
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const mounted_success = ref<boolean>(false);
+    const header = ref("");
 
-    const selectOptions = ref({});
+    const selectOptions = ref({
+      organizations: useOrganizationData().organization_mapping(),
+      orders: useBasicData().orders,
+    });
 
     const format = (date: any) => {
       const day = dayjs(date).locale("th").format("DD");
@@ -219,6 +237,7 @@ export default defineComponent({
       forward_user_id: null,
       forward_at: dayjs().format("YYYY-MM-DD"),
       from_inspector_id: 1,
+      organization_all: null,
 
       order_id: null,
       order_detail: "",
@@ -232,6 +251,7 @@ export default defineComponent({
     const item_errors = reactive<any>({
       receive_doc_no: { error: 0, text: "" },
       receive_doc_date: { error: 0, text: "" },
+      organization_all: { error: 0, text: "" },
     });
 
     //Fetch
@@ -242,14 +262,21 @@ export default defineComponent({
           "complaint/" + props.complaint_id,
           {}
         );
-        item.id = data.data.id;
-        item.receive_doc_no = data.data.receive_doc_no;
-        item.receive_doc_date = data.data.receive_doc_date;
-        item.receive_comment = data.data.receive_comment;
-        item.receive_status = data.data.receive_status;
+        item.complaint_id = data.data.id;
         item.state_id = data.data.state_id;
-        item.receive_at = data.data.receive_at;
-        item.receive_user_id = userData.receive_user_id;
+
+        if (item.state_id == 3) {
+          header.value = "ฝรท.บก.อก.จต. ส่งถึง หน่วย บช./ภ. ดำเนินการ";
+          // ฝรท. ส่งต่อได้ หน่วยงานให้เลือกต้องเป็น ภ. หรือ กต.
+        } else if (item.state_id == 10) {
+          header.value = "หน่วย บช./ภ. ส่งถึง หน่วย ภ.จว./บก. ดำเนินการ";
+          // ภ. ส่งต่อได้ หน่วยงานให้เลือกต้องเป็น จ.
+        } else if (item.state_id == 11) {
+          header.value = "หน่วย ภ.จว./บก. ส่งถึง กก./สถานี ดำเนินการ";
+          // จ. ส่งต่อได้  หน่วยงานให้เลือกต้องเป็น agency
+        } else if (item.state_id == 12) {
+        } else {
+        }
 
         // Object.assign(item, data.data);
       } catch (error) {
@@ -260,8 +287,8 @@ export default defineComponent({
     // Event
     const onValidate = async (type: number) => {
       Object.assign(item_errors, {
-        receive_doc_no: { error: 0, text: "" },
-        receive_doc_date: { error: 0, text: "" },
+        forward_doc_no: { error: 0, text: "" },
+        forward_doc_date: { error: 0, text: "" },
       });
 
       try {
@@ -280,61 +307,50 @@ export default defineComponent({
         return false;
       }
 
-      if (type == 1) {
-        // 1 == รับเรื่อง
-        item.receive_status = selectOptions.value.receive_statuses[0];
-        onSaveComplaint(type);
-      } else {
-        // type == 0 คือ ไม่รับเรื่อง
-        Swal.fire({
-          title: "โปรดระบุเหตุผล",
-          input: "select",
-          inputOptions: {
-            2: "ข้อมูลไม่ครบถ้วน",
-            3: "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา",
-          },
-          inputPlaceholder: "เลือกเหตุผล",
-          showCancelButton: true,
-          confirmButtonText: "ยืนยัน",
-          cancelButtonText: `ยกเลิก`,
-          customClass: {
-            confirmButton: "btn fw-semibold btn-light-success",
-            cancelButton: "btn fw-semibold btn-light-danger",
-          },
-        }).then(async (result: any) => {
-          if (result.isConfirmed) {
-            item.receive_status = selectOptions.value.receive_statuses.find(
-              (x: any) => {
-                return x.value == result.value;
-              }
-            );
-            await onSaveComplaint(type);
-          } else if (result.isDenied) {
-          }
-        });
-      }
-
-      return true;
+      onSaveComplaint();
     };
 
-    const onSaveComplaint = async (type: number) => {
+    const onSaveComplaint = async () => {
+      let state_id = 0;
+      if (item.state_id == 3) {
+        state_id = 10;
+      } else if (item.state_id == 10) {
+        state_id = 11;
+      } else if (item.state_id == 11) {
+        state_id = 12;
+      } else {
+      }
+
       let data_item = {
-        receive_doc_no: item.receive_doc_no,
-        receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
-        receive_comment: item.receive_comment,
-        receive_status: item.receive_status.value,
-        state_id: item.receive_status.state_id,
-        receive_at: dayjs().format("YYYY-MM-DD"),
-        receive_user_id: userData.id,
+        complaint_id: item.complaint_id,
+        forward_doc_no: item.forward_doc_no,
+        forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
+        forward_user_id: userData.id,
+        forward_at: dayjs().format("YYYY-MM-DD"),
+        to_bureau_id: item.organization_all?.bureau_id,
+        to_division_id: item.organization_all?.division_id,
+        to_agency_id: item.organization_all?.agency_id,
+        order_id: item.order_id?.value,
+        order_detail: item.order_detail,
+        state_id: state_id,
       };
 
-      await ApiService.putFormData("complaint/" + item.id, data_item)
+      await ApiService.postFormData("complaint-forward/", data_item)
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-          onClose();
+
+          ApiService.postFormData("complaint/" + item.complaint_id, {
+            state_id: state_id,
+          }).then(({ data }) => {
+            if (data.msg != "success") {
+              throw new Error("ERROR");
+            }
+
+            useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+            onClose();
+          });
         })
         .catch(({ response }) => {
           console.log(response);
@@ -378,6 +394,8 @@ export default defineComponent({
       mainModalRef,
       mounted_success,
       format,
+      selectOptions,
+      header,
     };
   },
 });
