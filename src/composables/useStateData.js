@@ -110,6 +110,12 @@ export default () => {
       name_en: null,
       bg_color: "#17c653",
     },
+    {
+      id: 18,
+      name_th: "ไม่รับเรื่อง",
+      name_en: null,
+      bg_color: "#17c653",
+    },
   ];
 
   return {

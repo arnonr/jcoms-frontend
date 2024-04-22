@@ -56,10 +56,56 @@ export default () => {
     },
   ];
 
+  const day_times = [
+    {
+      name: "กลางวัน",
+      value: 1,
+    },
+    { name: "กลางคืน", value: 2 },
+  ];
+
+  const is_anonymouses = [
+    { name: "ระบุตัวตน", value: 1 },
+    { name: "ไม่ระบุตัวตน", value: 2 },
+  ];
+
+  const card_types = [
+    {
+      name: "หมายเลขบัตรประชาชน",
+      value: 1,
+    },
+    {
+      name: "หนังสือเดินทาง",
+      value: 2,
+    },
+  ];
+
+  const receive_statuses = [
+    {
+      name: "รับเรื่อง",
+      value: 1,
+      state_id: 3,
+    },
+    {
+      name: "ข้อมูลไม่ครบถ้วน",
+      value: 2,
+      state_id: 18,
+    },
+    {
+      name: "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา",
+      value: 3,
+      state_id: 18,
+    },
+  ];
+
   return {
     publishes,
     actives,
     user_statuses,
-    types
+    types,
+    day_times,
+    is_anonymouses,
+    card_types,
+    receive_statuses,
   };
 };

@@ -44330,9 +44330,41 @@ export default () => {
     },
   ];
 
+  const organization_mapping = () => {
+    const a = agency_organizations.map((el) => {
+      el.label = el.agency_th + " > " + el.division_th + " > " + el.bureau_th;
+      return el;
+    });
+
+    const d = division_organizations.map((el) => {
+      el.label = el.division_th + " > " + el.bureau_th;
+      return el;
+    });
+
+    const b = bureau_organizations.map((el) => {
+      el.label = el.bureau_th;
+      return el;
+    });
+
+    return [...b, ...d, ...a].sort((e, f) => {
+      const bureauIDComparison = e.bureau_id - f.bureau_id;
+      if (bureauIDComparison === 0) {
+        const divisionIDComparison = e.division_id - f.division_id;
+
+        if (divisionIDComparison === 0) {
+          return e.agency_id - f.agency_id;
+        }
+        return divisionIDComparison;
+      }
+
+      return bureauIDComparison;
+    });
+  };
+
   return {
     agency_organizations,
     division_organizations,
     bureau_organizations,
+    organization_mapping,
   };
 };

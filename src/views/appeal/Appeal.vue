@@ -150,7 +150,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { getAssetPath } from "@/core/helpers/assets";
+import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
+import ApiService from "@/core/services/ApiService";
+
 // Import FormWizard
 import { FormWizard, TabContent } from "vue3-form-wizard";
 import "vue3-form-wizard/dist/style.css";
@@ -177,8 +180,6 @@ import Tab2 from "@/components/appeal/Tab2.vue";
 import Tab3 from "@/components/appeal/Tab3.vue";
 import Captcha from "@/components/appeal/Captcha.vue";
 import Otp from "@/components/appeal/Otp.vue";
-
-import ApiService from "@/core/services/ApiService";
 
 interface accused_itf {
   id: any;
@@ -212,6 +213,7 @@ export default defineComponent({
   setup() {
     // Variable
     const route = useRoute();
+    
     const r = (Math.random() + 1).toString(36).substring(7);
     const complant_type = useComplaintTypeData().complaint_types.find(
       (x: any) => x.id == Number(route.query.type_id)

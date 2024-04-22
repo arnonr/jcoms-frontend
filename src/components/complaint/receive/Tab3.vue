@@ -1,17 +1,13 @@
 <template>
   <div class="row">
+    <!-- <div class="col-md-12 mb-5 mt-5">
+      <h4>3. ยืนยันข้อมูล</h4>
+    </div> -->
+    <!-- <div class="separator my-10"></div> -->
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-12 mb-5">
-          <h4>ข้อมูลการดำเนินการ</h4>
-        </div>
-        <div class="col-md-6">
-          <span> วันที่ 12 ก.พ. 67 : </span>
-          <span class="fw-bold"> ฝรท. รับเรื่อง </span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
-        <div class="col-md-12 mb-5">
-          <h4>ข้อมูลผู้{{ complaint_type.name_th }}</h4>
+          <h4>3.1 ข้อมูลผู้{{ complaint_type.name_th }}</h4>
         </div>
         <div class="col-md-6">
           <span>ประเภทการระบุตัวตน : </span>
@@ -20,30 +16,30 @@
         </div>
         <div class="col-md-6">
           <span>หมายเลขโทรศัพท์ : </span>
-          <span class="fst-italic">{{ item.complainant.phone_number }}</span>
+          <span class="fst-italic">{{ complainant_item.phone_number }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
-        <div class="col-md-12" v-if="item.is_anonymous == 1">
+        <div class="col-md-12" v-if="complaint_item.is_anonymous == 1">
           <div class="row">
             <div class="col-md-6">
               <span>ประเภทบัตร : </span>
               <span class="fst-italic">{{
-                selectOptions.card_types[item.complainant.card_type.value - 1]
+                selectOptions.card_types[complainant_item.card_type.value - 1]
                   .name
               }}</span>
               <div class="separator separator-dotted my-2"></div>
             </div>
             <div class="col-md-6">
               <span>หมายเลขบัตรประชาชน/Passport : </span>
-              <span class="fst-italic">{{ item.complainant.id_card }}</span>
+              <span class="fst-italic">{{ complainant_item.id_card }}</span>
               <div class="separator separator-dotted my-2"></div>
             </div>
             <div class="col-md-6">
               <span>ชื่อ-นามสกุล : </span>
               <span class="fst-italic"
-                >{{ item.complainant.prefix_name_id?.name_th
-                }}{{ item.complainant.firstname }}
-                {{ item.complainant.lastname }}</span
+                >{{ complainant_item.prefix_name_id?.name_th
+                }}{{ complainant_item.firstname }}
+                {{ complainant_item.lastname }}</span
               >
               <div class="separator separator-dotted my-2"></div>
             </div>
@@ -57,7 +53,7 @@
             <div class="col-md-12">
               <span>อาชีพ : </span>
               <span class="fst-italic">
-                {{ item.complainant.occupation_text }}
+                {{ complainant_item.occupation_text }}
               </span>
               <div class="separator separator-dotted my-2"></div>
             </div>
@@ -65,23 +61,23 @@
               <span>ที่อยู่ : </span>
               <span class="fst-italic">
                 {{
-                  item.complainant.house_number
-                    ? "บ้านเลขที่ " + item.complainant.house_number
+                  complainant_item.house_number
+                    ? "บ้านเลขที่ " + complainant_item.house_number
                     : ""
                 }}{{
-                  item.complainant.building
-                    ? " หมู่บ้าน " + item.complainant.building
+                  complainant_item.building
+                    ? " หมู่บ้าน " + complainant_item.building
                     : ""
                 }}{{
-                  item.complainant.moo
-                    ? " หมู่ที่ " + item.complainant.moo
+                  complainant_item.moo
+                    ? " หมู่ที่ " + complainant_item.moo
                     : ""
                 }}{{
-                  item.complainant.soi
-                    ? " ตรอก/ซอย " + item.complainant.soi
+                  complainant_item.soi
+                    ? " ตรอก/ซอย " + complainant_item.soi
                     : ""
                 }}{{
-                  item.complainant.road ? " ถนน " + item.complainant.road : ""
+                  complainant_item.road ? " ถนน " + complainant_item.road : ""
                 }}
               </span>
               <div class="separator separator-dotted my-2"></div>
@@ -104,14 +100,14 @@
             <div class="col-md-6">
               <span>อีเมล : </span>
               <span class="fst-italic">
-                {{ item.complainant.email }}
+                {{ complainant_item.email }}
               </span>
               <div class="separator separator-dotted my-2"></div>
             </div>
             <div class="col-md-6">
               <span>Line ID : </span>
               <span class="fst-italic">
-                {{ item.complainant.line_id }}
+                {{ complainant_item.line_id }}
               </span>
               <div class="separator separator-dotted my-2"></div>
             </div>
@@ -120,7 +116,18 @@
               <br />
               <span class="fst-italic">
                 <img
-                  :src="item.complainant.card_photo"
+                  :src="previewImage"
+                  class="mt-5 w-100 w-md-50"
+                  v-if="previewImage"
+                />
+                <img
+                  :src="
+                    previewImage == null &&
+                    complainant_item.card_photo_old != null
+                      ? complainant_item.card_photo_old
+                      : null
+                  "
+                  alt=""
                   class="mt-5 w-100 w-md-50"
                 />
               </span>
@@ -134,22 +141,16 @@
         </div>
 
         <div class="col-md-12">
-          <span>เลข Jcom : </span>
-          <span class="fst-italic">{{ item.jcom_no }}</span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
-
-        <div class="col-md-12">
           <span>หัวข้อเรื่อง{{ complaint_type.name_th }} : </span>
-          <span class="fst-italic">{{ item.complaint_title }}</span>
+          <span class="fst-italic">{{ complaint_item.complaint_title }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
         <div class="col-md-12">
           <span>ประเภท/ลักษณะเรื่อง : </span>
           <span class="fst-italic">{{
-            item.topic_type?.topic_category.name_th +
+            complaint_item.complaint_topic?.topic_category_th +
             " > " +
-            item.topic_type?.name_th
+            complaint_item.complaint_topic?.topic_type_th
           }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
@@ -157,7 +158,7 @@
           <span>สถานที่เกิดเหตุ : </span>
           <span class="fst-italic">
             {{
-              item.address_all?.sub_district_th +
+              complaint_item.address_all?.sub_district_th +
               " > " +
               complaint_item.address_all?.district_th +
               " > " +
@@ -170,7 +171,7 @@
         </div>
         <div class="col-md-12">
           <span>ข้อมูลสถานที่เกิดเหตุ : </span>
-          <span class="fst-italic">{{ item.incident_location }}</span>
+          <span class="fst-italic">{{ complaint_item.incident_location }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
         <div class="col-md-12">
@@ -187,8 +188,8 @@
           <br />
           <GMapMap
             v-if="
-              item.location_coordinates != null &&
-              item.location_coordinates != ''
+              complaint_item.location_coordinates != null &&
+              complaint_item.location_coordinates != ''
             "
             :center="new_item.markerDetails.position"
             :click="false"
@@ -233,7 +234,7 @@
 
         <div class="col-md-12">
           <span>พฤติกรรมการกระทำความผิด : </span>
-          <span class="fst-italic">{{ item.complaint_detail }}</span>
+          <span class="fst-italic">{{ complaint_item.complaint_detail }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
 
@@ -269,8 +270,20 @@ import useBasicData from "@/composables/useBasicData";
 export default defineComponent({
   name: "complaint-receive-tab3",
   props: {
-    complaint_id: {
-      type: Number,
+    complaint_item: {
+      type: Object,
+      required: true,
+    },
+    complainant_item: {
+      type: Object,
+      required: true,
+    },
+    accused: {
+      type: Object,
+      required: true,
+    },
+    complaint_type: {
+      type: Object,
       required: true,
     },
   },
@@ -285,24 +298,8 @@ export default defineComponent({
     });
 
     const complaint_file_attach = reactive<any>([]);
-    const item = reactive<any>({});
 
     // Fetch
-    const fetchComplaint = async () => {
-      try {
-        const { data } = await ApiService.query(
-          "complaint/" + props.complaint_id,
-          {}
-        );
-        item.id = data.data.id;
-        item.receive_doc_no = data.data.receive_doc_no;
-        item.receive_doc_date = data.data.receive_doc_date;
-        // Object.assign(item, data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     useComplaintChannelData()
       .fetchComplaintChannel()
       .then((data: any) => {
@@ -343,77 +340,76 @@ export default defineComponent({
       complaint_channel_all: "",
     });
 
-    onMounted(async () => {
-      await fetchComplaint();
+    onMounted(() => {
+      console.log(props.accused)
+      new_item.is_anonymous = selectOptions.value.is_anonymouses.find(
+        (x: any) => {
+          return x.value == props.complaint_item.is_anonymous;
+        }
+      );
 
-      //   new_item.is_anonymous = selectOptions.value.is_anonymouses.find(
-      //     (x: any) => {
-      //       return x.value == props.complaint_item.is_anonymous;
-      //     }
-      //   );
+      if (props.complainant_item.card_photo.length != 0) {
+        previewImage.value = URL.createObjectURL(
+          props.complainant_item.card_photo
+        );
+      } else {
+        previewImage.value = null;
+      }
 
-      //   if (props.complainant_item.card_photo.length != 0) {
-      //     previewImage.value = URL.createObjectURL(
-      //       props.complainant_item.card_photo
-      //     );
-      //   } else {
-      //     previewImage.value = null;
-      //   }
+      new_item.birthday = props.complainant_item.birthday
+        ? dayjs(props.complainant_item.birthday)
+            .locale("th")
+            .format("DD MMMM BBBB")
+        : "";
 
-      //   new_item.birthday = props.complainant_item.birthday
-      //     ? dayjs(props.complainant_item.birthday)
-      //         .locale("th")
-      //         .format("DD MMMM BBBB")
-      //     : "";
+      // Get Incident Date
+      new_item.incident_date = props.complaint_item.incident_datetime
+        ? dayjs(props.complaint_item.incident_datetime)
+            .locale("th")
+            .format("DD MMMM BBBB")
+        : "";
 
-      //   // Get Incident Date
-      //   new_item.incident_date = props.complaint_item.incident_datetime
-      //     ? dayjs(props.complaint_item.incident_datetime)
-      //         .locale("th")
-      //         .format("DD MMMM BBBB")
-      //     : "";
+      // Get Incident Time
+      if (props.complaint_item.incident_time) {
+        let prefix_hours = "";
+        let prefix_minutes = "";
+        if (props.complaint_item.incident_time.hours.length == 1) {
+          prefix_hours = "0";
+        }
+        if (props.complaint_item.incident_time.minutes.length == 1) {
+          prefix_minutes = "0";
+        }
 
-      //   // Get Incident Time
-      //   if (props.complaint_item.incident_time) {
-      //     let prefix_hours = "";
-      //     let prefix_minutes = "";
-      //     if (props.complaint_item.incident_time.hours.length == 1) {
-      //       prefix_hours = "0";
-      //     }
-      //     if (props.complaint_item.incident_time.minutes.length == 1) {
-      //       prefix_minutes = "0";
-      //     }
+        new_item.incident_time =
+          "เวลา " +
+          prefix_hours +
+          props.complaint_item.incident_time.hours +
+          ":" +
+          prefix_minutes +
+          props.complaint_item.incident_time.minutes +
+          " น.";
+      }
+      new_item.day_time = props.complaint_item.day_time
+        ? "(" + props.complaint_item.day_time.name + ")"
+        : "";
 
-      //     new_item.incident_time =
-      //       "เวลา " +
-      //       prefix_hours +
-      //       props.complaint_item.incident_time.hours +
-      //       ":" +
-      //       prefix_minutes +
-      //       props.complaint_item.incident_time.minutes +
-      //       " น.";
-      //   }
-      //   new_item.day_time = props.complaint_item.day_time
-      //     ? "(" + props.complaint_item.day_time.name + ")"
-      //     : "";
+      if (
+        props.complaint_item.location_coordinates != "" &&
+        props.complaint_item.location_coordinates != null
+      ) {
+        const [lat, lng] = props.complaint_item.location_coordinates.split(",");
+        new_item.markerDetails = {
+          id: 1,
+          position: { lat: Number(lat), lng: Number(lng) },
+        };
+      }
 
-      //   if (
-      //     props.complaint_item.location_coordinates != "" &&
-      //     props.complaint_item.location_coordinates != null
-      //   ) {
-      //     const [lat, lng] = props.complaint_item.location_coordinates.split(",");
-      //     new_item.markerDetails = {
-      //       id: 1,
-      //       position: { lat: Number(lat), lng: Number(lng) },
-      //     };
-      //   }
     });
 
     // Watch
 
     // Return
     return {
-      item,
       new_item,
       previewImage,
       selectOptions,

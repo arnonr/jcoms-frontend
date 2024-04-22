@@ -68149,7 +68149,7 @@ export default () => {
       sub_district_id: 34415,
     },
   ];
-  
+
   const addresses_old = [
     {
       district: "คลองท่อมเหนือ",
@@ -135626,7 +135626,15 @@ export default () => {
     },
   ];
 
+  const addresses_mapping = () => {
+    return addresses.map((el) => {
+      el.label = `${el.sub_district_th} > ${el.district_th} > ${el.province_th} > ${el.post_code}`;
+      return el;
+    });
+  };
+
   return {
     addresses,
+    addresses_mapping,
   };
 };

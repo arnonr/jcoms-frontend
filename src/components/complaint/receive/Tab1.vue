@@ -2,7 +2,7 @@
   <div class="row">
     <!--begin::Input group-->
     <div class="mb-5 mt-5">
-      <h4>1. ข้อมูลผู้{{ complant_type.name_th }}</h4>
+      <h4>1. ข้อมูลผู้เรื่องร้องเรียน/แจ้งเบาะแส</h4>
     </div>
 
     <div class="input-group mb-7">
@@ -13,8 +13,8 @@
           name="is_anonymous"
           type="radio"
           value="1"
-          checked
           v-model="complaint_item.is_anonymous"
+          :checked="parseInt(complaint_item.is_anonymous) == 2 ? false : true"
           id="flexCheckboxLg"
         />
         <label class="form-check-label fs-5" for="flexCheckboxLg">
@@ -28,6 +28,7 @@
           type="radio"
           value="2"
           v-model="complaint_item.is_anonymous"
+          :checked="parseInt(complaint_item.is_anonymous) == 2 ? true : false"
           id="flexCheckboxLg"
         />
         <label class="form-check-label fs-5" for="flexCheckboxLg">
@@ -48,12 +49,8 @@
               class="form-control"
               placeholder="หมายเลขโทรศัพท์"
               aria-label="หมายเลขโทรศัพท์"
-              disabled
-              v-model="item.phone_number"
+              v-model="complainant_item.phone_number"
             />
-            <button class="btn btn-primary ms-3" @click="$emit('update-phone-number-data')">
-              เปลี่ยนหมายเลข
-            </button>
           </div>
 
           <div class="d-block mt-1" v-if="errors.phone_number.error == 1">
@@ -64,7 +61,7 @@
         </div>
       </div>
 
-      <div v-if="complaint_item.is_anonymous == 1" class="row">
+      <div v-if="parseInt(complaint_item.is_anonymous) == 1" class="row">
         <div class="mb-7 col-12 col-lg-4">
           <label for="card_type" class="required form-label"
             >ประเภทเลขบัตร</label
@@ -76,7 +73,7 @@
             :options="selectOptions.card_types"
             class="form-control"
             :clearable="false"
-            v-model="item.card_type"
+            v-model="complainant_item.card_type"
           >
           </v-select>
           <div class="d-block mt-1" v-if="errors.card_type.error == 1">
@@ -95,7 +92,7 @@
             class="form-control"
             placeholder="หมายเลขบัตรประชาชน/Passport"
             aria-label="หมายเลขบัตรประชาชน/Passport"
-            v-model="item.id_card"
+            v-model="complainant_item.id_card"
           />
           <div class="d-block mt-1" v-if="errors.id_card.error == 1">
             <span role="alert" class="text-danger">{{
@@ -113,7 +110,7 @@
             :options="selectOptions.prefix_names"
             class="form-control"
             :clearable="false"
-            v-model="item.prefix_name_id"
+            v-model="complainant_item.prefix_name_id"
           >
           </v-select>
           <div class="d-block mt-1" v-if="errors.prefix_name_id.error == 1">
@@ -130,7 +127,7 @@
             class="form-control"
             placeholder="ชื่อ/Firstname"
             aria-label="ชื่อ/Firstname"
-            v-model="item.firstname"
+            v-model="complainant_item.firstname"
           />
           <div class="d-block mt-1" v-if="errors.firstname.error == 1">
             <span role="alert" class="text-danger">{{
@@ -146,7 +143,7 @@
             class="form-control"
             placeholder="นามสกุล/Surname"
             aria-label="นามสกุล/Surname"
-            v-model="item.lastname"
+            v-model="complainant_item.lastname"
           />
           <div class="d-block mt-1" v-if="errors.lastname.error == 1">
             <span role="alert" class="text-danger">{{
@@ -160,7 +157,7 @@
             >วัน/เดือน/ปีเกิด</label
           >
           <VueDatePicker
-            v-model="item.birthday"
+            v-model="complainant_item.birthday"
             :enable-time-picker="false"
             placeholder="วันเดือนปีเกิด(พ.ศ.)/Birthdate"
             :locale="'th'"
@@ -190,7 +187,7 @@
             class="form-control"
             placeholder="อาชีพ/occupation"
             aria-label="อาชีพ/occupation"
-            v-model="item.occupation_text"
+            v-model="complainant_item.occupation_text"
           />
           <div class="d-block mt-1" v-if="errors.occupation_text.error == 1">
             <span role="alert" class="text-danger">{{
@@ -208,7 +205,7 @@
             class="form-control"
             placeholder="บ้านเลขที่/House Number"
             aria-label="บ้านเลขที่/House Number"
-            v-model="item.house_number"
+            v-model="complainant_item.house_number"
           />
           <div class="d-block mt-1" v-if="errors.house_number.error == 1">
             <span role="alert" class="text-danger">{{
@@ -224,7 +221,7 @@
             class="form-control"
             placeholder="หมู่บ้าน/Village"
             aria-label="หมู่บ้าน/Village"
-            v-model="item.building"
+            v-model="complainant_item.building"
           />
           <div class="d-block mt-1" v-if="errors.building.error == 1">
             <span role="alert" class="text-danger">{{
@@ -240,7 +237,7 @@
             class="form-control"
             placeholder="หมู่ที่/Moo"
             aria-label="หมู่ที่/Moo"
-            v-model="item.moo"
+            v-model="complainant_item.moo"
           />
           <div class="d-block mt-1" v-if="errors.moo.error == 1">
             <span role="alert" class="text-danger">{{ errors.moo.text }}</span>
@@ -254,7 +251,7 @@
             class="form-control"
             placeholder="ตรอก/ซอย/lane"
             aria-label="ตรอก/ซอย/lane"
-            v-model="item.soi"
+            v-model="complainant_item.soi"
           />
           <div class="d-block mt-1" v-if="errors.soi.error == 1">
             <span role="alert" class="text-danger">{{ errors.soi.text }}</span>
@@ -268,7 +265,7 @@
             class="form-control"
             placeholder="ถนน/Road"
             aria-label="ถนน/Road"
-            v-model="item.road"
+            v-model="complainant_item.road"
           />
           <div class="d-block mt-1" v-if="errors.road.error == 1">
             <span role="alert" class="text-danger">{{ errors.road.text }}</span>
@@ -285,7 +282,7 @@
             :options="selectOptions.address_all"
             item-value="id"
             id="slt-province-amphur-tumbol"
-            v-model="item.address_all"
+            v-model="complainant_item.address_all"
             class="form-control v-select-no-border"
             :clearable="true"
           ></v-select>
@@ -303,7 +300,7 @@
             class="form-control"
             placeholder="อีเมล/Email"
             aria-label="อีเมล/Email"
-            v-model="item.email"
+            v-model="complainant_item.email"
           />
           <div class="d-block mt-1" v-if="errors.email.error == 1">
             <span role="alert" class="text-danger">{{
@@ -319,7 +316,7 @@
             class="form-control"
             placeholder="Line ID"
             aria-label="Line ID"
-            v-model="item.line_id"
+            v-model="complainant_item.line_id"
           />
           <div class="d-block mt-1" v-if="errors.road.error == 1">
             <span role="alert" class="text-danger">{{
@@ -327,7 +324,6 @@
             }}</span>
           </div>
         </div>
-
         <div class="mb-7 col-12 col-lg-12">
           <label for="formFile" class="form-label required"
             >ถ่ายรูปตนเองพร้อมบัตร /Take a selfie with an ID card.</label
@@ -352,8 +348,8 @@
           />
           <img
             :src="
-              previewImage == null && item.card_photo_old != null
-                ? item.card_photo_old
+              previewImage == null && complainant_item.card_photo_old != null
+                ? complainant_item.card_photo_old
                 : null
             "
             alt=""
@@ -384,25 +380,20 @@ dayjs.extend(buddhistEra);
 import useAddressData from "@/composables/useAddressData";
 
 export default defineComponent({
-  name: "tab1",
+  name: "complaint-receive-tab1",
   props: {
-    item: {
-      type: Object,
-      required: true,
-    },
     complaint_item: {
       type: Object,
       required: true,
     },
-    complant_type: {
+    complainant_item: {
       type: Object,
       required: true,
     },
-    change_phone_number: {
-      type: Boolean,
+    complaint_type: {
+      type: Object,
       required: true,
     },
-
     errors: {
       type: Object,
       required: true,
@@ -420,7 +411,9 @@ export default defineComponent({
 
     const cardPhotoFile = ref<any>(null);
 
-   
+    const onChangePhoneNumber = () => {
+      emit("update-phone-number-data");
+    };
 
     const previewImage = ref<any>(null);
 
@@ -459,7 +452,7 @@ export default defineComponent({
       address_all: address_all.value,
     });
 
-    const item = ref<any>(props.item);
+    // const item = ref<any>(props.complainant_item);
 
     // Fetch
     const fetchPrefixName = () => {
@@ -480,9 +473,11 @@ export default defineComponent({
 
     // Event
     const onCardPhotoFileChange = (event: any) => {
-      item.value.card_photo = event.target.files[0];
-      if (item.value.card_photo) {
-        previewImage.value = URL.createObjectURL(item.value.card_photo);
+      props.complainant_item.card_photo = event.target.files[0];
+      if (props.complainant_item.card_photo) {
+        previewImage.value = URL.createObjectURL(
+          props.complainant_item.card_photo
+        );
       } else {
         previewImage.value = null;
       }
@@ -495,35 +490,36 @@ export default defineComponent({
 
     // Watch
     watch(
-      () => props.item.address_all,
+      () => props.complainant_item.address_all,
       (value: any) => {
         if (value == null) {
-          props.item.province_id = null;
-          props.item.district_id = null;
-          props.item.sub_district_id = null;
-          props.item.postal_code = null;
+          props.complainant_item.province_id = null;
+          props.complainant_item.district_id = null;
+          props.complainant_item.sub_district_id = null;
+          props.complainant_item.postal_code = null;
         } else {
-          props.item.province_id = value.province_id;
-          props.item.district_id = value.district_id;
-          props.item.sub_district_id = value.sub_district_id;
-          props.item.postal_code = value.post_code;
+          props.complainant_item.province_id = value.province_id;
+          props.complainant_item.district_id = value.district_id;
+          props.complainant_item.sub_district_id = value.sub_district_id;
+          props.complainant_item.postal_code = value.post_code;
         }
       }
     );
 
-    watchEffect(() => {
-      // เพิ่มการตอบสนองต่อการเปลี่ยนแปลงของ count ที่นี่
-      item.value = props.item;
-    });
+    // watchEffect(() => {
+    //   // เพิ่มการตอบสนองต่อการเปลี่ยนแปลงของ count ที่นี่
+    //   item.value = props.item;
+    // });
 
     // Return
     return {
       getAssetPath,
       selectOptions,
-      item,
       format,
       previewImage,
       onCardPhotoFileChange,
+      onChangePhoneNumber,
+      cardPhotoFile,
     };
   },
 });

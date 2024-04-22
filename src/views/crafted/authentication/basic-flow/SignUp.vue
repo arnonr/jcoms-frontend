@@ -255,7 +255,7 @@
       </div>
 
       <div class="col-xl-12 mb-7">
-        <label for="formFile" class="form-label required">ไฟล์</label>
+        <label for="formFile" class="form-label required">แนบบัตรข้าราชการ</label>
         <input
           class="form-control"
           type="file"

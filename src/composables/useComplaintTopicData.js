@@ -331,7 +331,19 @@ export default () => {
     },
   ];
 
+  const complaint_topic_mapping = (complaint_type_id) => {
+    return complaint_topics
+      .filter((x) => {
+        return x.complaint_type_id == complaint_type_id;
+      })
+      .map((el) => {
+        el.label = el.topic_category_th + " > " + el.topic_type_th;
+        return el;
+      });
+  };
+
   return {
     complaint_topics,
+    complaint_topic_mapping,
   };
 };
