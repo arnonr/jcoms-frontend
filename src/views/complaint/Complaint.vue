@@ -299,6 +299,18 @@
                         >ส่งต่อเรื่อง</a
                       >
                     </li>
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="
+                          () => {
+                            Object.assign(item, it);
+                            openReceiveModal3 = true;
+                          }
+                        "
+                        >รับเรื่อง</a
+                      >
+                    </li>
                   </ul>
                 </div>
               </td>
@@ -812,6 +824,25 @@
       "
     />
   </div>
+
+
+  <!-- Modal Receive หน่วยงานรับเรื่อง -->
+  <div id="receive-modal-2">
+    <ReceiveComplaint3
+      :complaint_id="item.id"
+      v-if="openReceiveModal3 == true"
+      @close-modal="
+        () => {
+          openReceiveModal3 = false;
+        }
+      "
+      @reload="
+        () => {
+          fetchItems();
+        }
+      "
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -850,6 +881,7 @@ import useStateData from "@/composables/useStateData";
 import DetailComplaint from "./DetailComplaint.vue";
 import ReceiveComplaint from "@/views/complaint/Receive.vue";
 import ReceiveComplaint2 from "@/views/complaint/Receive2.vue";
+import ReceiveComplaint3 from "@/views/complaint/Receive3.vue";
 import SendComplaint from "@/views/complaint/Send.vue";
 
 export default defineComponent({
@@ -862,6 +894,7 @@ export default defineComponent({
     DetailComplaint,
     ReceiveComplaint,
     ReceiveComplaint2,
+    ReceiveComplaint3,
     SendComplaint,
   },
   setup() {
@@ -953,6 +986,7 @@ export default defineComponent({
     const openDetailModal = ref(false);
     const openReceiveModal = ref(false);
     const openReceiveModal2 = ref(false);
+    const openReceiveModal3 = ref(false);
     const openSendModal = ref(false);
 
     const calYear = () => {
@@ -1497,6 +1531,7 @@ export default defineComponent({
       openDetailModal,
       openReceiveModal,
       openReceiveModal2,
+      openReceiveModal3,
       openSendModal,
     };
   },

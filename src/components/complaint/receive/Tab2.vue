@@ -249,6 +249,45 @@
             }}</span>
           </div>
         </div>
+        <div class="mb-3 col-12 col-lg-6">
+          <label for="accused_position_id" class="form-label">ตำแหน่ง</label>
+          <v-select
+            label="name_th"
+            name="accused_position_id"
+            placeholder="ตำแหน่งงาน/Position"
+            :options="selectOptions.positions"
+            class="form-control"
+            :clearable="false"
+            v-model="ac.position_id"
+          >
+          </v-select>
+          <div
+            class="d-block mt-1"
+            v-if="accused_errors.position_id.error == 1"
+          >
+            <span role="alert" class="text-danger">{{
+              accused_errors.position_id.text
+            }}</span>
+          </div>
+        </div>
+        <div class="mb-3 col-12 col-lg-6">
+          <label for="accused_section_id" class="form-label">สายงาน</label>
+          <v-select
+            label="name_th"
+            name="accused_section_id"
+            placeholder="สายงาน/section"
+            :options="selectOptions.sections"
+            class="form-control"
+            :clearable="false"
+            v-model="ac.section_id"
+          >
+          </v-select>
+          <div class="d-block mt-1" v-if="accused_errors.section_id.error == 1">
+            <span role="alert" class="text-danger">{{
+              accused_errors.section_id.text
+            }}</span>
+          </div>
+        </div>
         <div class="mb-1 col-12 col-md-10">
           <label for="organization_all" class="form-label">หน่วยงาน</label>
           <v-select
@@ -521,6 +560,8 @@ export default defineComponent({
       ),
       prefix_names: [],
       complaint_channels: <any>[],
+      positions: useBasicData().positions,
+      sections: useBasicData().sections,
     });
 
     // const item = ref<any>(props.item);
@@ -571,6 +612,22 @@ export default defineComponent({
           bureau_id: el.bureau_id,
           inspector_id: el.inspector_id,
         };
+
+        if (el.position_id != null) {
+          let position_id = {
+            id: el.position_id,
+            name_th: el.position.name_th,
+          };
+          el.position_id = position_id;
+        }
+
+        if (el.section_id != null) {
+          let section_id = {
+            id: el.section_id,
+            name_th: el.section.name_th,
+          };
+          el.section_id = section_id;
+        }
 
         return el;
       });
@@ -676,15 +733,15 @@ export default defineComponent({
       });
       props.complaint_item.day_time = day_time;
       // Get Incident Date
-      props.complaint_item.incident_date =
-        dayjs(props.complaint_item.incident_datetime).format('YYYY-MM-DD');
+      props.complaint_item.incident_date = dayjs(
+        props.complaint_item.incident_datetime
+      ).format("YYYY-MM-DD");
 
       // Get Incident Time
       if (props.complaint_item.incident_datetime) {
-
-        let date_time = dayjs(props.complaint_item.incident_datetime).utc().format(
-          "HH:mm"
-        );
+        let date_time = dayjs(props.complaint_item.incident_datetime)
+          .utc()
+          .format("HH:mm");
 
         props.complaint_item.incident_time = {
           hours: date_time.split(":")[0],

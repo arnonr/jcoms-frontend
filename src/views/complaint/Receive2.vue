@@ -95,6 +95,17 @@
                 />
               </div>
 
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="formFile" class="form-label">แนบไฟล์</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  @change="onFileChange"
+                  ref="receiveDocFilename"
+                />
+              </div>
+
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate(1)">
                   รับเรื่อง
@@ -164,7 +175,8 @@ export default defineComponent({
     const router = useRouter();
     const emit = context.emit;
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-
+    const receiveDocFilename = ref<any>(null);
+    
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const mounted_success = ref<boolean>(false);
@@ -197,7 +209,7 @@ export default defineComponent({
       receive_doc_date: null,
       receive_comment: "",
       receive_status: null,
-      //   receive_doc_filename: [],
+      receive_doc_filename: [],
     });
 
     // Item Errors
@@ -220,7 +232,7 @@ export default defineComponent({
         item.receive_comment = data.data.receive_comment;
         item.receive_status = data.data.receive_status;
         item.state_id = data.data.state_id;
-        item.receive_at =  data.data.receive_at;
+        item.receive_at = data.data.receive_at;
         item.receive_user_id = userData.receive_user_id;
 
         // Object.assign(item, data.data);
@@ -230,6 +242,10 @@ export default defineComponent({
     };
 
     // Event
+    const onFileChange = (event: any) => {
+      item.receive_doc_filename = event.target.files[0];
+    };
+
     const onValidate = async (type: number) => {
       Object.assign(item_errors, {
         receive_doc_no: { error: 0, text: "" },
@@ -291,6 +307,10 @@ export default defineComponent({
 
     const onSaveComplaint = async (type: number) => {
       let data_item = {
+        receive_doc_filename:
+          item.receive_doc_filename.length != 0
+            ? item.receive_doc_filename
+            : undefined,
         receive_doc_no: item.receive_doc_no,
         receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
         receive_comment: item.receive_comment,
@@ -347,9 +367,11 @@ export default defineComponent({
       // event
       onValidate,
       onClose,
+      onFileChange,
       mainModalRef,
       mounted_success,
       format,
+      receiveDocFilename,
     };
   },
 });

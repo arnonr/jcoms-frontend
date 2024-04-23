@@ -230,6 +230,16 @@
             <span class="fst-italic">{{ ac.organization_all?.label }}</span>
             <div class="separator separator-dotted my-2"></div>
           </div>
+          <div class="col-md-6">
+            <span>ตำแหน่งงาน : </span>
+            <span class="fst-italic">{{ ac.position_id?.name_th }}</span>
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+          <div class="col-md-6">
+            <span>สายงาน : </span>
+            <span class="fst-italic">{{ ac.section_id?.name_th }}</span>
+            <div class="separator separator-dotted my-2"></div>
+          </div>
         </div>
 
         <div class="col-md-12">
@@ -341,7 +351,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      console.log(props.accused)
+      console.log(props.accused);
       new_item.is_anonymous = selectOptions.value.is_anonymouses.find(
         (x: any) => {
           return x.value == props.complaint_item.is_anonymous;
@@ -403,7 +413,6 @@ export default defineComponent({
           position: { lat: Number(lat), lng: Number(lng) },
         };
       }
-
     });
 
     // Watch

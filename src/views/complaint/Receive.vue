@@ -388,6 +388,8 @@ export default defineComponent({
       firstname: { error: 0, text: "" },
       lastname: { error: 0, text: "" },
       organization_all: { error: 0, text: "" },
+      section_id: { error: 0, text: "" },
+      position_id: { error: 0, text: "" },
     });
     const complainant_item_errors = reactive<any>({
       phone_number: { error: 0, text: "" },
@@ -671,6 +673,8 @@ export default defineComponent({
         firstname: { error: 0, text: "" },
         lastname: { error: 0, text: "" },
         organization_all: { error: 0, text: "" },
+        section_id: { error: 0, text: "" },
+        position_id: { error: 0, text: "" },
       });
 
       try {
@@ -843,8 +847,8 @@ export default defineComponent({
           firstname: accused[i].firstname,
           lastname: accused[i].lastname,
 
-          position_id: accused[i].position_id,
-          section_id: accused[i].section_id,
+          position_id: accused[i].position_id?.value,
+          section_id: accused[i].section_id?.value,
 
           inspector_id: accused[i].inspector_id,
           bureau_id: accused[i].bureau_id,
