@@ -351,7 +351,6 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      console.log(props.accused);
       new_item.is_anonymous = selectOptions.value.is_anonymouses.find(
         (x: any) => {
           return x.value == props.complaint_item.is_anonymous;

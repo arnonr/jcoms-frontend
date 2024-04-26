@@ -356,6 +356,107 @@ export default () => {
     },
   ];
 
+  const proceed_statuses = [
+    {
+      value: 9,
+      name_th: "พบการกระทำผิด ดำเนินเรื่องตามกฎหมายแล้ว",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 22,
+      name_th: "รายงานตร.ตามหนังสือ",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 21,
+      name_th: "ยุติเรื่องทางวินัย",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 20,
+      name_th: "ว่ากล่าวตักเตือน",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 19,
+      name_th: "ภาคฑัณ",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 18,
+      name_th: "ฑัณตกรรม",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 17,
+      name_th: "กักยาม",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 16,
+      name_th: "กักขัง",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 15,
+      name_th: "ตัดเงินเดือน",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 14,
+      name_th: "ปลดออก",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      id: 13,
+      name_th: "ไล่ออก",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 12,
+      name_th: "ลงโทษทางวินัย",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 11,
+      name_th: "แต่งตั้งคณะกรรมการสืบสวนข้อเท็จจริง",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+    {
+      value: 10,
+      name_th: "ไม่พบการกระทำผิด",
+      name_en: null,
+      state_id: null,
+      complaint_type_id: null,
+    },
+  ];
+
   return {
     publishes,
     actives,
@@ -368,5 +469,6 @@ export default () => {
     orders,
     sections,
     positions,
+    proceed_statuses,
   };
 };

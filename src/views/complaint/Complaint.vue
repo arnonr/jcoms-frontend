@@ -257,7 +257,12 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        @click="onDetailModal(it)"
+                        @click="
+                          () => {
+                            Object.assign(item, it);
+                            openDetailModal = true;
+                          }
+                        "
                         >รายละเอียด</a
                       >
                     </li>
@@ -309,6 +314,32 @@
                           }
                         "
                         >รับเรื่อง</a
+                      >
+                    </li>
+
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="
+                          () => {
+                            Object.assign(item, it);
+                            openSendReportModal = true;
+                          }
+                        "
+                        >รายงานผล</a
+                      >
+                    </li>
+
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="
+                          () => {
+                            Object.assign(item, it);
+                            openReceiveReportModal = true;
+                          }
+                        "
+                        >รับรายงานผล</a
                       >
                     </li>
                   </ul>
@@ -825,7 +856,6 @@
     />
   </div>
 
-
   <!-- Modal Receive หน่วยงานรับเรื่อง -->
   <div id="receive-modal-2">
     <ReceiveComplaint3
@@ -834,6 +864,42 @@
       @close-modal="
         () => {
           openReceiveModal3 = false;
+        }
+      "
+      @reload="
+        () => {
+          fetchItems();
+        }
+      "
+    />
+  </div>
+
+  <!-- Modal Send Report ส่งรายงานผล -->
+  <div id="send-report-modal">
+    <SendReport
+      :complaint_id="item.id"
+      v-if="openSendReportModal == true"
+      @close-modal="
+        () => {
+          openSendReportModal = false;
+        }
+      "
+      @reload="
+        () => {
+          fetchItems();
+        }
+      "
+    />
+  </div>
+
+  <!-- Modal Receive รับ Report -->
+  <div id="receive-report-modal">
+    <ReceiveReport
+      :complaint_id="item.id"
+      v-if="openReceiveReportModal == true"
+      @close-modal="
+        () => {
+          openReceiveReportModal = false;
         }
       "
       @reload="
@@ -883,6 +949,8 @@ import ReceiveComplaint from "@/views/complaint/Receive.vue";
 import ReceiveComplaint2 from "@/views/complaint/Receive2.vue";
 import ReceiveComplaint3 from "@/views/complaint/Receive3.vue";
 import SendComplaint from "@/views/complaint/Send.vue";
+import SendReport from "@/views/complaint/SendReport.vue";
+import ReceiveReport from "@/views/complaint/ReceiveReport.vue";
 
 export default defineComponent({
   name: "complaint",
@@ -895,6 +963,8 @@ export default defineComponent({
     ReceiveComplaint,
     ReceiveComplaint2,
     ReceiveComplaint3,
+    SendReport,
+    ReceiveReport,
     SendComplaint,
   },
   setup() {
@@ -988,6 +1058,8 @@ export default defineComponent({
     const openReceiveModal2 = ref(false);
     const openReceiveModal3 = ref(false);
     const openSendModal = ref(false);
+    const openSendReportModal = ref(false);
+    const openReceiveReportModal = ref(false);
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -1532,6 +1604,8 @@ export default defineComponent({
       openReceiveModal,
       openReceiveModal2,
       openReceiveModal3,
+      openSendReportModal,
+      openReceiveReportModal,
       openSendModal,
     };
   },

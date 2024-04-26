@@ -2,12 +2,12 @@
   <!--begin::Wrapper-->
   <div class="container mt-5">
     <div class="card shadow-sm my-6">
-      <!-- <div class="card-header bg-white d-flex">
-        <h4 class="card-title">กรองข้อมูล Dashboard</h4>
-      </div> -->
+      <div class="card-header bg-white d-flex">
+        <h4 class="card-title">กรองสถิติ</h4>
+      </div>
       <div class="card-body">
         <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
-          <div class="col-12 col-md-5 my-2">
+          <div class="col-12 col-md-3 my-2">
             <label for="">ปีที่ร้องเรียน</label>
             <v-select
               id="slt-search-year"
@@ -16,13 +16,13 @@
               placeholder="ปีที่ร้องเรียน"
               :options="selectOptions.years"
               v-model="search.year"
-              :reduce="(year: any) => year.value"
+              :reduce="(year) => year.value"
               class="form-control"
               :clearable="true"
             ></v-select>
           </div>
 
-          <div class="col-12 col-md-5 my-2">
+          <div class="col-12 col-md-3 my-2">
             <label for="">เดือน</label>
             <v-select
               id="slt-search-year"
@@ -31,27 +31,116 @@
               placeholder="ปีที่ร้องเรียน"
               :options="selectOptions.years"
               v-model="search.year"
-              :reduce="(year: any) => year.value"
+              :reduce="(year) => year.value"
               class="form-control"
               :clearable="true"
             ></v-select>
           </div>
-          <div class="col-12 col-md-2 my-2 mt-8">
-            <button class="btn btn-success fw-bold" @click="onSearch()">
-              ตกลง
-            </button>
+
+          <div class="col-md-3 mb-7">
+            <label for="">ช่วงวันที่ร้องเรียน (จากวันที่)</label>
+            <VueDatePicker
+              id="dp-search-startdate-2"
+              name="dp-search-startdate-2"
+              class="form-control"
+              v-model="search.start_date"
+              :enable-time-picker="false"
+              locale="th"
+              auto-apply
+              :format="format"
+            >
+              <template #year-overlay-value="{ text }">
+                {{ parseInt(text) + 543 }}
+              </template>
+              <template #year="{ value }">
+                {{ value + 543 }}
+              </template>
+            </VueDatePicker>
+          </div>
+          <div class="col-md-3 mb-7">
+            <label for="">ช่วงวันที่ร้องเรียน (ถึงวันที่)</label>
+            <VueDatePicker
+              id="dp-search-enddate-2"
+              name="dp-search-enddate-2"
+              class="form-control"
+              v-model="search.end_date"
+              :enable-time-picker="false"
+              locale="th"
+              auto-apply
+              :format="format"
+            >
+              <template #year-overlay-value="{ text }">
+                {{ parseInt(text) + 543 }}
+              </template>
+              <template #year="{ value }">
+                {{ value + 543 }}
+              </template>
+            </VueDatePicker>
+          </div>
+
+          <div class="col-12 col-md-4 my-2">
+            <label for="">บช./ภ.</label>
+            <v-select
+              id="slt-search-bureau-id"
+              name="slt-search-bureau-id"
+              label="name"
+              placeholder="บช./ภ."
+              :options="selectOptions.bureaus"
+              v-model="search.bureau_id"
+              class="form-control"
+              :clearable="true"
+            ></v-select>
+          </div>
+
+          <div class="col-12 col-md-4 my-2">
+            <label for="">บก./ภ.จว.</label>
+            <v-select
+              id="slt-search-division-id"
+              name="slt-search-division-id"
+              label="name"
+              placeholder="บก./ภ.จว."
+              :options="selectOptions.divisions"
+              v-model="search.division_id"
+              class="form-control"
+              :clearable="true"
+            ></v-select>
+          </div>
+
+          <div class="col-12 col-md-4 my-2">
+            <label for="">หน่วยงาน(สถานีตำรวจ)</label>
+            <v-select
+              id="slt-search-agency-id"
+              name="slt-search-agency-id"
+              label="name"
+              placeholder="หน่วยงาน(สถานีตำรวจ)"
+              :options="selectOptions.agencies"
+              v-model="search.agency_id"
+              class="form-control"
+              :clearable="true"
+            ></v-select>
           </div>
         </div>
 
         <!-- FORM -->
       </div>
       <div class="card-footer">
-        <nav class="nav nav-pills nav-fill">
-          <a class="nav-link active ms-2 me-2 pt-3 rounded-pill" aria-current="page" href="#">เรื่องร้องเรียน</a>
-          <a class="nav-link btn btn-secondary ms-2 me-2 pt-3 rounded-pill" href="#">แจ้งเบาะแส</a>
-          <a class="nav-link btn btn-secondary ms-2 me-2 pt-3 rounded-pill" href="#">แจ้งเบาะแสยาเสพติด</a>
-          <a class="nav-link btn btn-secondary ms-2 me-2 pt-3 rounded-pill" aria-disabled="true">เรื่องตำรวจร้องเรียนตำรวจ</a>
-        </nav>
+        <button class="btn btn-success fw-bold" @click="onSearch()">
+          กรองสถิติ
+        </button>
+        <button class="btn btn-danger ms-2 fw-bold" @click="onClear()">
+          ล้าง
+        </button>
+        <!-- data-bs-toggle="modal" data-bs-target="#modal-search" -->
+        <!-- <button
+          id="kt_search_toggle"
+          class="btn btn-primary fw-bold float-end"
+          data-bs-toggle="tooltip"
+          data-bs-placement="left"
+          data-bs-dismiss="click"
+          data-bs-trigger="hover"
+        >
+          ค้นหาเพิ่มเติม
+        </button> -->
       </div>
     </div>
 
@@ -740,6 +829,62 @@
     </div>
     <!--end::Card-->
   </div>
+
+  <!-- Modal Detail -->
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="accusedDetailModalRef"
+    id="detail-model"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">รายการเจ้าหน้าที่ถูกร้องเรียน</h3>
+
+          <!--begin::Close-->
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+          <!--end::Close-->
+        </div>
+
+        <div class="modal-body">
+          <div>
+            <!-- <AccusedDetail /> -->
+            <h2>หน่วยงาน : xxxxx</h2>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="text-center">ชื่อ</th>
+                  <th class="text-center">จำนวนครั้ง</th>
+                  <th class="text-center">หัวข้อร้องเรียน</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                 <td class="text-center">พันเอกอานนท์ รักจักร์</td>
+                 <td class="text-center">5</td>
+                 <td>1. ......</td>
+                </tr>
+                <tr>
+                 <td class="text-center">พันเอกอานนท์ รักจักร์</td>
+                 <td class="text-center">5</td>
+                 <td>1. ......</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--end::Wrapper-->
 </template>
 
@@ -747,10 +892,24 @@
 import {
   defineComponent,
   onMounted,
+  onBeforeMount,
   ref,
   watch,
+  computed,
 } from "vue";
+// import { getAssetPath } from "@/core/helpers/assets";
 import { useRouter } from "vue-router";
+import useAddressData from "@/composables/useAddressData";
+// import useStatusData from "@/composables/useStatusData";
+// import useOrganizationData from "@/composables/useOrganizationData";
+// Import Validate
+import { ErrorMessage, Field, Form as VForm } from "vee-validate";
+import * as Yup from "yup";
+// Import SweetAlert2
+import Swal from "sweetalert2/dist/sweetalert2.js";
+// Import Form Wizard
+import { FormWizard, TabContent } from "vue3-form-wizard";
+import "vue3-form-wizard/dist/style.css";
 // Import Vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -761,9 +920,14 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import Widget1Custom from "@/components/dashboard-default-widgets/Widget1Custom.vue";
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
+// Import Bootstrap
+import { Modal } from "bootstrap";
+// Import ExcelJS
+import ExcelJS from "exceljs";
 
 import {
   Chart as ChartJS,
+  Title,
   Tooltip,
   Legend,
   BarElement,
@@ -773,7 +937,7 @@ import {
 } from "chart.js";
 import { Pie, Bar, Doughnut } from "vue-chartjs";
 ChartJS.register(
-//   Title,
+  Title,
   Tooltip,
   Legend,
   BarElement,
@@ -792,6 +956,11 @@ dayjs.extend(buddhistEra);
 export default defineComponent({
   name: "complaint",
   components: {
+    Field,
+    VForm,
+    ErrorMessage,
+    FormWizard,
+    TabContent,
     VueDatePicker,
     dayjs,
     Widget1Custom,
@@ -803,6 +972,26 @@ export default defineComponent({
   setup() {
     // Variable
     const router = useRouter();
+    let addModalRef = ref<any>(null);
+    let addModalObj = ref<any>(null);
+    let editModalRef = ref<any>(null);
+    let editModalObj = ref<any>(null);
+    let detailModalRef = ref<any>(null);
+    let detailModalObj = ref<any>(null);
+    let receiveModalRef = ref<any>(null);
+    let receiveModalObj = ref<any>(null);
+    let receive2ModalRef = ref<any>(null);
+    let receive2ModalObj = ref<any>(null);
+    let sendModalRef = ref<any>(null);
+    let sendModalObj = ref<any>(null);
+    let trackModalRef = ref<any>(null);
+    let trackModalObj = ref<any>(null);
+    let receiveReportModalRef = ref<any>(null);
+    let receiveReportModalObj = ref<any>(null);
+    let sendReportModalRef = ref<any>(null);
+    let sendReportModalObj = ref<any>(null);
+    let accusedDetailModalRef = ref<any>(null);
+    let accusedDetailModalObj = ref<any>(null);
 
     const chartComplaintTypeData = ref({
       labels: [
@@ -988,16 +1177,27 @@ export default defineComponent({
       },
     ]);
 
+    const address_all = ref([]);
+    address_all.value = useAddressData().addresses.map((el) => {
+      el.label =
+        el.district +
+        " > " +
+        el.amphoe +
+        " > " +
+        el.province +
+        " > " +
+        el.zipcode;
+      return el;
+    });
     const format = (date: any) => {
       const day = dayjs(date).locale("th").format("DD");
       const month = dayjs(date).locale("th").format("MMM");
       const year = date.getFullYear() + 543;
       return `${day} ${month} ${year}`;
     };
-
     const selectOptions = ref<any>({
       years: [],
-      address_all: [],
+      address_all: address_all.value,
       complain_statuses: [
         { name: "รอตรวจสอบ/รับเรื่อง", value: 1 },
         { name: "อยู่ระหว่างดำเนินการ", value: 2 },
@@ -1031,7 +1231,6 @@ export default defineComponent({
         { title: "60", value: 60 },
       ],
     });
-    
     const item = ref({
       organization: "",
       type_of_document_id: "",
@@ -1042,7 +1241,6 @@ export default defineComponent({
       address_all: "",
       prefix_name_1: "",
     });
-    
     const search = ref<any>({
       year: "",
       day: "",
@@ -1053,21 +1251,19 @@ export default defineComponent({
       complain_type: "",
       complain_code: "",
     });
-    
     const items = ref<any>([]);
-    
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    
     const perPage = ref(20);
-    
     const currentPage = ref(1);
-    
     const totalPage = ref(1);
-    
     const totalItems = ref(0);
-
+    const json_data = ref([]);
     const submitButton = ref<HTMLButtonElement | null>(null);
     //Create form validation object
+    const login = Yup.object().shape({
+      email: Yup.string().email().required().label("Email"),
+      password: Yup.string().min(4).required().label("Password"),
+    });
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -1089,6 +1285,7 @@ export default defineComponent({
         perPage: perPage.value,
         currentPage: currentPage.value,
         ...search.value,
+        // group_id: search.value.group_id ? search.value.group_id.id : undefined,
       };
 
       items.value = [
@@ -1127,6 +1324,97 @@ export default defineComponent({
         },
       ];
 
+      //   ApiService.query("complain", { params: params })
+      //     .then(async (response) => {
+      //       // .then(({ data }) => {
+      //       //   if (data.msg != "success") {
+      //       //     throw new Error("ERROR");
+      //       //   }
+      //       // items.value = data.data;
+      //       //   items.value = response;
+      //       //   totalPage.value = data.totalPage;
+      //       //   totalItems.value = data.totalData;
+      //       //   json_data.value = await fetchItemsExport();
+      //       //   items.value = [
+      //       //     {
+      //       //       created_at: dayjs('2023-01-01').locale("th").format("DD"),
+      //       //       complain_code: "123456",
+      //       //     },
+      //       //     {
+      //       //       created_at: dayjs('2023-01-01').locale("th").format("DD")
+      //       //     },
+      //       //   ];
+      //     })
+      //     .catch(({ response }) => {
+      //       console.log(response.data.errors);
+      //     });
+    };
+
+    const fetchItemsExport = async () => {
+      let params = {
+        ...search.value,
+        asset_type_id:
+          search.value.asset_type_id == null
+            ? undefined
+            : search.value.asset_type_id.value,
+        budget_type_id:
+          search.value.budget_type_id == null
+            ? undefined
+            : search.value.budget_type_id.value,
+        department_id:
+          search.value.department_id == null
+            ? undefined
+            : search.value.department_id.value,
+        input_year:
+          search.value.input_year == null
+            ? undefined
+            : search.value.input_year.id,
+        created_at_from:
+          search.value.created_at_from == null
+            ? undefined
+            : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+        created_at_to:
+          search.value.created_at_to == null
+            ? undefined
+            : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
+        status:
+          search.value.status != null ? search.value.status.id : undefined,
+        perPage: 100000,
+        currentPage: currentPage.value,
+        lang: "th",
+        orderBy: "created_at",
+        order: "desc",
+      };
+
+      //   if (useCookie("user").value.level == 3) {
+      //     params["department_id"] = useCookie("user").value.department_id;
+      //   }
+
+      //   let data = await $fetch(
+      //     `${runtimeConfig.public.apiBase}/holder-history`,
+      //     {
+      //       params: params,
+      //     }
+      //   ).catch((error) => error.data);
+
+      //   return data.data.map((e) => {
+      //     return {
+      //       หมายเลขครุภัณฑ์: e.asset.asset_code,
+      //       ชื่อครุภัณฑ์: e.asset.asset_name,
+      //       รายละเอียด: e.asset.asset_detail,
+      //       ประเภทครุภัณฑ์: e.asset.asset_type_id
+      //         ? selectOptions.value.asset_types_array[e.asset.asset_type_id]
+      //         : "",
+      //       ผู้ใช้งานเดิม: e.previous_holder_name,
+      //       ผู้ใช้งานใหม่: e.holder_name,
+      //       วันที่ขอเปลี่ยน:
+      //         e.created_at != null
+      //           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
+      //           : "-",
+      //       ผู้แจ้ง: e.created_user?.name,
+      //       สถานะ: selectOptions.value.holder_statuses[e.status].name,
+      //     };
+      //   });
     };
 
     // Event
@@ -1137,6 +1425,134 @@ export default defineComponent({
       search.value = {};
     };
     const onExport = async () => {
+    //   setTimeout(async () => {
+    //     const workbook = new ExcelJS.Workbook();
+    //     const worksheet = workbook.addWorksheet("รายการเรื่องร้องเรียน", {
+    //       pageSetup: { orientation: "landscape" },
+    //       headerFooter: {
+    //         firstHeader: "Hello Exceljs",
+    //         firstFooter: "Hello World",
+    //       },
+    //     });
+
+    //     worksheet.columns = [
+    //       {
+    //         header: "หมายเลขคำร้อง",
+    //         key: "หมายเลขครุภัณฑ์",
+    //         width: 25,
+    //         outlineLevel: 1,
+    //       },
+    //       {
+    //         header: "วันที่ขอเปลี่ยน",
+    //         key: "วันที่ขอเปลี่ยน",
+    //         width: 20,
+    //         outlineLevel: 1,
+    //       },
+    //       {
+    //         header: "ผู้แจ้ง",
+    //         key: "ผู้แจ้ง",
+    //         width: 20,
+    //         outlineLevel: 1,
+    //       },
+
+    //       {
+    //         header: "สถานะ",
+    //         key: "สถานะ",
+    //         width: 20,
+    //         outlineLevel: 1,
+    //       },
+    //     ];
+
+    //     worksheet.properties.defaultRowHeight = 45;
+
+    //     worksheet.addRows(json_data.value);
+
+    //     worksheet.eachRow((row) => {
+    //       row.height = 45;
+    //       row.eachCell(function (cell) {
+    //         cell.alignment = {
+    //           vertical: "middle",
+    //           horizontal: "center",
+    //           wrapText: true,
+    //         };
+    //       });
+    //     });
+
+    //     const row = worksheet.getRow(1);
+    //     row.height = 20;
+
+    //     worksheet.insertRow(1, "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์");
+    //     worksheet.mergeCells("A1:K1");
+    //     worksheet.getCell("A1").value =
+    //       "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์";
+    //     worksheet.getCell("A1").alignment = {
+    //       vertical: "middle",
+    //       horizontal: "center",
+    //     };
+    //     const font = { name: "Arial", size: 18, bold: true };
+    //     worksheet.getCell("A1").font = font;
+
+    //     let start_date =
+    //       search.created_at_from != null
+    //         ? dayjs(search.created_at_from).locale("th").format("DD MMM BBBB")
+    //         : "-";
+
+    //     let end_date =
+    //       search.created_at_to != null
+    //         ? dayjs(search.created_at_to).locale("th").format("DD MMM BBBB")
+    //         : "-";
+
+    //     worksheet.insertRow(2);
+    //     worksheet.mergeCells("A2:K2");
+    //     worksheet.getCell("A2").value =
+    //       "ระหว่างวันที่ " + start_date + " ถึง " + end_date;
+    //     worksheet.getCell("A2").alignment = {
+    //       vertical: "middle",
+    //       horizontal: "center",
+    //     };
+    //     const font1 = { name: "Arial", size: 18, bold: true };
+    //     worksheet.getCell("A1").font = font1;
+
+    //     const buffer = await workbook.xlsx.writeBuffer();
+    //     const blob = new Blob([buffer], { type: "application/octet-stream" });
+    //     const href = URL.createObjectURL(blob);
+    //     const link = document.createElement("a");
+    //     link.href = href;
+    //     link.download = "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์.xlsx";
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //   }, 3000);
+    };
+    const onAddModal = () => {
+      addModalObj.value.show();
+    };
+    const onEditModal = () => {
+      editModalObj.value.show();
+    };
+    const onAccusedDetailModal = () => {
+      accusedDetailModalObj.value.show();
+    };
+    const onReceiveModal = () => {
+      receiveModalObj.value.show();
+    };
+
+    const onReceive2Modal = () => {
+      receive2ModalObj.value.show();
+    };
+    const onSendModal = () => {
+      sendModalObj.value.show();
+    };
+
+    const onReceiveReportModal = () => {
+      receiveReportModalObj.value.show();
+    };
+    const onSendReportModal = () => {
+      sendReportModalObj.value.show();
+    };
+
+    const onTrackModal = () => {
+      trackModalObj.value.show();
     };
 
     // Watch
@@ -1158,6 +1574,7 @@ export default defineComponent({
 
     // Mounted
     onMounted(() => {
+      accusedDetailModalObj.value = new Modal(accusedDetailModalRef.value, {});
       search.value.year = selectOptions.value.years[0];
       fetchItems();
     });
@@ -1171,18 +1588,23 @@ export default defineComponent({
       items,
       perPage,
       currentPage,
+      login,
       submitButton,
       selectOptions,
       item,
       router,
       format,
+      accusedDetailModalRef,
+      sendReportModalRef,
       chartComplaintTypeData,
       chartOptions,
       chartOrganizationData,
       chartOrganizationOptions,
+
       onSearch,
       onClear,
       onExport,
+      onAccusedDetailModal,
     };
   },
 });

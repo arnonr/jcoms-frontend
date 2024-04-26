@@ -90,11 +90,11 @@ export default () => {
     },
     {
       id: 15,
-      name_th: "หน่วย หน่วย ภ.จว./บก.รายงานถึง บช./ภ.",
+      name_th: "หน่วย ภ.จว./บก.รายงานถึง บช./ภ.",
       name_en: null,
-      bg_color: "#ffc107",
-      bg_bureau_color: "#ffc107",
-      bg_division_color: "#17c653",
+      bg_color: "#7be382",
+      bg_bureau_color: "#7be382",
+      bg_division_color: "#7be382",
     },
     {
       id: 16,
