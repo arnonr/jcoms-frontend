@@ -792,10 +792,7 @@ export default defineComponent({
             .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
         }
       }
-
-
-      console.log(item)
-
+      
       let data_item = {
         complaint_type_id: item.complaint_topic.complaint_type_id,
         complainant_id: complainant_item.complainant_id,

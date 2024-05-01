@@ -15,8 +15,654 @@
           >
           <div class="separator separator-dotted my-2"></div>
         </div>
+        <div class="col-md-12 mb-2">
+          <button
+            class="accordion-button pb-2"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          >
+            <span class="me-2">รายละเอียดการดำเนินการ : </span>
+            <span class="badge p-2 text-white fw-bold bg-success">คลิก</span>
+          </button>
+          <div class="accordion col-md-12" id="accordionExample">
+            <div class="accordion-item">
+              <div
+                id="collapseOne"
+                class="accordion-collapse collapse"
+                data-bs-parent="#accordionExample"
+              >
+                <div class="accordion-body">
+                  <table class="table table-bordered">
+                    <tr class="bg-secondary">
+                      <th style="max-width: 100px" class="p-3">วันที่</th>
+                      <th class="p-3">สถานะ</th>
+                      <th class="p-3">รายละเอียด</th>
+                    </tr>
 
-        <div class="col-md-12" v-if="complaint_item.receive_doc_date">
+                    <tr>
+                      <td class="p-3">
+                        {{ showDate(complaint_item.created_at) }}
+                      </td>
+                      <td class="fw-bold p-3">ร้องเรียน/แจ้งเบาะแส</td>
+                      <td class="p-3"></td>
+                    </tr>
+
+                    <!-- ฝรท. รับเรื่อง -->
+                    <tr v-if="complaint_item.receive_doc_date">
+                      <td class="p-3">
+                        {{ showDate(complaint_item.receive_at) }}
+                      </td>
+                      <td class="fw-bold p-3">
+                        ฝรท.
+                        {{
+                          complaint_item.receive_status == 1
+                            ? "รับเรื่อง"
+                            : "ไม่รับเรื่อง"
+                        }}
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ showDate(complaint_item.receive_doc_date) }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>{{ complaint_item.receive_doc_no }}</div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>{{ complaint_item.receive_comment }}</div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="complaint_item.receive_doc_filename"
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ส่งต่อเรื่อง ไป บช/ภ.-->
+                    <tr v-if="complaint_forward_state.state10 != null">
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_forward_state.state10.created_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3">
+                        {{ complaint_forward_state.state10.state.name_th }}
+                        ({{
+                          complaint_forward_state.state10.to_bureau?.name_th
+                        }})
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_forward_state.state10.forward_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state10.forward_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            คำสั่งการ :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state10.order.name_th }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state10.order_detail }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="
+                                complaint_forward_state.state10
+                                  .forward_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- บช/ภ. รับเรื่อง -->
+                    <tr
+                      v-if="
+                        complaint_forward_state.state10 != null &&
+                        complaint_forward_state.state10.receive_status == 1
+                      "
+                    >
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_forward_state.state10.receive_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3">
+                        บช./ภ. รับเรื่อง ({{
+                          complaint_forward_state.state10.to_bureau?.name_th
+                        }})
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_forward_state.state10.forward_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state10.receive_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{
+                              complaint_forward_state.state10.receive_comment
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="
+                                complaint_forward_state.state10
+                                  .receive_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ส่งต่อเรื่อง ไป บก./จ. -->
+                    <tr v-if="complaint_forward_state.state11 != null">
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_forward_state.state11.created_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3">
+                        {{ complaint_forward_state.state11.state.name_th }}
+                        ({{
+                          complaint_forward_state.state11.to_division?.name_th
+                        }})
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_forward_state.state11.forward_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state11.forward_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            คำสั่งการ :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state11.order.name_th }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state11.order_detail }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="
+                                complaint_forward_state.state11
+                                  .forward_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- บก./จ. รับเรื่อง -->
+                    <tr
+                      v-if="
+                        complaint_forward_state.state11 != null &&
+                        complaint_forward_state.state11.receive_status == 1
+                      "
+                    >
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_forward_state.state11.receive_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3">
+                        บก./จ. รับเรื่อง ({{
+                          complaint_forward_state.state11.to_division?.name_th
+                        }})
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_forward_state.state11.forward_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state11.receive_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{
+                              complaint_forward_state.state11.receive_comment
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              v-if="
+                                complaint_forward_state.state11
+                                  .receive_doc_filename
+                              "
+                              :href="
+                                complaint_forward_state.state11
+                                  .receive_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                            <span v-else>-</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ส่งรายงานกลับ -->
+                    <tr v-if="complaint_report_state.state15 != null">
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_report_state.state15.created_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3 text-success">
+                        {{ complaint_report_state.state15.state.name_th }}
+                        <!-- ({{
+                          complaint_report_state.state15.to_division?.name_th
+                        }}) -->
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_report_state.state15.report_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state15.report_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ผลดำเนินการ :
+                          </div>
+                          <div>
+                            {{
+                              complaint_report_state.state15.proceed_status
+                                .name_th
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state15.report_detail }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="
+                                complaint_report_state.state15
+                                  .report_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- บช./ภ. รับเรื่อง -->
+                    <tr
+                      v-if="
+                        complaint_report_state.state15 != null &&
+                        complaint_report_state.state15.receive_at != null
+                      "
+                    >
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_report_state.state15.receive_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3 text-success">บช./ภ. รับรายงาน</td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_report_state.state15.receive_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state15.receive_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state15.receive_comment }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              v-if="
+                                complaint_report_state.state15
+                                  .receive_doc_filename
+                              "
+                              :href="
+                                complaint_report_state.state15
+                                  .receive_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                            <span v-else>-</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ส่งรายงานกลับ -->
+                    <tr v-if="complaint_report_state.state16 != null">
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_report_state.state16.created_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3 text-success">
+                        {{ complaint_report_state.state16.state.name_th }}
+                        <!-- ({{
+                          complaint_report_state.state15.to_division?.name_th
+                        }}) -->
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_report_state.state16.report_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state16.report_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ผลดำเนินการ :
+                          </div>
+                          <div>
+                            {{
+                              complaint_report_state.state16.proceed_status
+                                .name_th
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state16.report_detail }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="
+                                complaint_report_state.state16
+                                  .report_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- จต. รับเรื่อง -->
+                    <tr
+                      v-if="
+                        complaint_report_state.state16 != null &&
+                        complaint_report_state.state16.receive_at != null
+                      "
+                    >
+                      <td class="p-3 ">
+                        {{
+                          showDate(complaint_report_state.state16.receive_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3 text-success">จต. รับรายงาน</td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_report_state.state16.receive_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state16.receive_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_report_state.state16.receive_comment }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              v-if="
+                                complaint_report_state.state16
+                                  .receive_doc_filename
+                              "
+                              :href="
+                                complaint_report_state.state16
+                                  .receive_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                            <span v-else>-</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <!--  -->
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--  -->
+
+        <!-- <div class="col-md-12" v-if="complaint_item.receive_doc_date">
           <span> {{ showDate(complaint_item.receive_doc_date) }} : </span>
           <span class="fw-bold me-10"
             >ฝรท
@@ -49,6 +695,132 @@
           </span>
           <div class="separator separator-dotted my-2"></div>
         </div>
+
+        <div class="col-md-12" v-if="complaint_forward_state.state10 != null">
+          <span>
+            {{ showDate(complaint_forward_state.state10.forward_doc_date) }} :
+          </span>
+          <span class="fw-bold me-10">
+            {{ complaint_forward_state.state10.state.name_th }}
+          </span>
+          <span
+            >({{ complaint_forward_state.state10.to_bureau?.name_th }})</span
+          >
+          <span>
+            เลขที่เอกสาร :
+            {{ complaint_forward_state.state10.forward_doc_no }}, </span
+          ><span
+            >หมายเหตุ :
+            {{ complaint_forward_state.state10.order_detail }}, </span
+          ><span
+            >คำสั่งการ :
+            {{ complaint_forward_state.state10.order.name_th }}, </span
+          ><span v-if="complaint_forward_state.state10.forward_doc_filename"
+            >ไฟล์แนบ :
+            <a
+              :href="complaint_forward_state.state10.forward_doc_filename"
+              target="_blank"
+              >คลิก</a
+            >
+          </span>
+          <div class="separator separator-dotted my-2"></div>
+        </div> -->
+
+        <!-- <div
+          class="col-md-12"
+          v-if="
+            complaint_forward_state.state10 != null &&
+            complaint_forward_state.state10.receive_status == 1
+          "
+        >
+          <span>
+            {{ showDate(complaint_forward_state.state10.receive_doc_date) }} :
+          </span>
+          <span class="fw-bold me-10"
+            >บช./ภ. รับเรื่อง
+            {{ complaint_forward_state.state10.to_bureau.name_th }}
+          </span>
+          <span>
+            เลขที่เอกสาร :
+            {{ complaint_forward_state.state10.receive_doc_no }}, </span
+          ><span
+            >หมายเหตุ :
+            {{ complaint_forward_state.state10.receive_comment }}, </span
+          ><span v-if="complaint_forward_state.state10.receive_doc_filename"
+            >ไฟล์แนบ :
+            <a
+              :href="complaint_forward_state.state10.receive_doc_filename"
+              target="_blank"
+              >คลิก</a
+            >
+          </span>
+          <div class="separator separator-dotted my-2"></div>
+        </div>
+
+        <div class="col-md-12" v-if="complaint_forward_state.state11 != null">
+          <span>
+            {{ showDate(complaint_forward_state.state11.forward_doc_date) }} :
+          </span>
+          <span class="fw-bold me-10">
+            {{ complaint_forward_state.state11.state.name_th }}
+          </span>
+          <span
+            >({{ complaint_forward_state.state11.from_bureau?.name_th }})</span
+          >
+          <span
+            >({{ complaint_forward_state.state11.to_division?.name_th }})</span
+          >
+          <span>
+            เลขที่เอกสาร :
+            {{ complaint_forward_state.state11.forward_doc_no }}, </span
+          ><span
+            >หมายเหตุ :
+            {{ complaint_forward_state.state11.order_detail }}, </span
+          ><span
+            >คำสั่งการ :
+            {{ complaint_forward_state.state11.order.name_th }}, </span
+          ><span v-if="complaint_forward_state.state10.forward_doc_filename"
+            >ไฟล์แนบ :
+            <a
+              :href="complaint_forward_state.state11.forward_doc_filename"
+              target="_blank"
+              >คลิก</a
+            >
+          </span>
+          <div class="separator separator-dotted my-2"></div>
+        </div>
+
+        <div
+          class="col-md-12"
+          v-if="
+            complaint_forward_state.state11 != null &&
+            complaint_forward_state.state11.receive_status == 1
+          "
+        >
+          <span>
+            {{ showDate(complaint_forward_state.state11.receive_doc_date) }} :
+          </span>
+          <span class="fw-bold me-10"
+            >บก./จ. รับเรื่อง
+            {{ complaint_forward_state.state11.from_bureau?.name_th }}
+            {{ complaint_forward_state.state11.to_division.name_th }}
+          </span>
+          <span>
+            เลขที่เอกสาร :
+            {{ complaint_forward_state.state11.receive_doc_no }}, </span
+          ><span
+            >หมายเหตุ :
+            {{ complaint_forward_state.state11.receive_comment }}, </span
+          ><span v-if="complaint_forward_state.state11.receive_doc_filename"
+            >ไฟล์แนบ :
+            <a
+              :href="complaint_forward_state.state11.receive_doc_filename"
+              target="_blank"
+              >คลิก</a
+            >
+          </span>
+          <div class="separator separator-dotted my-2"></div>
+        </div> -->
 
         <div class="col-md-12 mb-5 mt-5">
           <h4 class="color-primary">ข้อมูลผู้{{ complaint_type.name_th }}</h4>
@@ -347,8 +1119,19 @@ export default defineComponent({
     const complaint_type = reactive<any>({
       name_th: "",
     });
-    const complaint_forward = reactive<any>({});
-    const complaint_report = reactive<any>({});
+    const complaint_forward = reactive<any>([]);
+    const complaint_report = reactive<any>([]);
+
+    const complaint_forward_state = reactive<any>({
+      state10: null,
+      state11: null,
+    });
+
+    const complaint_report_state = reactive<any>({
+      state15: null,
+      state16: null,
+    });
+
     // Fetch
     const fetchComplaint = async () => {
       try {
@@ -414,6 +1197,14 @@ export default defineComponent({
           params: { complaint_id: complaint_item.id },
         });
         Object.assign(complaint_forward, data.data);
+
+        complaint_forward_state.state10 = complaint_forward.find((x: any) => {
+          return x.state_id == 10;
+        });
+
+        complaint_forward_state.state11 = complaint_forward.find((x: any) => {
+          return x.state_id == 11;
+        });
       } catch (error) {
         console.log(error);
       }
@@ -425,6 +1216,14 @@ export default defineComponent({
           params: { complaint_id: complaint_item.id },
         });
         Object.assign(complaint_report, data.data);
+
+        complaint_report_state.state15 = complaint_report.find((x: any) => {
+          return x.state_id == 15;
+        });
+
+        complaint_report_state.state16 = complaint_report.find((x: any) => {
+          return x.state_id == 16;
+        });
       } catch (error) {
         console.log(error);
       }
@@ -457,7 +1256,10 @@ export default defineComponent({
       await fetchComplainant();
       await fetchAccused();
       await fetchComplaintFileAttach();
-      console.log(complaint_item);
+      await fetchForward();
+      await fetchReport();
+      console.log(complaint_forward);
+      console.log(complaint_report);
       //   console.log(complainant_item);
       //   console.log(accused_item);
       // console.log(complaint_file_attach);
@@ -553,6 +1355,10 @@ export default defineComponent({
       selectOptions,
       showAccusedOrganization,
       showDate,
+      complaint_forward_state,
+      complaint_forward,
+      complaint_report_state,
+      complaint_report,
     };
   },
 });
