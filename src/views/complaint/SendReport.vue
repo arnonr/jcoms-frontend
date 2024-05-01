@@ -41,7 +41,7 @@
                       data-bs-parent="#accordionFlushExample"
                     >
                       <div class="accordion-body" style="padding: 0">
-                        <!-- <DetailComplaint /> -->
+                        <DetailComplaint :complaint_id="complaint_id" />
                         <hr />
                       </div>
                     </div>
