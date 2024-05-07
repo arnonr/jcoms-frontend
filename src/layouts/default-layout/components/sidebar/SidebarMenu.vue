@@ -28,7 +28,14 @@
             </div>
           </div>
           <template v-for="(menuItem, j) in item.pages" :key="j">
-            <template v-if="menuItem.heading">
+            <template
+              v-if="
+                menuItem.heading &&
+                ((menuItem.route == '/new-complaint' &&
+                  (userData.role_id == 1 || userData.role_id == 2)) ||
+                  menuItem.route != '/new-complaint')
+              "
+            >
               <div class="menu-item">
                 <router-link
                   v-if="menuItem.route"
@@ -268,12 +275,15 @@ export default defineComponent({
       return route.path.indexOf(match) !== -1;
     };
 
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
     return {
       hasActiveChildren,
       MainMenuConfig,
       sidebarMenuIcons,
       translate,
       getAssetPath,
+      userData,
     };
   },
 });

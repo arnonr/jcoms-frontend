@@ -49,13 +49,30 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
+        path: "/user",
+        name: "user",
+        component: () => import("@/views/user/index.vue"),
+        meta: {
+          pageTitle: "จัดการผู้ใช้งาน",
+        },
+      },
+      {
+        path: "/new-complaint",
+        name: "new-complaint",
+        component: () => import("@/views/new-complaint/Complaint.vue"),
+        meta: {
+          pageTitle: "เรื่องร้องเรียน/แจ้งเบาะแสใหม่",
+        },
+      },
+      {
         path: "/complaint",
         name: "complaint",
         component: () => import("@/views/complaint/Complaint.vue"),
         meta: {
-          pageTitle: "เรื่องร้องเรียน/แจ้งเบาะแส",
+          pageTitle: "เรื่องร้องเรียน/แจ้งเบาะแสทั้งหมด",
         },
       },
+
       {
         path: "/dashboard",
         name: "dashboard",

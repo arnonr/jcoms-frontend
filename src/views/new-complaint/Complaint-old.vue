@@ -101,11 +101,7 @@
                     :options="selectOptions.bureaus"
                     v-model="search.bureau_id"
                     class="form-control"
-                    :clearable="
-                      userData.role_id == 3 || userData.role_id == 4
-                        ? false
-                        : true
-                    "
+                    :clearable="true"
                   ></v-select>
                 </div>
 
@@ -162,9 +158,38 @@
       </div>
     </div>
 
+    <!-- <div class="row">
+      <div class="col-12 mb-3 mt-5">
+        <h4>เรื่องร้องเรียนทั้งหมด {{ totalItems }} เรื่อง</h4>
+      </div>
+      <div
+        class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-4"
+        v-for="(it, idx) in cardStatus"
+        :key="idx"
+      >
+        <a
+          class="cursor-pointer"
+          @click="
+            () => {
+              search.status = it.status_id;
+              onSearch();
+            }
+          "
+        >
+          <Widget1Custom
+            className=""
+            :description="it.description"
+            :bgColor="it.bgColor"
+            :total="it.total"
+            :percentage="it.percentage"
+          />
+        </a>
+      </div>
+    </div> -->
+
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
-        <h4 class="card-title">รายการเรื่องร้องเรียน/แจ้งเบาะแส</h4>
+        <h4 class="card-title">รายการเรื่องร้องเรียน</h4>
         <div class="card-toolbar">
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
@@ -261,94 +286,59 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openDetailModal = true;
-                          }
-                        "
+                        @click="onDetailModal(it)"
                         >รายละเอียด</a
                       >
                     </li>
+
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        v-if="userData.role_id == 1 || userData.role_id == 2"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openReceiveModal = true;
-                          }
-                        "
+                        @click="onEditModal(it)"
                         >แก้ไขข้อมูล</a
                       >
                     </li>
-
-                    <!-- <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openReceiveModal2 = true;
-                          }
-                        "
-                        >ฝรท. รับเรื่อง</a
-                      >
-                    </li> -->
-
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'send')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openSendModal = true;
-                          }
-                        "
+                        @click="onReceiveModal(it)"
+                        >ฝรท. รับเรื่อง</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="onReceive2Modal()"
+                        >รับเรื่อง2</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="onSendModal()"
                         >ส่งต่อเรื่อง</a
                       >
                     </li>
-                    <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'receive')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openReceiveModal3 = true;
-                          }
-                        "
-                        >รับเรื่อง</a
-                      >
-                    </li>
 
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'send_report')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openSendReportModal = true;
-                          }
-                        "
-                        >รายงานผล</a
+                        @click="onTrackModal()"
+                        >ติดตาม</a
                       >
                     </li>
-
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'receive_report')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openReceiveReportModal = true;
-                          }
-                        "
+                        @click="onReceiveReportModal()"
                         >รับรายงานผล</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="onSendReportModal()"
+                        >ส่งต่อรายงานผล</a
                       >
                     </li>
                   </ul>
@@ -380,7 +370,7 @@
     </div>
   </div>
 
-  <!-- Modal Search -->
+  <!-- Modal Advanced Search -->
   <div
     id="kt_search"
     class="bg-body"
@@ -797,140 +787,266 @@
     <!--end::Card-->
   </div>
 
-  <!-- Modal ดูรายละเอียด -->
-  <div id="detail-modal">
-    <DetailComplaint
-      :complaint_id="item.id"
-      v-if="openDetailModal == true"
-      @close-modal="
-        () => {
-          openDetailModal = false;
-        }
-      "
-    />
+  <!-- Modal Add -->
+  <div class="modal fade" tabindex="-1" ref="addModalRef" id="add-modal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">บันทึกเรื่องร้องเรียน/แจ้งเบาะแส</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <AddComplaint />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal Receive แก้ไขข้อมูล -->
+  <!-- Modal Edit -->
+  <div class="modal fade" tabindex="-1" ref="editModalRef" id="edit-modal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">แก้ไขเรื่องร้องเรียน/แจ้งเบาะแส</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <EditComplaint complaint_id="1" :item="item" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Receive -->
   <div id="receive-modal">
     <ReceiveComplaint
-      :complaint_id="item.id"
-      :complainant_id="item.complainant_id"
+      :item="item"
       v-if="openReceiveModal == true"
       @close-modal="
         () => {
           openReceiveModal = false;
         }
       "
-      @reload="
-        () => {
-          fetchItems();
-        }
-      "
     />
   </div>
 
-  <!-- Modal Receive ฝรท.รับเรื่อง -->
-  <div id="receive-modal-2">
-    <ReceiveComplaint2
-      :complaint_id="item.id"
-      v-if="openReceiveModal2 == true"
-      @close-modal="
-        () => {
-          openReceiveModal2 = false;
-        }
-      "
-      @reload="
-        () => {
-          fetchItems();
-        }
-      "
-    />
+  <!-- Modal Receive2 -->
+  <div class="modal fade" tabindex="-1" ref="receive2ModalRef" id="send-modal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">รับเรื่องเรื่องร้องเรียน/แจ้งเบาะแส</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <Receive2Complaint />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal Send ฝรท.ส่งต่อเรื่อง -->
-  <div id="send-modal">
-    <SendComplaint
-      :complaint_id="item.id"
-      v-if="openSendModal == true"
-      @close-modal="
-        () => {
-          openSendModal = false;
-        }
-      "
-      @reload="
-        () => {
-          fetchItems();
-        }
-      "
-    />
+  <!-- Modal Send -->
+  <div class="modal fade" tabindex="-1" ref="sendModalRef" id="send-modal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">ส่งต่อเรื่องร้องเรียน/แจ้งเบาะแส</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <SendComplaint />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal Receive หน่วยงานรับเรื่อง -->
-  <div id="receive-modal-2">
-    <ReceiveComplaint3
-      :complaint_id="item.id"
-      v-if="openReceiveModal3 == true"
-      @close-modal="
-        () => {
-          openReceiveModal3 = false;
-        }
-      "
-      @reload="
-        () => {
-          fetchItems();
-        }
-      "
-    />
+  <!-- Modal Track -->
+  <div class="modal fade" tabindex="-1" ref="trackModalRef" id="track-modal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">ติดตามเรื่องร้องเรียน/แจ้งเบาะแส</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <TrackComplaint />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal Send Report ส่งรายงานผล -->
-  <div id="send-report-modal">
-    <SendReport
-      :complaint_id="item.id"
-      v-if="openSendReportModal == true"
-      @close-modal="
-        () => {
-          openSendReportModal = false;
-        }
-      "
-      @reload="
-        () => {
-          fetchItems();
-        }
-      "
-    />
+  <!-- Modal Receive Report -->
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="receiveReportModalRef"
+    id="receive-report-modal"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">รับรายงานผล</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <ReceiveReportComplaint />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal Receive รับ Report -->
-  <div id="receive-report-modal">
-    <ReceiveReport
-      :complaint_id="item.id"
-      v-if="openReceiveReportModal == true"
-      @close-modal="
-        () => {
-          openReceiveReportModal = false;
-        }
-      "
-      @reload="
-        () => {
-          fetchItems();
-        }
-      "
-    />
+  <!-- Modal Send Report -->
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="sendReportModalRef"
+    id="send-report-modal"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">ส่งต่อรายงานผล</h3>
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <SendReportComplaint />
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Modal Detail -->
+  <div class="modal fade" tabindex="-1" ref="detailModalRef" id="detail-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">รายละเอียดเรื่องร้องเรียน</h3>
+
+          <!--begin::Close-->
+          <div
+            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+          <!--end::Close-->
+        </div>
+
+        <div class="modal-body">
+          <DetailComplaint :item="item" v-if="Object.keys(item).length !== 0" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end::Wrapper-->
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  reactive,
-  onMounted,
-  onUnmounted,
-  watch,
-} from "vue";
+import { defineComponent, onMounted, onUnmounted, ref, watch } from "vue";
+// import { getAssetPath } from "@/core/helpers/assets";
 import { useRouter } from "vue-router";
-import { useAbility } from "@casl/vue";
+import useAddressData from "@/composables/useAddressData";
+import useStateData from "@/composables/useStateData";
+// import useStatusData from "@/composables/useStatusData";
+// import useOrganizationData from "@/composables/useOrganizationData";
+// Import Validate
+import { ErrorMessage, Field, Form as VForm } from "vee-validate";
+import * as Yup from "yup";
+// Import SweetAlert2
+import Swal from "sweetalert2/dist/sweetalert2.js";
+// Import Form Wizard
+import { FormWizard, TabContent } from "vue3-form-wizard";
+import "vue3-form-wizard/dist/style.css";
+// Import Vue-select
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
+// Import Datepicker
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+// Import Custom Widget Dashboard
+import Widget1Custom from "@/components/dashboard-default-widgets/Widget1Custom.vue";
+// Import Pagination
+import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
+// Import Bootstrap
+import { Modal } from "bootstrap";
+// Import ExcelJS
+import ExcelJS from "exceljs";
+
+import AddComplaint from "@/views/complaint/Add.vue";
+import EditComplaint from "@/views/complaint/Edit.vue";
+import ReceiveComplaint from "@/views/complaint/Receive.vue";
+import Receive2Complaint from "@/views/complaint/Receive2.vue";
+import SendComplaint from "@/views/complaint/Send.vue";
+import TrackComplaint from "@/views/complaint/Track.vue";
+import ReceiveReportComplaint from "@/views/complaint/ReceiveReport.vue";
+import SendReportComplaint from "@/views/complaint/SendReport.vue";
+import DetailComplaint from "@/views/complaint/Detail.vue";
 import ApiService from "@/core/services/ApiService";
 
 import dayjs from "dayjs";
@@ -938,61 +1054,144 @@ import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
 
-// Import Vue-select
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
-// Import Datepicker
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
-// Import Pagination
-import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
-// Import ExcelJS
-// import ExcelJS from "exceljs";
-
-// import useAddressData from "@/composables/useAddressData";
-import useStateData from "@/composables/useStateData";
-
-// Component
-import DetailComplaint from "./DetailComplaint.vue";
-import ReceiveComplaint from "@/views/complaint/Receive.vue";
-import ReceiveComplaint2 from "@/views/complaint/Receive2.vue";
-import ReceiveComplaint3 from "@/views/complaint/Receive3.vue";
-import SendComplaint from "@/views/complaint/Send.vue";
-import SendReport from "@/views/complaint/SendReport.vue";
-import ReceiveReport from "@/views/complaint/ReceiveReport.vue";
+import { useAbility } from "@casl/vue";
 
 export default defineComponent({
   name: "complaint",
   components: {
+    Field,
+    VForm,
+    ErrorMessage,
+    FormWizard,
+    TabContent,
     VueDatePicker,
     dayjs,
+    Widget1Custom,
     vSelect,
     BlogPagination,
-    DetailComplaint,
+    AddComplaint,
+    EditComplaint,
     ReceiveComplaint,
-    ReceiveComplaint2,
-    ReceiveComplaint3,
-    SendReport,
-    ReceiveReport,
+    Receive2Complaint,
     SendComplaint,
+    ReceiveReportComplaint,
+    SendReportComplaint,
+    TrackComplaint,
+    DetailComplaint,
   },
   setup() {
     // Variable
-    const router = useRouter();
     const ability = useAbility();
-    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    console.log(userData);
+    // console.log(ability);
 
-    let { states } = useStateData();
-    const activity = reactive({
-      send: null,
-      receive: null,
-      send_report: null,
-      receive_report: null,
+    const router = useRouter();
+    let addModalRef = ref<any>(null);
+    let addModalObj = ref<any>(null);
+    let editModalRef = ref<any>(null);
+    let editModalObj = ref<any>(null);
+    let detailModalRef = ref<any>(null);
+    let detailModalObj = ref<any>(null);
+    let receiveModalRef = ref<any>(null);
+    let receiveModalObj = ref<any>(null);
+    let receive2ModalRef = ref<any>(null);
+    let receive2ModalObj = ref<any>(null);
+    let sendModalRef = ref<any>(null);
+    let sendModalObj = ref<any>(null);
+    let trackModalRef = ref<any>(null);
+    let trackModalObj = ref<any>(null);
+    let receiveReportModalRef = ref<any>(null);
+    let receiveReportModalObj = ref<any>(null);
+    let sendReportModalRef = ref<any>(null);
+    let sendReportModalObj = ref<any>(null);
+    const openReceiveModal = ref(false);
+
+    const cardStatus = ref([
+      {
+        status_id: 1,
+        description: "รอตรวจสอบ/รับเรื่อง",
+        bgColor: "#F8285A",
+        total: "400",
+        percentage: "30%",
+      },
+      {
+        status_id: 2,
+        description: "อยู่ระหว่างดำเนินการ",
+        bgColor: "#FFC107",
+        total: "300",
+        percentage: "25%",
+      },
+
+      {
+        status_id: 4,
+        description: "รอรายงานผล",
+        bgColor: "#1B84FF",
+        total: "300",
+        percentage: "25%",
+      },
+
+      {
+        status_id: 3,
+        description: "เสร็จสิ้น",
+        bgColor: "#17c653",
+        total: "200",
+        percentage: "20%",
+      },
+    ]);
+
+    const tableHeader = ref([
+      {
+        columnName: "วันที่ร้องเรียน",
+        columnLabel: "created_at",
+      },
+      {
+        columnName: "รหัสคำร้อง",
+        columnLabel: "complian_code",
+      },
+      {
+        columnName: "ลักษณะความผิด",
+        columnLabel: "complian_type",
+      },
+      {
+        columnName: "ผู้ถูกร้อง",
+        columnLabel: "complian_name",
+      },
+      {
+        columnName: "หน่วยงานถูกร้อง",
+        columnLabel: "complain_organization",
+      },
+      {
+        columnName: "สถานะ",
+        columnLabel: "status",
+      },
+      {
+        columnName: "จัดการข้อมูล",
+        columnLabel: "manage",
+      },
+    ]);
+
+    let states = useStateData().states;
+
+    const address_all = ref([]);
+    address_all.value = useAddressData().addresses.map((el) => {
+      el.label =
+        el.district +
+        " > " +
+        el.amphoe +
+        " > " +
+        el.province +
+        " > " +
+        el.zipcode;
+      return el;
     });
-
+    const format = (date: any) => {
+      const day = dayjs(date).locale("th").format("DD");
+      const month = dayjs(date).locale("th").format("MMM");
+      const year = date.getFullYear() + 543;
+      return `${day} ${month} ${year}`;
+    };
     const selectOptions = ref<any>({
       years: [],
+      address_all: address_all.value,
       complain_statuses: [
         { name: "รอตรวจสอบ/รับเรื่อง", value: 1 },
         { name: "อยู่ระหว่างดำเนินการ", value: 2 },
@@ -1010,7 +1209,16 @@ export default defineComponent({
         },
         { name: "กลางคืน", value: 2 },
       ],
-      organizations: [],
+      organizations: [
+        {
+          name: "สถานีตำรวจภูธรเจาะไอ้ร้อง > บก... > บช.. > สังกัด ...",
+          value: 1,
+        },
+        {
+          name: "สถานีตำรวจภูธรจักราช > บก... > บช.. > สังกัด ...",
+          value: 2,
+        },
+      ],
       states: [],
       perPage: [
         { title: "20", value: 20 },
@@ -1029,12 +1237,7 @@ export default defineComponent({
       topic_types: [],
       prefix_names: [],
     });
-    const format = (date: any) => {
-      const day = dayjs(date).locale("th").format("DD");
-      const month = dayjs(date).locale("th").format("MMM");
-      const year = date.getFullYear() + 543;
-      return `${day} ${month} ${year}`;
-    };
+    const item = ref<any>({});
     const search = ref<any>({
       year: null,
       complaint_title: "",
@@ -1061,21 +1264,20 @@ export default defineComponent({
       forward_no: "",
       complaint_channel_id: null,
     });
-    const item = reactive<any>({});
-    const items = reactive<any>([]);
+    const items = ref<any>([]);
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const perPage = ref(20);
     const currentPage = ref(1);
     const totalPage = ref(1);
     const totalItems = ref(0);
     const json_data = ref([]);
+    const submitButton = ref<HTMLButtonElement | null>(null);
 
-    const openDetailModal = ref(false);
-    const openReceiveModal = ref(false);
-    const openReceiveModal2 = ref(false);
-    const openReceiveModal3 = ref(false);
-    const openSendModal = ref(false);
-    const openSendReportModal = ref(false);
-    const openReceiveReportModal = ref(false);
+    //Create form validation object
+    const login = Yup.object().shape({
+      email: Yup.string().email().required().label("Email"),
+      password: Yup.string().min(4).required().label("Password"),
+    });
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -1090,166 +1292,246 @@ export default defineComponent({
         value: null,
       });
     };
+    calYear();
+    // console.log(selectOptions.value.years);
 
     // Fetch Data
     const fetchPrefixName = async () => {
-      const { data } = await ApiService.query("prefix-name", {
-        params: {
-          is_active: 1,
-          perPage: 500,
-        },
-      });
-      selectOptions.value.prefix_names = data.data;
-    };
+      let api = {
+        type: "query",
+        url: "prefix-name",
+      };
 
-    const fetchState = async () => {
-      const { data } = await ApiService.query("state", {
-        params: {
-          perPage: 100,
-        },
-      });
-
-      if (userData.role_id == 3 || userData.role_id == 4) {
-        selectOptions.value.states = data.data.filter((x: any) => {
-          return x.id > 9 && x.id != 18;
+      // ส่งไรไป ID phone เก็บ tracking_state ไว้  มี ID หรือเบอร์โทร
+      await ApiService[api.type](api.url, {
+        params: { is_active: 1, perPage: 500 },
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.prefix_names = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
         });
-      } else {
-        selectOptions.value.states = data.data.filter((x: any) => {
-          return x.id > 1 && x.id != 18;
+    };
+
+    const fetchState = () => {
+      const params = {
+        perPage: 100,
+      };
+      ApiService.query("state", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.states = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
         });
-      }
     };
 
-    const fetchInspector = async () => {
-      const { data } = await ApiService.query("inspector", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-        },
-      });
-      selectOptions.value.inspectors = data.data;
+    const fetchInspector = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+      };
+      ApiService.query("inspector", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.inspectors = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchBureau = async () => {
-      const { data } = await ApiService.query("bureau", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-          inspector_id: search.value.inspector_id?.id,
-          id:
-            userData.role_id == 3 || userData.role_id == 4
-              ? userData.bureau_id
-              : undefined,
-        },
-      });
-      selectOptions.value.bureaus = data.data;
-
-      if (userData.role_id == 3 || userData.role_id == 4) {
-        search.value.bureau_id = data.data[0];
-      }
+    const fetchBureau = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        inspector_id: search.value.inspector_id?.id ?? undefined,
+      };
+      ApiService.query("bureau", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.bureaus = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchDivision = async () => {
-      const { data } = await ApiService.query("division", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-          bureau_id: search.value.bureau_id?.id,
-        },
-      });
-      selectOptions.value.divisions = data.data;
+    const fetchDivision = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        bureau_id: search.value.bureau_id?.id ?? undefined,
+      };
+      ApiService.query("division", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.divisions = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchAgency = async () => {
-      const { data } = await ApiService.query("agency", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-          division_id: search.value.division_id?.id,
-        },
-      });
-      selectOptions.value.agency = data.data;
+    const fetchAgency = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        division_id: search.value.division_id?.id ?? undefined,
+      };
+      ApiService.query("agency", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.agencies = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchProvince = async () => {
-      const { data } = await ApiService.query("province", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-        },
-      });
-      selectOptions.value.provinces = data.data;
+    const fetchProvince = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+      };
+      ApiService.query("province", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.provinces = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchDistrict = async () => {
-      const { data } = await ApiService.query("district", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-          province_id: search.value.province_id?.id,
-        },
-      });
-      selectOptions.value.districts = data.data;
+    const fetchDistrict = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        province_id: search.value.province_id?.id ?? undefined,
+      };
+      ApiService.query("district", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.districts = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchSubdistrict = async () => {
-      const { data } = await ApiService.query("sub-district", {
-        params: {
-          perPage: 100000,
-          orderBy: "name_th",
-          order: "asc",
-          district_id: search.value.district_id?.id,
-        },
-      });
-      selectOptions.value.subdistricts = data.data;
+    const fetchSubdistrict = () => {
+      const params = {
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+        district_id: search.value.district_id?.id ?? undefined,
+      };
+      ApiService.query("sub-district", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.subdistricts = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchComplaintType = async () => {
-      const { data } = await ApiService.query("complaint-type", {
-        params: {
-          perPage: 100000,
-        },
-      });
-      selectOptions.value.complaint_types = data.data;
+    const fetchComplaintType = () => {
+      const params = {
+        perPage: 100000,
+      };
+      ApiService.query("complaint-type", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.complaint_types = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchTopicCategory = async () => {
-      const { data } = await ApiService.query("topic-category", {
-        params: {
-          perPage: 100000,
-          complaint_type_id: search.value.complaint_type_id?.id,
-        },
-      });
-      selectOptions.value.topic_categories = data.data;
+    const fetchTopicCategory = () => {
+      const params = {
+        perPage: 100000,
+        complaint_type_id: search.value.complaint_type_id?.id ?? undefined,
+      };
+      ApiService.query("topic-category", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.topic_categories = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchTopicType = async () => {
-      const { data } = await ApiService.query("topic-type", {
-        params: {
-          perPage: 100000,
-          topic_category_id: search.value.topic_category_id?.id,
-        },
-      });
-      selectOptions.value.topic_types = data.data;
+    const fetchTopicType = () => {
+      const params = {
+        perPage: 100000,
+        topic_category_id: search.value.topic_category_id?.id ?? undefined,
+      };
+      ApiService.query("topic-type", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.topic_types = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
-    const fetchComplaintChannel = async () => {
-      const { data } = await ApiService.query("complaint-channel", {
-        params: {
-          perPage: 100000,
-        },
-      });
-      selectOptions.value.complaint_channels = data.data;
+    const fetchComplaintChannel = () => {
+      const params = {
+        perPage: 100000,
+      };
+      ApiService.query("complaint-channel", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          selectOptions.value.complaint_channels = data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
     };
 
     const fetchItems = async () => {
-      let params = {
+      const params = {
         perPage: perPage.value,
         currentPage: currentPage.value,
         orderBy: "created_at",
@@ -1257,7 +1539,6 @@ export default defineComponent({
         ...search.value,
         year: search.value.year?.value ?? undefined,
         state_id: search.value.state_id?.id ?? undefined,
-        more_state_id: 2,
         inspector_id: search.value.inspector_id?.id ?? undefined,
         bureau_id: search.value.bureau_id?.id ?? undefined,
         division_id: search.value.division_id?.id ?? undefined,
@@ -1282,20 +1563,39 @@ export default defineComponent({
           : undefined,
       };
 
-      if (userData.role_id == 3 || userData.role_id == 4) {
-        params.bureau_id = userData.bureau_id;
-        params.more_state_id = 10;
-      }
+      let api = {
+        type: "query",
+        url: "complaint/",
+      };
 
-      const { data } = await ApiService.query("complaint", {
+      await ApiService[api.type](api.url, {
         params: params,
-      });
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          items.value = data.data;
+          totalPage.value = data.totalPage;
+          totalItems.value = data.totalData;
+          currentPage.value = data.currentPage;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
 
-      items.length = 0;
-      Object.assign(items, data.data);
-      totalPage.value = data.totalPage;
-      totalItems.value = data.totalData;
-      currentPage.value = data.currentPage;
+      await ApiService[api.type](api.url + "count", {
+        params: { ...params, state_id: 1 },
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          cardStatus.value[0].total = data.totalCount.toString();
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
     };
 
     const fetchItemsExport = async () => {
@@ -1456,125 +1756,67 @@ export default defineComponent({
       //     document.body.removeChild(link);
       //   }, 3000);
     };
-
-    const onCheckAction = (it: any, action_type: string) => {
-      if (userData.role_id == 1) {
-        return true;
-      } else if (userData.role_id == 2) {
-        if (action_type == "send") {
-          if (it.state_id == 3) {
-            return true;
-          }
-          return false;
-        }
-        if (action_type == "receive") {
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          if (it.state_id == 16) {
-            return true;
-          }
-          return false;
-        }
-      } else if (userData.role_id == 3) {
-        if (action_type == "send") {
-          if (it.state_id == 19) {
-            return true;
-          }
-          return false;
-        }
-        if (action_type == "receive") {
-          if (it.state_id == 10) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          if (it.state_id == 23) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          if (it.state_id == 15) {
-            return true;
-          }
-          return false;
-        }
-      } else if (userData.role_id == 4) {
-        if (action_type == "send") {
-          return false;
-        }
-        if (action_type == "receive") {
-          if (it.state_id == 11) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          if (it.state_id == 20) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          return false;
-        }
-      } else if (userData.role_id == 5) {
-        // กองตรวจ
-        if (action_type == "send") {
-          return false;
-        }
-        if (action_type == "receive") {
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          if (it.state_id == 16) {
-            return true;
-          }
-          return false;
-        }
-      } else {
-        return false;
-      }
+    const onAddModal = () => {
+      addModalObj.value.show();
     };
-
-    // Modal action
-    const onAddModal = () => {};
     const onEditModal = (it: any) => {
-      Object.assign(item, it);
+      item.value = it;
+      editModalObj.value.show();
     };
     const onDetailModal = (it: any) => {
-      Object.assign(item, it);
+      item.value = it;
+      detailModalObj.value.show();
     };
-    // const onReceive2Modal = () => {};
-    // const onSendModal = () => {};
-    // const onReceiveReportModal = () => {};
-    // const onSendReportModal = () => {};
-    // const onTrackModal = () => {};
+    const onReceiveModal = (it: any) => {
+      item.value = it;
+      openReceiveModal = true;
+    };
 
-    // Show
+    const onReceive2Modal = () => {
+      receive2ModalObj.value.show();
+    };
+    const onSendModal = () => {
+      sendModalObj.value.show();
+    };
+
+    const onReceiveReportModal = () => {
+      receiveReportModalObj.value.show();
+    };
+    const onSendReportModal = () => {
+      sendReportModalObj.value.show();
+    };
+
+    const onTrackModal = () => {
+      trackModalObj.value.show();
+    };
+
     const showState = (state: number) => {
-      const findState = states.find((x: any) => x.id === state);
+      let find_state = states.find((x: any) => {
+        return state == x.id;
+      });
+
       return {
-        name_th: findState.name_th,
-        bg_color: findState.bg_color,
+        name_th: find_state.name_th,
+        bg_color: find_state.bg_color,
       };
     };
+
+    // Watch
+    watch(
+      [currentPage],
+      () => {
+        fetchItems();
+      },
+      { deep: true }
+    );
+
+    // watch(
+    //   [search.value],
+    //   () => {
+    //     console.log(search.value.year);
+    //   },
+    //   { deep: true }
+    // );
 
     const convert_date = (date: any) => {
       return dayjs(date).locale("th").format("DD MMM BBBB");
@@ -1584,42 +1826,80 @@ export default defineComponent({
       let text = "";
 
       if (accused != null && accused.length != 0) {
-        if (!accused?.length) return "";
+        accused.forEach((x: any, idx: number) => {
+          if (x.firstname == null) {
+            return;
+          }
+          if (idx != 0) {
+            text = text + ", ";
+          }
 
-        return accused
-          .map((x: any) => {
-            const prefix =
-              selectOptions.value.prefix_names.find(
-                (p) => p.id === x.prefix_name_id
-              )?.name_th || "";
-            return `${prefix}${x.firstname || ""} ${x.lastname || ""}`;
-          })
-          .join(", ");
+          let fn = x.firstname;
+          let ln = x.lastname != null ? x.lastname : "";
+          text = text + showPrefix(x.prefix_name_id) + fn + " " + ln;
+        });
       }
       return text;
     };
 
+    const showPrefix = (prefix_name_id: any) => {
+      let text = "";
+
+      if (prefix_name_id != null) {
+        let prefix_name: any;
+        prefix_name = selectOptions.value.prefix_names.find((x: any) => {
+          return prefix_name_id == x.id;
+        });
+        if (prefix_name) {
+          return prefix_name.name_th;
+        }
+      }
+      return text;
+    };
+
+    fetchPrefixName();
+    fetchState();
+    fetchInspector();
+    fetchBureau();
+    // fetchDivision();
+    // fetchAgency();
+    fetchProvince();
+    // fetchDistrict();
+    // fetchSubdistrict();
+    fetchComplaintType();
+    // fetchTopicCategory();
+    // fetchTopicType();
+    fetchComplaintChannel();
+    fetchItems();
+
     // Mounted
-    onMounted(async () => {
-      calYear();
-      await fetchPrefixName();
-      await fetchState();
-      await fetchInspector();
-      await fetchBureau();
-      await fetchProvince();
-      await fetchComplaintType();
-      await fetchComplaintChannel();
-      await fetchItems();
+    onMounted(() => {
+      addModalObj.value = new Modal(addModalRef.value, {});
+      editModalObj.value = new Modal(editModalRef.value, {});
+      detailModalObj.value = new Modal(detailModalRef.value, {});
+      receiveModalObj.value = new Modal(receiveModalRef.value, {});
+      receive2ModalObj.value = new Modal(receive2ModalRef.value, {});
+      sendModalObj.value = new Modal(sendModalRef.value, {});
+      trackModalObj.value = new Modal(trackModalRef.value, {});
+      receiveReportModalObj.value = new Modal(receiveReportModalRef.value, {});
+      sendReportModalObj.value = new Modal(sendReportModalRef.value, {});
 
       search.value.year = selectOptions.value.years[0];
     });
 
-    onUnmounted(() => {});
-
-    // Watch
-    watch([currentPage], () => {
-      fetchItems();
+    onUnmounted(() => {
+      addModalObj.value.hide();
+      editModalObj.value.hide();
+      detailModalObj.value.hide();
+      receiveModalObj.value.hide();
+      receive2ModalObj.value.hide();
+      sendModalObj.value.hide();
+      trackModalObj.value.hide();
+      receiveReportModalObj.value.hide();
+      sendReportModalObj.value.hide();
     });
+
+    // watch
 
     watch(
       () => search.value.inspector_id,
@@ -1628,7 +1908,8 @@ export default defineComponent({
         search.value.division_id = null;
         search.value.agency_id = null;
         fetchBureau();
-      }
+      },
+      { deep: true }
     );
 
     watch(
@@ -1636,25 +1917,22 @@ export default defineComponent({
       () => {
         search.value.division_id = null;
         search.value.agency_id = null;
-
-        if (search.value.bureau_id) {
-          fetchDivision();
-        } else {
-          selectOptions.value.divisions = [];
-        }
-      }
+        search.value.bureau_id == null
+          ? (selectOptions.value.divisions = [])
+          : fetchDivision();
+      },
+      { deep: true }
     );
 
     watch(
       () => search.value.division_id,
       () => {
         search.value.agency_id = null;
-        if (search.value.division_id) {
-          fetchAgency();
-        } else {
-          selectOptions.value.agency = [];
-        }
-      }
+        search.value.division_id == null
+          ? (selectOptions.value.agencies = [])
+          : fetchAgency();
+      },
+      { deep: true }
     );
 
     watch(
@@ -1662,24 +1940,22 @@ export default defineComponent({
       () => {
         search.value.district_id = null;
         search.value.sub_district_id = null;
-        if (search.value.province_id) {
-          fetchDistrict();
-        } else {
-          selectOptions.value.districts = [];
-        }
-      }
+        search.value.province_id == null
+          ? (selectOptions.value.districts = [])
+          : fetchDistrict();
+      },
+      { deep: true }
     );
 
     watch(
       () => search.value.district_id,
       () => {
         search.value.sub_district_id = null;
-        if (search.value.district_id) {
-          fetchSubdistrict();
-        } else {
-          selectOptions.value.subdistricts = [];
-        }
-      }
+        search.value.district_id == null
+          ? (selectOptions.value.subdistricts = [])
+          : fetchSubdistrict();
+      },
+      { deep: true }
     );
 
     watch(
@@ -1688,12 +1964,11 @@ export default defineComponent({
         search.value.topic_category_id = null;
         search.value.topic_type_id = null;
 
-        if (search.value.complaint_type_id) {
-          fetchTopicCategory();
-        } else {
-          selectOptions.value.topic_categories = [];
-        }
-      }
+        search.value.complaint_type_id == null
+          ? (selectOptions.value.topic_categories = [])
+          : fetchTopicCategory();
+      },
+      { deep: true }
     );
 
     watch(
@@ -1701,50 +1976,56 @@ export default defineComponent({
       () => {
         search.value.topic_type_id = null;
 
-        if (search.value.topic_category_id) {
-          fetchTopicType();
-        } else {
-          selectOptions.value.topic_types = [];
-        }
-      }
+        search.value.topic_category_id == null
+          ? (selectOptions.value.topic_types = [])
+          : fetchTopicType();
+      },
+      { deep: true }
     );
 
     return {
+      cardStatus,
+      tableHeader,
       totalPage,
       totalItems,
       search,
       items,
       perPage,
       currentPage,
+      login,
+      submitButton,
       selectOptions,
       item,
       router,
       format,
+      addModalRef,
+      editModalRef,
+      detailModalRef,
+      receiveModalRef,
+      receive2ModalRef,
+      sendModalRef,
+      trackModalRef,
+      receiveReportModalRef,
+      sendReportModalRef,
       showState,
+      onReceiveModal,
+
+      openReceiveModal,
+
       onSearch,
       onClear,
       onExport,
       onAddModal,
       onEditModal,
       onDetailModal,
-      onCheckAction,
-      fetchItems,
-      //   onReceive2Modal,
-      //   onSendModal,
-      //   onTrackModal,
-      //   onReceiveReportModal,
-      //   onSendReportModal,
+      onReceive2Modal,
+      onSendModal,
+      onTrackModal,
+      onReceiveReportModal,
+      onSendReportModal,
       ability,
       showAccused,
       convert_date,
-      openDetailModal,
-      openReceiveModal,
-      openReceiveModal2,
-      openReceiveModal3,
-      openSendReportModal,
-      openReceiveReportModal,
-      openSendModal,
-      userData,
     };
   },
 });

@@ -35,7 +35,7 @@
                   ></v-select>
                 </div>
 
-                <div class="col-12 col-md-4 my-2">
+                <div class="col-12 col-md-8 my-2">
                   <label for="">เรื่องร้องเรียน</label>
                   <input
                     type="text"
@@ -77,7 +77,7 @@
                   />
                 </div>
 
-                <div class="col-12 col-md-4 my-2">
+                <!-- <div class="col-12 col-md-4 my-2">
                   <label for="">สถานะเรื่องร้องเรียน</label>
                   <v-select
                     id="slt-search-state-id"
@@ -89,7 +89,7 @@
                     class="form-control"
                     :clearable="true"
                   ></v-select>
-                </div>
+                </div> -->
 
                 <div class="col-12 col-md-4 my-2">
                   <label for="">บช./ภ.</label>
@@ -101,11 +101,7 @@
                     :options="selectOptions.bureaus"
                     v-model="search.bureau_id"
                     class="form-control"
-                    :clearable="
-                      userData.role_id == 3 || userData.role_id == 4
-                        ? false
-                        : true
-                    "
+                    :clearable="true"
                   ></v-select>
                 </div>
 
@@ -273,7 +269,6 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
-                        v-if="userData.role_id == 1 || userData.role_id == 2"
                         @click="
                           () => {
                             Object.assign(item, it);
@@ -284,7 +279,7 @@
                       >
                     </li>
 
-                    <!-- <li>
+                    <li>
                       <a
                         class="dropdown-item cursor-pointer"
                         @click="
@@ -294,61 +289,6 @@
                           }
                         "
                         >ฝรท. รับเรื่อง</a
-                      >
-                    </li> -->
-
-                    <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'send')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openSendModal = true;
-                          }
-                        "
-                        >ส่งต่อเรื่อง</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'receive')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openReceiveModal3 = true;
-                          }
-                        "
-                        >รับเรื่อง</a
-                      >
-                    </li>
-
-                    <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'send_report')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openSendReportModal = true;
-                          }
-                        "
-                        >รายงานผล</a
-                      >
-                    </li>
-
-                    <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        v-if="onCheckAction(it, 'receive_report')"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
-                            openReceiveReportModal = true;
-                          }
-                        "
-                        >รับรายงานผล</a
                       >
                     </li>
                   </ul>
@@ -981,15 +921,8 @@ export default defineComponent({
     const router = useRouter();
     const ability = useAbility();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    console.log(userData);
 
     let { states } = useStateData();
-    const activity = reactive({
-      send: null,
-      receive: null,
-      send_report: null,
-      receive_report: null,
-    });
 
     const selectOptions = ref<any>({
       years: [],
@@ -1108,16 +1041,7 @@ export default defineComponent({
           perPage: 100,
         },
       });
-
-      if (userData.role_id == 3 || userData.role_id == 4) {
-        selectOptions.value.states = data.data.filter((x: any) => {
-          return x.id > 9 && x.id != 18;
-        });
-      } else {
-        selectOptions.value.states = data.data.filter((x: any) => {
-          return x.id > 1 && x.id != 18;
-        });
-      }
+      selectOptions.value.states = data.data;
     };
 
     const fetchInspector = async () => {
@@ -1138,17 +1062,9 @@ export default defineComponent({
           orderBy: "name_th",
           order: "asc",
           inspector_id: search.value.inspector_id?.id,
-          id:
-            userData.role_id == 3 || userData.role_id == 4
-              ? userData.bureau_id
-              : undefined,
         },
       });
       selectOptions.value.bureaus = data.data;
-
-      if (userData.role_id == 3 || userData.role_id == 4) {
-        search.value.bureau_id = data.data[0];
-      }
     };
 
     const fetchDivision = async () => {
@@ -1249,15 +1165,14 @@ export default defineComponent({
     };
 
     const fetchItems = async () => {
-      let params = {
+      const params = {
         perPage: perPage.value,
         currentPage: currentPage.value,
         orderBy: "created_at",
         order: "desc",
         ...search.value,
         year: search.value.year?.value ?? undefined,
-        state_id: search.value.state_id?.id ?? undefined,
-        more_state_id: 2,
+        state_id: search.value.state_id?.id ?? 1,
         inspector_id: search.value.inspector_id?.id ?? undefined,
         bureau_id: search.value.bureau_id?.id ?? undefined,
         division_id: search.value.division_id?.id ?? undefined,
@@ -1281,11 +1196,6 @@ export default defineComponent({
           ? dayjs(search.value.create_to).format("YYYY-MM-DD")
           : undefined,
       };
-
-      if (userData.role_id == 3 || userData.role_id == 4) {
-        params.bureau_id = userData.bureau_id;
-        params.more_state_id = 10;
-      }
 
       const { data } = await ApiService.query("complaint", {
         params: params,
@@ -1457,102 +1367,6 @@ export default defineComponent({
       //   }, 3000);
     };
 
-    const onCheckAction = (it: any, action_type: string) => {
-      if (userData.role_id == 1) {
-        return true;
-      } else if (userData.role_id == 2) {
-        if (action_type == "send") {
-          if (it.state_id == 3) {
-            return true;
-          }
-          return false;
-        }
-        if (action_type == "receive") {
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          if (it.state_id == 16) {
-            return true;
-          }
-          return false;
-        }
-      } else if (userData.role_id == 3) {
-        if (action_type == "send") {
-          if (it.state_id == 19) {
-            return true;
-          }
-          return false;
-        }
-        if (action_type == "receive") {
-          if (it.state_id == 10) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          if (it.state_id == 23) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          if (it.state_id == 15) {
-            return true;
-          }
-          return false;
-        }
-      } else if (userData.role_id == 4) {
-        if (action_type == "send") {
-          return false;
-        }
-        if (action_type == "receive") {
-          if (it.state_id == 11) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          if (it.state_id == 20) {
-            return true;
-          }
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          return false;
-        }
-      } else if (userData.role_id == 5) {
-        // กองตรวจ
-        if (action_type == "send") {
-          return false;
-        }
-        if (action_type == "receive") {
-          return false;
-        }
-
-        if (action_type == "send_report") {
-          return false;
-        }
-
-        if (action_type == "receive_report") {
-          if (it.state_id == 16) {
-            return true;
-          }
-          return false;
-        }
-      } else {
-        return false;
-      }
-    };
-
     // Modal action
     const onAddModal = () => {};
     const onEditModal = (it: any) => {
@@ -1600,16 +1414,16 @@ export default defineComponent({
     };
 
     // Mounted
-    onMounted(async () => {
+    onMounted(() => {
       calYear();
-      await fetchPrefixName();
-      await fetchState();
-      await fetchInspector();
-      await fetchBureau();
-      await fetchProvince();
-      await fetchComplaintType();
-      await fetchComplaintChannel();
-      await fetchItems();
+      fetchPrefixName();
+      fetchState();
+      fetchInspector();
+      fetchBureau();
+      fetchProvince();
+      fetchComplaintType();
+      fetchComplaintChannel();
+      fetchItems();
 
       search.value.year = selectOptions.value.years[0];
     });
@@ -1727,7 +1541,6 @@ export default defineComponent({
       onAddModal,
       onEditModal,
       onDetailModal,
-      onCheckAction,
       fetchItems,
       //   onReceive2Modal,
       //   onSendModal,
@@ -1744,7 +1557,6 @@ export default defineComponent({
       openSendReportModal,
       openReceiveReportModal,
       openSendModal,
-      userData,
     };
   },
 });

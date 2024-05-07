@@ -46,13 +46,25 @@ export default () => {
       id: 0,
       value: 0,
       name: "ปิดการใช้งาน",
-      color: "danger",
+      color: "secondary",
     },
     {
       id: 1,
       value: 1,
       name: "ใช้งาน",
       color: "success",
+    },
+    {
+      id: 2,
+      value: 2,
+      name: "รออนุมัติ",
+      color: "warning",
+    },
+    {
+      id: 3,
+      value: 3,
+      name: "ระงับการใช้งาน",
+      color: "danger",
     },
   ];
 

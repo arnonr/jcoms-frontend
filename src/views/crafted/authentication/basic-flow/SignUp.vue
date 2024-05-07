@@ -255,7 +255,9 @@
       </div>
 
       <div class="col-xl-12 mb-7">
-        <label for="formFile" class="form-label required">แนบบัตรข้าราชการ</label>
+        <label for="formFile" class="form-label required"
+          >แนบบัตรข้าราชการ</label
+        >
         <input
           class="form-control"
           type="file"
@@ -366,9 +368,11 @@
       <button
         id="kt_sign_up_submit"
         class="btn btn-lg btn-secondary ms-5"
-        @click="() =>{
-            $router.push('home')
-        }"
+        @click="
+          () => {
+            $router.push('home');
+          }
+        "
       >
         <span class="indicator-label"> กลับหน้าหลัก </span>
       </button>
@@ -495,7 +499,7 @@ export default defineComponent({
       file_attach: null,
       password: null,
       confirm_password: null,
-      status: 1,
+      status: 2,
       organization_all: null,
     });
     const errors = ref<any>({
@@ -636,7 +640,20 @@ export default defineComponent({
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          selectOptions.value.prefix_names = data.data;
+          selectOptions.value.prefix_names = data.data.filter((x: any) => {
+            return (
+              x.id != 29 &&
+              x.id != 30 &&
+              x.id != 31 &&
+              x.id != 33 &&
+              x.id != 34 &&
+              x.id != 35 &&
+              x.id != 36 &&
+              x.id != 37 &&
+              x.id != 38 &&
+              x.id != 39
+            );
+          });
         })
         .catch(({ response }) => {
           console.log(response);
