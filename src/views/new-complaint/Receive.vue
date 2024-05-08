@@ -129,9 +129,9 @@ dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
 
 // Import Component
-import Tab1 from "@/components/complaint/receive/Tab1.vue";
-import Tab2 from "@/components/complaint/receive/Tab2.vue";
-import Tab3 from "@/components/complaint/receive/Tab3.vue";
+import Tab1 from "@/components/complaint/Tab1.vue";
+import Tab2 from "@/components/complaint/Tab2.vue";
+import Tab3 from "@/components/complaint/Tab3.vue";
 
 interface accused_itf {
   id: any;

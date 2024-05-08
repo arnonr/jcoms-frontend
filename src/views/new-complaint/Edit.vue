@@ -18,7 +18,7 @@
         :title="`ระบุข้อมูลผู้ร้องเรียน/แจ้งเบาะแส`"
         :before-change="beforeTabSwitch"
       >
-        <Tab1
+        <!-- <Tab1
           :item="complainant_item"
           :complaint_item="item"
           :complant_type="complant_type"
@@ -31,7 +31,7 @@
               first_action = false;
             }
           "
-        />
+        /> -->
       </tab-content>
       <tab-content
         :title="`ระบุรายละเอียดเรื่องร้องเรียน/แจ้งเบาะแส`"

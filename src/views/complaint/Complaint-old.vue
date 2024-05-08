@@ -836,7 +836,7 @@
   </div>
 
   <!-- Modal Receive -->
-  <div id="receive-modal">
+  <!-- <div id="receive-modal">
     <ReceiveComplaint
       :item="item"
       v-if="openReceiveModal == true"
@@ -846,10 +846,10 @@
         }
       "
     />
-  </div>
+  </div> -->
 
   <!-- Modal Receive2 -->
-  <div class="modal fade" tabindex="-1" ref="receive2ModalRef" id="send-modal">
+  <!-- <div class="modal fade" tabindex="-1" ref="receive2ModalRef" id="send-modal">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
@@ -870,10 +870,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Modal Send -->
-  <div class="modal fade" tabindex="-1" ref="sendModalRef" id="send-modal">
+  <!-- <div class="modal fade" tabindex="-1" ref="sendModalRef" id="send-modal">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
@@ -894,10 +894,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Modal Track -->
-  <div class="modal fade" tabindex="-1" ref="trackModalRef" id="track-modal">
+  <!-- <div class="modal fade" tabindex="-1" ref="trackModalRef" id="track-modal">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
@@ -918,10 +918,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Modal Receive Report -->
-  <div
+  <!-- <div
     class="modal fade"
     tabindex="-1"
     ref="receiveReportModalRef"
@@ -947,10 +947,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Modal Send Report -->
-  <div
+  <!-- <div
     class="modal fade"
     tabindex="-1"
     ref="sendReportModalRef"
@@ -976,34 +976,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Modal Detail -->
-  <div class="modal fade" tabindex="-1" ref="detailModalRef" id="detail-modal">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title">รายละเอียดเรื่องร้องเรียน</h3>
-
-          <!--begin::Close-->
-          <div
-            class="btn btn-icon btn-sm btn-active-light-primary ms-2"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
-            <i class="ki-duotone ki-cross fs-1"
-              ><span class="path1"></span><span class="path2"></span
-            ></i>
-          </div>
-          <!--end::Close-->
-        </div>
-
-        <div class="modal-body">
-          <DetailComplaint :item="item" v-if="Object.keys(item).length !== 0" />
-        </div>
-      </div>
-    </div>
-  </div>
   <!--end::Wrapper-->
 </template>
 
@@ -1769,7 +1744,7 @@ export default defineComponent({
     };
     const onReceiveModal = (it: any) => {
       item.value = it;
-      openReceiveModal = true;
+      openReceiveModal.value = true;
     };
 
     const onReceive2Modal = () => {

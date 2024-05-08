@@ -214,9 +214,9 @@
               <td class="text-center">{{ it.oragnization }}</td>
               <td class="text-center">{{ it.complian_code }}</td>
               <td class="text-center">
-                <a @click="onAccusedDetailModal()" class="cursor-pointer">{{
+                <!-- <a @click="onAccusedDetailModal()" class="cursor-pointer">{{
                   it.name
-                }}</a>
+                }}</a> -->
               </td>
               <td class="text-center">{{ it.status1 }}</td>
               <td class="text-center">{{ it.status3 }}</td>
