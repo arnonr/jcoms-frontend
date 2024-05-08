@@ -213,7 +213,7 @@ export default defineComponent({
   setup() {
     // Variable
     const route = useRoute();
-    
+
     const r = (Math.random() + 1).toString(36).substring(7);
     const complant_type = useComplaintTypeData().complaint_types.find(
       (x: any) => x.id == Number(route.query.type_id)
@@ -322,6 +322,8 @@ export default defineComponent({
       organization_all: Yup.object().nullable().label("หน่วยงาน"),
     });
 
+  
+
     const accused = ref([
       {
         id: null,
@@ -357,8 +359,6 @@ export default defineComponent({
         .label("ประเภทบัตร"),
       id_card: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
-        .min(13, "Must be exactly 13 digits")
-        .max(13, "Must be exactly 13 digits")
         .label("หมายเลขบัตรประชาชน/หนังสือเดินทาง"),
       prefix_name_id: Yup.object()
         .required("${path} จำเป็นต้องระบุ")

@@ -88,6 +88,7 @@
       >
       <VueDatePicker
         v-model="item.incident_date"
+        :max-date="new Date()"
         :enable-time-picker="false"
         :locale="'th'"
         auto-apply
@@ -670,6 +671,27 @@ export default defineComponent({
     });
 
     // Watch
+
+    const isDay = (time: any) => {
+      //   const [hours] = time.split(":").map(Number);
+      return time.hours >= 6 && time.hours < 18;
+    };
+
+    watch(
+      () => props.item.incident_time,
+      (value: any) => {
+        let day = isDay(value);
+        if (day) {
+          props.item.day_time = {
+            name: "กลางวัน",
+            value: 1,
+          };
+        } else {
+          props.item.day_time = { name: "กลางคืน", value: 2 };
+        }
+      }
+    );
+
     watch(
       () => props.item.address_all,
       (value: any) => {
@@ -677,6 +699,10 @@ export default defineComponent({
         props.item.district_id = value.district_id;
         props.item.sub_district_id = value.sub_district_id;
         props.item.postal_code = value.post_code;
+
+        // if(){
+
+        // }
       }
     );
 

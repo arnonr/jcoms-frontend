@@ -67,6 +67,7 @@
 
                 <VueDatePicker
                   v-model="item.receive_doc_date"
+                  :max-date="new Date()"
                   :enable-time-picker="false"
                   :locale="'th'"
                   auto-apply
@@ -176,7 +177,7 @@ export default defineComponent({
     const emit = context.emit;
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const receiveDocFilename = ref<any>(null);
-    
+
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const mounted_success = ref<boolean>(false);

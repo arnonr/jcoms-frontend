@@ -143,6 +143,7 @@
                     >
                     <VueDatePicker
                       v-model="item.birthday"
+                      :max-date="new Date()"
                       :enable-time-picker="false"
                       placeholder="วันเดือนปีเกิด(พ.ศ.)"
                       :locale="'th'"
@@ -308,6 +309,30 @@
                     </div>
                   </div>
 
+                  <div class="col-md-12 mb-7" v-if="item.role_id?.id == 5">
+                    <label for="inspector_id" class="form-label required"
+                      >กองตรวจ</label
+                    >
+                    <v-select
+                      name="inspector_id"
+                      label="name_th"
+                      placeholder="กองตรวจ"
+                      :options="selectOptions.inspectors"
+                      class="form-control"
+                      :clearable="false"
+                      v-model="item.inspector_id"
+                    >
+                    </v-select>
+                    <div
+                      class="d-block mt-1"
+                      v-if="errors.position_id.error == 1"
+                    >
+                      <span role="alert" class="text-danger">{{
+                        errors.position_id.text
+                      }}</span>
+                    </div>
+                  </div>
+
                   <div class="col-md-12 mb-7">
                     <label for="formFile" class="form-label"
                       >แนบบัตรข้าราชการ</label
@@ -456,6 +481,7 @@ export default defineComponent({
     const selectOptions = ref({
       // complaint_channels: <any>[],
       prefix_names: [],
+      inspectors: [],
       user_statuses: useBasicData().user_statuses,
       organizations: [
         ...bureau_organization_all.value,
@@ -590,6 +616,17 @@ export default defineComponent({
     });
 
     // Fetch
+
+    const fetchInspector = async () => {
+      const { data } = await ApiService.query("inspector", {
+        params: {
+          perPage: 100000,
+          orderBy: "name_th",
+          order: "asc",
+        },
+      });
+      selectOptions.value.inspectors = data.data;
+    };
 
     const fetchPrefixName = async () => {
       let api = {
@@ -748,6 +785,13 @@ export default defineComponent({
                 })
               : null,
           file_attach_old: data.data.file_attach,
+          inspector_id:
+            data.data.inspector_id != null
+              ? {
+                  name_th: data.data.inspector.name_th,
+                  id: data.data.inspector_id,
+                }
+              : null,
           //  หน่วยงาน
         });
       } catch (error) {
@@ -844,6 +888,7 @@ export default defineComponent({
         bureau_id: item.bureau_id,
         division_id: item.division_id,
         agency_id: item.agency_id,
+        inspector_id: item.inspector_id?.id,
         // updated_by: item.value.firstname + " " + item.value.lastname,
         // รูป
       };
@@ -874,6 +919,7 @@ export default defineComponent({
 
     // Mounted
     onMounted(async () => {
+      await fetchInspector();
       await fetchPrefixName();
       await fetchPosition();
       await fetchSection();
@@ -903,7 +949,7 @@ export default defineComponent({
             ? organization_all.agency_id
             : null;
         } else {
-          item.inspector_id = null;
+          //   item.inspector_id = null;
           item.bureau_id = null;
           item.division_id = null;
           item.agency_id = null;

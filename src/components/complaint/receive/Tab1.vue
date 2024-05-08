@@ -160,6 +160,7 @@
             v-model="complainant_item.birthday"
             :enable-time-picker="false"
             placeholder="วันเดือนปีเกิด(พ.ศ.)/Birthdate"
+            :max-date="new Date()"
             :locale="'th'"
             auto-apply
             class="form-control"

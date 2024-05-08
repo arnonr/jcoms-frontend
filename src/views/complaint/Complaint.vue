@@ -119,7 +119,7 @@
                     :options="selectOptions.divisions"
                     v-model="search.division_id"
                     class="form-control"
-                    :clearable="true"
+                    :clearable="userData.role_id == 4 ? false : true"
                   ></v-select>
                 </div>
 
@@ -1120,15 +1120,20 @@ export default defineComponent({
       }
     };
 
-    const fetchInspector = async () => {
+    const fetchInspector = async () => {    
       const { data } = await ApiService.query("inspector", {
         params: {
           perPage: 100000,
           orderBy: "name_th",
           order: "asc",
+          id: userData.role_id == 5 ? userData.inspector_id : undefined,
         },
       });
       selectOptions.value.inspectors = data.data;
+
+      if (userData.role_id == 5) {
+        search.value.inspector_id = data.data[0];
+      }
     };
 
     const fetchBureau = async () => {
@@ -1158,9 +1163,14 @@ export default defineComponent({
           orderBy: "name_th",
           order: "asc",
           bureau_id: search.value.bureau_id?.id,
+          id: userData.role_id == 4 ? userData.division_id : undefined,
         },
       });
       selectOptions.value.divisions = data.data;
+
+      if (userData.role_id == 4) {
+        search.value.division_id = data.data[0];
+      }
     };
 
     const fetchAgency = async () => {
@@ -1172,7 +1182,7 @@ export default defineComponent({
           division_id: search.value.division_id?.id,
         },
       });
-      selectOptions.value.agency = data.data;
+      selectOptions.value.agencies = data.data;
     };
 
     const fetchProvince = async () => {
@@ -1284,6 +1294,11 @@ export default defineComponent({
 
       if (userData.role_id == 3 || userData.role_id == 4) {
         params.bureau_id = userData.bureau_id;
+        params.more_state_id = 10;
+      }
+
+      if (userData.role_id == 5) {
+        params.inspector_id = userData.inspector_id;
         params.more_state_id = 10;
       }
 

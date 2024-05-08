@@ -83,6 +83,7 @@
         <label for="line_id" class="form-label">วันเดือนปีเกิด</label>
         <VueDatePicker
           v-model="item.birthday"
+          :max-date="new Date()"
           :enable-time-picker="false"
           placeholder="วันเดือนปีเกิด(พ.ศ.)"
           :locale="'th'"

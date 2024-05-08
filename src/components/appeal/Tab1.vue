@@ -51,7 +51,10 @@
               disabled
               v-model="item.phone_number"
             />
-            <button class="btn btn-primary ms-3" @click="$emit('update-phone-number-data')">
+            <button
+              class="btn btn-primary ms-3"
+              @click="$emit('update-phone-number-data')"
+            >
               เปลี่ยนหมายเลข
             </button>
           </div>
@@ -163,6 +166,7 @@
             v-model="item.birthday"
             :enable-time-picker="false"
             placeholder="วันเดือนปีเกิด(พ.ศ.)/Birthdate"
+            :max-date="new Date()"
             :locale="'th'"
             auto-apply
             class="form-control"
@@ -420,8 +424,6 @@ export default defineComponent({
 
     const cardPhotoFile = ref<any>(null);
 
-   
-
     const previewImage = ref<any>(null);
 
     const address_all = ref([]);
@@ -471,7 +473,9 @@ export default defineComponent({
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          selectOptions.value.prefix_names = data.data;
+          selectOptions.value.prefix_names = data.data.filter((x: any) => {
+            return x.type == 1;
+          });
         })
         .catch(({ response }) => {
           console.log(response.data.errors);

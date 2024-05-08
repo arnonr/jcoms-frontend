@@ -90,6 +90,7 @@
         v-model="complaint_item.incident_date"
         :enable-time-picker="false"
         :locale="'th'"
+        :max-date="new Date()"
         auto-apply
         class="form-control"
         :format="format"

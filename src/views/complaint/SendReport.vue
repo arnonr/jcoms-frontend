@@ -86,10 +86,13 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-6">
-                <label for="report-doc-date" class="form-label">วันที่หนังสือ</label>
+                <label for="report-doc-date" class="form-label"
+                  >วันที่หนังสือ</label
+                >
 
                 <VueDatePicker
                   v-model="item.report_doc_date"
+                  :max-date="new Date()"
                   :enable-time-picker="false"
                   :locale="'th'"
                   auto-apply

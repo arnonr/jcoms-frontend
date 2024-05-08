@@ -69,6 +69,7 @@
 
                 <VueDatePicker
                   v-model="item.receive_doc_date"
+                  :max-date="new Date()"
                   :enable-time-picker="false"
                   :locale="'th'"
                   auto-apply

@@ -118,6 +118,7 @@
           <div class="mb-7 col-12 col-lg-4" v-if="item.type_of_identity == 1">
             <label for="surname" class="form-label">วัน/เดือน/ปีเกิด</label>
             <VueDatePicker
+              :max-date="new Date()"
               v-model="item.inspection_date"
               :enable-time-picker="false"
               :locale="'th'"
@@ -252,6 +253,7 @@
             >
             <VueDatePicker
               v-model="item.inspection_date"
+              :max-date="new Date()"
               :enable-time-picker="false"
               :locale="'th'"
               auto-apply

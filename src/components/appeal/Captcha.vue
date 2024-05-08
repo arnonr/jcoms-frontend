@@ -70,22 +70,33 @@
                   :disabled="btnSendOtpDisabled"
                 >
                   ส่ง OTP
-                  {{
+                  <!-- {{
                     btnSendOtpDisabled == true
                       ? "(" + (otpCountdown - 60) + ")"
                       : ""
-                  }}
+                  }} -->
                 </button>
               </div>
               <hr />
               <div class="mb-7 col-12 col-lg-12">
-                <label for="otpData_code" class="required form-label">
+                <label
+                  for="otpData_code"
+                  class="required form-label"
+                  v-if="otpCountdown > 0"
+                >
                   รหัส OTP ที่คุณได้รับทาง SMS จะหมดอายุภายใน
                   <span class="text-primary">{{
-                    otpCountdown > 0 ? otpCountdown + " วินาที" : "หมดเวลา"
+                    otpCountdown > 0 ? otpCountdown + " วินาที" : ""
                   }}</span
                   ><br />
                   <span> (Ref: {{ otp_secret_key }})</span>
+                </label>
+                <label
+                  for="otpData_code"
+                  class="required form-label"
+                  v-else
+                >
+                    ยืนยันรหัส OTP ที่ได้รับทาง SMS
                 </label>
                 <input
                   type="text"
@@ -227,9 +238,22 @@ export default defineComponent({
       return result;
     };
 
+    const isValidPhoneNumber = (phoneNumber: any) => {
+      // Thai phone number regex pattern
+      const phonePattern = /^(0[689]{1}[0-9]{8}|0[12]{1}[0-9]{8})$/;
+
+      return phonePattern.test(phoneNumber);
+    };
+
     const onSendOTP = async () => {
       // generate otp แล้วเก็บใน storage
       otpWrong.value = "d-none";
+
+      let checkPhone = isValidPhoneNumber(otpData.value.phone);
+      if (!checkPhone) {
+        useToast("หมายเลขโทรศัพท์ไม่ถูกต้อง", "error");
+        return false;
+      }
 
       otp_secret_key.value = generateRandomEnglishString(4);
 

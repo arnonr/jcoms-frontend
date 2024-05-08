@@ -90,6 +90,7 @@
 
                 <VueDatePicker
                   v-model="item.forward_doc_date"
+                  :max-date="new Date()"
                   :enable-time-picker="false"
                   :locale="'th'"
                   auto-apply
