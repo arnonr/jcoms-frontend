@@ -9,6 +9,11 @@
         <div class="col-md-12 mb-5">
           <h4>3.1 ข้อมูลผู้{{ complant_type.name_th }}</h4>
         </div>
+        <div class="col-md-6">
+          <span>ประเภทการระบุตัวตน : </span>
+          <span class="fst-italic">{{ new_item.is_anonymous?.name }}</span>
+          <div class="separator separator-dotted my-2"></div>
+        </div>
         <div class="col-md-12">
           <span>หมายเลขโทรศัพท์ : </span>
           <span class="fst-italic">{{ complainant_item.phone_number }}</span>
@@ -199,7 +204,7 @@
 
         <div v-for="(ac, idx) in accused" :key="idx">
           <div class="col-md-12">
-            <span>ผู้ถูกร้อง : </span>
+            <span>ผู้ถูกร้องคนที่ {{ Number(idx) + 1 }} : </span>
             <span class="fst-italic">
               {{
                 ac.prefix_name_id
@@ -227,6 +232,14 @@
           <span class="fst-italic">PDF</span>
           <div class="separator separator-dotted my-2"></div>
         </div> -->
+
+        <div v-for="(cf, idx) in complaint_file_attach" :key="idx">
+          <span>ไฟล์หลักฐานเพิ่มเติม {{ idx + 1 }} : </span>
+          <a :href="cf.filename" target="_blank"
+            ><span class="fst-italic">คลิก</span></a
+          >
+          <div class="separator separator-dotted my-2"></div>
+        </div>
 
         <div class="col-md-12">
           <span>เคยร้องเรียนเรื่องนี้ผ่านช่องทางใด : </span>
@@ -292,7 +305,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { defineComponent, ref, onMounted, watch, reactive } from "vue";
 import ApiService from "@/core/services/ApiService";
 
 // Import Dayjs
@@ -302,6 +315,8 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
+
+import useBasicData from "@/composables/useBasicData";
 
 export default defineComponent({
   name: "tab3",
@@ -322,6 +337,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    r: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     dayjs,
@@ -332,23 +351,32 @@ export default defineComponent({
     const item = ref<any>(props.item);
     const selectOptions = ref({
       complaint_channels: <any>[],
-      card_types: [
-        {
-          name: "หมายเลขบัตรประชาชน",
-          value: 1,
-        },
-        {
-          name: "หนังสือเดินทาง",
-          value: 2,
-        },
-      ],
+      card_types: useBasicData().card_types,
+      is_anonymouses: useBasicData().is_anonymouses,
+      day_times: useBasicData().day_times,
+    //   states: useStateData().states,
+     
     });
     const policy_checkbox_tab = ref<boolean>(false);
 
     const policyModalRef = ref<any>(null);
     const policyModalObj = ref<any>(null);
+    const complaint_file_attach = reactive<any>([]);
 
     // Fetch
+
+    const fetchComplaintFileAttach = async () => {
+      try {
+        const { data } = await ApiService.query("complaint-file-attach/", {
+          params: { secret_key: props.r },
+        });
+        complaint_file_attach.length = 0;
+        Object.assign(complaint_file_attach, data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const fetchComplaintChannel = () => {
       const params = {
         perPage: 100,
@@ -408,6 +436,15 @@ export default defineComponent({
     onMounted(() => {
       policyModalObj.value = new Modal(policyModalRef.value, {});
       fetchComplaintChannel();
+
+      fetchComplaintFileAttach();
+      console.log(props.item);
+
+      new_item.value.is_anonymous = selectOptions.value.is_anonymouses.find(
+        (x: any) => {
+          return x.value == props.item.is_anonymous;
+        }
+      );
 
       new_item.value.birthday = props.complainant_item.birthday
         ? dayjs(props.complainant_item.birthday)
@@ -480,6 +517,10 @@ export default defineComponent({
       // previewImage.value = URL.createObjectURL(item.value.card_photo);
     });
 
+    // onUnMounted(() => {
+
+    // })
+
     // Watch
 
     // Return
@@ -489,6 +530,7 @@ export default defineComponent({
       new_item,
       policy_checkbox_tab,
       selectOptions,
+      complaint_file_attach,
 
       policyModalObj,
       policyModalRef,

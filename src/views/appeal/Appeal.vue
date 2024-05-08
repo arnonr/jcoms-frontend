@@ -59,6 +59,7 @@
             <Tab3
               v-if="tab_index == 1"
               :item="item"
+              :r="r"
               :complainant_item="complainant_item"
               :accused="accused"
               :complant_type="complant_type"
@@ -321,8 +322,6 @@ export default defineComponent({
       lastname: Yup.string().nullable().label("นามสกุล"),
       organization_all: Yup.object().nullable().label("หน่วยงาน"),
     });
-
-  
 
     const accused = ref([
       {

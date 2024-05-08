@@ -420,6 +420,8 @@ export default defineComponent({
     };
 
     const onSaveComplaint = async () => {
+      console.log(props.complaint_item);
+
       let date_time = <any>null;
       if (props.complaint_item.incident_date) {
         date_time = dayjs(props.complaint_item.incident_date);
@@ -437,7 +439,6 @@ export default defineComponent({
 
         date_time = date_time.format("YYYY-MM-DD HH:mm:ss");
       }
-
       let data_item = {
         complaint_type_id:
           props.complaint_item.complaint_topic.complaint_type_id,
@@ -445,7 +446,9 @@ export default defineComponent({
         is_anonymous: props.complaint_item.is_anonymous, //props.complaint_item.is_anonymous.value,
         complaint_title: props.complaint_item.complaint_title,
         complaint_detail: props.complaint_item.complaint_detail,
-        complaint_channel_ids: props.complaint_item.complaint_channel_all,
+        complaint_channel_ids: props.complaint_item.complaint_channel_all
+          ? props.complaint_item.complaint_channel_all.reverse().join(",")
+          : undefined,
         incident_date: props.complaint_item.incident_date
           ? dayjs(props.complaint_item.incident_date).format("YYYY-MM-DD")
           : null,
@@ -616,7 +619,7 @@ export default defineComponent({
       };
       //   fetch
       let api = {
-        type: "put",
+        type: "post",
         url: "complaint/",
         textToast: "แก้ไขข้อมูลเสร็จสิ้น",
       };
