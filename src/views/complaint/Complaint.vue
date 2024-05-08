@@ -1120,7 +1120,7 @@ export default defineComponent({
       }
     };
 
-    const fetchInspector = async () => {    
+    const fetchInspector = async () => {
       const { data } = await ApiService.query("inspector", {
         params: {
           perPage: 100000,
@@ -1267,7 +1267,8 @@ export default defineComponent({
         ...search.value,
         year: search.value.year?.value ?? undefined,
         state_id: search.value.state_id?.id ?? undefined,
-        more_state_id: 2,
+        // more_state_id: 2,
+        state_in: '3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24',
         inspector_id: search.value.inspector_id?.id ?? undefined,
         bureau_id: search.value.bureau_id?.id ?? undefined,
         division_id: search.value.division_id?.id ?? undefined,
@@ -1294,12 +1295,15 @@ export default defineComponent({
 
       if (userData.role_id == 3 || userData.role_id == 4) {
         params.bureau_id = userData.bureau_id;
-        params.more_state_id = 10;
+        // params.more_state_id = 10;
+        params.state_in = '11,12,13,14,15,16,17,19,20,21,22,23,24';
       }
 
       if (userData.role_id == 5) {
         params.inspector_id = userData.inspector_id;
-        params.more_state_id = 10;
+
+        // params.more_state_id = 10;
+        params.state_in = '11,12,13,14,15,16,17,19,20,21,22,23,24';
       }
 
       const { data } = await ApiService.query("complaint", {
