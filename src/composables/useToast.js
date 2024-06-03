@@ -1,8 +1,7 @@
-
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 
-export default (text, type) => {
+export default (text, type, gravity = "bottom", position = "center") => {
   let style = {
     background: "linear-gradient(to right, #00b09b, #96c93d)",
   };
@@ -19,8 +18,8 @@ export default (text, type) => {
     //   destination: "https://github.com/apvarun/toastify-js",
     newWindow: true,
     close: true,
-    gravity: "bottom", // `top` or `bottom`
-    position: "center", // `left`, `center` or `right`
+    gravity: gravity, // `top` or `bottom`
+    position: position, // `left`, `center` or `right`
     stopOnFocus: true, // Prevents dismissing of toast on hover
     style: style,
     onClick: function () {}, // Callback after click

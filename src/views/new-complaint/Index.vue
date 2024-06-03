@@ -49,12 +49,31 @@
               openEditModal = true;
             }
           "
+          @detail="
+            (it: any) => {
+              Object.assign(item, it);
+              openDetailModal = true;
+            }
+          "
         />
       </div>
-      ƒ
     </div>
 
     <div>
+      <!-- Modal Detail ดูข้อมูล -->
+      <div id="detail-modal">
+        <DetailPage
+          v-if="openDetailModal == true"
+          :complaint_id="item.id"
+          :complainant_id="item.complainant_id"
+          @close-modal="
+            () => {
+              openDetailModal = false;
+            }
+          "
+        />
+      </div>
+
       <!-- Modal Edit แก้ไขข้อมูล -->
       <div id="edit-modal">
         <EditPage
@@ -85,6 +104,7 @@ import SearchComponent from "@/components/complaint/Search.vue";
 import ListComponent from "@/components/complaint/List.vue";
 import Preloader from "@/components/Preloader.vue";
 import EditPage from "@/views/new-complaint/Edit.vue";
+import DetailPage from "@/views/new-complaint/Detail.vue";
 
 export default defineComponent({
   name: "complaint",
@@ -93,6 +113,7 @@ export default defineComponent({
     ListComponent,
     Preloader,
     EditPage,
+    DetailPage,
   },
   setup() {
     // UI Variable

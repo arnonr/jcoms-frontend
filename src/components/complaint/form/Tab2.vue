@@ -949,7 +949,7 @@ export default defineComponent({
           ? complaint_item.value.evidence_url
               .split(",")
               .map((it: any) => it.replace(/(^'|'$)/g, ""))
-          : "";
+          : [];
 
       fetchAccused();
       fetchComplaintFileAttach();
@@ -1112,10 +1112,6 @@ export default defineComponent({
   border: none !important;
 }
 
-.stepTitle {
-  color: #800001;
-}
-
 .form-control {
   border-color: #800001;
   border-width: 0.1em;
@@ -1131,8 +1127,3 @@ export default defineComponent({
 }
 </style>
 
-<style>
-.pac-container {
-  z-index: 9999 !important;
-}
-</style>

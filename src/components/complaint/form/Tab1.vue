@@ -714,11 +714,6 @@ export default defineComponent({
     padding: 0px;
   }
 }
-
-.stepTitle {
-  color: #800001;
-}
-
 .form-control {
   border-color: #800001;
   border-width: 0.1em;

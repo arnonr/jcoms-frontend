@@ -59,10 +59,10 @@
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
-                      () => {
-                        Object.assign(item, it);
-                        openDetailModal = true;
-                      }
+                      handleDetail({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
                     "
                     >รายละเอียด</a
                   >

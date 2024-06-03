@@ -1,11 +1,17 @@
 <template>
-  <div class="modal fade" tabindex="-1" ref="mainModalRef" id="main-modal">
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="mainModalRef"
+    id="main-modal"
+    aria-hidden="true"
+  >
     <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content" style="background-color: #d9f4fe">
-        <div class="modal-header">
+      <div class="modal-content">
+        <div class="modal-header" v-if="item.id != null">
           <h3 class="modal-title">แก้ไขข้อมูล</h3>
           <button
-            @click="onClose"
+            @click="onClose({ reload: false })"
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
@@ -37,23 +43,13 @@
               :accused="accused"
             />
 
-            <!-- <Tab3
-                v-if="tab_index == 1"
-                :complaint_item="item"
-                :complainant_item="complainant_item"
-                :accused="accused"
-                :complaint_type="complaint_type"
-            /> -->
-
-            <!-- <tab-content title="รับเรื่อง">
-              <Tab3
-                v-if="tab_index == 1 && item.id != null"
-                :complaint_item="item"
-                :complainant_item="complainant_item"
-                :accused="accused"
-                :complaint_type="complaint_type"
-              />
-            </tab-content> -->
+            <Tab3
+              :tab_index="tab_index"
+              :complaint_item="item"
+              :complainant_item="complainant_item"
+              :accused="accused"
+              :complaint_type="complaint_type"
+            />
 
             <template #footer="props">
               <div class="wizard-footer-left">
@@ -89,13 +85,21 @@
             </template>
           </form-wizard>
         </div>
+        <Preloader :isLoading="isLoading" :position="'absolute'" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, onUnmounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onMounted,
+  onUnmounted,
+  watch,
+} from "vue";
 import ApiService from "@/core/services/ApiService";
 
 // Import FormWizard
@@ -120,6 +124,7 @@ dayjs.extend(customParseFormat);
 import Tab1 from "@/components/complaint/form/Tab1.vue";
 import Tab2 from "@/components/complaint/form/Tab2.vue";
 import Tab3 from "@/components/complaint/form/Tab3.vue";
+import Preloader from "@/components/Preloader.vue";
 
 export default defineComponent({
   name: "edit-complaint",
@@ -132,14 +137,16 @@ export default defineComponent({
     Tab1,
     Tab2,
     Tab3,
+    Preloader,
   },
   setup(props, { emit }) {
     // UI Variable
+    const isLoading = ref<Boolean>(false);
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const tab_index = ref(0);
-    const onTabChange = (currentIndex: number) => {
-      tab_index.value = currentIndex;
+    const onTabChange = (prevIndex: number, nextIndex: number) => {
+      tab_index.value = nextIndex;
     };
 
     // Variable
@@ -240,6 +247,7 @@ export default defineComponent({
     //Fetch
     const fetchComplainant = async () => {
       try {
+        isLoading.value = true;
         const params = { id: props.complainant_id };
         const { data } = await ApiService.query("complainant", { params });
 
@@ -314,6 +322,7 @@ export default defineComponent({
       } catch (error) {
         // is_complainant_old.value = false;
         console.log(error);
+        isLoading.value = false;
       }
     };
     const fetchComplaint = async () => {
@@ -332,23 +341,38 @@ export default defineComponent({
         accused_old.length = 0;
         Object.assign(accused, data.data.accused);
         Object.assign(accused_old, data.data.accused);
+
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
+        isLoading.value = false;
       }
     };
 
     // Event
-    const onClose = () => {
+    const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();
-      emit("reload");
+      if (reload === true) {
+        emit("reload");
+      }
       emit("close-modal");
     };
+
     const onComplete = async () => {
-      await onSaveComplainant();
-      await onSaveComplaint();
-      await onSaveAccused();
-      useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-      onClose();
+      try {
+        isLoading.value = true;
+        await onSaveComplainant();
+        await onSaveComplaint();
+        await onSaveAccused();
+        isLoading.value = false;
+        useToast("บันทึกข้อมูลเสร็จสิ้น");
+        // useToast("บันทึกข้อมูลเสร็จสิ้น", "success","top","right");
+        onClose({ reload: true });
+      } catch (error) {
+        isLoading.value = false;
+        useToast("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error");
+        console.error("Error saving data:", error);
+      }
     };
     // Save Event
     const onSaveComplainant = async () => {
@@ -406,6 +430,7 @@ export default defineComponent({
         })
         .catch(({ response }) => {
           console.log(response);
+          isLoading.value = false;
         });
     };
     const onSaveComplaint = async () => {
@@ -425,7 +450,10 @@ export default defineComponent({
         is_anonymous: item.is_anonymous,
         complaint_title: item.complaint_title,
         complaint_detail: item.complaint_detail,
-        complaint_channel_ids: item.complaint_channel_all,
+        complaint_channel_ids:
+          item.complaint_channel_all != null
+            ? item.complaint_channel_all.join(",")
+            : "",
         incident_date: item.incident_date
           ? dayjs(item.incident_date).format("YYYY-MM-DD")
           : null,
@@ -449,6 +477,8 @@ export default defineComponent({
         sub_district_id: item.sub_district_id,
         district_id: item.district_id,
         province_id: item.province_id,
+        evidence_url: item.evidence_url,
+        channel_history_text: item.channel_history_text,
         // updated_by: item.firstname + " " + item.lastname,
       };
 
@@ -460,6 +490,7 @@ export default defineComponent({
         })
         .catch(({ response }) => {
           console.log(response);
+          isLoading.value = false;
         });
     };
     const onSaveAccused = async () => {
@@ -502,6 +533,7 @@ export default defineComponent({
           })
           .catch(({ response }) => {
             console.log(response);
+            isLoading.value = false;
           });
       }
 
@@ -530,13 +562,22 @@ export default defineComponent({
         await fetchComplainant();
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
       } catch (error) {
         console.error("Error:", error);
       }
     });
 
     onUnmounted(() => {
+      if (mainModalRef.value) {
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
+      }
       mainModalObj.value.hide();
+
       emit("close-modal");
     });
 
@@ -544,6 +585,7 @@ export default defineComponent({
 
     // Return
     return {
+      isLoading,
       item,
       complainant_item,
       accused,
@@ -559,18 +601,31 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 @media only screen and (max-width: 768px) {
   .card > .card-body {
     padding: 0px;
   }
 }
+.modal-content {
+  background-color: #d9f4fe;
+}
+</style>
 
+<style>
 .wizard-icon-container {
   background-color: #800001 !important;
 }
 
 .form-check-label {
   color: #444;
+}
+.pac-container {
+  z-index: 9999 !important;
+}
+
+.stepTitle {
+  color: #800001;
+  font-weight: bold;
 }
 </style>
