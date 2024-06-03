@@ -59,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/new-complaint",
         name: "new-complaint",
-        component: () => import("@/views/new-complaint/Complaint.vue"),
+        component: () => import("@/views/new-complaint/Index.vue"),
         meta: {
           pageTitle: "เรื่องร้องเรียน/แจ้งเบาะแสใหม่",
         },

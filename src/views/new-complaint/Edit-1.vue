@@ -1,187 +1,133 @@
 <template>
   <!--begin::Wrapper-->
-  <div class="container p-lg-10 mt-5" id="container">
-    <h2 class="mt-10 mb-5 text-black">แบบฟอร์ม{{ complant_type.name_th }}</h2>
-    <div class="card">
-      <div class="card-body" style="background-color: #d9f4fe">
-        <!-- color="#ffcb05" -->
-        <!-- disable-back -->
-        <!-- hide-buttons -->
-        <form-wizard
-          color="#800001"
-          ref="formStep"
-          finishButtonText="ส่งข้อมูล"
-          backButtonText="ย้อนกลับ"
-          nextButtonText="ถัดไป"
-          step-size="xs"
-          id="form"
-          @on-change="onTabChange"
-          @on-complete="onComplete"
-        >
-          <!-- 
+  <div class="container">
+    <form-wizard
+      color="#800001"
+      ref="formStep"
+      finishButtonText="ส่งข้อมูล"
+      backButtonText="ย้อนกลับ"
+      nextButtonText="ถัดไป"
+      step-size="xs"
+      id="form"
+      @on-change="onTabChange"
+      @on-complete="onComplete"
+    >
+      <!-- 
             :before-change="beforeTabSwitch(1)" -->
-          <tab-content
-            :title="`ระบุข้อมูลผู้${complant_type.name_th}`"
-            :before-change="beforeTabSwitch"
+      <tab-content
+        :title="`ระบุข้อมูลผู้ร้องเรียน/แจ้งเบาะแส`"
+        :before-change="beforeTabSwitch"
+      >
+        <!-- <Tab1
+          :item="complainant_item"
+          :complaint_item="item"
+          :complant_type="complant_type"
+          :change_phone_number="change_phone_number"
+          :errors="complainant_item_errors"
+          @update-phone-number-data="
+            () => {
+              change_phone_number = true;
+              captcha_modal = true;
+              first_action = false;
+            }
+          "
+        /> -->
+      </tab-content>
+      <tab-content
+        :title="`ระบุรายละเอียดเรื่องร้องเรียน/แจ้งเบาะแส`"
+        :before-change="beforeTabSwitch2"
+      >
+        <!-- <Tab2
+          :item="item"
+          :complant_type="complant_type"
+          :accused="accused"
+          :r="r"
+          :errors="item_errors"
+          :accused_errors="accused_item_errors"
+          @increase-accused="onIncreaseAccused"
+          @decrease-accused="onDecreaseAccused"
+        /> -->
+      </tab-content>
+      <tab-content title="ยืนยันข้อมูล">
+        <!-- จะส่งรูปจาก Uppy ไปยังไง -->
+        <!-- <Tab3
+          v-if="tab_index == 1"
+          :item="item"
+          :complainant_item="complainant_item"
+          :accused="accused"
+          :complant_type="complant_type"
+          @change-policy="
+            (e) => {
+              policy_checkbox = e;
+            }
+          "
+        /> -->
+      </tab-content>
+
+      <template v-slot:footer="props">
+        <div class="wizard-footer-left">
+          <button
+            v-if="props.activeTabIndex > 0"
+            @click.native="props.prevTab()"
+            class="btn text-white float-left"
+            style="background-color: #800001"
           >
-            <Tab1
-              :item="complainant_item"
-              :complaint_item="item"
-              :complant_type="complant_type"
-              :change_phone_number="change_phone_number"
-              :errors="complainant_item_errors"
-              @update-phone-number-data="
-                () => {
-                  change_phone_number = true;
-                  captcha_modal = true;
-                  first_action = false;
-                }
-              "
-            />
-          </tab-content>
-          <tab-content
-            :title="`ระบุรายละเอียดเรื่อง${complant_type.name_th}`"
-            :before-change="beforeTabSwitch2"
-            color="#800001"
+            ย้อนกลับ
+          </button>
+        </div>
+
+        <div class="wizard-footer-right">
+          <button
+            v-if="!props.isLastStep"
+            @click.native="props.nextTab()"
+            class="btn text-white"
+            style="background-color: #800001"
           >
-            <Tab2
-              :item="item"
-              :complant_type="complant_type"
-              :accused="accused"
-              :r="r"
-              :errors="item_errors"
-              :accused_errors="accused_item_errors"
-              @increase-accused="onIncreaseAccused"
-              @decrease-accused="onDecreaseAccused"
-            />
-          </tab-content>
-          <tab-content title="ยืนยันข้อมูล">
-            <!-- จะส่งรูปจาก Uppy ไปยังไง -->
-            <Tab3
-              v-if="tab_index == 1"
-              :item="item"
-              :r="r"
-              :complainant_item="complainant_item"
-              :accused="accused"
-              :complant_type="complant_type"
-              @change-policy="
-                (e) => {
-                  policy_checkbox = e;
-                }
-              "
-            />
-          </tab-content>
+            ถัดไป
+          </button>
 
-          <template v-slot:footer="props">
-            <div class="wizard-footer-left">
-              <button
-                v-if="props.activeTabIndex > 0"
-                @click.native="props.prevTab()"
-                class="btn text-white float-left"
-                style="background-color: #800001"
-              >
-                ย้อนกลับ
-              </button>
-            </div>
-
-            <div class="wizard-footer-right">
-              <button
-                v-if="!props.isLastStep"
-                @click.native="props.nextTab()"
-                class="btn text-white"
-                style="background-color: #800001"
-              >
-                ถัดไป
-              </button>
-
-              <button
-                v-else
-                @click.native="onComplete"
-                class="finish-button btn text-white"
-                :class="[policy_checkbox == false ? 'disabled' : '']"
-                style="background-color: #800001"
-              >
-                {{ props.isLastStep ? "ส่งข้อมูล" : "Next" }}
-              </button>
-            </div>
-          </template>
-        </form-wizard>
-      </div>
-    </div>
+          <button
+            v-else
+            @click.native="onComplete"
+            class="finish-button btn text-white"
+            :class="[policy_checkbox == false ? 'disabled' : '']"
+            style="background-color: #800001"
+          >
+            {{ props.isLastStep ? "ส่งข้อมูล" : "Next" }}
+          </button>
+        </div>
+      </template>
+    </form-wizard>
   </div>
-
-  <div id="captcha">
-    <Captcha
-      :item="complainant_item"
-      v-if="captcha_modal"
-      :complaint_item="item"
-      :change_phone_number="change_phone_number"
-      :errors="complainant_item_errors"
-      :first_action="first_action"
-      @update-phone-number-data="
-        (new_phone) => {
-          complainant_item.phone_number = new_phone;
-          change_phone_number = false;
-          fetchComplainant();
-        }
-      "
-      @close-captcha-modal="
-        () => {
-          captcha_modal = false;
-        }
-      "
-    />
-  </div>
-
-  <div id="otp-before-confirm">
-    <Otp
-      :item="complainant_item"
-      :complaint_item="item"
-      :is_complainant_old="is_complainant_old"
-      :accused="accused"
-      :complant_type="complant_type"
-      :r="r"
-      v-if="otp_modal"
-      @close-otp-modal="
-        () => {
-          otp_modal = false;
-        }
-      "
-    />
-  </div>
+  <!--end::Wrapper-->
 </template>
 
 <script lang="ts">
-import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
-import ApiService from "@/core/services/ApiService";
-
+import { defineComponent, ref, onMounted, watch } from "vue";
 // Import FormWizard
 import { FormWizard, TabContent } from "vue3-form-wizard";
 import "vue3-form-wizard/dist/style.css";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
-// Use Toast Composables
-import useToast from "@/composables/useToast";
 // Import Yup Validate
 import * as Yup from "yup";
+// Use Toast Composables
+import useToast from "@/composables/useToast";
 // Import route
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 // Use Address Composables
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
-
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
 
-// Import Component
-import Tab1 from "@/components/appeal/Tab1.vue";
-import Tab2 from "@/components/appeal/Tab2.vue";
-import Tab3 from "@/components/appeal/Tab3.vue";
-import Captcha from "@/components/appeal/Captcha.vue";
-import Otp from "@/components/appeal/Otp.vue";
+import Tab1 from "@/components/complaint/Tab1.vue";
+import Tab2 from "@/components/complaint/Tab2.vue";
+import Tab3 from "@/components/complaint/Tab3.vue";
+
+import ApiService from "@/core/services/ApiService";
 
 interface accused_itf {
   id: any;
@@ -202,18 +148,16 @@ interface accused_itf {
 }
 
 export default defineComponent({
-  name: "appeal",
+  name: "edit-complaint",
   components: {
     FormWizard,
     TabContent,
     Tab1,
     Tab2,
     Tab3,
-    Captcha,
-    Otp,
   },
   setup() {
-    // Variable
+    const router = useRouter();
     const route = useRoute();
 
     const r = (Math.random() + 1).toString(36).substring(7);
@@ -287,7 +231,6 @@ export default defineComponent({
       notice_type: null,
       complaint_topic: null,
       complaint_channel_all: [],
-      evidence_url: []
       //   state_id
     });
 
@@ -360,6 +303,8 @@ export default defineComponent({
         .label("ประเภทบัตร"),
       id_card: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
+        .min(13, "Must be exactly 13 digits")
+        .max(13, "Must be exactly 13 digits")
         .label("หมายเลขบัตรประชาชน/หนังสือเดินทาง"),
       prefix_name_id: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
@@ -570,14 +515,6 @@ export default defineComponent({
 
       return checkDigit === lastDigit;
     };
-
-    const isValidPhoneNumber = (phoneNumber: any) => {
-      // Thai phone number regex pattern
-      const phonePattern = /^(0[689]{1}[0-9]{8}|0[12]{1}[0-9]{8})$/;
-
-      return phonePattern.test(phoneNumber);
-    };
-
     const onTab1Validate = async () => {
       complainant_item_errors.value = {
         phone_number: { error: 0, text: "" },
@@ -600,75 +537,67 @@ export default defineComponent({
       };
 
       //   ต้องเป็น 1
-    //   if (item.value.is_anonymous == 1) {
-    //     try {
-    //       await validationComplainantSchema.validate(complainant_item.value, {
-    //         abortEarly: false,
-    //       });
-    //     } catch (err: any) {
-    //       err.inner.forEach((error: any) => {
-    //         const fieldName = error.path;
-    //         const errorMessage = error.message;
-    //         complainant_item_errors.value[fieldName].error = 1;
-    //         complainant_item_errors.value[fieldName].text = errorMessage;
-    //       });
+      if (item.value.is_anonymous == 1) {
+        try {
+          await validationComplainantSchema.validate(complainant_item.value, {
+            abortEarly: false,
+          });
+        } catch (err: any) {
+          err.inner.forEach((error: any) => {
+            const fieldName = error.path;
+            const errorMessage = error.message;
+            complainant_item_errors.value[fieldName].error = 1;
+            complainant_item_errors.value[fieldName].text = errorMessage;
+          });
 
-    //       if (
-    //         complainant_item.value.card_photo == null &&
-    //         complainant_item.value.card_photo_old == null
-    //       ) {
-    //         complainant_item_errors.value["card_photo"].error = 1;
-    //         complainant_item_errors.value["card_photo"].text =
-    //           "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
-    //       }
+          if (
+            complainant_item.value.card_photo == null &&
+            complainant_item.value.card_photo_old == null
+          ) {
+            complainant_item_errors.value["card_photo"].error = 1;
+            complainant_item_errors.value["card_photo"].text =
+              "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
+          }
 
-    //       useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
-    //       return false;
-    //     }
+          useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+          return false;
+        }
 
-    //     if (
-    //       complainant_item.value.card_photo == null &&
-    //       complainant_item.value.card_photo_old == null
-    //     ) {
-    //       complainant_item_errors.value["card_photo"].error = 1;
-    //       complainant_item_errors.value["card_photo"].text =
-    //         "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
-    //       return false;
-    //     }
-    //     //     .required("${path} จำเป็นต้องระบุ")
-    //     //     .label("รูปถ่ายตนเองพร้อมบัตร"),
+        if (
+          complainant_item.value.card_photo == null &&
+          complainant_item.value.card_photo_old == null
+        ) {
+          complainant_item_errors.value["card_photo"].error = 1;
+          complainant_item_errors.value["card_photo"].text =
+            "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
+          return false;
+        }
+        //     .required("${path} จำเป็นต้องระบุ")
+        //     .label("รูปถ่ายตนเองพร้อมบัตร"),
 
-    //     if (complainant_item.value.card_type.value == 1) {
-    //       let check = validateThaiCitizenId(complainant_item.value.id_card);
+        if (complainant_item.value.card_type.value == 1) {
+          let check = validateThaiCitizenId(complainant_item.value.id_card);
 
-    //       if (check == false) {
-    //         complainant_item_errors.value["id_card"].error = 1;
-    //         complainant_item_errors.value["id_card"].text =
-    //           "หมายเลขบัตรประชาชนไม่ถูกต้อง";
-    //         useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
-    //         return false;
-    //       }
-    //     }
-    //   } else {
-    //     if (
-    //       complainant_item.value.phone_number == "" ||
-    //       complainant_item.value.phone_number == null
-    //     ) {
-    //       complainant_item_errors.value["phone_number"].error = 1;
-    //       complainant_item_errors.value["phone_number"].text =
-    //         "Phone number is required";
-    //       useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
-    //       return false;
-    //     }
-
-    //     let checkPhone = isValidPhoneNumber(
-    //       complainant_item.value.phone_number
-    //     );
-    //     if (!checkPhone) {
-    //       useToast("หมายเลขโทรศัพท์ไม่ถูกต้อง", "error");
-    //       return false;
-    //     }
-    //   }
+          if (check == false) {
+            complainant_item_errors.value["id_card"].error = 1;
+            complainant_item_errors.value["id_card"].text =
+              "หมายเลขบัตรประชาชนไม่ถูกต้อง";
+            useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
+            return false;
+          }
+        }
+      } else {
+        if (
+          complainant_item.value.phone_number == "" ||
+          complainant_item.value.phone_number == null
+        ) {
+          complainant_item_errors.value["phone_number"].error = 1;
+          complainant_item_errors.value["phone_number"].text =
+            "Phone number is required";
+          useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+          return false;
+        }
+      }
 
       return true;
     };
@@ -798,22 +727,10 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 @media only screen and (max-width: 768px) {
   .card > .card-body {
     padding: 0px;
   }
-}
-
-.stepTitle {
-  color: #800001;
-
-}
-.wizard-icon-circle {
-    color: #800001;
-}
-
-.form-check-label {
-    color: #444;
 }
 </style>

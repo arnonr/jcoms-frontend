@@ -436,7 +436,7 @@ import useBasicData from "@/composables/useBasicData";
 import useAddressData from "@/composables/useAddressData";
 import useComplaintTopicData from "@/composables/useComplaintTopicData";
 import useOrganizationData from "@/composables/useOrganizationData";
-import usePrefixNameData from "@/composables/usePrefixNameData";
+import useMasterData from "@/composables/useMasterData";
 import useComplaintChannelData from "@/composables/useComplaintChannelData";
 
 interface accused_itf {
@@ -569,7 +569,7 @@ export default defineComponent({
     // const accused = ref<any>(props.accused);
 
     //Fetch
-    usePrefixNameData()
+    useMasterData()
       .fetchPrefixName()
       .then((data: any) => {
         selectOptions.value.prefix_names = data;

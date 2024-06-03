@@ -88,9 +88,9 @@
       >
       <VueDatePicker
         v-model="item.incident_date"
-        :max-date="new Date()"
         :enable-time-picker="false"
         :locale="'th'"
+        :max-date="new Date()"
         auto-apply
         class="form-control"
         :format="format"
@@ -163,7 +163,7 @@
         <GMapMap
           :center="markerDetails.position"
           :click="true"
-          @click="handleClick"
+          @click="handleClickGMap"
           :zoom="16"
           map-type-id="terrain"
           style="width: 100%; height: 400px"
@@ -175,12 +175,6 @@
             :draggable="true"
           >
           </GMapMarker>
-
-          <!-- <GMapCircle
-            :key="1"
-            :radius="100"
-            :center="markerDetails.position"
-          /> -->
         </GMapMap>
       </div>
     </div>
@@ -286,13 +280,14 @@
 
     <div class="mb-7 col-12 col-lg-12">
       <label for="complaint_detail" class="required form-label"
-        >บรรยายพฤติกรรมการกระทำความผิด</label
+        >บรรยายพฤติกรรมการกระทำความผิด (โปรดระบุข้อมูลให้ละเอียดครบถ้วน เช่น ใคร
+        ทำอะไร ที่ไหน อย่างไร และเมื่อไหร่ ได้รับความเสียหายอย่างไร)</label
       >
       <textarea
         style="height: 150px"
         type="text"
         class="form-control"
-        placeholder="บรรยายพฤติกรรมการกระทำความผิด/Describe the behavior constituting the offense."
+        placeholder=""
         aria-label="บรรยายพฤติกรรมการกระทำความผิด/Describe the behavior constituting the offense."
         v-model="item.complaint_detail"
       />
@@ -327,7 +322,17 @@
     </div>
 
     <div class="mb-7 col-12 col-lg-12">
-      <label for="surname" class="form-label"
+      <label for="complaint_detail" class="form-label">แนบลิ้งค์ URL</label>
+      <vue3-tags-input
+        :tags="tags"
+        placeholder=""
+        @on-tags-changed="handleChangeTag"
+      />
+      <!-- @on-tags-changed="handleChangeTag" -->
+    </div>
+
+    <div class="mb-7 col-12 col-lg-12">
+      <label for="channel" class="form-label"
         >เคย{{ complant_type.name_th }}เรื่องนี้ผ่านช่องทางใด/Have you
         previously reported this issue through any channel?</label
       >
@@ -349,12 +354,21 @@
           </label>
         </div>
       </div>
+
+      <div class="mb-7 col-6 col-lg-6">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="ช่องทางร้องเรียนอื่น ๆ โปรดระบุ"
+          aria-label="ช่องทางร้องเรียนอื่น ๆ โปรดระบุ"
+          v-model="item.channel_history_text"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent, ref, onMounted, watch } from "vue";
 import type { Ref } from "vue";
 import type { PropType } from "vue";
@@ -383,6 +397,7 @@ import "@uppy/webcam/dist/style.css";
 import useAddressData from "@/composables/useAddressData";
 import useComplaintTopicData from "@/composables/useComplaintTopicData";
 import useOrganizationData from "@/composables/useOrganizationData";
+import Vue3TagsInput from "vue3-tags-input";
 
 interface accused_itf {
   id: any;
@@ -435,10 +450,13 @@ export default defineComponent({
     VueDatePicker,
     dayjs,
     Dashboard,
+    Vue3TagsInput,
   },
   setup(props, context) {
     // Variable
     const emit = context.emit;
+
+    const tags = ref<string[]>([]);
 
     const address_all = ref([]);
     address_all.value = useAddressData().addresses.map((el: any) => {
@@ -580,6 +598,14 @@ export default defineComponent({
       complaint_topic_all: complaint_topic_all.value,
     });
 
+    selectOptions.value.organizations.unshift({
+      inspector_id: null,
+      bureau_id: null,
+      division_id: null,
+      agency_id: null,
+      label: "ไม่ทราบหน่วยงาน",
+    });
+
     const item = ref<any>(props.item);
 
     //Fetch
@@ -656,7 +682,7 @@ export default defineComponent({
       // locationDetails.value.url = place.url;
     };
 
-    const handleClick = (event: any) => {
+    const handleClickGMap = (event: any) => {
       coords.value.lat = event.latLng.lat();
       coords.value.lng = event.latLng.lng();
       props.item.location_coordinates =
@@ -671,9 +697,7 @@ export default defineComponent({
     });
 
     // Watch
-
     const isDay = (time: any) => {
-      //   const [hours] = time.split(":").map(Number);
       return time.hours >= 6 && time.hours < 18;
     };
 
@@ -783,18 +807,23 @@ export default defineComponent({
       { deep: true }
     );
 
+    const handleChangeTag = (tags: any) => {
+      tags.value = tags;
+      props.item.evidence_url = tags.value.join(",");
+    };
+
     // Return
     return {
-      getAssetPath,
+      format,
       selectOptions,
       item,
-      format,
+      tags,
       uppy,
       setPlace,
       coords,
       markerDetails,
-      handleClick,
-
+      handleClickGMap,
+      handleChangeTag,
       onIncreaseAccused,
       onDecreaseAccused,
     };
@@ -802,7 +831,13 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .card > .card-body {
+    padding: 0px;
+  }
+}
+
 .vs__dropdown-toggle {
   border: none;
 }
@@ -818,9 +853,17 @@ export default defineComponent({
 .dp__input {
   border: none !important;
 }
-@media only screen and (max-width: 768px) {
-  .card > .card-body {
-    padding: 0px;
-  }
+
+.stepTitle {
+  color: #800001;
+}
+
+.form-control {
+  border-color: #800001;
+  border-width: 0.1em;
+}
+
+.form-check-input {
+  background-color: #fff;
 }
 </style>

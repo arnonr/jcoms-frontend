@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">รายละเอียด</h3>
+          <h3 class="modal-title">รายละเอียด {{ jcoms_no }}</h3>
           <button
             @click="onClose"
             type="button"
@@ -38,6 +38,10 @@ export default defineComponent({
   props: {
     complaint_id: {
       type: Number,
+      required: true,
+    },
+    jcoms_no: {
+      type: String,
       required: true,
     },
   },

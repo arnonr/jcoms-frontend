@@ -70,11 +70,11 @@
                   :disabled="btnSendOtpDisabled"
                 >
                   ส่ง OTP
-                  <!-- {{
+                  {{
                     btnSendOtpDisabled == true
-                      ? "(" + (otpCountdown - 60) + ")"
+                      ? "( ส่งอีกครั้งได้หลังจาก " + (otpCountdown - 60) + ")"
                       : ""
-                  }} -->
+                  }}
                 </button>
               </div>
               <hr />
@@ -210,7 +210,7 @@ export default defineComponent({
     // Event
     const onCaptchaModal = () => {
       //   captchaModalObj.value.show();
-      otpModalObj.value.show();
+    //   otpModalObj.value.show();
     };
 
     const onOTPModal = () => {
@@ -347,12 +347,12 @@ export default defineComponent({
     // Mounted
     onMounted(() => {
       captchaModalObj.value = new Modal(captchaModalRef.value, {});
-      otpModalObj.value = new Modal(otpModalRef.value, {});
+    //   otpModalObj.value = new Modal(otpModalRef.value, {});
       onCaptchaModal();
     });
 
     onUnmounted(() => {
-      otpModalObj.value.hide();
+    //   otpModalObj.value.hide();
       captchaModalObj.value.hide();
     });
 

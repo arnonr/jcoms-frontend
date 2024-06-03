@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">แก้ไขข้อมูล</h3>
+          <h3 class="modal-title">แก้ไขข้อมูล/เปลี่ยนสถานะ</h3>
           <button
             @click="onClose"
             type="button"
@@ -18,8 +18,8 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="row">
-                  <div class="col-md-12 mb-5 mt-5">
-                    <h4 class="color-primary">ข้อมูลผู้ใช้งาน</h4>
+                  <div class="col-md-12 mb-5">
+                    <h4 class="color-primary">สถานะผู้ใช้งาน</h4>
                   </div>
                   <div class="col-md-12 mb-7">
                     <label class="form-label required">สถานะ</label>
@@ -38,6 +38,10 @@
                         <ErrorMessage name="status" />
                       </div>
                     </div>
+                  </div>
+
+                  <div class="col-md-12 mb-5 mt-5">
+                    <h4 class="color-primary">ข้อมูลผู้ใช้งาน</h4>
                   </div>
 
                   <div class="col-md-4 mb-7">
@@ -353,17 +357,8 @@
                       }}</span>
                     </div>
                     <img
-                      :src="previewImage"
-                      class="mt-5 w-100 w-md-50"
                       v-if="previewImage"
-                    />
-                    <img
-                      :src="
-                        previewImage == null && item.file_attach_old != null
-                          ? item.file_attach_old
-                          : null
-                      "
-                      alt=""
+                      :src="previewImage"
                       class="mt-5 w-100 w-md-50"
                     />
                   </div>
@@ -794,6 +789,8 @@ export default defineComponent({
               : null,
           //  หน่วยงาน
         });
+        previewImage.value = item.file_attach_old;
+        console.log(previewImage.value);
       } catch (error) {
         console.log(error);
       }
@@ -866,8 +863,8 @@ export default defineComponent({
     const onSaveUser = async () => {
       //
       let data_item = {
-        // file_attach:
-        //   item.value.file_attach != null ? item.value.file_attach : null,
+        file_attach:
+          item.file_attach != null ? item.file_attach : null,
         id_card: item.id_card,
         prefix_name_id: item.prefix_name_id ? item.prefix_name_id.id : null,
         firstname: item.firstname,

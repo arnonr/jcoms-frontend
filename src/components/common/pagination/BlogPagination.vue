@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-between">
-    <div class="text-muted">จำนวนทั้งหมด {{ totalItems }} รายการ</div>
+    <div class="text-muted">20 รายการ/หน้า</div>
     <nav aria-label="..." class="py-5">
       <ul class="pagination">
         <li :class="`page-item ${prevBtnClass}`">
@@ -18,7 +18,9 @@
         </li>
       </ul>
     </nav>
-    <div class="text-muted">จำนวนหน้าทั้งหมด {{ totalPage }} หน้า</div>
+    <div class="text-muted">
+      ทั้งหมด {{ totalPage }} หน้า รวม {{ totalItems }} รายการ
+    </div>
   </div>
 </template>
 

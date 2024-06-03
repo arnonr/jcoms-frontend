@@ -19,7 +19,7 @@
               <div class="col-md-12">
                 <div class="row">
                   <div class="col-md-12 mb-5">
-                    <h4 class="color-primary">ข้อมูลผู้ใช้งาน</h4>
+                    <h4 class="color-primary">สถานะผู้ใช้งาน</h4>
                   </div>
                   <div class="col-md-12">
                     <span> สถานะปัจจุบัน : </span>
@@ -55,7 +55,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <span>รหัสบัตรประชาชน : </span>
+                    <span>เลขบัตรประจำตัวประชาชน : </span>
                     <span class="fst-italic">{{ item.id_card }}</span>
                     <div class="separator separator-dotted my-2"></div>
                   </div>
@@ -74,7 +74,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <span>Email : </span>
+                    <span>อีเมล : </span>
                     <span class="fst-italic">{{ item.email }}</span>
                     <div class="separator separator-dotted my-2"></div>
                   </div>

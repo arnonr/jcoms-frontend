@@ -1,5 +1,7 @@
-import { ref } from "vue";
+
 import { defineStore } from "pinia";
+import { ref } from "vue";
+
 export interface Otp {
   phone: string;
   code: string;

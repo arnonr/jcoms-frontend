@@ -2,7 +2,7 @@
   <div class="row">
     <!--begin::Input group-->
     <div class="mb-5 mt-5">
-      <h4>1. ข้อมูลผู้{{ complant_type.name_th }}</h4>
+      <h4>1. ข้อมูลผู้{{ complant_type?.name_th }}</h4>
     </div>
 
     <div class="input-group mb-7">
@@ -48,15 +48,8 @@
               class="form-control"
               placeholder="หมายเลขโทรศัพท์"
               aria-label="หมายเลขโทรศัพท์"
-              disabled
               v-model="item.phone_number"
             />
-            <button
-              class="btn btn-primary ms-3"
-              @click="$emit('update-phone-number-data')"
-            >
-              เปลี่ยนหมายเลข
-            </button>
           </div>
 
           <div class="d-block mt-1" v-if="errors.phone_number.error == 1">
@@ -336,6 +329,7 @@
           <label for="formFile" class="form-label required"
             >ถ่ายรูปตนเองพร้อมบัตร /Take a selfie with an ID card.</label
           >
+          <br />
           <input
             class="form-control"
             type="file"
@@ -343,26 +337,36 @@
             accept="image/*"
             @change="onCardPhotoFileChange"
             ref="cardPhotoFile"
+            style="display: none"
           />
           <div class="d-block mt-1" v-if="errors.card_photo.error == 1">
             <span role="alert" class="text-danger">{{
               errors.card_photo.text
             }}</span>
           </div>
-          <img
-            :src="previewImage"
-            class="mt-5 w-100 w-md-50"
-            v-if="previewImage"
-          />
-          <img
-            :src="
-              previewImage == null && item.card_photo_old != null
-                ? item.card_photo_old
-                : null
-            "
-            alt=""
-            class="mt-5 w-100 w-md-50"
-          />
+          <div style="cursor: pointer">
+            <img
+              v-if="previewImage"
+              :src="previewImage"
+              class="mt-5 w-100 w-md-50"
+              @click="openFileInput"
+            />
+            <img
+              v-if="previewImage == null && item.card_photo_old != null"
+              :src="item.card_photo_old"
+              alt=""
+              class="mt-5 w-100 w-md-50"
+              @click="openFileInput"
+            />
+
+            <img
+              v-if="previewImage == null && item.card_photo_old == null"
+              src="/media/jcoms_exam_card.jpg"
+              alt=""
+              class="mt-5 w-100 w-md-50"
+              @click="openFileInput"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -420,6 +424,8 @@ export default defineComponent({
   },
   setup(props, context) {
     // Variable
+    // item คือ ตัวแปรเก็บ complainant
+    // complaint_item ตัวแปรเก็บ complaint
     const emit = context.emit;
 
     const cardPhotoFile = ref<any>(null);
@@ -492,6 +498,10 @@ export default defineComponent({
       }
     };
 
+    const openFileInput = () => {
+      cardPhotoFile.value.click();
+    };
+
     // Mounted
     onMounted(() => {
       fetchPrefixName();
@@ -528,12 +538,14 @@ export default defineComponent({
       format,
       previewImage,
       onCardPhotoFileChange,
+      cardPhotoFile,
+      openFileInput,
     };
   },
 });
 </script>
 
-<style>
+<style scoped>
 .vs__dropdown-toggle {
   border: none;
 }
@@ -553,5 +565,10 @@ export default defineComponent({
   .card > .card-body {
     padding: 0px;
   }
+}
+
+.form-control {
+  border-color: #800001;
+  border-width: 0.1em;
 }
 </style>

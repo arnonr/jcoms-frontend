@@ -607,7 +607,7 @@ export default defineComponent({
             confirmButton: "btn fw-semibold btn-light-success",
             cancelButton: "btn fw-semibold btn-light-danger",
           },
-        }).then((result) => {
+        }).then((result: any) => {
           if (result.isConfirmed) {
             let comment = Number(result.value);
             onSubmit(type);

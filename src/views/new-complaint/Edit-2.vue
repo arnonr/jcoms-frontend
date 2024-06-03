@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">แก้ไขข้อมูล</h3>
+          <h3 class="modal-title">แก้ไขข้อมูล1</h3>
           <button
             @click="onClose"
             type="button"

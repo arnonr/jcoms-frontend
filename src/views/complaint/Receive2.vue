@@ -313,7 +313,9 @@ export default defineComponent({
             ? item.receive_doc_filename
             : undefined,
         receive_doc_no: item.receive_doc_no,
-        receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
+        receive_doc_date: item.receive_doc_date
+          ? dayjs(item.receive_doc_date).format("YYYY-MM-DD")
+          : undefined,
         receive_comment: item.receive_comment,
         receive_status: item.receive_status.value,
         state_id: item.receive_status.state_id,

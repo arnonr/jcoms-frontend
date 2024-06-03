@@ -10,12 +10,6 @@ const MainMenuConfig: Array<MenuItem> = [
         bootstrapIcon: "bi-app-indicator",
       },
       {
-        heading: "ร้องเรียน/แจ้งเบาะแส",
-        route: "/appeal",
-        keenthemesIcon: "element-11",
-        bootstrapIcon: "bi-app-indicator",
-      },
-      {
         heading: "ติดตามเรื่องร้องเรียน",
         route: "/tracking",
         keenthemesIcon: "element-11",

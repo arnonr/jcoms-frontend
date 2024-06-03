@@ -1296,14 +1296,14 @@ export default defineComponent({
       if (userData.role_id == 3 || userData.role_id == 4) {
         params.bureau_id = userData.bureau_id;
         // params.more_state_id = 10;
-        params.state_in = '11,12,13,14,15,16,17,19,20,21,22,23,24';
+        params.state_in = '10,11,12,13,14,15,16,17,19,20,21,22,23,24';
       }
 
       if (userData.role_id == 5) {
         params.inspector_id = userData.inspector_id;
 
         // params.more_state_id = 10;
-        params.state_in = '11,12,13,14,15,16,17,19,20,21,22,23,24';
+        params.state_in = '10,11,12,13,14,15,16,17,19,20,21,22,23,24';
       }
 
       const { data } = await ApiService.query("complaint", {
