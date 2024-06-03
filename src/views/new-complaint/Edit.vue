@@ -35,19 +35,14 @@
               :complaint_item="item"
               :complaint_type="complaint_type"
               :accused="accused"
-              @increase-accused="onIncreaseAccused"
-              @decrease-accused="onDecreaseAccused"
             />
 
-            <!-- v-if="tab_index == 1 && item.id != null" -->
             <!-- <Tab3
-              :complaint_type="complaint_type"
-              :complaint_item="item"
-              :accused="accused"
-              :errors="item_errors"
-              :accused_errors="accused_item_errors"
-              @increase-accused="onIncreaseAccused"
-              @decrease-accused="onDecreaseAccused"
+                v-if="tab_index == 1"
+                :complaint_item="item"
+                :complainant_item="complainant_item"
+                :accused="accused"
+                :complaint_type="complaint_type"
             /> -->
 
             <!-- <tab-content title="รับเรื่อง">
@@ -57,22 +52,6 @@
                 :complainant_item="complainant_item"
                 :accused="accused"
                 :complaint_type="complaint_type"
-              />
-            </tab-content> -->
-
-            <!-- <tab-content
-              :title="`รายละเอียดเรื่อง${complaint_type.name_th}`"
-              :before-change="onTab2Validate"
-            >
-              <Tab2
-                v-if="item.id != null"
-                :complaint_type="complaint_type"
-                :complaint_item="item"
-                :accused="accused"
-                :errors="item_errors"
-                :accused_errors="accused_item_errors"
-                @increase-accused="onIncreaseAccused"
-                @decrease-accused="onDecreaseAccused"
               />
             </tab-content> -->
 
@@ -164,9 +143,7 @@ export default defineComponent({
     };
 
     // Variable
-    const complaint_type = useComplaintTypeData().complaint_types.find(
-      (x: any) => x.id == 1 //Number(route.query.type_id)
-    );
+    const complaint_type = ref({ id: null, name_th: "" });
 
     // Item Variable
     const item = reactive<any>({
@@ -346,10 +323,14 @@ export default defineComponent({
           {}
         );
 
+        complaint_type.value = useComplaintTypeData().complaint_types.find(
+          (x: any) => x.id == data.data.complaint_type_id
+        );
+
         Object.assign(item, data.data);
         accused.length = 0;
-        Object.assign(accused, data.data.accused);
         accused_old.length = 0;
+        Object.assign(accused, data.data.accused);
         Object.assign(accused_old, data.data.accused);
       } catch (error) {
         console.log(error);
@@ -357,27 +338,6 @@ export default defineComponent({
     };
 
     // Event
-    const onIncreaseAccused = () => {
-      accused.push({
-        id: null,
-        prefix_name_id: null,
-        firstname: "",
-        lastname: "",
-        position_id: null,
-        section_id: null,
-        agency_id: null,
-        inspector_id: null,
-        bureau_id: null,
-        division_id: null,
-        complaint_id: null,
-        type: null,
-        detail: null,
-        organization_all: null,
-      });
-    };
-    const onDecreaseAccused = (index: number) => {
-      accused.splice(index, 1);
-    };
     const onClose = () => {
       mainModalObj.value.hide();
       emit("reload");
@@ -426,12 +386,12 @@ export default defineComponent({
         province_id: complainant_item.province_id,
         id: complainant_item.id,
         complainant_type: item.id == 4 ? 2 : 1,
-        position_id: complaint_type.id == 4 ? null : null,
-        section_id: complaint_type.id == 4 ? null : null,
-        inspection_id: complaint_type.id == 4 ? null : null,
-        bureau_id: complaint_type.id == 4 ? null : null,
-        division_id: complaint_type.id == 4 ? null : null,
-        agency_id: complaint_type.id == 4 ? null : null,
+        position_id: complaint_type.value.id == 4 ? null : null,
+        section_id: complaint_type.value.id == 4 ? null : null,
+        inspection_id: complaint_type.value.id == 4 ? null : null,
+        bureau_id: complaint_type.value.id == 4 ? null : null,
+        division_id: complaint_type.value.id == 4 ? null : null,
+        agency_id: complaint_type.value.id == 4 ? null : null,
         // updated_by: item.firstname + " " + props.item.lastname,
       };
 
@@ -590,8 +550,6 @@ export default defineComponent({
       complaint_type,
       tab_index,
       // event
-      onIncreaseAccused,
-      onDecreaseAccused,
       onTabChange,
       onComplete,
       onClose,

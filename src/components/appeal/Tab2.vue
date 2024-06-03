@@ -148,7 +148,7 @@
     </div>
 
     <div class="mb-7 col-12 col-lg-12">
-      <label for="complaint_title" class="required form-label"
+      <label for="complaint_map" class="required form-label"
         >ปักหมุดสถานที่เกิดเหตุ</label
       >
       <div>

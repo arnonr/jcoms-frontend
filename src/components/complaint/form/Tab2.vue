@@ -135,9 +135,7 @@
       </div>
 
       <div class="col-12 col-lg-4 mb-7">
-        <label for="day_time" class="required form-label"
-          >ห้วงเวลาเกิดเหตุ</label
-        >
+        <label for="day_time" class="form-label">ห้วงเวลาเกิดเหตุ</label>
         <v-select
           label="name"
           name="day_time"
@@ -157,7 +155,7 @@
       </div>
 
       <div class="mb-7 col-12 col-lg-12">
-        <label for="complaint_title" class="required form-label"
+        <label for="complaint_map" class="form-label"
           >ปักหมุดสถานที่เกิดเหตุ</label
         >
         <div>
@@ -173,7 +171,7 @@
             :center="markerDetails.position"
             :click="true"
             @click="handleClickGMap"
-            :zoom="16"
+            :zoom="14"
             map-type-id="terrain"
             style="width: 100%; height: 400px"
           >
@@ -324,17 +322,14 @@
             </div>
           </div>
           <div class="mb-1 col-12 col-md-2 d-flex" v-if="idx != 0">
-            <button
-              class="btn btn-danger mt-7"
-              @click="$emit('decrease-accused', idx)"
-            >
+            <button class="btn btn-danger mt-7" @click="onDecreaseAccused(idx)">
               <i class="fa fa-close"></i>
               <span>ลบผู้ถูกร้องคนที่ {{ idx + 1 }}</span>
             </button>
           </div>
         </div>
         <div class="mt-3">
-          <a @click="$emit('increase-accused')" class="cursor-pointer"
+          <a @click="onIncreaseAccused" class="cursor-pointer"
             ><span>+ เพิ่มผู้ถูก{{ complaint_type.name_th }}</span></a
           >
         </div>
@@ -815,23 +810,36 @@ export default defineComponent({
     };
 
     // Gmap
-    const coords = ref({ lat: 13.7563, lng: 100.5018 });
+    const coords = ref({ lat: 13.7563, lng: 200.5018 });
     const markerDetails = ref({
       id: 1,
       position: coords.value,
     });
+
     const getUserLocation = () => {
       const isSupported = "navigator" in window && "geolocation" in navigator;
       if (isSupported) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            coords.value.lat = position.coords.latitude;
-            coords.value.lng = position.coords.longitude;
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+        if (
+          complaint_item.value.location_coordinates != null &&
+          complaint_item.value.location_coordinates != ""
+        ) {
+          coords.value.lat = parseFloat(
+            complaint_item.value.location_coordinates.split(",")[0]
+          );
+          coords.value.lng = parseFloat(
+            complaint_item.value.location_coordinates.split(",")[1]
+          );
+        } else {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              coords.value.lat = position.coords.latitude;
+              coords.value.lng = position.coords.longitude;
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
+        }
       }
     };
     const setPlace = (place: any) => {
@@ -871,17 +879,16 @@ export default defineComponent({
           perPage: 500,
         });
 
-      //   if (complaint_item.value.location_coordinates) {
-      //     coords.value.lat = parseFloat(
-      //       complaint_item.value.location_coordinates.split(",")[0]
-      //     );
-      //     coords.value.lng = parseFloat(
-      //       complaint_item.value.location_coordinates.split(",")[1]
-      //     );
-      //   }
-      //   console.log(coords.value.lat);
+      //   getUserLocation();
 
-      getUserLocation();
+      if (complaint_item.value.location_coordinates) {
+        coords.value.lat = parseFloat(
+          complaint_item.value.location_coordinates.split(",")[0]
+        );
+        coords.value.lng = parseFloat(
+          complaint_item.value.location_coordinates.split(",")[1]
+        );
+      }
       //   Location
 
       // Get Topic
@@ -934,8 +941,6 @@ export default defineComponent({
             el.complaint_channel_id
           );
         });
-
-        console.log(complaint_item.value.complaint_channel_all);
       }
 
       tags.value =
@@ -948,7 +953,6 @@ export default defineComponent({
 
       fetchAccused();
       fetchComplaintFileAttach();
-
     });
 
     watch(
@@ -978,6 +982,21 @@ export default defineComponent({
           complaint_item.value.complaint_type_id = value.complaint_type_id;
           complaint_item.value.topic_category_id = value.topic_category_id;
           complaint_item.value.topic_type_id = value.topic_type_id;
+        }
+      }
+    );
+
+    watch(
+      () => complaint_item.value.incident_time,
+      (value: any) => {
+        let day = isDay(value);
+        if (day) {
+          complaint_item.value.day_time = {
+            name: "กลางวัน",
+            value: 1,
+          };
+        } else {
+          complaint_item.value.day_time = { name: "กลางคืน", value: 2 };
         }
       }
     );
@@ -1028,12 +1047,27 @@ export default defineComponent({
       { deep: true }
     );
 
-    watch(
-      () => complaint_item.value.day_time,
-      (value: any) => {
-        console.log(value);
-      }
-    );
+    const onIncreaseAccused = () => {
+      accused.value.push({
+        id: null,
+        prefix_name_id: null,
+        firstname: "",
+        lastname: "",
+        position_id: null,
+        section_id: null,
+        agency_id: null,
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        complaint_id: null,
+        type: null,
+        detail: null,
+        organization_all: null,
+      });
+    };
+    const onDecreaseAccused = (index: number) => {
+      accused.value.splice(index, 1);
+    };
 
     // Return
     return {
@@ -1046,6 +1080,8 @@ export default defineComponent({
       markerDetails,
       handleClickGMap,
       handleChangeTag,
+      onIncreaseAccused,
+      onDecreaseAccused,
       onTab2Validate,
       errors,
       accused_errors,
@@ -1092,5 +1128,11 @@ export default defineComponent({
 .form-check-input:checked {
   background-color: #1b84ff !important;
   border-color: #1b84ff !important;
+}
+</style>
+
+<style>
+.pac-container {
+  z-index: 9999 !important;
 }
 </style>

@@ -569,8 +569,8 @@ export default defineComponent({
     // const accused = ref<any>(props.accused);
 
     //Fetch
-    useMasterData()
-      .fetchPrefixName()
+    selectOptions.value.prefix_names = useMasterData()
+      .fetchPrefixName({})
       .then((data: any) => {
         selectOptions.value.prefix_names = data;
       });
