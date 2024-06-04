@@ -44330,7 +44330,65 @@ export default () => {
     },
   ];
 
-  const organization_mapping = () => {
+  const inspector_organizations = [
+    {
+      inspector_th: "กองตรวจราชการ1",
+      inspector_th_abbr: "กต.1",
+      inspector_id: 1,
+    },
+    {
+      inspector_th: "กองตรวจราชการ2",
+      inspector_th_abbr: "กต.2",
+      inspector_id: 2,
+    },
+    {
+      inspector_th: "กองตรวจราชการ3",
+      inspector_th_abbr: "กต.3",
+      inspector_id: 3,
+    },
+    {
+      inspector_th: "กองตรวจราชการ4",
+      inspector_th_abbr: "กต.4",
+      inspector_id: 4,
+    },
+    {
+      inspector_th: "กองตรวจราชการ5",
+      inspector_th_abbr: "กต.5",
+      inspector_id: 5,
+    },
+    {
+      inspector_th: "กองตรวจราชการ6",
+      inspector_th_abbr: "กต.6",
+      inspector_id: 6,
+    },
+    {
+      inspector_th: "กองตรวจราชการ7",
+      inspector_th_abbr: "กต.7",
+      inspector_id: 7,
+    },
+    {
+      inspector_th: "กองตรวจราชการ8",
+      inspector_th_abbr: "กต.8",
+      inspector_id: 8,
+    },
+    {
+      inspector_th: "กองตรวจราชการ9",
+      inspector_th_abbr: "กต.9",
+      inspector_id: 9,
+    },
+    {
+      inspector_th: "กองตรวจราชการ10",
+      inspector_th_abbr: "กต.10",
+      inspector_id: 10,
+    },
+    {
+      inspector_th: "กองบังคับการอำนวยการสำนักงานจเรตำรวจ",
+      inspector_th_abbr: "บก.อก.จต.",
+      inspector_id: 11,
+    },
+  ];
+
+  const organization_mapping = (type = "all") => {
     const a = agency_organizations.map((el) => {
       el.label = el.agency_th + " > " + el.division_th + " > " + el.bureau_th;
       return el;
@@ -44345,6 +44403,23 @@ export default () => {
       el.label = el.bureau_th;
       return el;
     });
+
+    const i = inspector_organizations.map((el) => {
+      el.label = el.inspector_th;
+      return el;
+    });
+
+    if (type == "bureau") {
+      return b;
+    }
+
+    if (type == "division") {
+      return d;
+    }
+
+    if (type == "inspector") {
+      return i;
+    }
 
     return [...b, ...d, ...a].sort((e, f) => {
       const bureauIDComparison = e.bureau_id - f.bureau_id;

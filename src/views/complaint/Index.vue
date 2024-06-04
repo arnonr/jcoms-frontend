@@ -8,18 +8,8 @@
     <div class="card shadow-sm my-5">
       <!-- Button Add & Export -->
       <div class="card-header bg-white">
-        <h4 class="card-title">รายการเรื่องร้องเรียน/แจ้งเบาะแส</h4>
+        <h4 class="card-title">บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส</h4>
         <div class="card-toolbar">
-          <button
-            class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
-            @click="onAddModal()"
-          >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2"
-              >เพิ่มเรื่องร้องเรียน</span
-            >
-          </button>
-
           <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-success pe-sm-3 ps-sm-5 dropdown-toggle"
@@ -44,23 +34,69 @@
           :paginationData="paginationData"
           @update:currentPage="paginationData.currentPage = $event"
           @edit="
-            (it: any) => {
-              Object.assign(item, it);
-              openEditModal = true;
-            }
-          "
+              (it: any) => {
+                Object.assign(item, it);
+                openEditModal = true;
+              }
+            "
           @detail="
-            (it: any) => {
-              Object.assign(item, it);
-              openDetailModal = true;
-            }
-          "
-          @receive1="
-            (it: any) => {
-              Object.assign(item, it);
-              openReceive1Modal = true;
-            }
-          "
+              (it: any) => {
+                Object.assign(item, it);
+                openDetailModal = true;
+              }
+            "
+          @send1="
+              (it: any) => {
+                Object.assign(item, it);
+                openSend1Modal = true;
+              }
+            "
+          @receive2="
+              (it: any) => {
+                Object.assign(item, it);
+                openReceive2Modal = true;
+              }
+            "
+          @send2="
+              (it: any) => {
+                Object.assign(item, it);
+                openSend2Modal = true;
+              }
+            "
+          @receive3="
+              (it: any) => {
+                Object.assign(item, it);
+                openReceive3Modal = true;
+              }
+            "
+          @sendReport1="
+              (it: any) => {
+                Object.assign(item, it);
+                openSendReport1Modal = true;
+              }
+            "
+          @sendReport2="
+              (it: any) => {
+                Object.assign(item, it);
+                openSendReport2Modal = true;
+              }
+            "
+          @receiveReport1="
+              (it: any) => {
+                Object.assign(item, it);
+                openReceiveReport1Modal = true;
+              }
+            "
+          @receiveReport2="
+              (it: any) => {
+                Object.assign(item, it);
+                openReceiveReport2Modal = true;
+              }
+            "
+          @successReport="  (it: any) => {
+                Object.assign(item, it);
+                openSuccessReportModal = true;
+              }"
         />
       </div>
     </div>
@@ -95,14 +131,126 @@
         />
       </div>
 
-      <!-- Modal Receive ฝรท. รับเรื่อง -->
-      <div id="receive1-modal">
-        <Receive1Page
-          v-if="openReceive1Modal == true"
+      <!-- Modal Send ฝรท. ส่งต่อเรื่อง -->
+      <div id="send1-modal">
+        <Send1Page
+          v-if="openSend1Modal == true"
           :complaint_id="item.id"
           @close-modal="
             () => {
-              openReceive1Modal = false;
+              openSend1Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive2 บช./ภ. รับเรื่อง -->
+      <div id="receive2-modal">
+        <Receive2Page
+          v-if="openReceive2Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceive2Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Send บช./ภ. ส่งต่อเรื่อง -->
+      <div id="send2-modal">
+        <Send2Page
+          v-if="openSend2Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSend2Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive3 บช./ภ. รับเรื่อง -->
+      <div id="receive3-modal">
+        <Receive3Page
+          v-if="openReceive3Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceive3Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Send Report บก./ภจ.ว. ส่งรายงาน -->
+      <div id="send-report1-modal">
+        <SendReport1Page
+          v-if="openSendReport1Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendReport1Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive Report 1 บช./ภ. รับรายงาน -->
+      <div id="receive-report1-modal">
+        <ReceiveReport1Page
+          v-if="openReceiveReport1Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceiveReport1Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Send Report บช./ภ.  ส่งรายงาน -->
+      <div id="send-report2-modal">
+        <SendReport2Page
+          v-if="openSendReport2Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendReport2Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive Report 2 จต. รับรายงาน -->
+      <div id="receive-report2-modal">
+        <ReceiveReport2Page
+          v-if="openReceiveReport2Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceiveReport2Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Success Report จต. ปิดเรื่อง -->
+      <div id="success-report-modal">
+        <SuccessReportPage
+          v-if="openSuccessReportModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSuccessReportModal = false;
             }
           "
           @reload="fetchItems"
@@ -121,11 +269,19 @@ import dayjs from "dayjs";
 
 // Component
 import SearchComponent from "@/components/complaint/Search.vue";
-import ListComponent from "@/components/complaint/List.vue";
+import ListComponent from "@/components/complaint/List2.vue";
 import Preloader from "@/components/Preloader.vue";
 import EditPage from "@/views/new-complaint/Edit.vue";
 import DetailPage from "@/views/new-complaint/DetailModal.vue";
-import Receive1Page from "@/views/new-complaint/Receive1.vue";
+import Send1Page from "@/views/complaint/Send1.vue";
+import Receive2Page from "@/views/complaint/Receive2.vue";
+import Send2Page from "@/views/complaint/Send2.vue";
+import Receive3Page from "@/views/complaint/Receive3.vue";
+import SendReport1Page from "@/views/complaint/SendReport1.vue";
+import SendReport2Page from "@/views/complaint/SendReport2.vue";
+import ReceiveReport1Page from "@/views/complaint/ReceiveReport1.vue";
+import ReceiveReport2Page from "@/views/complaint/ReceiveReport2.vue";
+import SuccessReportPage from "@/views/complaint/SuccessReport.vue";
 
 export default defineComponent({
   name: "complaint",
@@ -135,7 +291,15 @@ export default defineComponent({
     Preloader,
     EditPage,
     DetailPage,
-    Receive1Page,
+    Send1Page,
+    Receive2Page,
+    Send2Page,
+    Receive3Page,
+    SendReport1Page,
+    SendReport2Page,
+    ReceiveReport1Page,
+    ReceiveReport2Page,
+    SuccessReportPage,
   },
   setup() {
     // UI Variable
@@ -159,7 +323,15 @@ export default defineComponent({
 
     const openDetailModal = ref(false);
     const openEditModal = ref(false);
-    const openReceive1Modal = ref(false);
+    const openSend1Modal = ref(false);
+    const openReceive2Modal = ref(false);
+    const openSend2Modal = ref(false);
+    const openReceive3Modal = ref(false);
+    const openSendReport1Modal = ref(false);
+    const openSendReport2Modal = ref(false);
+    const openReceiveReport1Modal = ref(false);
+    const openReceiveReport2Modal = ref(false);
+    const openSuccessReportModal = ref(false);
 
     // Fetch Data
     const fetchItems = async () => {
@@ -167,7 +339,7 @@ export default defineComponent({
       const params = {
         ...search,
         create_year: search.year ?? undefined,
-        state_id: search.state_id?.id ?? 1,
+        state_id: search.state_id?.id ?? undefined,
         inspector_id: search.inspector_id?.id ?? undefined,
         bureau_id: search.bureau_id?.id ?? undefined,
         division_id: search.division_id?.id ?? undefined,
@@ -193,6 +365,7 @@ export default defineComponent({
         order: "desc",
         perPage: paginationData.perPage,
         currentPage: paginationData.currentPage,
+        receive_status: 1,
       };
 
       const { data } = await ApiService.query("complaint", {
@@ -254,7 +427,15 @@ export default defineComponent({
       fetchItems,
       openDetailModal,
       openEditModal,
-      openReceive1Modal,
+      openSend1Modal,
+      openReceive2Modal,
+      openSend2Modal,
+      openReceive3Modal,
+      openSendReport1Modal,
+      openSendReport2Modal,
+      openReceiveReport1Modal,
+      openReceiveReport2Modal,
+      openSuccessReportModal,
     };
   },
 });

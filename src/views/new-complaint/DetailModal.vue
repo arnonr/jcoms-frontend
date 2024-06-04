@@ -1,39 +1,66 @@
 <template>
-  <div class="" v-if="!isLoading">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-          <!--  -->
-          <div class="accordion" id="myAccordion">
-            <Section1 :complaint_item="complaint_item" />
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="mainModalRef"
+    id="main-modal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header" v-if="!isLoading">
+          <h3 class="modal-title">รายละเอียด {{ complaint_item.jcoms_no }}</h3>
+          <button
+            @click="onClose({ reload: false })"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
 
-            <Section2
-              :complaint_type="complaint_type"
-              :complaint_item="complaint_item"
-              :complainant_item="complainant_item"
-              :new_item="new_item"
-            />
+        <div class="modal-body" v-if="!isLoading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <!--  -->
+                <div class="accordion" id="myAccordion">
+                  <Section1 :complaint_item="complaint_item" />
 
-            <Section3
-              :complaint_type="complaint_type"
-              :complaint_item="complaint_item"
-              :complainant_item="complainant_item"
-              :new_item="new_item"
-              :accused_item="accused_item"
-              :complaint_file_attach="complaint_file_attach"
-            />
+                  <Section2
+                    :complaint_type="complaint_type"
+                    :complaint_item="complaint_item"
+                    :complainant_item="complainant_item"
+                    :new_item="new_item"
+                  />
+
+                  <Section3
+                    :complaint_type="complaint_type"
+                    :complaint_item="complaint_item"
+                    :complainant_item="complainant_item"
+                    :new_item="new_item"
+                    :accused_item="accused_item"
+                    :complaint_file_attach="complaint_file_attach"
+                  />
+
+                 
+                </div>
+              </div>
+            </div>
+            <Preloader :isLoading="isLoading" />
           </div>
         </div>
+        <Preloader :isLoading="isLoading" :position="'absolute'" />
       </div>
-      <Preloader :isLoading="isLoading" />
     </div>
-    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, onUnmounted } from "vue";
 import ApiService from "@/core/services/ApiService";
+// Import Modal Bootstrap
+import { Modal } from "bootstrap";
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
@@ -50,7 +77,7 @@ import Section2 from "@/components/complaint/detail/Section2.vue";
 import Section3 from "@/components/complaint/detail/Section3.vue";
 
 export default defineComponent({
-  name: "complaint-detail",
+  name: "complaint-detail-modal",
   props: {
     complaint_id: {
       type: Number,
@@ -71,6 +98,8 @@ export default defineComponent({
   setup(props, { emit }) {
     // UI
     const isLoading = ref<Boolean>(true);
+    const mainModalRef = ref<any>(null);
+    const mainModalObj = ref<any>(null);
 
     // Variable
     const selectOptions = ref({
@@ -172,7 +201,7 @@ export default defineComponent({
 
     const beforeShow = () => {
       new_item.complaint_channel_all = "";
-      if (complaint_item.channel_history?.length > 0) {
+      if (complaint_item.channel_history.length > 0) {
         complaint_item.channel_history.forEach((el: any) => {
           let comma_text = "";
           if (new_item.complaint_channel_all.length != 0) {
@@ -240,8 +269,14 @@ export default defineComponent({
           : [];
     };
 
+
     // Mounted
     onMounted(async () => {
+      mainModalObj.value = new Modal(mainModalRef.value, {});
+      mainModalObj.value.show();
+      mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+        onClose({ reload: false })
+      );
 
       await fetchComplaint();
       await fetchComplainant();
@@ -254,11 +289,19 @@ export default defineComponent({
     });
 
     onUnmounted(() => {
+      if (mainModalRef.value) {
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
+      }
+      mainModalObj.value.hide();
+      emit("close-modal");
     });
 
     // Return
     return {
       isLoading,
+      mainModalRef,
       complaint_item,
       complainant_item,
       accused_item,
@@ -285,4 +328,6 @@ export default defineComponent({
 .modal-content {
   background-color: #d9f4fe;
 }
+
+
 </style>

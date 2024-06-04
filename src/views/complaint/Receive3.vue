@@ -1,20 +1,28 @@
 <template>
-  <div class="modal fade" tabindex="-1" ref="mainModalRef" id="main-modal">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title">รับเรื่อง ({{ header }})</h3>
-          <button
-            @click="onClose"
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
+  <div>
+    <div
+      class="modal fade"
+      tabindex="-1"
+      ref="mainModalRef"
+      id="main-modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header" v-if="item.id != null">
+            <h3 class="modal-title">
+              บก./ภจ.ว. รับเรื่อง ({{ item.jcoms_no }})
+            </h3>
+            <button
+              @click="onClose({ reload: false })"
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
 
-        <div class="modal-body">
-          <div class="container">
+          <div class="modal-body" v-if="item.id != null">
             <div class="row">
               <div class="mb-7 col-12 col-lg-12 text-end">
                 <button
@@ -41,7 +49,11 @@
                       data-bs-parent="#accordionFlushExample"
                     >
                       <div class="accordion-body" style="padding: 0">
-                        <DetailComplaint :complaint_id="complaint_id" />
+                        <DetailPage
+                          v-if="item.id"
+                          :complaint_id="item.complaint_id"
+                          :complainant_id="item.complainant_id"
+                        />
                         <hr />
                       </div>
                     </div>
@@ -50,7 +62,7 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-6">
-                <label for="receive_doc_no" class="form-label"
+                <label for="send" class="form-label"
                   >เลขทะเบียนหนังสือรับ</label
                 >
                 <input
@@ -63,9 +75,7 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-6">
-                <label for="receive_doc_date" class="form-label"
-                  >วันที่หนังสือรับ</label
-                >
+                <label for="surname" class="form-label">วันที่หนังสือ</label>
 
                 <VueDatePicker
                   v-model="item.receive_doc_date"
@@ -87,7 +97,7 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-12">
-                <label for="receive_comment">หมายเหตุ : </label>
+                <label for="">หมายเหตุ : </label>
                 <input
                   v-model="item.receive_comment"
                   type="text"
@@ -98,19 +108,8 @@
                 />
               </div>
 
-              <div class="mb-7 col-12 col-lg-12">
-                <label for="formFile" class="form-label">แนบไฟล์</label>
-                <input
-                  class="form-control"
-                  type="file"
-                  id="formFile"
-                  @change="onFileChange"
-                  ref="receiveDocFilename"
-                />
-              </div>
-
               <div class="mt-12 col-12 col-lg-12 text-center">
-                <button class="btn btn-success" @click="onValidate()">
+                <button class="btn btn-success" @click="onValidate">
                   รับเรื่อง
                 </button>
               </div>
@@ -119,6 +118,7 @@
         </div>
       </div>
     </div>
+    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
@@ -138,12 +138,6 @@ import "vue-select/dist/vue-select.css";
 // Vue Datepicker
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-// Import router
-import { useRouter } from "vue-router";
-// Use Address Composables
-import useComplaintTypeData from "@/composables/useComplaintTypeData";
-// SweetAleart
-import Swal from "sweetalert2/dist/sweetalert2.js";
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
@@ -155,10 +149,11 @@ dayjs.extend(customParseFormat);
 import useBasicData from "@/composables/useBasicData";
 import useOrganizationData from "@/composables/useOrganizationData";
 // Import Component
-import DetailComplaint from "./Detail.vue";
+import DetailPage from "@/views/new-complaint/Detail.vue";
+import Preloader from "@/components/Preloader.vue";
 
 export default defineComponent({
-  name: "receive-3",
+  name: "receive-complaint-2",
   props: {
     complaint_id: {
       type: Number,
@@ -169,22 +164,20 @@ export default defineComponent({
     vSelect,
     VueDatePicker,
     dayjs,
-    DetailComplaint,
+    Preloader,
+    DetailPage,
   },
-  setup(props, context) {
-    // Variable
-    const router = useRouter();
-    const emit = context.emit;
+  setup(props, { emit }) {
+    // UI Variable
+    const isLoading = ref<Boolean>(true);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    const receiveDocFilename = ref<any>(null);
-
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
-    const mounted_success = ref<boolean>(false);
-    const header = ref("");
 
+    // Variable
+    const receiveDocFilename = ref<any>(null);
     const selectOptions = ref({
-      organizations: useOrganizationData().organization_mapping(),
+      organizations: useOrganizationData().organization_mapping("bureau"),
       orders: useBasicData().orders,
     });
 
@@ -194,10 +187,6 @@ export default defineComponent({
       const year = date.getFullYear() + 543;
       return `${day} ${month} ${year}`;
     };
-
-    const complaint_type = useComplaintTypeData().complaint_types.find(
-      (x: any) => x.id == 1 //Number(route.query.type_id)
-    );
 
     // Validate Schema
     const validationItemSchema = Yup.object().shape({
@@ -216,10 +205,9 @@ export default defineComponent({
       receive_at: dayjs().format("YYYY-MM-DD"),
       organization_all: null,
       receive_comment: null,
-      receive_status: null, //1 รับ
-      state_id: null, //
+      receive_status: null,
+      state_id: null,
     });
-
     // Item Errors
     const item_errors = reactive<any>({
       receive_doc_no: { error: 0, text: "" },
@@ -230,25 +218,24 @@ export default defineComponent({
     //Fetch
     const fetchComplaint = async () => {
       try {
+        isLoading.value = true;
         const { data } = await ApiService.query(
           "complaint/" + props.complaint_id,
           {}
         );
+
         item.complaint_id = data.data.id;
+        item.complainant_id = data.data.complainant_id;
+        item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
 
-        if (item.state_id == 10) {
-          header.value = "หน่วย บช./ภ. รับหนังสือ";
-        } else if (item.state_id == 11) {
-          header.value = "หน่วย ภ.จว./บก.";
-        } else if (item.state_id == 12) {
-        } else {
-        }
-        // Object.assign(item, data.data);
+        isLoading.value = false;
       } catch (error) {
+        isLoading.value = false;
         console.log(error);
       }
     };
+
     const fetchComplaintForward = async () => {
       try {
         const { data } = await ApiService.query("complaint-forward/", {
@@ -258,8 +245,6 @@ export default defineComponent({
         item.receive_doc_no = data.data[0].receive_doc_no;
         item.receive_doc_date = data.data[0].receive_doc_date;
         item.receive_comment = data.data[0].receive_comment;
-
-        console.log(item);
       } catch (error) {
         console.log(error);
       }
@@ -267,10 +252,10 @@ export default defineComponent({
 
     // Event
     const onFileChange = (event: any) => {
-      item.forward_doc_filename = event.target.files[0];
+      item.receive_doc_filename = event.target.files[0];
     };
-
     const onValidate = async () => {
+      isLoading.value = true;
       Object.assign(item_errors, {
         receive_doc_no: { error: 0, text: "" },
         receive_doc_date: { error: 0, text: "" },
@@ -286,30 +271,25 @@ export default defineComponent({
           const errorMessage = error.message;
           item_errors[fieldName].error = 1;
           item_errors[fieldName].text = errorMessage;
+          isLoading.value = false;
         });
-        console.log(item_errors);
+
         useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
         return false;
       }
 
       onSaveComplaint();
     };
-
     const onSaveComplaint = async () => {
-      let state_id = <any>undefined;
-      if (item.state_id == 10) {
-        state_id = 19;
-      } else if (item.state_id == 11) {
-        state_id = 20;
-      } else {
-      }
+      //
+      let state_id = 20;
+
       let data_item = {
+        complaint_id: item.complaint_id,
         receive_doc_filename:
           item.receive_doc_filename.length != 0
             ? item.receive_doc_filename
             : undefined,
-        id: item.id,
-        complaint_id: item.complaint_id,
         receive_doc_no: item.receive_doc_no,
         receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
         receive_user_id: userData.id,
@@ -320,46 +300,58 @@ export default defineComponent({
       };
 
       await ApiService.putFormData("complaint-forward/" + item.id, data_item)
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
 
-          ApiService.postFormData("complaint/" + item.complaint_id, {
+          //   ปรับสถานะ
+          await ApiService.postFormData("complaint/" + item.complaint_id, {
             state_id: state_id,
           }).then(({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");
             }
 
+            isLoading.value = true;
             useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-            onClose();
+            onClose({ reload: true });
           });
         })
         .catch(({ response }) => {
+          isLoading.value = false;
           console.log(response);
         });
     };
 
-    const onClose = () => {
+    const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();
-      emit("reload");
+      if (reload === true) {
+        emit("reload");
+      }
       emit("close-modal");
     };
 
     onMounted(async () => {
       try {
-        mainModalObj.value = new Modal(mainModalRef.value, {});
-        mainModalObj.value.show();
         await fetchComplaint();
         await fetchComplaintForward();
-        mounted_success.value = true;
+        mainModalObj.value = new Modal(mainModalRef.value, {});
+        mainModalObj.value.show();
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
       } catch (error) {
         console.error("Error:", error);
       }
     });
 
     onUnmounted(() => {
+      if (mainModalRef.value) {
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
+      }
       mainModalObj.value.hide();
       emit("close-modal");
     });
@@ -368,30 +360,40 @@ export default defineComponent({
 
     // Return
     return {
-      // items
+      isLoading,
+      selectOptions,
       item,
-      onFileChange,
-      receiveDocFilename,
-      //   errors
       item_errors,
-      complaint_type,
+      format,
+      receiveDocFilename,
       // event
       onValidate,
+      onFileChange,
       onClose,
       mainModalRef,
-      mounted_success,
-      format,
-      selectOptions,
-      header,
     };
   },
 });
 </script>
 
-<style>
+<style scoped>
 @media only screen and (max-width: 768px) {
   .card > .card-body {
     padding: 0px;
   }
+}
+.modal-content {
+  background-color: #d9f4fe;
+}
+
+.form-control {
+  border-color: #800001;
+  border-width: 0.1em;
+}
+</style>
+
+<style>
+.pac-container {
+  z-index: 9999 !important;
 }
 </style>

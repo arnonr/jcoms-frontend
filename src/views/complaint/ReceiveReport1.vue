@@ -10,7 +10,7 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">บช./ภ. รับเรื่อง ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">บช./ภ. รับรายงาน ({{ item.jcoms_no }})</h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -95,7 +95,7 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-12">
-                <label for="">หมายเหตุ : </label>
+                <label for="receive_comment">หมายเหตุ : </label>
                 <input
                   v-model="item.receive_comment"
                   type="text"
@@ -108,7 +108,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  รับเรื่อง
+                  รับรายงานผล
                 </button>
               </div>
             </div>
@@ -151,7 +151,7 @@ import DetailPage from "@/views/new-complaint/Detail.vue";
 import Preloader from "@/components/Preloader.vue";
 
 export default defineComponent({
-  name: "receive-complaint-2",
+  name: "receive-report-complaint-1",
   props: {
     complaint_id: {
       type: Number,
@@ -204,7 +204,7 @@ export default defineComponent({
       organization_all: null,
       receive_comment: null,
       receive_status: null,
-      state_id: null,
+      state_id: null, //
     });
     // Item Errors
     const item_errors = reactive<any>({
@@ -234,15 +234,17 @@ export default defineComponent({
       }
     };
 
-    const fetchComplaintForward = async () => {
+    const fetchComplaintReport = async () => {
       try {
-        const { data } = await ApiService.query("complaint-forward/", {
+        const { data } = await ApiService.query("complaint-report/", {
           params: { complaint_id: props.complaint_id, state_id: item.state_id },
         });
         item.id = data.data[0].id;
         item.receive_doc_no = data.data[0].receive_doc_no;
         item.receive_doc_date = data.data[0].receive_doc_date;
         item.receive_comment = data.data[0].receive_comment;
+
+        console.log(item);
       } catch (error) {
         console.log(error);
       }
@@ -280,14 +282,15 @@ export default defineComponent({
     };
     const onSaveComplaint = async () => {
       //
-      let state_id = 19;
+      let state_id = 23;
 
       let data_item = {
-        complaint_id: item.complaint_id,
         receive_doc_filename:
           item.receive_doc_filename.length != 0
             ? item.receive_doc_filename
             : undefined,
+        id: item.id,
+        complaint_id: item.complaint_id,
         receive_doc_no: item.receive_doc_no,
         receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
         receive_user_id: userData.id,
@@ -297,7 +300,7 @@ export default defineComponent({
         is_active: 1,
       };
 
-      await ApiService.putFormData("complaint-forward/" + item.id, data_item)
+      await ApiService.putFormData("complaint-report/" + item.id, data_item)
         .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
@@ -333,7 +336,7 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await fetchComplaint();
-        await fetchComplaintForward();
+        await fetchComplaintReport();
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>

@@ -67,16 +67,16 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/complaint",
         name: "complaint",
-        component: () => import("@/views/complaint/Complaint.vue"),
+        component: () => import("@/views/complaint/Index.vue"),
         meta: {
-          pageTitle: "เรื่องร้องเรียน/แจ้งเบาะแสทั้งหมด",
+          pageTitle: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส",
         },
       },
 
       {
         path: "/dashboard",
         name: "dashboard",
-        component: () => import("@/views/Dashboard.vue"),
+        component: () => import("@/views/dashboard/index.vue"),
         meta: {
           pageTitle: "Dashboard",
           breadcrumbs: ["Dashboards"],

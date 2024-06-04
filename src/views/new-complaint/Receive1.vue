@@ -10,7 +10,7 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">บช./ภ. รับเรื่อง ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">ฝรท. รับเรื่อง ({{ item.jcoms_no }})</h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -49,7 +49,7 @@
                       <div class="accordion-body" style="padding: 0">
                         <DetailPage
                           v-if="item.id"
-                          :complaint_id="item.complaint_id"
+                          :complaint_id="item.id"
                           :complainant_id="item.complainant_id"
                         />
                         <hr />
@@ -60,12 +60,12 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-6">
-                <label for="send" class="form-label"
-                  >เลขทะเบียนหนังสือรับ</label
+                <label for="" class="form-label"
+                  >เลขทะเบียนรับหนังสือ ฝรท.</label
                 >
                 <input
-                  type="text"
                   v-model="item.receive_doc_no"
+                  type="text"
                   class="form-control"
                   placeholder=""
                   aria-label=""
@@ -73,7 +73,7 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-6">
-                <label for="surname" class="form-label">วันที่หนังสือ</label>
+                <label for="surname" class="form-label">วันที่รับหนังสือ</label>
 
                 <VueDatePicker
                   v-model="item.receive_doc_date"
@@ -106,9 +106,23 @@
                 />
               </div>
 
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="formFile" class="form-label">แนบไฟล์ (ถ้ามี)</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  @change="onFileChange"
+                  ref="receiveDocFilename"
+                />
+              </div>
+
               <div class="mt-12 col-12 col-lg-12 text-center">
-                <button class="btn btn-success" @click="onValidate">
+                <button class="btn btn-success" @click="onValidate(1)">
                   รับเรื่อง
+                </button>
+                <button class="btn btn-danger ms-2" @click="onValidate(0)">
+                  ไม่รับเรื่อง
                 </button>
               </div>
             </div>
@@ -116,6 +130,7 @@
         </div>
       </div>
     </div>
+
     <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
@@ -136,6 +151,10 @@ import "vue-select/dist/vue-select.css";
 // Vue Datepicker
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+// Use Address Composables
+import useComplaintTypeData from "@/composables/useComplaintTypeData";
+// SweetAleart
+import Swal from "sweetalert2/dist/sweetalert2.js";
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
@@ -145,13 +164,12 @@ dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
 
 import useBasicData from "@/composables/useBasicData";
-import useOrganizationData from "@/composables/useOrganizationData";
+import Preloader from "@/components/Preloader.vue";
 // Import Component
 import DetailPage from "@/views/new-complaint/Detail.vue";
-import Preloader from "@/components/Preloader.vue";
 
 export default defineComponent({
-  name: "receive-complaint-2",
+  name: "complaint-receive-1",
   props: {
     complaint_id: {
       type: Number,
@@ -175,8 +193,7 @@ export default defineComponent({
     // Variable
     const receiveDocFilename = ref<any>(null);
     const selectOptions = ref({
-      organizations: useOrganizationData().organization_mapping("bureau"),
-      orders: useBasicData().orders,
+      receive_statuses: useBasicData().receive_statuses,
     });
 
     const format = (date: any) => {
@@ -186,31 +203,27 @@ export default defineComponent({
       return `${day} ${month} ${year}`;
     };
 
+    const complaint_type = ref({});
+
     // Validate Schema
     const validationItemSchema = Yup.object().shape({
-      receive_doc_no: Yup.string().nullable().label(""),
+      receive_doc_no: Yup.string().nullable().label("ประเภทระบุตัวตน"),
       receive_doc_date: Yup.date().nullable().label("วันที่รับหนังสือ"),
     });
 
     // Item Variable
     const item = reactive<any>({
       id: null,
-      complaint_id: props.complaint_id,
       receive_doc_no: null,
       receive_doc_date: null,
-      receive_doc_filename: [],
-      receive_user_id: null,
-      receive_at: dayjs().format("YYYY-MM-DD"),
-      organization_all: null,
-      receive_comment: null,
+      receive_comment: "",
       receive_status: null,
-      state_id: null,
+      receive_doc_filename: [],
     });
     // Item Errors
     const item_errors = reactive<any>({
       receive_doc_no: { error: 0, text: "" },
       receive_doc_date: { error: 0, text: "" },
-      organization_all: { error: 0, text: "" },
     });
 
     //Fetch
@@ -221,29 +234,23 @@ export default defineComponent({
           "complaint/" + props.complaint_id,
           {}
         );
-
-        item.complaint_id = data.data.id;
-        item.complainant_id = data.data.complainant_id;
-        item.jcoms_no = data.data.jcoms_no;
+        item.id = data.data.id;
+        item.receive_doc_no = data.data.receive_doc_no;
+        item.receive_doc_date = data.data.receive_doc_date;
+        item.receive_comment = data.data.receive_comment;
+        item.receive_status = data.data.receive_status;
         item.state_id = data.data.state_id;
+        item.receive_at = data.data.receive_at;
+        item.jcoms_no = data.data.jcoms_no;
+        item.complainant_id = data.data.complainant_id;
+        item.receive_user_id = userData.receive_user_id;
+        complaint_type.value = useComplaintTypeData().complaint_types.find(
+          (x: any) => x.id == item.complaint_type_id
+        );
 
         isLoading.value = false;
       } catch (error) {
         isLoading.value = false;
-        console.log(error);
-      }
-    };
-
-    const fetchComplaintForward = async () => {
-      try {
-        const { data } = await ApiService.query("complaint-forward/", {
-          params: { complaint_id: props.complaint_id, state_id: item.state_id },
-        });
-        item.id = data.data[0].id;
-        item.receive_doc_no = data.data[0].receive_doc_no;
-        item.receive_doc_date = data.data[0].receive_doc_date;
-        item.receive_comment = data.data[0].receive_comment;
-      } catch (error) {
         console.log(error);
       }
     };
@@ -252,8 +259,7 @@ export default defineComponent({
     const onFileChange = (event: any) => {
       item.receive_doc_filename = event.target.files[0];
     };
-    const onValidate = async () => {
-      isLoading.value = true;
+    const onValidate = async (type: number) => {
       Object.assign(item_errors, {
         receive_doc_no: { error: 0, text: "" },
         receive_doc_date: { error: 0, text: "" },
@@ -269,55 +275,72 @@ export default defineComponent({
           const errorMessage = error.message;
           item_errors[fieldName].error = 1;
           item_errors[fieldName].text = errorMessage;
-          isLoading.value = false;
         });
-
+        console.log(item_errors);
         useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
         return false;
       }
 
-      onSaveComplaint();
-    };
-    const onSaveComplaint = async () => {
-      //
-      let state_id = 19;
+      if (type == 1) {
+        // 1 == รับเรื่อง
+        item.receive_status = selectOptions.value.receive_statuses[0];
+        onSaveComplaint(type);
+      } else {
+        // type == 0 คือ ไม่รับเรื่อง
+        Swal.fire({
+          title: "โปรดระบุเหตุผล",
+          input: "select",
+          inputOptions: {
+            2: "ข้อมูลไม่ครบถ้วน",
+            3: "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา",
+          },
+          inputPlaceholder: "เลือกเหตุผล",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยัน",
+          cancelButtonText: `ยกเลิก`,
+          customClass: {
+            confirmButton: "btn fw-semibold btn-light-success",
+            cancelButton: "btn fw-semibold btn-light-danger",
+          },
+        }).then(async (result: any) => {
+          if (result.isConfirmed) {
+            item.receive_status = selectOptions.value.receive_statuses.find(
+              (x: any) => {
+                return x.value == result.value;
+              }
+            );
+            await onSaveComplaint(type);
+          } else if (result.isDenied) {
+          }
+        });
+      }
 
+      return true;
+    };
+    const onSaveComplaint = async (type: number) => {
       let data_item = {
-        complaint_id: item.complaint_id,
         receive_doc_filename:
           item.receive_doc_filename.length != 0
             ? item.receive_doc_filename
             : undefined,
         receive_doc_no: item.receive_doc_no,
         receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
-        receive_user_id: userData.id,
-        receive_at: dayjs().format("YYYY-MM-DD"),
         receive_comment: item.receive_comment,
-        receive_status: 1,
-        is_active: 1,
+        receive_status: item.receive_status.value,
+        state_id: item.receive_status.state_id,
+        receive_at: dayjs().format("YYYY-MM-DD"),
+        receive_user_id: userData.id,
       };
 
-      await ApiService.putFormData("complaint-forward/" + item.id, data_item)
-        .then(async ({ data }) => {
+      await ApiService.putFormData("complaint/" + item.id, data_item)
+        .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-
-          //   ปรับสถานะ
-          await ApiService.postFormData("complaint/" + item.complaint_id, {
-            state_id: state_id,
-          }).then(({ data }) => {
-            if (data.msg != "success") {
-              throw new Error("ERROR");
-            }
-
-            isLoading.value = true;
-            useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-            onClose({ reload: true });
-          });
+          useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+          onClose({ reload: true });
         })
         .catch(({ response }) => {
-          isLoading.value = false;
           console.log(response);
         });
     };
@@ -333,7 +356,6 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await fetchComplaint();
-        await fetchComplaintForward();
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>
@@ -359,9 +381,9 @@ export default defineComponent({
     // Return
     return {
       isLoading,
-      selectOptions,
       item,
       item_errors,
+      complaint_type,
       format,
       receiveDocFilename,
       // event

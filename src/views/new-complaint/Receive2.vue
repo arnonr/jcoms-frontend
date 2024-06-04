@@ -220,7 +220,6 @@ export default defineComponent({
     });
 
     //Fetch
-
     const fetchComplaint = async () => {
       try {
         const { data } = await ApiService.query(

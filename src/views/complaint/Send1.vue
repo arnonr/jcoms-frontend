@@ -10,7 +10,7 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">บช./ภ. รับเรื่อง ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">ฝรท. ส่งต่อเรื่อง ({{ item.jcoms_no }})</h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -49,7 +49,7 @@
                       <div class="accordion-body" style="padding: 0">
                         <DetailPage
                           v-if="item.id"
-                          :complaint_id="item.complaint_id"
+                          :complaint_id="item.id"
                           :complainant_id="item.complainant_id"
                         />
                         <hr />
@@ -59,13 +59,36 @@
                 </div>
               </div>
 
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="organization_all" class="form-label"
+                  >หน่วยงานระดับ บช./ภ.</label
+                >
+                <v-select
+                  name="accused_organization_all"
+                  placeholder="หน่วยงาน/Organization"
+                  :options="selectOptions.organizations"
+                  class="form-control"
+                  :clearable="false"
+                  v-model="item.organization_all"
+                >
+                </v-select>
+                <div
+                  class="d-block mt-1"
+                  v-if="item_errors.organization_all.error == 1"
+                >
+                  <span role="alert" class="text-danger">{{
+                    item_errors.organization_all.text
+                  }}</span>
+                </div>
+              </div>
+
               <div class="mb-7 col-12 col-lg-6">
                 <label for="send" class="form-label"
-                  >เลขทะเบียนหนังสือรับ</label
+                  >เลขทะเบียนหนังสือส่ง</label
                 >
                 <input
                   type="text"
-                  v-model="item.receive_doc_no"
+                  v-model="item.forward_doc_no"
                   class="form-control"
                   placeholder=""
                   aria-label=""
@@ -76,7 +99,7 @@
                 <label for="surname" class="form-label">วันที่หนังสือ</label>
 
                 <VueDatePicker
-                  v-model="item.receive_doc_date"
+                  v-model="item.forward_doc_date"
                   :max-date="new Date()"
                   :enable-time-picker="false"
                   :locale="'th'"
@@ -95,9 +118,23 @@
               </div>
 
               <div class="mb-7 col-12 col-lg-12">
+                <label for="">ข้อสั่งการ : </label>
+                <v-select
+                  v-model="item.order_id"
+                  id="slt-search-order-id-2"
+                  name="slt-search-order-2"
+                  :options="selectOptions.orders"
+                  label="name"
+                  placeholder="ข้อสั่งการ"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
+
+              <div class="mb-7 col-12 col-lg-12">
                 <label for="">หมายเหตุ : </label>
                 <input
-                  v-model="item.receive_comment"
+                  v-model="item.order_detail"
                   type="text"
                   class="form-control"
                   placeholder="หมายเหตุ"
@@ -106,9 +143,20 @@
                 />
               </div>
 
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="formFile" class="form-label">แนบไฟล์ (ถ้ามี)</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  @change="onFileChange"
+                  ref="forwardDocFilename"
+                />
+              </div>
+
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  รับเรื่อง
+                  ส่งต่อเรื่อง
                 </button>
               </div>
             </div>
@@ -151,7 +199,7 @@ import DetailPage from "@/views/new-complaint/Detail.vue";
 import Preloader from "@/components/Preloader.vue";
 
 export default defineComponent({
-  name: "receive-complaint-2",
+  name: "send-complaint-1",
   props: {
     complaint_id: {
       type: Number,
@@ -173,7 +221,7 @@ export default defineComponent({
     const mainModalObj = ref<any>(null);
 
     // Variable
-    const receiveDocFilename = ref<any>(null);
+    const forwardDocFilename = ref<any>(null);
     const selectOptions = ref({
       organizations: useOrganizationData().organization_mapping("bureau"),
       orders: useBasicData().orders,
@@ -188,28 +236,16 @@ export default defineComponent({
 
     // Validate Schema
     const validationItemSchema = Yup.object().shape({
-      receive_doc_no: Yup.string().nullable().label(""),
-      receive_doc_date: Yup.date().nullable().label("วันที่รับหนังสือ"),
+      forward_doc_no: Yup.string().nullable().label(""),
+      forward_doc_date: Yup.date().nullable().label("วันที่ส่งหนังสือ"),
     });
 
     // Item Variable
-    const item = reactive<any>({
-      id: null,
-      complaint_id: props.complaint_id,
-      receive_doc_no: null,
-      receive_doc_date: null,
-      receive_doc_filename: [],
-      receive_user_id: null,
-      receive_at: dayjs().format("YYYY-MM-DD"),
-      organization_all: null,
-      receive_comment: null,
-      receive_status: null,
-      state_id: null,
-    });
+    const item = reactive<any>({});
     // Item Errors
     const item_errors = reactive<any>({
-      receive_doc_no: { error: 0, text: "" },
-      receive_doc_date: { error: 0, text: "" },
+      forward_doc_no: { error: 0, text: "" },
+      forward_doc_date: { error: 0, text: "" },
       organization_all: { error: 0, text: "" },
     });
 
@@ -222,6 +258,7 @@ export default defineComponent({
           {}
         );
 
+        item.id = data.data.id;
         item.complaint_id = data.data.id;
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
@@ -234,29 +271,15 @@ export default defineComponent({
       }
     };
 
-    const fetchComplaintForward = async () => {
-      try {
-        const { data } = await ApiService.query("complaint-forward/", {
-          params: { complaint_id: props.complaint_id, state_id: item.state_id },
-        });
-        item.id = data.data[0].id;
-        item.receive_doc_no = data.data[0].receive_doc_no;
-        item.receive_doc_date = data.data[0].receive_doc_date;
-        item.receive_comment = data.data[0].receive_comment;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     // Event
     const onFileChange = (event: any) => {
-      item.receive_doc_filename = event.target.files[0];
+      item.forward_doc_filename = event.target.files[0];
     };
     const onValidate = async () => {
       isLoading.value = true;
       Object.assign(item_errors, {
-        receive_doc_no: { error: 0, text: "" },
-        receive_doc_date: { error: 0, text: "" },
+        forward_doc_no: { error: 0, text: "" },
+        forward_doc_date: { error: 0, text: "" },
       });
 
       try {
@@ -280,24 +303,28 @@ export default defineComponent({
     };
     const onSaveComplaint = async () => {
       //
-      let state_id = 19;
+      let state_id = 10;
 
       let data_item = {
         complaint_id: item.complaint_id,
-        receive_doc_filename:
-          item.receive_doc_filename.length != 0
-            ? item.receive_doc_filename
+        forward_doc_filename:
+          item.forward_doc_filename.length != 0
+            ? item.forward_doc_filename
             : undefined,
-        receive_doc_no: item.receive_doc_no,
-        receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
-        receive_user_id: userData.id,
-        receive_at: dayjs().format("YYYY-MM-DD"),
-        receive_comment: item.receive_comment,
-        receive_status: 1,
+        forward_doc_no: item.forward_doc_no,
+        forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
+        forward_user_id: userData.id,
+        forward_at: dayjs().format("YYYY-MM-DD"),
+        to_bureau_id: item.organization_all?.bureau_id,
+        to_division_id: item.organization_all?.division_id,
+        to_agency_id: item.organization_all?.agency_id,
+        order_id: item.order_id?.value,
+        order_detail: item.order_detail,
+        state_id: state_id,
         is_active: 1,
       };
 
-      await ApiService.putFormData("complaint-forward/" + item.id, data_item)
+      await ApiService.postFormData("complaint-forward/", data_item)
         .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
@@ -306,6 +333,8 @@ export default defineComponent({
           //   ปรับสถานะ
           await ApiService.postFormData("complaint/" + item.complaint_id, {
             state_id: state_id,
+            forward_doc_no: item.forward_doc_no,
+            forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
           }).then(({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");
@@ -333,7 +362,6 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await fetchComplaint();
-        await fetchComplaintForward();
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>
@@ -363,7 +391,7 @@ export default defineComponent({
       item,
       item_errors,
       format,
-      receiveDocFilename,
+      forwardDocFilename,
       // event
       onValidate,
       onFileChange,

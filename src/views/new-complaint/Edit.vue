@@ -98,7 +98,6 @@ import {
   reactive,
   onMounted,
   onUnmounted,
-  watch,
 } from "vue";
 import ApiService from "@/core/services/ApiService";
 

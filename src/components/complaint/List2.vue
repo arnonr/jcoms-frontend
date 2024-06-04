@@ -1,6 +1,9 @@
 <template>
   <div>
-    <table class="table table-bordered table-striped" style="width: 100%">
+    <table
+      class="table table-bordered table-striped"
+      style="width: 100%; background-color: #d9f4fe"
+    >
       <thead class="bg-color-police">
         <tr>
           <th class="text-center text-white">วันที่ร้องเรียน</th>
@@ -24,7 +27,9 @@
           <td>{{ it.complaint_title }}</td>
           <td>{{ convertAccused(it.accused) }}</td>
           <td>
-            <span v-if="it.agency_id">{{ it.agency.name_th }}</span>
+            <div v-if="it.agency_id">
+              <span>{{ it.agency.name_th }}</span>
+            </div>
             <span v-else-if="it.division_id">{{ it.division.name_th }}</span>
             <span v-else-if="it.bureau_id">{{ it.bureau.name_th }}</span>
             <span v-else-if="it.inspector_id">{{ it.inspector.name_th }}</span>
@@ -32,7 +37,7 @@
           </td>
           <td class="text-center">
             <span
-              class="badge p-2 text-white"
+              class="badge p-2 text-black"
               :style="`background-color: ${
                 convertState(it.state_id).bg_color
               };`"
@@ -80,31 +85,122 @@
                   >
                 </li>
 
-                <li>
+                <li v-if="it.state_id == 3">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
-                      handleReceive1({
+                      handleSend1({
                         id: it.id,
                         complainant_id: it.complainant_id,
                       })
                     "
-                    >ฝรท. รับเรื่อง</a
+                    >ฝรท. ส่งต่อเรื่อง</a
                   >
                 </li>
 
-                <!-- <li>
+                <li v-if="it.state_id == 10">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
-                      () => {
-                        Object.assign(item, it);
-                        openReceiveModal2 = true;
-                      }
+                      handleReceive2({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
                     "
-                    >ฝรท. พิจารณา</a
+                    >บช./ภ. รับเรื่อง</a
                   >
-                </li> -->
+                </li>
+
+                <li v-if="it.state_id == 19">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSend2({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บช./ภ. ส่งต่อเรื่อง</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 11">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceive3({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บก./ภ.จว. รับเรื่อง</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 20">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendReport1({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บก./ภ.จว. ส่งรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 15">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceiveReport1({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บช./ภ. รับรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 23">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendReport2({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บช./ภ. ส่งรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 16">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceiveReport2({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >จต. รับรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 24">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSuccessReport({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >จต. ปิดเรื่อง</a
+                  >
+                </li>
               </ul>
             </div>
           </td>
@@ -149,7 +245,7 @@ import useStateData from "@/composables/useStateData";
 import ApiService from "@/core/services/ApiService";
 
 export default defineComponent({
-  name: "list-complaint",
+  name: "list-complaint-2",
   components: {
     BlogPagination,
   },
@@ -189,8 +285,40 @@ export default defineComponent({
       emit("edit", item);
     };
 
-    const handleReceive1 = (item: any) => {
-      emit("receive1", item);
+    const handleSend1 = (item: any) => {
+      emit("send1", item);
+    };
+
+    const handleReceive2 = (item: any) => {
+      emit("receive2", item);
+    };
+
+    const handleReceive3 = (item: any) => {
+      emit("receive3", item);
+    };
+
+    const handleSend2 = (item: any) => {
+      emit("send2", item);
+    };
+
+    const handleSendReport1 = (item: any) => {
+      emit("sendReport1", item);
+    };
+
+    const handleSendReport2 = (item: any) => {
+      emit("sendReport2", item);
+    };
+
+    const handleReceiveReport1 = (item: any) => {
+      emit("receiveReport1", item);
+    };
+
+    const handleReceiveReport2 = (item: any) => {
+      emit("receiveReport2", item);
+    };
+
+    const handleSuccessReport = (item: any) => {
+      emit("successReport", item);
     };
 
     const convertDate = (date: any) => {
@@ -200,8 +328,8 @@ export default defineComponent({
     const convertState = (state: any) => {
       const findState = states.find((x: any) => x.id === state);
       return {
-        name_th: findState.name_th,
-        bg_color: findState.bg_color,
+        name_th: findState?.name_th,
+        bg_color: findState?.bg_color,
       };
     };
 
@@ -217,7 +345,9 @@ export default defineComponent({
               (p: any) => p.id === x.prefix_name_id
             );
 
-            return `${prefix?.name_th}${x.firstname || ""} ${x.lastname || ""}`;
+            return `${prefix?.name_th !== undefined ? prefix?.name_th : ""}${
+              x.firstname || ""
+            } ${x.lastname || ""}`;
           })
           .join(", ");
       }
@@ -233,11 +363,19 @@ export default defineComponent({
       items,
       handleDetail,
       handleEdit,
-      handleReceive1,
+      handleSend1,
+      handleReceive2,
+      handleSend2,
+      handleReceive3,
       convertDate,
       convertState,
       convertAccused,
       updateCurrentPage,
+      handleSendReport1,
+      handleSendReport2,
+      handleReceiveReport1,
+      handleReceiveReport2,
+      handleSuccessReport,
     };
   },
 });
