@@ -190,7 +190,7 @@ export default () => {
     },
     {
       id: 29,
-      name_th: "หน่วย บช./ภ. ส่งกลับให้ หน่วย ภ.จว./บก. แก้ไขรายงาน",
+      name_th: "บช./ภ. ส่งกลับให้ ภ.จว./บก. แก้ไขรายงาน",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
@@ -206,7 +206,7 @@ export default () => {
     },
     {
       id: 30,
-      name_th: "จต. ส่งกลับให้ หน่วย บช./ภ. แก้ไขรายงาน",
+      name_th: "จต. ส่งกลับให้ บช./ภ. แก้ไขรายงาน",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",

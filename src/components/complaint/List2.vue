@@ -7,6 +7,7 @@
       <thead class="bg-color-police">
         <tr>
           <th class="text-center text-white">วันที่ร้องเรียน</th>
+          <th class="text-center text-white">ระยะเวลา (วัน)</th>
           <th class="text-center text-white">รหัสคำร้อง</th>
           <th class="text-center text-white">ลักษณะความผิด</th>
           <th class="text-center text-white">เรื่องร้องเรียน</th>
@@ -20,6 +21,9 @@
         <tr v-for="(it, idx) in items" :key="idx">
           <td class="text-center">
             {{ convertDate(it.created_at) }}
+          </td>
+          <td class="text-center">
+            {{ convertDueDate(it.forward_doc_date, it.complaint_type_id) }}
           </td>
           <td class="text-center">{{ it.jcoms_no }}</td>
 
@@ -293,6 +297,7 @@ export default defineComponent({
 
     // fetch
     const prefix_names = ref([]);
+    const complaint_types = ref([]);
 
     const fetchPrefixName = async (params: any) => {
       const { data } = await ApiService.query("prefix-name", {
@@ -302,6 +307,15 @@ export default defineComponent({
       prefix_names.value = data.data;
     };
     fetchPrefixName({});
+
+    const fetchComplaintType = async (params: any) => {
+      const { data } = await ApiService.query("complaint-type", {
+        params: params,
+      });
+
+      complaint_types.value = data.data;
+    };
+    fetchComplaintType({ perPage: 100000 });
 
     const handleDetail = (item: any) => {
       emit("detail", item);
@@ -367,6 +381,29 @@ export default defineComponent({
       };
     };
 
+    const convertDueDate = (date: any, complaint_type_id: any) => {
+      if (date == null) {
+        return "";
+      }
+
+      const findComplaintType: any = complaint_types.value.find(
+        (x: any) => x.id === complaint_type_id
+      );
+
+      let count_day = dayjs().diff(dayjs(date), "day");
+    //   let _day = findComplaintType?.due_date - count_day;
+    //   console.log(complaint_types.value)
+      //   findComplaintType.due_date
+
+      //   วันครบกำหนด
+      //   date + findComplaintType.due_date;
+      //   dayjs() - date ใช้ไปกี่วัน 5 วัน
+      //   เหลือกี่ วันเอา
+      //   findComplaintType.due_date;
+
+      return count_day;
+    };
+
     const convertAccused = (accused: any) => {
       let text = "";
 
@@ -404,6 +441,7 @@ export default defineComponent({
       convertDate,
       convertState,
       convertAccused,
+      convertDueDate,
       updateCurrentPage,
       handleSendReport1,
       handleSendReport2,
