@@ -97,6 +97,14 @@
                 Object.assign(item, it);
                 openSuccessReportModal = true;
               }"
+          @returnReport1=" (it: any) => {
+                Object.assign(item, it);
+                openReturnReport1Modal = true;
+              }"
+          @returnReport2=" (it: any) => {
+                Object.assign(item, it);
+                openReturnReport2Modal = true;
+              }"
         />
       </div>
     </div>
@@ -215,6 +223,21 @@
         />
       </div>
 
+
+      <!-- Modal Return Report จต. ส่งกลับรายงาน -->
+      <div id="return-report1-modal">
+        <ReturnReport1Page
+          v-if="openReturnReport1Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReturnReport1Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
       <!-- Modal Send Report บช./ภ.  ส่งรายงาน -->
       <div id="send-report2-modal">
         <SendReport2Page
@@ -228,6 +251,7 @@
           @reload="fetchItems"
         />
       </div>
+      
 
       <!-- Modal Receive Report 2 จต. รับรายงาน -->
       <div id="receive-report2-modal">
@@ -237,6 +261,20 @@
           @close-modal="
             () => {
               openReceiveReport2Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Return Report จต. ส่งกลับรายงาน -->
+      <div id="return-report2-modal">
+        <ReturnReport2Page
+          v-if="openReturnReport2Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReturnReport2Modal = false;
             }
           "
           @reload="fetchItems"
@@ -282,6 +320,8 @@ import SendReport2Page from "@/views/complaint/SendReport2.vue";
 import ReceiveReport1Page from "@/views/complaint/ReceiveReport1.vue";
 import ReceiveReport2Page from "@/views/complaint/ReceiveReport2.vue";
 import SuccessReportPage from "@/views/complaint/SuccessReport.vue";
+import ReturnReport1Page from "@/views/complaint/ReturnReport1.vue";
+import ReturnReport2Page from "@/views/complaint/ReturnReport2.vue";
 
 export default defineComponent({
   name: "complaint",
@@ -300,6 +340,8 @@ export default defineComponent({
     ReceiveReport1Page,
     ReceiveReport2Page,
     SuccessReportPage,
+    ReturnReport1Page,
+    ReturnReport2Page,
   },
   setup() {
     // UI Variable
@@ -332,6 +374,8 @@ export default defineComponent({
     const openReceiveReport1Modal = ref(false);
     const openReceiveReport2Modal = ref(false);
     const openSuccessReportModal = ref(false);
+    const openReturnReport1Modal = ref(false);
+    const openReturnReport2Modal = ref(false);
 
     // Fetch Data
     const fetchItems = async () => {
@@ -436,6 +480,8 @@ export default defineComponent({
       openReceiveReport1Modal,
       openReceiveReport2Modal,
       openSuccessReportModal,
+      openReturnReport1Modal,
+      openReturnReport2Modal,
     };
   },
 });

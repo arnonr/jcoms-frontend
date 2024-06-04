@@ -137,7 +137,7 @@
                   >
                 </li>
 
-                <li v-if="it.state_id == 20">
+                <li v-if="it.state_id == 20 || it.state_id == 29">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -163,7 +163,20 @@
                   >
                 </li>
 
-                <li v-if="it.state_id == 23">
+                <li v-if="it.state_id == 15 || it.state_id == 23">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReturnReport1({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บช./ภ. ส่งกล้บรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 23 || it.state_id == 30">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -186,6 +199,19 @@
                       })
                     "
                     >จต. รับรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 24 || it.state_id == 16">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReturnReport2({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >จต. ส่งกล้บรายงาน</a
                   >
                 </li>
 
@@ -321,6 +347,14 @@ export default defineComponent({
       emit("successReport", item);
     };
 
+    const handleReturnReport1 = (item: any) => {
+      emit("returnReport1", item);
+    };
+
+    const handleReturnReport2 = (item: any) => {
+      emit("returnReport2", item);
+    };
+
     const convertDate = (date: any) => {
       return dayjs(date).locale("th").format("DD MMM BBBB");
     };
@@ -376,6 +410,8 @@ export default defineComponent({
       handleReceiveReport1,
       handleReceiveReport2,
       handleSuccessReport,
+      handleReturnReport1,
+      handleReturnReport2,
     };
   },
 });

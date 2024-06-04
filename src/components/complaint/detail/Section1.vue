@@ -298,7 +298,7 @@
               </td>
             </tr>
 
-            <!-- บก./จ. รับเรื่อง -->
+            <!-- บก/ภจ.ว. รับเรื่อง -->
             <tr
               v-if="
                 complaint_forward_state.state11 != null &&
@@ -350,232 +350,302 @@
               </td>
             </tr>
 
-            <!-- ส่งรายงานกลับ -->
-            <tr v-if="complaint_report_state.state15 != null">
-              <td class="p-3 text-green">
-                {{ showDate(complaint_report_state.state15.created_at) }}
-              </td>
-              <td class="fw-bold p-3 text-green">
-                {{ complaint_report_state.state15.state.name_th }}
-              </td>
-              <td class="p-3 text-green">
-                <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.report_doc_date"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
-                  </div>
-                  <div>
-                    {{
-                      showDate(complaint_report_state.state15.report_doc_date)
-                    }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.report_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
-                  </div>
-                  <div>
-                    {{ complaint_report_state.state15.report_doc_no }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.proceed_status.name_th"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    ผลดำเนินการ :
-                  </div>
-                  <div>
-                    {{ complaint_report_state.state15.proceed_status.name_th }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.report_detail"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_report_state.state15.report_detail }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.report_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div>
-                    <a
-                      :href="complaint_report_state.state15.report_doc_filename"
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- บช./ภ. รับรายงาน -->
-            <tr
-              v-if="
-                complaint_report_state.state15 != null &&
-                complaint_report_state.state15.receive_at != null
-              "
+            <!-- บก/ภจ.ว. ส่งรายงาน -->
+            <template
+              v-for="(cr, idx) in complaint_report_state.state15"
+              :key="idx"
             >
-              <td class="p-3 text-green">
-                {{ showDate(complaint_report_state.state15.receive_at) }}
-              </td>
-              <td class="fw-bold p-3 text-green">บช./ภ. รับรายงาน</td>
-              <td class="p-3 text-green">
-                <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.receive_doc_date"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+              <tr v-if="cr != null">
+                <td class="p-3 text-green">
+                  {{ showDate(cr.created_at) }}
+                </td>
+                <td class="fw-bold p-3 text-green">
+                  {{ cr.state.name_th }}
+                </td>
+                <td class="p-3 text-green">
+                  <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_date">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(cr.report_doc_date) }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_report_state.state15.receive_doc_date)
-                    }}
+                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ cr.report_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.receive_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="cr.proceed_status.name_th"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ผลดำเนินการ :
+                    </div>
+                    <div>
+                      {{ cr.proceed_status.name_th }}
+                    </div>
                   </div>
-                  <div>
-                    {{ complaint_report_state.state15.receive_doc_no }}
+                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_detail">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ cr.report_detail }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state15.receive_comment"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_report_state.state15.receive_comment }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="cr.report_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div>
+                      <a :href="cr.report_doc_filename" target="_blank">
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
+
+                  <!-- Return -->
+                  <div v-if="cr.status == 3">
+                    <hr />
+                    <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
+                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                      <div class="fw-bold" style="min-width: 150px">
+                        วันที่เอกสารส่งกลับ :
+                      </div>
+                      <div>
+                        {{ showDate(cr.return_doc_date) }}
+                      </div>
+                    </div>
+                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                      <div class="fw-bold" style="min-width: 150px">
+                        เลขที่เอกสารส่งกลับ :
+                      </div>
+                      <div>
+                        {{ cr.return_doc_no }}
+                      </div>
+                    </div>
+                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                      <div class="fw-bold" style="min-width: 150px">
+                        เหตุผลการส่งกลับ :
+                      </div>
+                      <div>
+                        {{ cr.return_detail }}
+                      </div>
+                    </div>
+                    <div
+                      class="mt-0 pt-0 pb-0 d-flex text-danger"
+                      v-if="cr.return_doc_filename"
+                    >
+                      <div class="fw-bold" style="min-width: 150px">
+                        ไฟล์แนบ :
+                      </div>
+                      <div>
+                        <a
+                          :href="cr.return_doc_filename"
+                          target="_blank"
+                          class="text-danger"
+                        >
+                          ดาวน์โหลด
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- บช./ภ. รับรายงาน -->
+              <tr v-if="cr != null && cr.receive_at != null">
+                <td class="p-3 text-green">
+                  {{ showDate(cr.receive_at) }}
+                </td>
+                <td class="fw-bold p-3 text-green">บช./ภ. รับรายงาน</td>
+                <td class="p-3 text-green">
+                  <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_date">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(cr.receive_doc_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_no">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ cr.receive_doc_no }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_comment">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ cr.receive_comment }}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </template>
 
             <!-- หน่วย บช./ภ. รายงานถึง จต. -->
-            <tr v-if="complaint_report_state.state16 != null">
-              <td class="p-3 text-green">
-                {{ showDate(complaint_report_state.state16.created_at) }}
-              </td>
-              <td class="fw-bold p-3 text-green">
-                {{ complaint_report_state.state16.state.name_th }}
-              </td>
-              <td class="p-3 text-green">
-                <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state16.report_doc_date"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
-                  </div>
-                  <div>
-                    {{
-                      showDate(complaint_report_state.state16.report_doc_date)
-                    }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state16.report_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
-                  </div>
-                  <div>
-                    {{ complaint_report_state.state16.report_doc_no }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state16.proceed_status.name_th"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    ผลดำเนินการ :
-                  </div>
-                  <div>
-                    {{ complaint_report_state.state16.proceed_status.name_th }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state16.report_detail"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_report_state.state16.report_detail }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_report_state.state16.report_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div>
-                    <a
-                      :href="complaint_report_state.state16.report_doc_filename"
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- จต. รับรายงาน -->
-            <tr
-              v-if="
-                complaint_report_state.state16 != null &&
-                complaint_report_state.state16.receive_at != null
-              "
+            <template
+              v-for="(cr, idx) in complaint_report_state.state16"
+              :key="idx"
             >
-              <td class="p-3 text-green">
-                {{ showDate(complaint_report_state.state16.receive_at) }}
-              </td>
-              <td class="fw-bold p-3 text-green">จต. รับรายงาน</td>
-              <td class="p-3 text-green">
-                <div class="mb-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+              <tr v-if="cr != null">
+                <td class="p-3 text-green">
+                  {{ showDate(cr.created_at) }}
+                </td>
+                <td class="fw-bold p-3 text-green">
+                  {{ cr.state.name_th }}
+                </td>
+                <td class="p-3 text-green">
+                  <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_date">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(cr.report_doc_date) }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_report_state.state16.receive_doc_date)
-                    }}
+                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ cr.report_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div class="mt-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="cr.proceed_status.name_th"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ผลดำเนินการ :
+                    </div>
+                    <div>
+                      {{ cr.proceed_status.name_th }}
+                    </div>
                   </div>
-                  <div>
-                    {{ complaint_report_state.state16.receive_doc_no }}
+                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_detail">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ cr.report_detail }}
+                    </div>
                   </div>
-                </div>
-                <div class="mt-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_report_state.state16.receive_comment }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_report_state.state16.report_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div>
+                      <a
+                        :href="
+                          complaint_report_state.state16.report_doc_filename
+                        "
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
+
+                  <!-- Return -->
+                  <div v-if="cr.status == 3">
+                    <hr />
+                    <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
+                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                      <div class="fw-bold" style="min-width: 150px">
+                        วันที่เอกสารส่งกลับ :
+                      </div>
+                      <div>
+                        {{ showDate(cr.return_doc_date) }}
+                      </div>
+                    </div>
+                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                      <div class="fw-bold" style="min-width: 150px">
+                        เลขที่เอกสารส่งกลับ :
+                      </div>
+                      <div>
+                        {{ cr.return_doc_no }}
+                      </div>
+                    </div>
+                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                      <div class="fw-bold" style="min-width: 150px">
+                        เหตุผลการส่งกลับ :
+                      </div>
+                      <div>
+                        {{ cr.return_detail }}
+                      </div>
+                    </div>
+                    <div
+                      class="mt-0 pt-0 pb-0 d-flex text-danger"
+                      v-if="cr.return_doc_filename"
+                    >
+                      <div class="fw-bold" style="min-width: 150px">
+                        ไฟล์แนบ :
+                      </div>
+                      <div>
+                        <a
+                          :href="cr.return_doc_filename"
+                          target="_blank"
+                          class="text-danger"
+                        >
+                          ดาวน์โหลด
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- จต. รับรายงาน -->
+              <tr v-if="cr != null && cr.receive_at != null">
+                <td class="p-3 text-green">
+                  {{ showDate(cr.receive_at) }}
+                </td>
+                <td class="fw-bold p-3 text-green">จต. รับรายงาน</td>
+                <td class="p-3 text-green">
+                  <div class="mb-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(cr.receive_doc_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ cr.receive_doc_no }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ cr.receive_comment }}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </template>
 
             <!-- จต. ปิดเรื่อง -->
             <tr v-if="complaint_item.closed_at != null">
@@ -668,11 +738,19 @@ export default defineComponent({
         complaint_report.length = 0;
         Object.assign(complaint_report, data.data);
 
-        complaint_report_state.state15 = complaint_report.find((x: any) => {
+        // complaint_report_state.state15 = complaint_report.find((x: any) => {
+        //   return x.state_id == 15;
+        // });
+
+        complaint_report_state.state15 = complaint_report.filter((x: any) => {
           return x.state_id == 15;
         });
 
-        complaint_report_state.state16 = complaint_report.find((x: any) => {
+        // complaint_report_state.state16 = complaint_report.find((x: any) => {
+        //   return x.state_id == 16;
+        // });
+
+        complaint_report_state.state16 = complaint_report.filter((x: any) => {
           return x.state_id == 16;
         });
       } catch (error) {
