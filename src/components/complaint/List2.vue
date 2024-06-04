@@ -391,6 +391,7 @@ export default defineComponent({
       );
 
       let count_day = dayjs().diff(dayjs(date), "day");
+
     //   let _day = findComplaintType?.due_date - count_day;
     //   console.log(complaint_types.value)
       //   findComplaintType.due_date
