@@ -438,7 +438,6 @@ export default defineComponent({
       fetchComplaintChannel();
 
       fetchComplaintFileAttach();
-      console.log(props.item);
 
       new_item.value.is_anonymous = selectOptions.value.is_anonymouses.find(
         (x: any) => {

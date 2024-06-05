@@ -329,6 +329,22 @@ export default () => {
       topic_category_id: 8,
       topic_type_id: 40,
     },
+    {
+      complaint_type_th: "แจ้งเบาะแสยาเสพติด",
+      topic_category_th: "แจ้งเบาะแส/แนะนำ",
+      topic_type_th: "แจ้งเบาะแสยาเสพติด",
+      complaint_type_id: 3,
+      topic_category_id: 10,
+      topic_type_id: 42,
+    },
+    {
+      complaint_type_th: "ร้องเรียน",
+      topic_category_th: "ทุจริตต่อหน้าที่",
+      topic_type_th: "เบียดบังทรัพย์สิน(โกง)",
+      complaint_type_id: 4,
+      topic_category_id: 11,
+      topic_type_id: 43,
+    },
   ];
 
   const complaint_topic_mapping = (complaint_type_id) => {
