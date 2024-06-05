@@ -58,6 +58,22 @@
                   </div>
                 </div>
               </div>
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="" class="form-label required">ปรับสถานะ</label>
+                <v-select
+                  label="name"
+                  name="id"
+                  placeholder=""
+                  :options="[
+                    { value: 1, name: 'รับเรื่อง' },
+                    { value: 0, name: 'ไม่รับเรื่อง' },
+                  ]"
+                  class="form-control"
+                  :clearable="false"
+                  v-model="item.type"
+                >
+                </v-select>
+              </div>
 
               <div class="mb-7 col-12 col-lg-6">
                 <label for="" class="form-label"
@@ -94,6 +110,23 @@
                 </VueDatePicker>
               </div>
 
+              <div class="mb-7 col-12 col-lg-12" v-if="item.type?.value == 0">
+                <label for="" class="required">ระบุเหตุผล</label>
+                <v-select
+                  label="name"
+                  name="id"
+                  placeholder=""
+                  :options="[
+                    { value: 2, name: 'ข้อมูลไม่ครบถ้วน' },
+                    { value: 3, name: 'เป็นการร้องทุกข์ กล่าวโทษคดีอาญา' },
+                  ]"
+                  class="form-control"
+                  :clearable="false"
+                  v-model="item.receive_status"
+                >
+                </v-select>
+              </div>
+
               <div class="mb-7 col-12 col-lg-12">
                 <label for="">หมายเหตุ : </label>
                 <input
@@ -119,11 +152,11 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate(1)">
-                  รับเรื่อง
+                  ยืนยัน
                 </button>
-                <button class="btn btn-danger ms-2" @click="onValidate(0)">
+                <!-- <button class="btn btn-danger ms-2" @click="onValidate(0)">
                   ไม่รับเรื่อง
-                </button>
+                </button> -->
               </div>
             </div>
           </div>
@@ -207,6 +240,7 @@ export default defineComponent({
 
     // Validate Schema
     const validationItemSchema = Yup.object().shape({
+      type: Yup.object().required().label("ปรับสถานะ"),
       receive_doc_no: Yup.string().nullable().label("ประเภทระบุตัวตน"),
       receive_doc_date: Yup.date().nullable().label("วันที่รับหนังสือ"),
     });
@@ -219,6 +253,7 @@ export default defineComponent({
       receive_comment: "",
       receive_status: null,
       receive_doc_filename: [],
+      type: null,
     });
     // Item Errors
     const item_errors = reactive<any>({
@@ -238,7 +273,8 @@ export default defineComponent({
         item.receive_doc_no = data.data.receive_doc_no;
         item.receive_doc_date = data.data.receive_doc_date;
         item.receive_comment = data.data.receive_comment;
-        item.receive_status = data.data.receive_status;
+        item.receive_status = null ;
+        // item.receive_status = data.data.receive_status ;
         item.state_id = data.data.state_id;
         item.receive_at = data.data.receive_at;
         item.jcoms_no = data.data.jcoms_no;
@@ -281,43 +317,20 @@ export default defineComponent({
         return false;
       }
 
-      if (type == 1) {
-        // 1 == รับเรื่อง
-        item.receive_status = selectOptions.value.receive_statuses[0];
-        onSaveComplaint(type);
-      } else {
-        // type == 0 คือ ไม่รับเรื่อง
-        Swal.fire({
-          title: "โปรดระบุเหตุผล",
-          input: "select",
-          inputOptions: {
-            2: "ข้อมูลไม่ครบถ้วน",
-            3: "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา",
-          },
-          inputPlaceholder: "เลือกเหตุผล",
-          showCancelButton: true,
-          confirmButtonText: "ยืนยัน",
-          cancelButtonText: `ยกเลิก`,
-          customClass: {
-            confirmButton: "btn fw-semibold btn-light-success",
-            cancelButton: "btn fw-semibold btn-light-danger",
-          },
-        }).then(async (result: any) => {
-          if (result.isConfirmed) {
-            item.receive_status = selectOptions.value.receive_statuses.find(
-              (x: any) => {
-                return x.value == result.value;
-              }
-            );
-            await onSaveComplaint(type);
-          } else if (result.isDenied) {
-          }
-        });
-      }
+      onSaveComplaint(type);
+
+      //   item.receive_status = selectOptions.value.receive_statuses.find(
+      //     (x: any) => {
+      //       return x.value == result.value.selectValue;
+      //     }
+      //   );
+      //   item.receive_comment = result.value.textValue;
 
       return true;
     };
     const onSaveComplaint = async (type: number) => {
+      item.receive_status = selectOptions.value.receive_statuses[0];
+
       let data_item = {
         receive_doc_filename:
           item.receive_doc_filename.length != 0
@@ -326,7 +339,7 @@ export default defineComponent({
         receive_doc_no: item.receive_doc_no,
         receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
         receive_comment: item.receive_comment,
-        receive_status: item.receive_status.value,
+        receive_status: item.type == 1 ? 1 : item.receive_status.value,
         state_id: item.receive_status.state_id,
         receive_at: dayjs().format("YYYY-MM-DD"),
         receive_user_id: userData.id,
@@ -414,6 +427,10 @@ export default defineComponent({
 
 <style>
 .pac-container {
-  z-index: 9999 !important;
+  z-index: 9997 !important;
+}
+
+.swal2-custom-zindex {
+  z-index: 9999 !important; /* ตั้งค่านี้ให้สูงกว่าค่า z-index ของ Bootstrap Modal */
 }
 </style>

@@ -8,7 +8,7 @@
     <div class="card shadow-sm my-5">
       <!-- Button Add & Export -->
       <div class="card-header bg-white">
-        <h4 class="card-title">รายการเรื่องร้องเรียน/แจ้งเบาะแส</h4>
+        <h4 class="card-title">รายการเรื่องรอการตรวจสอบ</h4>
         <div class="card-toolbar">
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"

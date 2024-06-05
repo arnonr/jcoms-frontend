@@ -602,6 +602,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    state_new: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, { emit }) {
     // Variable
@@ -686,9 +690,19 @@ export default defineComponent({
           perPage: 500,
         });
 
-      selectOptions.value.states = await searchComplaintStore.fetchState({
+      let states = await searchComplaintStore.fetchState({
         perPage: 500,
       });
+      console.log(props)
+      if (props.state_new == true) {
+        selectOptions.value.states = states.filter((x: any) => {
+          return x.id == 1 || x.id == 18;
+        });
+      } else {
+        selectOptions.value.states = states.filter((x: any) => {
+          return x.id != 1 && x.id != 18;
+        });
+      }
 
       selectOptions.value.inspectors =
         await searchComplaintStore.fetchInspector({

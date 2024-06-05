@@ -34,7 +34,7 @@
               <td class="fw-bold p-3">ร้องเรียน/แจ้งเบาะแส</td>
               <td class="p-3"></td>
             </tr>
-            <!-- ฝรท. รับเรื่อง/ปฏิเสธ -->
+            <!-- ฝรท. รับเรื่อง-->
             <tr v-if="complaint_item.receive_status == 1">
               <td class="p-3">
                 {{ showDate(complaint_item.receive_at) }}
@@ -55,6 +55,81 @@
                   "
                 >
                   <span class="fw-bold">เหตุผล : </span>
+                  <span class="fst-italic">{{
+                    complaint_item.receive_status == 2
+                      ? "ข้อมูลไม่ครบถ้วน"
+                      : "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา"
+                  }}</span>
+                </div>
+                <div
+                  class="mb-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_item.receive_doc_date"
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    วันที่เอกสาร :
+                  </div>
+                  <div class="fst-italic">
+                    {{ showDate(complaint_item.receive_doc_date) }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_item.receive_doc_no"
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    เลขที่เอกสาร :
+                  </div>
+                  <div class="fst-italic">
+                    {{ complaint_item.receive_doc_no }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_item.receive_comment"
+                >
+                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
+                  <div class="fst-italic">
+                    {{ complaint_item.receive_comment }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_item.receive_doc_filename"
+                >
+                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
+                  <div class="fst-italic">
+                    <a
+                      :href="complaint_item.receive_doc_filename"
+                      target="_blank"
+                    >
+                      ดาวน์โหลด
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ฝรท. ปฏิเสธ -->
+            <tr v-if="complaint_item.receive_status == 2 || complaint_item.receive_status == 3">
+              <td class="p-3">
+                {{ showDate(complaint_item.receive_at) }}
+              </td>
+              <td class="fw-bold p-3">
+                ฝรท.
+                {{
+                  complaint_item.receive_status == 1
+                    ? "รับเรื่อง"
+                    : "ไม่รับเรื่อง"
+                }}
+              </td>
+              <td class="p-3">
+                <div
+                  v-if="
+                    complaint_item.receive_status == 2 ||
+                    complaint_item.receive_status == 3
+                  "
+                >
+                  <span class="fw-bold" style="min-width: 100px">เหตุผล : </span>
                   <span class="fst-italic">{{
                     complaint_item.receive_status == 2
                       ? "ข้อมูลไม่ครบถ้วน"

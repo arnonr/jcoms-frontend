@@ -3,7 +3,7 @@
   <div class="container mt-5">
     <div class="card shadow-sm my-6">
       <!-- Search -->
-      <SearchComponent :search="search" @search="fetchItems" @clear="onClear" />
+      <SearchComponent :search="search" :state_new="false" @search="fetchItems" @clear="onClear" />
     </div>
     <div class="card shadow-sm my-5">
       <!-- Button Add & Export -->

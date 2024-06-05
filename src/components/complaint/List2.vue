@@ -381,7 +381,7 @@ export default defineComponent({
       };
     };
 
-    const convertDueDate = (date: any, complaint_type_id: any) => {
+    const convertDueDate = (date: any, complaint_type_id: any,) => {
       if (date == null) {
         return "";
       }

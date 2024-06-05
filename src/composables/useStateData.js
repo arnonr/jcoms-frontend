@@ -2,7 +2,7 @@ export default () => {
   const states = [
     {
       id: 1,
-      name_th: "เรื่องร้องเรียนใหม่",
+      name_th: "เรื่องรอการตรวจสอบ",
       name_en: null,
       bg_color: "#f8285a",
     },

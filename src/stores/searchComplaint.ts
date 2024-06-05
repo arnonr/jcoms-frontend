@@ -42,9 +42,7 @@ export const useSearchComplaintStore = defineStore("search", () => {
     const { data } = await ApiService.query("state", {
       params: params,
     });
-    return data.data.filter((x: any) => {
-      return x.id == 1 || x.id == 18;
-    });
+    return data.data
   };
 
   const fetchInspector = async (params: any) => {
