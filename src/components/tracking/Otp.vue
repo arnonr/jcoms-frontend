@@ -10,25 +10,27 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 class="modal-title">ยืนยัน OTP</h3>
+            <h3 class="modal-title">
+              ยืนยันการติดตามเรื่องร้องเรียน/แจ้งเบาะแสด้วย SMS
+            </h3>
           </div>
 
           <div class="modal-body">
             <div class="row">
-              <div
-                class="mb-4 col-12 col-lg-12 d-flex justify-content-center align-items-center"
+              <label for="otp_data_phone" class="required form-label"
+                >หมายเลขโทรศัพท์</label
               >
-                <div class="text-center">
-                  หมายเลขโทรศัพท์ : {{ otp_send.phone_number_res }}<br />
-                  (Ref:
-                  {{
-                    otp_secret_key != null
-                      ? otp_secret_key
-                      : otp_send.otp_secret
-                  }})
-                </div>
-              </div>
-              <div class="d-flex justify-content-center align-items-cente mb-7">
+
+              <div class="mb-7 col-12 col-lg-12 d-flex">
+                <input
+                  type="text"
+                  disabled
+                  class="form-control me-2"
+                  placeholder="หมายเลขโทรศัพท์"
+                  aria-label="หมายเลขโทรศัพท์"
+                  v-model="request_otp.phone_number_show"
+                />
+
                 <button
                   class="btn btn-success"
                   @click="onSendOTP"
@@ -44,17 +46,22 @@
               </div>
               <hr />
               <div class="mb-7 col-12 col-lg-12">
-                <label for="otpData_code" class="required form-label">
-                  รหัส OTP ที่คุณได้รับทาง SMS จะหมดอายุภายใน
-                  <span class="text-primary">{{
-                    otpCountdown > 0 ? otpCountdown + " วินาที" : "หมดเวลา"
-                  }}</span>
+                <label for="otpData_code" class="form-label">
+                  <span>กรอกรหัส OTP ที่คุณได้รับทาง SMS</span>
+                  <div v-if="otpCountdown != 0">
+                    รหัส OTP จะหมดอายุภายใน
+                    <span class="text-primary">{{
+                      otpCountdown > 0 ? otpCountdown + " วินาที" : "หมดเวลา"
+                    }}</span
+                    ><br />
+                    <span> (Ref: {{ otp_secret_key }})</span>
+                  </div>
                 </label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="รหัส OTP"
-                  aria-label="รหัส OTP"
+                  placeholder="กรอกรหัส OTP ที่ได้รับทาง SMS"
+                  aria-label="กรอกรหัส OTP ที่ได้รับทาง SMS"
                   v-model="otpDataCheck.code"
                 />
                 <span class="text-danger mt-2" :class="[otpWrong]"
@@ -82,48 +89,45 @@
 </template>
 
 <script lang="ts">
-import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, onUnmounted, watch } from "vue";
-import { useOTPStore, type Otp } from "@/stores/otp";
-import type { PropType } from "vue";
-// Import SweetAlert2
-import Swal from "sweetalert2/dist/sweetalert2.js";
-// Import Axios
-import axios from "axios";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  onUnmounted,
+  watch,
+  toRefs,
+} from "vue";
+import ApiService from "@/core/services/ApiService";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
-// Import Dayjs
-import dayjs from "dayjs";
-import { useRouter } from "vue-router";
-import ApiService from "@/core/services/ApiService";
 // Use Toast Composables
 import useToast from "@/composables/useToast";
 
 export default defineComponent({
-  name: "tracking-otp",
+  name: "otp-tracking",
   props: {
-    otp_send: {
+    request_otp: {
       type: Object,
       required: true,
     },
   },
   components: {},
-  setup(props, context) {
+  setup(props, { emit }) {
     // Variable
-    const router = useRouter();
-    const emit = context.emit;
+    const { request_otp } = toRefs(props);
 
-    const store = useOTPStore();
     const otpData = ref<any>({
       phone: "",
       code: "",
     });
+
     const otpDataCheck = ref<any>({
       phone: "",
       code: "",
     });
 
     const otp_secret_key = ref<any>(null);
+
     let loadingTimeout = ref(30000);
     const otpConfirmModalRef = ref<any>(null);
     const otpConfirmModalObj = ref<any>(null);
@@ -155,18 +159,11 @@ export default defineComponent({
     };
 
     const onSendOTP = async () => {
-      // generate otp แล้วเก็บใน storage
       otpWrong.value = "d-none";
-      // Generate a random string of 4 English characters
       otp_secret_key.value = generateRandomEnglishString(4);
 
-      let api = {
-        type: "post",
-        url: "complaint/get-otp-tracking",
-      };
-
-      await ApiService[api.type](api.url, {
-        ...props.otp_send,
+      await ApiService.post("complaint/get-otp-tracking", {
+        ...request_otp.value,
         otp_secret: otp_secret_key.value,
       })
         .then(({ data }) => {
@@ -185,38 +182,28 @@ export default defineComponent({
     const onConfirmOTP = async () => {
       btnConfirmOtpDisabled.value = true;
 
-      let api = {
-        type: "post",
-        url: "complaint/verify-otp-tracking",
-      };
-
-      await ApiService[api.type](api.url, {
+      await ApiService.post("complaint/verify-otp-tracking", {
         otp: otpDataCheck.value.code,
-        otp_secret:
-          otp_secret_key.value != null
-            ? otp_secret_key.value
-            : props.otp_send.otp_secret,
+        otp_secret: otp_secret_key.value,
       })
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
 
-          Swal.fire({
-            text: "ยืนยัน OTP สำเร็จ",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "ตกลง",
-            heightAuto: false,
-            customClass: {
-              confirmButton: "btn fw-semibold btn-light-primary",
-            },
-          }).then(() => {
-            emit("close-otp-modal");
-            otpConfirmModalObj.value.hide();
-            emit("fetch-complaint", data.data.complainant_uuid);
-            otpWrong.value = "d-none";
-          });
+          const ttl = 10 * 60 * 1000;
+          const now = new Date();
+          // `item` เป็นอ็อบเจ็กต์ที่เก็บข้อมูลพร้อมเวลาหมดอายุ
+          const item_storage = {
+            value: data.data.complainant_uuid,
+            expiry: now.getTime() + ttl, // ttl เป็นเวลาในมิลลิวินาที
+          };
+          localStorage.setItem('complainant_uuid', JSON.stringify(item_storage));
+
+          emit("close-otp-modal");
+          otpConfirmModalObj.value.hide();
+          emit("fetch-complaint", data.data.complainant_uuid);
+          otpWrong.value = "d-none";
         })
         .catch(({ response }) => {
           btnConfirmOtpDisabled.value = false;
@@ -235,11 +222,12 @@ export default defineComponent({
     // Mounted
     onMounted(() => {
       otpConfirmModalObj.value = new Modal(otpConfirmModalRef.value, {});
-      otpData.value.code = props.otp_send.opt_code;
+      //   otpData.value.code = props.request_otp.opt_code;
+
       onOTPModal();
-      otpCountdown.value = 120;
-      btnSendOtpDisabled.value = true;
-      btnConfirmOtpDisabled.value = false;
+      //   otpCountdown.value = 120;
+      //   btnSendOtpDisabled.value = true;
+      //   btnConfirmOtpDisabled.value = false;
     });
 
     onUnmounted(() => {
@@ -277,7 +265,6 @@ export default defineComponent({
       otpCountdown,
       otpWrong,
       otp_secret_key,
-
       APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
       onOTPModal,
       onSendOTP,

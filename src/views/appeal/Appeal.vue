@@ -250,15 +250,118 @@ export default defineComponent({
     ] as any[]);
 
     //Fetch
+    const fetchComplainant = () => {
+      const params = {
+        uuid: checkComplainantUUID.value,
+      };
+      ApiService.query("complainant", { params: params })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          if (data.data.length != 0) {
+            complainant_item.value = {
+              id: data.data[0].id,
+              phone_number: data.data[0].phone_number,
+              card_type:
+                data.data[0].card_type != null
+                  ? {
+                      name:
+                        data.data[0].card_type == 2
+                          ? "หนังสือเดินทาง"
+                          : "หมายเลขบัตรประชาชน",
+                      value: data.data[0].card_type,
+                    }
+                  : "-",
+              id_card: data.data[0].id_card,
+              prefix_name_id:
+                data.data[0].prefix_name_id != null
+                  ? {
+                      name_th: data.data[0].prefix_name.name_th,
+                      id: data.data[0].prefix_name_id,
+                    }
+                  : null,
+              firstname: data.data[0].firstname,
+              lastname: data.data[0].lastname,
+              birthday: data.data[0].birthday
+                ? dayjs(data.data[0].birthday).format("YYYY-MM-DD")
+                : null,
+              occupation_text: data.data[0].occupation_text,
+              house_number: data.data[0].house_number,
+              building: data.data[0].building,
+              moo: data.data[0].moo,
+              soi: data.data[0].soi,
+              road: data.data[0].road,
+              card_photo: [],
+              email: data.data[0].email,
+              line_id: data.data[0].line_id,
+              card_photo_old: data.data[0].card_photo,
+              complaint_type_id: null,
+              province_id: data.data[0].province_id,
+              district_id: data.data[0].district_id,
+              sub_district_id: data.data[0].sub_district_id,
+              postal_code: data.data[0].postal_code,
+              address_all:
+                data.data[0].sub_district_id != null
+                  ? {
+                      label:
+                        data.data[0].sub_district.name_th +
+                        " > " +
+                        data.data[0].district.name_th +
+                        " > " +
+                        data.data[0].province.name_th +
+                        " > " +
+                        data.data[0].postal_code,
+                      province_th: data.data[0].province.name_th,
+                      district_th: data.data[0].district.name_th,
+                      sub_district_th: data.data[0].sub_district.name_th,
+                      post_code: data.data[0].postal_code,
+                      sub_district_id: data.data[0].sub_district_id,
+                      district_id: data.data[0].district_id,
+                      province_id: data.data[0].province_id,
+                    }
+                  : null,
+            };
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
 
     // Event
+    const getComplainantUUIDWithExpiry = () => {
+      const itemStr = localStorage.getItem("complainant_uuid");
+      // ถ้าข้อมูลไม่มีใน LocalStorage
+      if (!itemStr) {
+        return null;
+      }
+      const item = JSON.parse(itemStr);
+      const now = new Date();
+
+      // ตรวจสอบเวลาหมดอายุ
+      if (now.getTime() > item.expiry) {
+        // ถ้าหมดอายุแล้ว ให้ลบข้อมูลและคืนค่า null
+        localStorage.removeItem("complainant_uuid");
+        return null;
+      }
+
+      return item.value;
+    };
+
     const onComplete = () => {
       otp_modal.value = true;
       return false;
     };
 
     // Mounted
-    onMounted(() => {});
+    const checkComplainantUUID = ref(null);
+    onMounted(() => {
+      checkComplainantUUID.value = getComplainantUUIDWithExpiry();
+      if (checkComplainantUUID.value != null) {
+        fetchComplainant();
+      }
+    });
 
     // Watch
 

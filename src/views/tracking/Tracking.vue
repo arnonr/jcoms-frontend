@@ -2,307 +2,267 @@
   <div>
     <!--begin::Wrapper-->
     <div class="container p-lg-10 mt-5">
-      <h2 class="mt-10 mb-5 text-black">ติดตามเรื่องร้องเรียน</h2>
+      <h2 class="mt-10 mb-5 text-black">ติดตามเรื่องร้องเรียน/แจ้งเบาะแส</h2>
 
       <div class="card">
-        <div class="card-body px-5 py-5 pt-10">
-          <div class="mb-10">
-            <h4 class="text-center">
-              ระบุรหัสคำร้องเรียน/หมายเลขบัตรประชาชน/หนังสือเดินทาง
-            </h4>
-          </div>
-          <div class="d-flex justify-content-center mb-7">
-            <div
-              class="form-check form-check-custom form-check-solid me-5 mb-2"
-            >
-              <input
-                class="form-check-input"
-                name="type_of_track"
-                type="radio"
-                value="1"
-                checked
-                v-model="item.type_of_track"
-                id="flexCheckboxLg"
-              />
-              <label class="form-check-label fs-5" for="flexCheckboxLg">
-                เลขที่ร้องเรียน
-              </label>
+        <div class="card-body bg-sky px-5 py-5 pt-10">
+          <div class="div-search">
+            <div class="mb-10">
+              <h4 class="text-center">
+                ระบุเลขที่ร้องเรียน/หมายเลขบัตรประชาชน/หนังสือเดินทาง
+              </h4>
             </div>
-            <div class="form-check form-check-custom form-check-solid mb-2">
+            <div class="d-flex justify-content-center mb-7">
+              <div
+                class="form-check form-check-custom form-check-solid me-5 mb-2"
+              >
+                <input
+                  class="form-check-input"
+                  name="type_of_track"
+                  type="radio"
+                  value="1"
+                  checked
+                  v-model="search.type_of_track"
+                  id="flexCheckboxLg"
+                />
+                <label class="form-check-label fs-5" for="flexCheckboxLg">
+                  เลขที่ร้องเรียน
+                </label>
+              </div>
+              <div class="form-check form-check-custom form-check-solid mb-2">
+                <input
+                  class="form-check-input"
+                  name="type_of_track"
+                  type="radio"
+                  value="2"
+                  v-model="search.type_of_track"
+                  id="flexCheckboxLg"
+                />
+                <label class="form-check-label fs-5" for="flexCheckboxLg">
+                  หมายเลขบัตรประชาชน/หนังสือเดินทาง
+                </label>
+              </div>
+            </div>
+            <div class="mb-7 d-flex justify-content-center">
               <input
-                class="form-check-input"
-                name="type_of_track"
-                type="radio"
-                value="2"
-                v-model="item.type_of_track"
-                id="flexCheckboxLg"
+                style="max-width: 600px"
+                type="text"
+                class="form-control"
+                placeholder="เลขที่ร้องเรียน/หมายเลขบัตรประชาชน/หนังสือเดินทาง"
+                aria-label="เลขที่ร้องเรียน/หมายเลขบัตรประชาชน/หนังสือเดินทาง"
+                aria-describedby="basic-addon2"
+                v-model="search.id_card_or_jcoms_no"
               />
-              <label class="form-check-label fs-5" for="flexCheckboxLg">
-                หมายเลขบัตรประชาชน/หนังสือเดินทาง
-              </label>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-bg-primary text-white" @click="onSearch">
+                ค้นหา
+              </button>
             </div>
           </div>
-          <div class="mb-7 d-flex justify-content-center">
-            <input
-              style="max-width: 600px"
-              type="text"
-              class="form-control"
-              placeholder="หมายเลขบัตรประชาชน/หนังสือเดินทาง"
-              aria-label="หมายเลขบัตรประชาชน/หนังสือเดินทาง"
-              aria-describedby="basic-addon2"
-              v-model="item.id_card_or_jcoms_no"
-            />
-          </div>
-          <div class="d-flex justify-content-center">
-            <button class="btn btn-bg-primary text-white" @click="onSearch">
-              ค้นหา
-            </button>
-          </div>
-          <div class="separator my-10 mt-15"></div>
+          <div class="separator my-10 mt-5"></div>
 
           <div class="row">
             <div class="col-md-12 mb-5">
-              <h4>รายการเรื่องร้องเรียน</h4>
+              <h4>รายการเรื่องร้องเรียน/แจ้งเบาะแส</h4>
             </div>
             <div class="col-md-12 table-responsive">
-              <table
-                class="table table-bordered table-striped"
-                style="width: 100%"
-              >
-                <thead class="bg-color-police">
-                  <tr>
-                    <th class="text-center text-white">วันที่ร้องเรียน</th>
-                    <th class="text-center text-white">รหัสคำร้อง</th>
-                    <th class="text-center text-white">ลักษณะความผิด</th>
-                    <th class="text-center text-white">เรื่องร้องเรียน</th>
-                    <th class="text-center text-white">ผู้ถูกร้อง</th>
-                    <th class="text-center text-white">หน่วยงานถูกร้อง</th>
-                    <th class="text-center text-white">สถานะ</th>
-                    <th class="text-center text-white">รายละอียด</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(it, idx) in items" :key="idx">
-                    <td class="text-center">
-                      {{ convert_date(it.created_at) }}
-                    </td>
-                    <td class="text-center">{{ it.jcoms_no }}</td>
-                    <td>{{ it.topic_type.name_th }}</td>
-                    <td>{{ it.complaint_title }}</td>
-                    <td>{{ showAccused(it.accused) }}</td>
-                    <td>
-                      <span v-if="it.agency_id">{{ it.agency.name_th }}</span>
-                      <span v-else-if="it.division_id">{{
-                        it.division.name_th
-                      }}</span>
-                      <span v-else-if="it.bureau_id">{{
-                        it.bureau.name_th
-                      }}</span>
-                      <span v-else-if="it.inspector_id">{{
-                        it.inspector.name_th
-                      }}</span>
-                      <span v-else></span>
-                    </td>
-                    <td class="text-center">
-                      {{
-                        it.state.name_th ==
-                        "เรื่องร้องเรียนใหม่ (ยังไม่รับเรื่อง)"
-                          ? "รอรับเรื่อง"
-                          : it.state.name_th
-                      }}
-                    </td>
-                    <td class="text-center">
-                      <button
-                        class="btn btn-success"
-                        @click="
-                          () => {
-                            data_item = it;
-                            detail_modal = true;
-                          }
-                        "
-                      >
-                        รายละเอียด
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <Preloader :isLoading="isLoading" :position="'absolute'" />
+              <ListComponent
+                :items="items"
+                :paginationData="paginationData"
+                @update:currentPage="paginationData.currentPage = $event"
+                @detail="
+              (it: any) => {
+                Object.assign(item, it);
+                openDetailModal = true;
+              }
+            "
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="detail">
-      <Detail
-        v-if="detail_modal"
-        :item="data_item"
-        @close-detail-modal="
+    <div id="detail-modal">
+      <!-- item.tracking_satisfaction == null ?
+    //   onEvalModal() : ""  -->
+      <DetailPage
+        v-if="
+          openDetailModal == true &&
+          item.id != null &&
+          item.complainant_id != null
+        "
+        :complaint_id="item.id"
+        :complainant_id="item.complainant_id"
+        @close-modal="
           () => {
-            detail_modal = false;
+            openDetailModal = false;
+            onEvalModal();
           }
         "
       />
     </div>
 
-    <div id="otp-before-confirm">
+    <div id="otp-before-fetch-complaint">
       <Otp
-        v-if="otp_modal"
-        :otp_send="otp_send"
+        v-if="openOtpModal"
+        :request_otp="request_otp"
         @close-otp-modal="
           () => {
-            otp_modal = false;
+            openOtpModal = false;
           }
         "
-        @fetch-complaint="fetchComplaint"
+        @fetch-complaint="fetchItems"
       />
+    </div>
+
+    <!-- Modal Evaluate -->
+    <div
+      class="modal fade"
+      tabindex="-1"
+      ref="evalModalRef"
+      id="eval-modal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">
+              ขอบคุณสำหรับการใช้งานระบบร้องเรียน/แจ้งเบาะแส
+            </h3>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12 text-center mt-3">
+                <div class="mb-3">โปรดให้คะแนนความพึงพอใจการใช้งานระบบ</div>
+                <div class="text-center mx-auto">
+                  <star-rating
+                    class="justify-content-center"
+                    :glow="10"
+                    :rounded-corners="true"
+                    @update:rating="setRating"
+                    :star-points="[
+                      23, 2, 14, 17, 0, 19, 10, 34, 7, 50, 23, 43, 38, 50, 36,
+                      34, 46, 19, 31, 17,
+                    ]"
+                  ></star-rating>
+                </div>
+                <!--  -->
+                <div class="separator separator-dotted my-2"></div>
+              </div>
+              <div class="col-md-12 text-center mt-5">
+                <button
+                  class="btn btn-success"
+                  @click="onEvalConfirm"
+                  :disabled="rating > 0 ? false : true"
+                >
+                  ตกลง
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <!--end::Wrapper-->
   </div>
 </template>
 
 <script lang="ts">
-import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
-// Import SweetAlert2
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import useAddressData from "@/composables/useAddressData";
+import { defineComponent, ref, onMounted, reactive, watch } from "vue";
+import ApiService from "@/core/services/ApiService";
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
-// import * as bootstrap from "bootstrap";
+// Import Modal Bootstrap
 import { Modal } from "bootstrap";
-// Use Toast Composables
+// Import Rating
+import StarRating from "vue-star-rating";
+// Composable
 import useToast from "@/composables/useToast";
-// import Api Service
-import ApiService from "@/core/services/ApiService";
-// OTP
+// Component
+import Preloader from "@/components/Preloader.vue";
 import Otp from "@/components/tracking/Otp.vue";
-import Detail from "@/components/tracking/Detail.vue";
-// import Detail from "@/components/tracking/Detail.vue";
-
-interface PrefixName {
-  id: number;
-  name_th: string;
-  // เพิ่ม property อื่น ๆ ตามโครงสร้างข้อมูลของ prefix_name
-}
+import ListComponent from "@/components/tracking/List.vue";
+import DetailPage from "@/views/tracking/DetailModal.vue";
 
 export default defineComponent({
   name: "tracking",
   components: {
     dayjs,
     Otp,
-    Detail,
+    ListComponent,
+    DetailPage,
+    Preloader,
+    StarRating,
   },
   setup() {
-    // Variable
-    const router = useRouter();
-    const otp_modal = ref(false);
-    const detail_modal = ref(false);
-    const otp_send = ref<any>({
+    // UI
+    const isLoading = ref<Boolean>(false);
+    const openOtpModal = ref(false);
+    const openDetailModal = ref(false);
+    const evalModalRef = ref<any>(null);
+    const evalModalObj = ref<any>(null);
+
+    const checkComplainantUUID = ref(null);
+    const request_otp = reactive<any>({
       jcoms_no: undefined,
       id_card: undefined,
-      phone_number: undefined,
-      opt_code: undefined,
-      otp_secret: undefined,
+      phone_number_show: undefined,
     });
-
-    const address_all = ref([]);
-    address_all.value = useAddressData().addresses.map((el: any) => {
-      el.label =
-        el.district +
-        " > " +
-        el.amphoe +
-        " > " +
-        el.province +
-        " > " +
-        el.zipcode;
-      return el;
-    });
-
-    const selectOptions = ref({
-      type_of_track: [
-        {
-          name: "หมายเลขบัตรประชาชน",
-          value: 1,
-        },
-        {
-          name: "หนังสือเดินทาง",
-          value: 2,
-        },
-      ],
-      address_all: address_all.value,
-      dayornight: [
-        {
-          name: "กลางวัน",
-          value: 1,
-        },
-        { name: "กลางคืน", value: 2 },
-      ],
-      organizations: [
-        {
-          name: "สถานีตำรวจภูธรเจาะไอ้ร้อง > บก... > บช.. > สังกัด ...",
-          value: 1,
-        },
-        {
-          name: "สถานีตำรวจภูธรจักราช > บก... > บช.. > สังกัด ...",
-          value: 2,
-        },
-      ],
-      prefix_names: [],
-    });
-
+    // Variable
+    const rating = ref(0);
+    const search = reactive({ type_of_track: 1, id_card_or_jcoms_no: "" });
+    const items = reactive<any>([]);
     const item = ref({
-      type_of_track: 1,
-      id_card_or_jcoms_no: "",
+      id: null,
+      complainant_id: null,
+      tracking_satisfaction: null,
     });
-    const items = ref<any>([]);
-    const data_item = ref({});
 
-    const convert_date = (date: any) => {
-      return dayjs(date).locale("th").format("DD MMM BBBB");
+    const setRating = (rate: number) => {
+      rating.value = rate;
     };
+
+    const paginationData = reactive<any>({
+      perPage: 20,
+      currentPage: 1,
+      totalPage: 1,
+      totalItems: 0,
+    });
 
     // Fetch
-    const fetchComplaint = async (complainant_uuid: any) => {
-      let api = {
-        type: "query",
-        url: "complaint/get-complaint-by-otp",
-      };
+    const fetchItems = async (complainant_uuid: any) => {
+      isLoading.value = true;
 
-      // ส่งไรไป ID phone เก็บ tracking_state ไว้  มี ID หรือเบอร์โทร
-      await ApiService[api.type](api.url, {
-        params: { complainant_uuid: complainant_uuid, perPage: 500 },
+      await ApiService.query("complaint/get-complaint-by-otp", {
+        params: {
+          complainant_uuid: complainant_uuid,
+          perPage: paginationData.perPage,
+          currentPage: paginationData.currentPage,
+          orderBy: "created_at",
+          order: "desc",
+        },
       })
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          items.value = data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
-    };
 
-    const fetchPrefixName = async () => {
-      let api = {
-        type: "query",
-        url: "prefix-name",
-      };
+          items.length = 0;
+          Object.assign(items, data.data);
+          paginationData.totalPage = data.totalPage;
+          paginationData.totalItems = data.totalData;
+          paginationData.currentPage = data.currentPage;
 
-      // ส่งไรไป ID phone เก็บ tracking_state ไว้  มี ID หรือเบอร์โทร
-      await ApiService[api.type](api.url, {
-        params: { is_active: 1, perPage: 500 },
-      })
-        .then(({ data }) => {
-          if (data.msg != "success") {
-            throw new Error("ERROR");
-          }
-          selectOptions.value.prefix_names = data.data;
+          checkComplainantUUID.value = getComplainantUUIDWithExpiry();
+          isLoading.value = false;
         })
         .catch(({ response }) => {
           console.log(response);
@@ -312,69 +272,45 @@ export default defineComponent({
     // Event
     const onSearch = async () => {
       if (
-        item.value.type_of_track == null ||
-        item.value.id_card_or_jcoms_no == null ||
-        item.value.id_card_or_jcoms_no == ""
+        search.type_of_track == null ||
+        search.id_card_or_jcoms_no == null ||
+        search.id_card_or_jcoms_no == ""
       ) {
         useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
         return;
       }
 
-      items.value = [];
+      Object.assign(items, []);
 
-      if (item.value.type_of_track == 1) {
-        otp_send.value.jcoms_no = item.value.id_card_or_jcoms_no;
-        otp_send.value.id_card = undefined;
-        otp_send.value.phone_number = undefined;
-      } else if (item.value.type_of_track == 2) {
-        otp_send.value.id_card = item.value.id_card_or_jcoms_no;
-        otp_send.value.jcoms_no = undefined;
-        otp_send.value.phone_number = undefined;
-      } else if (item.value.type_of_track == 3) {
-        // data_send.phone_number = item.value.phone_number;
-        otp_send.value.jcoms_no = undefined;
-        otp_send.value.id_card = undefined;
+      Object.assign(request_otp, {
+        jcoms_no: undefined,
+        id_card: undefined,
+        phone_number: undefined,
+        phone_number_show: undefined,
+      });
+
+      if (search.type_of_track == 1) {
+        request_otp.jcoms_no = search.id_card_or_jcoms_no;
+      } else if (search.type_of_track == 2) {
+        request_otp.id_card = search.id_card_or_jcoms_no;
+      } else if (search.type_of_track == 3) {
+        request_otp.phone_number_show = search.id_card_or_jcoms_no;
       } else {
         useToast("พบข้อผิดพลาด", "error");
         return;
       }
 
-      const getRandomEnglishCharacter = () => {
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        return characters.charAt(randomIndex);
-      };
-
-      const generateRandomEnglishString = (length: any) => {
-        let result = "";
-
-        for (let i = 0; i < length; i++) {
-          const randomChar = getRandomEnglishCharacter();
-          result += randomChar;
-        }
-
-        return result;
-      };
-
       // Generate a random string of 4 English characters
-      otp_send.value.otp_secret = generateRandomEnglishString(4);
-
-      let api = {
-        type: "post",
-        url: "complaint/get-otp-tracking",
-      };
-
-      await ApiService[api.type](api.url, {
-        ...otp_send.value,
+      await ApiService.post("complaint/get-phonenumber", {
+        ...request_otp,
       })
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
 
-          otp_send.value.phone_number_res = data.data.phone_number;
-          otp_modal.value = true;
+          request_otp.phone_number_show = data.data.phone_number;
+          openOtpModal.value = true;
         })
         .catch(({ response }) => {
           useToast("ไม่พบข้อมูล", "error");
@@ -382,70 +318,96 @@ export default defineComponent({
         });
     };
 
-    const showAccused = (accused: any) => {
-      let text = "";
-
-      if (accused != null && accused.length != 0) {
-        accused.forEach((x: any, idx: number) => {
-          if (x.firstname == null) {
-            return;
-          }
-          if (idx != 0) {
-            text = text + ", ";
-          }
-
-          let fn = x.firstname;
-          let ln = x.lastname != null ? x.lastname : "";
-          text = text + showPrefix(x.prefix_name_id) + fn + " " + ln;
-        });
+    const getComplainantUUIDWithExpiry = () => {
+      const itemStr = localStorage.getItem("complainant_uuid");
+      // ถ้าข้อมูลไม่มีใน LocalStorage
+      if (!itemStr) {
+        return null;
       }
-      return text;
+      const item = JSON.parse(itemStr);
+      const now = new Date();
+
+      // ตรวจสอบเวลาหมดอายุ
+      if (now.getTime() > item.expiry) {
+        // ถ้าหมดอายุแล้ว ให้ลบข้อมูลและคืนค่า null
+        localStorage.removeItem("complainant_uuid");
+        return null;
+      }
+
+      return item.value;
     };
 
-    const showPrefix = (prefix_name_id: any) => {
-      let text = "";
-
-      if (prefix_name_id != null) {
-        let prefix_name: any;
-        prefix_name = selectOptions.value.prefix_names.find((x: any) => {
-          return prefix_name_id == x.id;
-        });
-        if (prefix_name) {
-          return prefix_name.name_th;
-        }
+    const onEvalModal = () => {
+      if (item.value.tracking_satisfaction == null) {
+        evalModalObj.value.show();
       }
-      return text;
+    };
+
+    const onEvalConfirm = async () => {
+      // save Eval
+      let eval_data = {
+        tracking_satisfaction: rating.value,
+        tracking_satisfaction_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      };
+      //   fetch
+
+      await ApiService.post("complaint/" + item.value.id, eval_data)
+        .then(async ({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+          evalModalObj.value.hide();
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
     };
 
     // Mounted
-    onMounted(() => {
-      fetchPrefixName();
-      // if(state){
-      //     fetchComplaint();
-      // }
+    onMounted(async () => {
+      evalModalObj.value = new Modal(evalModalRef.value, {});
+      checkComplainantUUID.value = getComplainantUUIDWithExpiry();
+      if (checkComplainantUUID.value != null) {
+        fetchItems(checkComplainantUUID.value);
+      }
     });
 
+    // Watch
+    watch(
+      () => paginationData.currentPage,
+      () => {
+        fetchItems(checkComplainantUUID.value);
+      }
+    );
+
     return {
-      getAssetPath,
-      selectOptions,
+      search,
       item,
       items,
-      otp_modal,
-      otp_send,
-      detail_modal,
-      convert_date,
-      data_item,
-
+      request_otp,
+      rating,
+      paginationData,
+      isLoading,
       onSearch,
-      showAccused,
-      showPrefix,
-      fetchComplaint,
+      fetchItems,
+      openDetailModal,
+      openOtpModal,
+      onEvalModal,
+      onEvalConfirm,
+      setRating,
+      evalModalRef,
+      evalModalObj,
     };
   },
 });
 </script>
 
 <style>
+@media only screen and (max-width: 768px) {
+  .card > .card-body {
+    padding: 0px;
+  }
+}
 .vs__dropdown-toggle {
   border: none;
 }
@@ -461,12 +423,12 @@ export default defineComponent({
 .dp__input {
   border: none !important;
 }
-@media only screen and (max-width: 768px) {
-  .card > .card-body {
-    padding: 0px;
-  }
-}
+
 .bg-color-police {
   background-color: #800001;
+}
+
+.bg-sky {
+  background-color: #d9f4fe;
 }
 </style>
