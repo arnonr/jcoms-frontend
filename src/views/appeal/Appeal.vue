@@ -84,28 +84,19 @@
       </div>
     </div>
 
-    <!-- <div id="captcha">
+    <div id="captcha">
       <Captcha
-        :item="complainant_item"
         v-if="captcha_modal"
+        :item="complainant_item"
         :complaint_item="item"
-        :change_phone_number="change_phone_number"
-        :errors="complainant_item_errors"
         :first_action="first_action"
-        @update-phone-number-data="
-          (new_phone) => {
-            complainant_item.phone_number = new_phone;
-            change_phone_number = false;
-            fetchComplainant();
-          }
-        "
         @close-captcha-modal="
           () => {
             captcha_modal = false;
           }
         "
       />
-    </div> -->
+    </div>
 
     <div id="otp-before-confirm">
       <Otp
@@ -151,7 +142,7 @@ import { useRoute } from "vue-router";
 import Tab1 from "@/components/appeal/form/Tab1.vue";
 import Tab2 from "@/components/appeal/form/Tab2.vue";
 import Tab3 from "@/components/appeal/form/Tab3.vue";
-// import Captcha from "@/components/appeal//form/TCaptcha.vue";
+import Captcha from "@/components/appeal/form/Captcha.vue";
 import Otp from "@/components/appeal/form/Otp.vue";
 import Preloader from "@/components/Preloader.vue";
 
@@ -162,7 +153,7 @@ export default defineComponent({
     Tab1,
     Tab2,
     Tab3,
-    // Captcha,
+    Captcha,
     Otp,
     Preloader,
   },
@@ -175,7 +166,7 @@ export default defineComponent({
     };
     const otp_modal = ref(false);
     const captcha_modal = ref(true);
-    const first_action = ref(true);
+    const first_action = ref(false);
 
     // Variable
     const route = useRoute();
