@@ -41,62 +41,62 @@ const MainMenuConfig: Array<MenuItem> = [
     heading: "จัดการข้อมูล",
     route: "/crafted",
     pages: [
-      {
-        heading: "ทะเบียนหน่วยงาน",
-        route: "/dashboard",
-        keenthemesIcon: "element-11",
-        bootstrapIcon: "bi-app-indicator",
-      },
-      {
-        heading: "ทะเบียนเจ้าหน้าที่",
-        route: "/dashboard",
-        keenthemesIcon: "element-11",
-        bootstrapIcon: "bi-app-indicator",
-      },
+    //   {
+    //     heading: "ทะเบียนหน่วยงาน",
+    //     route: "/dashboard",
+    //     keenthemesIcon: "element-11",
+    //     bootstrapIcon: "bi-app-indicator",
+    //   },
+    //   {
+    //     heading: "ทะเบียนเจ้าหน้าที่",
+    //     route: "/dashboard",
+    //     keenthemesIcon: "element-11",
+    //     bootstrapIcon: "bi-app-indicator",
+    //   },
       {
         heading: "ทะเบียนผู้ใช้งาน",
-        route: "/dashboard",
+        route: "/user",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
-      {
-        sectionTitle: "Master Data",
-        route: "/dashboard",
-        keenthemesIcon: "element-plus",
-        bootstrapIcon: "bi-archive",
-        sub: [
-          {
-            heading: "สายงาน",
-            route: "/dashboard",
-            keenthemesIcon: "element-11",
-            bootstrapIcon: "bi-app-indicator",
-          },
-          {
-            heading: "ประเภทเรื่องร้องเรียน/แจ้งเบาะแส",
-            route: "/dashboard",
-            keenthemesIcon: "element-11",
-            bootstrapIcon: "bi-app-indicator",
-          },
-          {
-            heading: "ลักษณะเรื่องร้องเรียน/แจ้งเบาะแส",
-            route: "/dashboard",
-            keenthemesIcon: "element-11",
-            bootstrapIcon: "bi-app-indicator",
-          },
-          {
-            heading: "ข้อกล่าวหา",
-            route: "/dashboard",
-            keenthemesIcon: "element-11",
-            bootstrapIcon: "bi-app-indicator",
-          },
-          {
-            heading: "ช่องทางการร้องเรียน",
-            route: "/dashboard",
-            keenthemesIcon: "element-11",
-            bootstrapIcon: "bi-app-indicator",
-          },
-        ],
-      },
+    //   {
+    //     sectionTitle: "Master Data",
+    //     route: "/dashboard",
+    //     keenthemesIcon: "element-plus",
+    //     bootstrapIcon: "bi-archive",
+    //     sub: [
+    //       {
+    //         heading: "สายงาน",
+    //         route: "/dashboard",
+    //         keenthemesIcon: "element-11",
+    //         bootstrapIcon: "bi-app-indicator",
+    //       },
+    //       {
+    //         heading: "ประเภทเรื่องร้องเรียน/แจ้งเบาะแส",
+    //         route: "/dashboard",
+    //         keenthemesIcon: "element-11",
+    //         bootstrapIcon: "bi-app-indicator",
+    //       },
+    //       {
+    //         heading: "ลักษณะเรื่องร้องเรียน/แจ้งเบาะแส",
+    //         route: "/dashboard",
+    //         keenthemesIcon: "element-11",
+    //         bootstrapIcon: "bi-app-indicator",
+    //       },
+    //       {
+    //         heading: "ข้อกล่าวหา",
+    //         route: "/dashboard",
+    //         keenthemesIcon: "element-11",
+    //         bootstrapIcon: "bi-app-indicator",
+    //       },
+    //       {
+    //         heading: "ช่องทางการร้องเรียน",
+    //         route: "/dashboard",
+    //         keenthemesIcon: "element-11",
+    //         bootstrapIcon: "bi-app-indicator",
+    //       },
+    //     ],
+    //   },
     ],
   },
 

@@ -34,65 +34,6 @@
         </span> -->
         <!--end:Menu link-->
         <!--begin:Menu sub-->
-        <div
-          class="menu-sub menu-sub-lg-down-accordion menu-sub-lg-dropdown px-lg-2 py-lg-4 w-lg-200px"
-        >
-          <!--begin:Menu item-->
-          <div class="menu-item">
-            <!--begin:Menu link-->
-            <a
-              class="menu-link"
-              href="https://preview.keenthemes.com/metronic8/vue/docs/base/utilities"
-              title="Check out over 200 in-house components, plugins and ready for use solutions"
-              data-bs-toggle="tooltip"
-              data-bs-trigger="hover"
-              data-bs-dismiss="click"
-              data-bs-placement="right"
-            >
-              <span class="menu-icon">
-                <KTIcon icon-name="rocket" icon-class="fs-3" />
-              </span>
-              <span class="menu-title">Components</span>
-            </a>
-            <!--end:Menu link-->
-          </div>
-          <!--end:Menu item-->
-          <!--begin:Menu item-->
-          <div class="menu-item">
-            <!--begin:Menu link-->
-            <a
-              class="menu-link"
-              href="https://preview.keenthemes.com/metronic8/vue/docs/index"
-              title="Check out the complete documentation"
-              data-bs-toggle="tooltip"
-              data-bs-trigger="hover"
-              data-bs-dismiss="click"
-              data-bs-placement="right"
-            >
-              <span class="menu-icon">
-                <KTIcon icon-name="abstract-26" icon-class="fs-3" />
-              </span>
-              <span class="menu-title">Documentation</span>
-            </a>
-            <!--end:Menu link-->
-          </div>
-          <!--end:Menu item-->
-          <!--begin:Menu item-->
-          <div class="menu-item">
-            <!--begin:Menu link-->
-            <a
-              class="menu-link"
-              href="https://preview.keenthemes.com/metronic8/vue/docs/getting-started/changelog"
-            >
-              <span class="menu-icon">
-                <KTIcon icon-name="code" icon-class="fs-3" />
-              </span>
-              <span class="menu-title">Changelog v{{ version }}</span>
-            </a>
-            <!--end:Menu link-->
-          </div>
-          <!--end:Menu item-->
-        </div>
         <!--end:Menu sub-->
       </div>
       <!--end:Menu item-->
