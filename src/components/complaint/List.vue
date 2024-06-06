@@ -1,6 +1,9 @@
 <template>
   <div>
-    <table class="table table-bordered table-striped" style="width: 100%">
+    <table
+      class="table table-bordered table-striped bg-sky"
+      style="width: 100%"
+    >
       <thead class="bg-color-police">
         <tr>
           <th class="text-center text-white">วันที่ร้องเรียน</th>
@@ -242,3 +245,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.bg-sky {
+  background-color: #d9f4fe;
+}
+</style>

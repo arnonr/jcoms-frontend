@@ -95,6 +95,19 @@
         />
       </div>
 
+      <!-- Modal Add เพิ่มข้อมูล -->
+      <div id="add-modal">
+        <AddPage
+          v-if="openAddModal == true"
+          @close-modal="
+            () => {
+              openAddModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
       <!-- Modal Receive ฝรท. รับเรื่อง -->
       <div id="receive1-modal">
         <Receive1Page
@@ -124,6 +137,7 @@ import SearchComponent from "@/components/complaint/Search.vue";
 import ListComponent from "@/components/complaint/List.vue";
 import Preloader from "@/components/Preloader.vue";
 import EditPage from "@/views/new-complaint/Edit.vue";
+import AddPage from "@/views/new-complaint/Add.vue";
 import DetailPage from "@/views/new-complaint/DetailModal.vue";
 import Receive1Page from "@/views/new-complaint/Receive1.vue";
 
@@ -136,6 +150,7 @@ export default defineComponent({
     EditPage,
     DetailPage,
     Receive1Page,
+    AddPage,
   },
   setup() {
     // UI Variable
@@ -160,6 +175,7 @@ export default defineComponent({
     const openDetailModal = ref(false);
     const openEditModal = ref(false);
     const openReceive1Modal = ref(false);
+    const openAddModal = ref(false);
 
     // Fetch Data
     const fetchItems = async () => {
@@ -222,7 +238,9 @@ export default defineComponent({
     const onExport = async () => {};
 
     // Modal action
-    const onAddModal = () => {};
+    const onAddModal = () => {
+      openAddModal.value = true;
+    };
 
     const onDetailModal = (it: any) => {
       Object.assign(item, it);
@@ -255,6 +273,7 @@ export default defineComponent({
       openDetailModal,
       openEditModal,
       openReceive1Modal,
+      openAddModal,
     };
   },
 });

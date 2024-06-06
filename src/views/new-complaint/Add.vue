@@ -1,769 +1,548 @@
 <template>
-  <!--begin::Wrapper-->
-  <div class="container">
-    <!-- color="#ffcb05" -->
-    <!-- disable-back -->
-    <!-- hide-buttons -->
-    <form-wizard
-      ref="formStep"
-      finishButtonText="บันทึก"
-      backButtonText="ย้อนกลับ"
-      nextButtonText="ถัดไป"
-    >
-      <tab-content title="ระบุข้อมูล">
-        <div class="row">
-          <!--begin::Input group-->
-          <div class="mb-5"><h4>1. ข้อมูลส่วนตัว</h4></div>
+  <div
+    class="modal fade"
+    tabindex="-1"
+    ref="mainModalRef"
+    id="main-modal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">เพิ่มข้อมูล</h3>
+          <button
+            @click="onClose({ reload: false })"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
 
-          <div class="input-group input-group mb-7">
-            <span class="me-5 fs-5 mb-2">ประเภทการระบุตัวตน</span>
-            <div
-              class="form-check form-check-custom form-check-solid me-5 mb-2"
-            >
-              <input
-                class="form-check-input"
-                name="ty    pe_of_identity"
-                type="radio"
-                value="1"
-                checked
-                v-model="item.type_of_identity"
-                id="flexCheckboxLg"
-              />
-              <label class="form-check-label fs-5" for="flexCheckboxLg">
-                แบบระบุตัวตน
-              </label>
-            </div>
-            <div class="form-check form-check-custom form-check-solid">
-              <input
-                class="form-check-input"
-                name="type_of_identity"
-                type="radio"
-                value="2"
-                v-model="item.type_of_identity"
-                id="flexCheckboxLg"
-              />
-              <label class="form-check-label fs-5" for="flexCheckboxLg">
-                แบบไม่ระบุตัวตน
-              </label>
-            </div>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4" v-if="item.type_of_identity == 1">
-            <label for="exampleFormControlInput1" class="required form-label"
-              >ประเภทเอกสาร</label
-            >
-            <v-select
-              label="name"
-              name="id"
-              placeholder="ประเภทเอกสาร"
-              :options="selectOptions.type_of_document"
-              class="form-control"
-              :clearable="false"
-              v-model="item.type_of_document_id"
-            >
-            </v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-8" v-if="item.type_of_identity == 1">
-            <label for="exampleFormControlInput1" class="required form-label"
-              >หมายเลขบัตรประชาชน/หนังสือเดินทาง</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="หมายเลขบัตรประชาชน/หนังสือเดินทาง"
-              aria-label="หมายเลขบัตรประชาชน/หนังสือเดินทาง"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-
-          <div class="mb-7 col-12 col-lg-2" v-if="item.type_of_identity == 1">
-            <label for="prefix_name" class="required form-label"
-              >คำนำหน้า</label
-            >
-            <v-select
-              label="name"
-              name="id"
-              placeholder="คำนำหน้า"
-              :options="selectOptions.prefix_name"
-              class="form-control"
-              :clearable="false"
-              v-model="item.prefix_name"
-            >
-            </v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-5" v-if="item.type_of_identity == 1">
-            <label for="firstanme" class="required form-label">ชื่อ</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="ชื่อ"
-              aria-label="ชื่อ"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-
-          <div class="mb-7 col-12 col-lg-5" v-if="item.type_of_identity == 1">
-            <label for="surname" class="required form-label">นามสกุล</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="นามสกุล"
-              aria-label="นามสกุล"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4" v-if="item.type_of_identity == 1">
-            <label for="surname" class="form-label">วัน/เดือน/ปีเกิด</label>
-            <VueDatePicker
-              :max-date="new Date()"
-              v-model="item.inspection_date"
-              :enable-time-picker="false"
-              :locale="'th'"
-              auto-apply
-              class="form-control"
-              :format="format"
-            >
-              <template #year-overlay-value="{ text }">
-                {{ parseInt(text) + 543 }}
-              </template>
-
-              <template #year="{ value }">
-                {{ value + 543 }}
-              </template>
-            </VueDatePicker>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4" v-if="item.type_of_identity == 1">
-            <label for="surname" class="form-label">อาชีพ</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="อาชีพ"
-              aria-label="อาชีพ"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-
-          <div
-            class="mb-7 col-12 col-lg-4"
-            :class="[item.type_of_identity == 1 ? 'col-lg-4' : 'col-lg-12']"
+        <div class="modal-body">
+          <form-wizard
+            color="#800001"
+            ref="formStep"
+            finishButtonText="บันทึก"
+            backButtonText="ย้อนกลับ"
+            nextButtonText="ถัดไป"
+            step-size="xs"
+            id="form"
+            @on-change="onTabChange"
+            @on-complete="onComplete"
           >
-            <label for="surname" class="required form-label"
-              >หมายเลขโทรศัพท์</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="หมายเลขโทรศัพท์"
-              aria-label="นามสกุล"
-              aria-describedby="basic-addon2"
+            <Tab1
+              :complaint_item="item"
+              :complainant_item="complainant_item"
+              :complaint_type="complaint_type"
             />
-          </div>
 
-          <!-- <div class="separator my-10"></div> -->
-
-          <div class="mb-7 col-12 col-lg-6" v-if="item.type_of_identity == 1">
-            <label for="surname" class="required form-label"
-              >ที่อยู่ติดต่อได้</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="ที่อยู่"
-              aria-label="ที่อยู่"
-              aria-describedby="basic-addon2"
+            <Tab2
+              :complaint_item="item"
+              :complaint_type="complaint_type"
+              :accused="accused"
+              :r="r"
             />
-          </div>
 
-          <div class="mb-5 col-12 col-lg-6" v-if="item.type_of_identity == 1">
-            <label for="surname" class="required form-label"
-              >ตำบล/อำเภอ/จังหวัด :</label
-            >
-
-            <v-select
-              :label="'label'"
-              placeholder="จังหวัด/อำเภอ/ตำบล"
-              :options="selectOptions.address_all"
-              item-value="id"
-              id="slt-province-amphur-tumbol"
-              v-model="item.address_all"
-              class="form-control v-select-no-border"
-              :clearable="true"
-            ></v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-12" v-if="item.type_of_identity == 1">
-            <label for="formFile" class="form-label"
-              >ถ่ายรูปตนเองพร้อมบัตร</label
-            >
-            <input class="form-control" type="file" id="formFile" />
-          </div>
-
-          <div class="separator my-10"></div>
-          <div class="mb-5"><h4>2. ข้อมูลร้องเรียน/แจ้งเบาะแส</h4></div>
-
-          <div class="mb-7 col-12 col-lg-12">
-            <label for="surname" class="required form-label"
-              >เรื่องร้องเรียน/แจ้งเบาะแส</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="เรื่องร้องเรียน/แจ้งเบาะแส"
-              aria-label="เรื่องร้องเรียน/แจ้งเบาะแส"
-              aria-describedby="basic-addon2"
+            <Tab3
+              :tab_index="tab_index"
+              :complaint_item="item"
+              :complainant_item="complainant_item"
+              :accused="accused"
+              :complaint_type="complaint_type"
+              :r="r"
             />
-          </div>
 
-          <div class="mb-7 col-12 col-lg-6">
-            <label for="surname" class="required form-label"
-              >สถานที่เกิดเหตุ</label
-            >
-            <v-select
-              :label="'label'"
-              placeholder="จังหวัด/อำเภอ/ตำบล"
-              :options="selectOptions.address_all"
-              item-value="id"
-              id="slt-province-amphur-tumbol"
-              v-model="item.address_all"
-              class="form-control v-select-no-border"
-              :clearable="true"
-            ></v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-6">
-            <label for="surname" class="required form-label"
-              >บันทึกข้อมูลสถานที่เกิดเหตุโดยละเอียด</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="บันทึกข้อมูลสถานที่เกิดเหตุ"
-              aria-label="บันทึกข้อมูลสถานที่เกิดเหตุ"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >วันที่เกิดเหตุ</label
-            >
-            <VueDatePicker
-              v-model="item.inspection_date"
-              :max-date="new Date()"
-              :enable-time-picker="false"
-              :locale="'th'"
-              auto-apply
-              class="form-control"
-              :format="format"
-            >
-              <template #year-overlay-value="{ text }">
-                {{ parseInt(text) + 543 }}
-              </template>
-
-              <template #year="{ value }">
-                {{ value + 543 }}
-              </template>
-            </VueDatePicker>
-          </div>
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >เวลาเกิดเหตุ</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="เวลาเกิดเหตุ"
-              aria-label="เวลาเกิดเหตุ"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >ห้วงเวลาเกิดเหตุ</label
-            >
-            <v-select
-              label="name"
-              name="id"
-              placeholder="ห้วงเวลาเกิดเหตุ"
-              :options="selectOptions.dayornight"
-              class="form-control"
-              :clearable="false"
-              v-model="item.day_or_night"
-            >
-            </v-select>
-          </div>
-
-          <div class="col-12">
-            <div class="row mb-7">
-              <div class="mb-3 col-12 col-lg-2">
-                <label for="surname" class="required form-label"
-                  >ผู้ถูกร้อง</label
+            <template #footer="props">
+              <div class="wizard-footer-left">
+                <button
+                  v-if="props.activeTabIndex > 0"
+                  @click.native="props.prevTab()"
+                  class="btn text-white float-left"
+                  style="background-color: #800001"
                 >
-                <v-select
-                  label="name"
-                  name="id"
-                  placeholder="คำนำหน้า(ยศ)"
-                  :options="selectOptions.prefix_name_1"
-                  class="form-control"
-                  :clearable="false"
-                  v-model="item.prefix_name_1"
+                  ย้อนกลับ
+                </button>
+              </div>
+
+              <div class="wizard-footer-right">
+                <button
+                  v-if="!props.isLastStep"
+                  @click.native="props.nextTab()"
+                  class="btn text-white"
+                  style="background-color: #800001"
                 >
-                </v-select>
-              </div>
-              <div class="mb-3 col-12 col-lg-5">
-                <label for="surname" class="required form-label">ชื่อ</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="ชื่อ"
-                  aria-label="ชื่อ"
-                  aria-describedby="basic-addon2"
-                />
-              </div>
-              <div class="mb-3 col-12 col-lg-5">
-                <label for="surname" class="required form-label">นามสกุล</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="นามสกุล"
-                  aria-label="นามสกุล"
-                  aria-describedby="basic-addon2"
-                />
-              </div>
-              <div class="mb-1 col-12 col-lg-12">
-                <label for="surname" class="required form-label"
-                  >หน่วยงาน</label
+                  ถัดไป
+                </button>
+
+                <button
+                  v-else
+                  @click.native="onComplete"
+                  class="finish-button btn text-white"
+                  style="background-color: #800001"
                 >
-                <v-select
-                  label="name"
-                  name="id"
-                  placeholder="หน่วยงาน"
-                  :options="selectOptions.organizations"
-                  class="form-control"
-                  :clearable="false"
-                  v-model="item.organization"
-                >
-                </v-select>
+                  {{ props.isLastStep ? "บันทึก" : "Next" }}
+                </button>
               </div>
-              <a href="#" class="mt-2"><span>+ เพิ่มผู้ถูกร้องเรียน</span></a>
-            </div>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-12">
-            <label for="surname" class="required form-label"
-              >บรรยายพฤติกรรมการกระทำความผิด</label
-            >
-            <textarea
-              style="height: 150px"
-              type="text"
-              class="form-control"
-              placeholder="บรรยายพฤติกรรมการกระทำความผิด"
-              aria-label="บรรยายพฤติกรรมการกระทำความผิด"
-              aria-describedby="basic-addon2"
-            />
-          </div>
-
-          <div class="col-12">
-            <div class="mb-7 row">
-              <div class="col-12 col-lg-12">
-                <label for="formFile" class="form-label"
-                  >แนบไฟล์หลักฐานเพิ่มเติม</label
-                >
-                <input class="form-control" type="file" id="formFile" />
-              </div>
-              <a href="#" class="mt-5"><span>+ เพิ่มไฟล์หลักฐาน</span></a>
-            </div>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-12">
-            <label for="surname" class="form-label"
-              >เคยร้องเรียนเรื่องนี้ผ่านช่องทางใด</label
-            >
-            <div class="d-flex">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  ศูนย์ดำรงธรรม
-                </label>
-              </div>
-              <div class="form-check ms-5">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  สายด่วน 1599
-                </label>
-              </div>
-              <div class="form-check ms-5">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  ศูนย์รับเรื่องราวร้องทุกข์ของรัฐบาล 1111
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="separator my-10"></div>
-          <div class="mb-5 mt-5">
-            <h4>3. เจ้าหน้าที่ระบุข้อมูลเพิ่มเติม</h4>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >วันที่รับเรื่อง</label
-            >
-            <v-select
-              label="name"
-              name="id"
-              placeholder="ห้วงเวลาเกิดเหตุ"
-              :options="selectOptions.dayornight"
-              class="form-control"
-              :clearable="false"
-              v-model="item.day_or_night"
-            >
-            </v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >เลขรับหนังสือ ฝรท.</label
-            >
-            <v-select
-              label="name"
-              name="id"
-              placeholder="ห้วงเวลาเกิดเหตุ"
-              :options="selectOptions.dayornight"
-              class="form-control"
-              :clearable="false"
-              v-model="item.day_or_night"
-            >
-            </v-select>
-          </div>
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >ช่องทางการรับเรื่อง</label
-            >
-            <v-select
-              label="name"
-              name="id"
-              placeholder="ห้วงเวลาเกิดเหตุ"
-              :options="selectOptions.dayornight"
-              class="form-control"
-              :clearable="false"
-              v-model="item.day_or_night"
-            >
-            </v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="">หมวดหมู่เรื่อง : </label>
-            <v-select
-              id="slt-search-complain-type-id-2"
-              name="slt-search-complain-type-id-2"
-              label="name"
-              placeholder="หมวดหมู่เรื่อง"
-              class="form-control"
-              :clearable="true"
-            ></v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="">ประเภทเรื่อง : </label>
-            <v-select
-              id="slt-search-topic-type-id-2"
-              name="slt-search-topic-type-id-2"
-              label="name"
-              placeholder="ประเภทเรื่อง"
-              class="form-control"
-              :clearable="true"
-            ></v-select>
-          </div>
-
-          <div class="mb-7 col-12 col-lg-4">
-            <label for="">ลักษณะเรื่อง : </label>
-            <v-select
-              id="slt-search-topic-category-id-2"
-              name="slt-search-topic-category-id-2"
-              label="name"
-              placeholder="ลักษณะเรื่อง"
-              class="form-control"
-              :clearable="true"
-            ></v-select>
-          </div>
+            </template>
+          </form-wizard>
         </div>
-      </tab-content>
-      <tab-content title="ยืนยันข้อมูล">
-        <div class="row">
-          <div class="mb-5"><h4>1. ข้อมูลส่วนตัว</h4></div>
-          <div v-if="item.type_of_identity == 1">
-            <span>หมายเลขบัตรประชาชน/หนังสือเดินทาง : </span>
-            <span class="fst-italic">1100200629414</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div v-if="item.type_of_identity == 1">
-            <span>ชื่อ-นามกุล ผู้ร้อง : </span>
-            <span class="fst-italic">นายอานนท์ รักจักร์</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div v-if="item.type_of_identity == 1">
-            <span>วัน/เดือน/ปีเกิด : </span>
-            <span class="fst-italic">19 มีนาคม 2534</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div v-if="item.type_of_identity == 1">
-            <span>อาชีพ : </span>
-            <span class="fst-italic">พนักงานบริษัท</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div>
-            <span>หมายเลขโทรศัพท์ : </span>
-            <span class="fst-italic">0802112900</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div v-if="item.type_of_identity == 1">
-            <span>ที่อยู่ที่สามารถติดต่อได้ : </span>
-            <span class="fst-italic">705 ซ.จรัญสนิทวงศ์ 89</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div v-if="item.type_of_identity == 1">
-            <span>ตำบล/อำเภอ/จังหวัด : </span>
-            <span class="fst-italic">แขวงบางอ้อ เขตบางพลัด กทม. 10700</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div v-if="item.type_of_identity == 1">
-            <span>รูปถ่ายพร้อมบัตร : </span>
-            <span class="fst-italic">IMG</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div class="mb-5 mt-5">
-            <h4>2. ข้อมูลร้องเรียน/แจ้งเบาะแส</h4>
-          </div>
-          <div>
-            <span>เรื่องร้องเรียน/แจ้งเบาะแส : </span>
-            <span class="fst-italic">โดนเจ้าหน้าที่ทำร้ายร่างกาย</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div>
-            <span>สถานที่เกิดเหตุ : </span>
-            <span class="fst-italic">แขวงบางอ้อ เขตบางพลัด กทม. 10700</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div>
-            <span>ข้อมูลสถานที่เกิดเหตุ : </span>
-            <span class="fst-italic">..........</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div>
-            <span>วันที่เกิดเหตุ : </span>
-            <span class="fst-italic"
-              >15 กุมภาพันธ์ 2567 เวลา 16.00 น. (กลางวัน)</span
-            >
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div>
-            <span>ผู้ถูกร้อง : </span>
-            <span class="fst-italic">พล.ต.ท สมชาย รักดี</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div>
-            <span>หน่วยงานผู้ถูกร้อง : </span>
-            <span class="fst-italic"
-              >สถานีตำรวจภูธรเจาะไอ้ร้อง > บก... > บช.. > สังกัด ...</span
-            >
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-
-          <div>
-            <span>พฤติกรรมการกระทำความผิด : </span>
-            <span class="fst-italic">............</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-
-          <div>
-            <span>ไฟล์หลักฐานเพิ่มเติม : </span>
-            <span class="fst-italic">PDF</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-
-          <div>
-            <span>ไฟล์หลักฐานเพิ่มเติม : </span>
-            <span class="fst-italic">PDF</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-        </div>
-      </tab-content>
-    </form-wizard>
+        <Preloader :isLoading="isLoading" :position="'absolute'" />
+      </div>
+    </div>
   </div>
-  <!--end::Wrapper-->
 </template>
 
 <script lang="ts">
-import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref } from "vue";
-import { ErrorMessage, Field, Form as VForm } from "vee-validate";
-import { useAuthStore, type User } from "@/stores/auth";
-import { useRouter } from "vue-router";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import * as Yup from "yup";
-import { FormWizard, TabContent } from "vue3-form-wizard";
+import { defineComponent, ref, reactive, onMounted, onUnmounted } from "vue";
+import ApiService from "@/core/services/ApiService";
+
+// Import FormWizard
+import { FormWizard } from "vue3-form-wizard";
 import "vue3-form-wizard/dist/style.css";
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
-import useAddressData from "@/composables/useAddressData";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+// Import Modal Bootstrap
+import { Modal } from "bootstrap";
+// Use Toast Composables
+import useToast from "@/composables/useToast";
+// Use Address Composables
+import useComplaintTypeData from "@/composables/useComplaintTypeData";
+
+// Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
+dayjs.extend(customParseFormat);
+
+// Import Component
+import Tab1 from "@/components/complaint/form/Tab1.vue";
+import Tab2 from "@/components/complaint/form/Tab2Add.vue";
+import Tab3 from "@/components/complaint/form/Tab3.vue";
+import Preloader from "@/components/Preloader.vue";
 
 export default defineComponent({
-  name: "add-complaint",
-  components: {
-    Field,
-    VForm,
-    ErrorMessage,
-    FormWizard,
-    TabContent,
-    vSelect,
-    VueDatePicker,
-    dayjs,
+  name: "edit-complaint",
+  props: {
+    complaint_id: Number,
+    complainant_id: Number,
   },
-  setup() {
-    const store = useAuthStore();
-    const router = useRouter();
-
-    const address_all = ref([]);
-    address_all.value = useAddressData().addresses.map((el) => {
-      el.label =
-        el.district +
-        " > " +
-        el.amphoe +
-        " > " +
-        el.province +
-        " > " +
-        el.zipcode;
-      return el;
-    });
-
-    const format = (date: any) => {
-      const day = dayjs(date).locale("th").format("DD");
-      const month = dayjs(date).locale("th").format("MMM");
-      const year = date.getFullYear() + 543;
-      return `${day} ${month} ${year}`;
+  components: {
+    FormWizard,
+    Tab1,
+    Tab2,
+    Tab3,
+    Preloader,
+  },
+  setup(props, { emit }) {
+    // UI Variable
+    const isLoading = ref<Boolean>(false);
+    const mainModalRef = ref<any>(null);
+    const mainModalObj = ref<any>(null);
+    const tab_index = ref(0);
+    const onTabChange = (prevIndex: number, nextIndex: number) => {
+      tab_index.value = nextIndex;
     };
 
-    const selectOptions = {
-      type_of_document: [
-        {
-          name: "หมายเลขบัตรประชาชน",
-          value: 1,
-        },
-        {
-          name: "หนังสือเดินทาง",
-          value: 2,
-        },
-      ],
-      prefix_name: [
-        { name: "นาย", value: 1 },
-        { name: "นาง", value: 1 },
-        { name: "นางสาว", value: 1 },
-      ],
-      prefix_name_1: [
-        { name: "พล.ต.อ.", value: 1 },
-        { name: "พล.ต.ท.", value: 2 },
-        { name: "พล.ต.ต.", value: 3 },
-      ],
-      address_all: address_all.value,
-      dayornight: [
-        {
-          name: "กลางวัน",
-          value: 1,
-        },
-        { name: "กลางคืน", value: 2 },
-      ],
-      organizations: [
-        {
-          name: "สถานีตำรวจภูธรเจาะไอ้ร้อง > บก... > บช.. > สังกัด ...",
-          value: 1,
-        },
-        {
-          name: "สถานีตำรวจภูธรจักราช > บก... > บช.. > สังกัด ...",
-          value: 2,
-        },
-      ],
+    // Variable
+    const complaint_type = ref({ id: 1, name_th: "ร้องเรียน" });
+    const r = (Math.random() + 1).toString(36).substring(7);
+
+    // Item Variable
+    const item = reactive<any>({
+      is_anonymous: 1,
+      complaint_title: "",
+      house_number: "",
+      building: "",
+      moo: "",
+      soi: "",
+      road: "",
+      address_all: null,
+      incident_location: "",
+      incident_date: null,
+      incident_time: null,
+      day_time: null,
+      location_coordinates: "",
+      complaint_detail: "",
+      complaint_channel_id: {
+        id: 8,
+        name_th: "JCOM ร้องเรียน/แจ้งเบาะแส",
+      },
+      inspector_id: null,
+      bureau_id: null,
+      division_id: null,
+      agency_id: null,
+      topic_type_id: null,
+      notice_type: null,
+      complaint_topic: null,
+      complaint_channel_all: [],
+      evidence_url: "",
+      channel_history_text: "",
+      complaint_type_id: { id: 1, name_th: "ร้องเรียน" },
+      //   state_id
+    });
+    console.log(item);
+    const complainant_item = reactive<any>({
+      phone_number: "",
+      card_type: null,
+      id_card: "",
+      prefix_name_id: null,
+      firstname: "",
+      lastname: "",
+      birthday: "",
+      occupation_text: "",
+      house_number: "",
+      building: "",
+      moo: "",
+      soi: "",
+      road: "",
+      address_all: null,
+      card_photo: [],
+      email: "",
+      line_id: "",
+      card_photo_old: null,
+    });
+
+    const accused = reactive<any[]>([
+      {
+        id: null,
+        prefix_name_id: null,
+        firstname: "",
+        lastname: "",
+        position_id: null,
+        section_id: null,
+        agency_id: null,
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        complaint_id: null,
+        type: null,
+        detail: null,
+        organization_all: null,
+      },
+    ] as any[]);
+
+    const accused_old = reactive([
+      {
+        id: null,
+        prefix_name_id: null,
+        firstname: "",
+        lastname: "",
+        position_id: null,
+        section_id: null,
+        agency_id: null,
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        complaint_id: null,
+        type: null,
+        detail: null,
+        organization_all: null,
+      },
+    ] as any[]);
+
+    //Fetch
+
+    // Event
+    const onClose = ({ reload = false }: { reload?: boolean }) => {
+      mainModalObj.value.hide();
+      if (reload === true) {
+        emit("reload");
+      }
+      emit("close-modal");
     };
-    const item = ref<any>({
-      organization: "",
-      type_of_document_id: "",
-      type_of_identity: 1,
-      name: "",
-      id_number: "",
-      id_file: "",
-      address_all: "",
-      prefix_name_1: "",
-      prefix_name: "",
-      inspection_date: "",
-      day_or_night: "",
+
+    const onComplete = async () => {
+      try {
+        isLoading.value = true;
+        await onSaveComplainant();
+        await onSaveComplaint();
+        await onSaveAccused();
+        isLoading.value = false;
+        useToast("บันทึกข้อมูลเสร็จสิ้น");
+        // useToast("บันทึกข้อมูลเสร็จสิ้น", "success","top","right");
+        onClose({ reload: true });
+      } catch (error) {
+        isLoading.value = false;
+        useToast("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error");
+        console.error("Error saving data:", error);
+      }
+    };
+    // Save Event
+    const onSaveComplainant = async () => {
+      //
+      let data_complainant_item = {
+        card_photo:
+          complainant_item.card_photo.length != 0
+            ? complainant_item.card_photo
+            : undefined,
+        card_type: complainant_item.card_type
+          ? complainant_item.card_type?.value
+          : undefined,
+        id_card: complainant_item.id_card,
+        prefix_name_id: complainant_item.prefix_name_id
+          ? complainant_item.prefix_name_id?.id
+          : undefined,
+        firstname: complainant_item.firstname,
+        lastname: complainant_item.lastname,
+        birthday: complainant_item.birthday
+          ? dayjs(complainant_item.birthday).format("YYYY-MM-DD")
+          : undefined,
+        occupation_id: undefined,
+        occupation_text: complainant_item.occupation_text,
+        phone_number: complainant_item.phone_number,
+        email: complainant_item.email,
+        line_id: complainant_item.line_id,
+        house_number: complainant_item.house_number,
+        building: complainant_item.building,
+        moo: complainant_item.moo,
+        soi: complainant_item.soi,
+        road: complainant_item.road,
+        postal_code: complainant_item.postal_code,
+        sub_district_id: complainant_item.sub_district_id,
+        district_id: complainant_item.district_id,
+        province_id: complainant_item.province_id,
+        id: complainant_item.id,
+        complainant_type: item.id == 4 ? 2 : 1,
+        position_id: complaint_type.value.id == 4 ? null : null,
+        section_id: complaint_type.value.id == 4 ? null : null,
+        inspection_id: complaint_type.value.id == 4 ? null : null,
+        bureau_id: complaint_type.value.id == 4 ? null : null,
+        division_id: complaint_type.value.id == 4 ? null : null,
+        agency_id: complaint_type.value.id == 4 ? null : null,
+        // updated_by: item.firstname + " " + props.item.lastname,
+      };
+
+      let api = {
+        type: "postFormData",
+        url: "complainant/",
+      };
+
+      let check_duplicate_complainant = await ApiService.query("complainant/", {
+        params: { phone_number: complainant_item.phone_number },
+      }).then(({ data }) => {
+        if (data.msg != "success") {
+          throw new Error("ERROR");
+        }
+        return data.data;
+      });
+
+      if (check_duplicate_complainant) {
+        api.type = "putFormData";
+        api.url = "complainant/" + check_duplicate_complainant[0].id;
+      }
+
+      await ApiService[api.type](api.url, data_complainant_item)
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+
+          complainant_item.id = data.id;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          isLoading.value = false;
+        });
+    };
+    const onSaveComplaint = async () => {
+      let d1 = <any>null;
+      if (item.incident_date) {
+        if (item.incident_time) {
+          d1 = dayjs(item.incident_date)
+            .set("hour", item.incident_time.hours)
+            .set("minute", item.incident_time.minutes)
+            .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+        }
+      }
+
+      let data_item = {
+        complaint_type_id: item.complaint_topic.complaint_type_id,
+        complainant_id: complainant_item.id,
+        is_anonymous: item.is_anonymous,
+        complaint_title: item.complaint_title,
+        complaint_detail: item.complaint_detail,
+        complaint_channel_ids:
+          item.complaint_channel_all != null
+            ? item.complaint_channel_all.join(",")
+            : "",
+        incident_date: item.incident_date
+          ? dayjs(item.incident_date).format("YYYY-MM-DD")
+          : null,
+        incident_datetime: d1,
+        location_coordinates: item.location_coordinates,
+        incident_location: item.incident_location,
+        day_time: item.day_time.value,
+        complaint_channel_id: item.complaint_channel_id.id,
+        inspector_id: item.inspector_id,
+        bureau_id: item.bureau_id,
+        division_id: item.division_id,
+        agency_id: item.agency_id,
+        topic_type_id: item.complaint_topic.topic_type_id,
+        topic_category_id: item.complaint_topic.topic_category_id,
+        house_number: "",
+        building: "",
+        moo: "",
+        soi: "",
+        road: "",
+        postal_code: item.postal_code,
+        sub_district_id: item.sub_district_id,
+        district_id: item.district_id,
+        province_id: item.province_id,
+        evidence_url: item.evidence_url,
+        channel_history_text: item.channel_history_text,
+        state_id: 1,
+        // updated_by: item.firstname + " " + item.lastname,
+      };
+
+      await ApiService.postFormData("complaint/", data_item)
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+
+          item.id = data.id;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+          isLoading.value = false;
+        });
+    };
+    const onSaveAccused = async () => {
+      for (let i = 0; i < accused.length; i++) {
+        let data_accused_item = {
+          id: accused[i].id,
+          prefix_name_id: accused[i].prefix_name_id
+            ? accused[i].prefix_name_id.id
+            : null,
+          firstname: accused[i].firstname,
+          lastname: accused[i].lastname,
+
+          position_id: accused[i].position_id?.value,
+          section_id: accused[i].section_id?.value,
+
+          inspector_id: accused[i].inspector_id,
+          bureau_id: accused[i].bureau_id,
+          division_id: accused[i].division_id,
+          agency_id: accused[i].agency_id,
+          complaint_id: item.id,
+          type: 2,
+          detail: "",
+        };
+
+        let api = {
+          type: "post",
+          url: "accused/",
+        };
+
+        if (data_accused_item.id != null) {
+          api.type = "put";
+          api.url = "accused/" + data_accused_item.id;
+        }
+
+        await ApiService[api.type](api.url, data_accused_item)
+          .then(({ data }) => {
+            if (data.msg != "success") {
+              throw new Error("ERROR");
+            }
+          })
+          .catch(({ response }) => {
+            console.log(response);
+            isLoading.value = false;
+          });
+      }
+
+      //   accused_old
+      for (let i = 0; i < accused_old.length; i++) {
+        let check = accused.find((x: any) => {
+          return x.id == accused_old[i].id;
+        });
+
+        if (!check) {
+          await ApiService.delete("accused/" + accused_old[i].id)
+            .then(({ data }) => {
+              if (data.msg != "success") {
+                throw new Error("ERROR");
+              }
+            })
+            .catch(({ response }) => {
+              console.log(response);
+            });
+        }
+      }
+    };
+
+    onMounted(async () => {
+      try {
+        console.log(item);
+        mainModalObj.value = new Modal(mainModalRef.value, {});
+        mainModalObj.value.show();
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
+        console.log(item);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     });
 
-    const submitButton = ref<HTMLButtonElement | null>(null);
+    onUnmounted(() => {
+      if (mainModalRef.value) {
+        mainModalRef.value.addEventListener("hidden.bs.modal", () =>
+          onClose({ reload: false })
+        );
+      }
+      mainModalObj.value.hide();
 
-    //Create form validation object
-    const login = Yup.object().shape({
-      email: Yup.string().email().required().label("Email"),
-      password: Yup.string().min(4).required().label("Password"),
+      emit("close-modal");
     });
 
-    //Form submit function
+    // Watch
+
+    // Return
     return {
-      login,
-      submitButton,
-      getAssetPath,
-      selectOptions,
+      isLoading,
       item,
-      format,
+      complainant_item,
+      accused,
+      complaint_type,
+      tab_index,
+      // event
+      onTabChange,
+      onComplete,
+      onClose,
+      mainModalRef,
+      r,
     };
   },
 });
 </script>
 
-<style>
-.vs__dropdown-toggle {
-  border: none;
-}
-
-.v-select {
-  padding: 0.4em 0.5em;
-}
-
-.dp__main {
-  padding: 0.35em 0em;
-}
-
-.dp__input {
-  border: none !important;
-}
+<style scoped>
 @media only screen and (max-width: 768px) {
   .card > .card-body {
     padding: 0px;
   }
+}
+.modal-content {
+  background-color: #d9f4fe;
+}
+</style>
+
+<style>
+.wizard-icon-container {
+  background-color: #800001 !important;
+}
+
+.form-check-label {
+  color: #444;
+}
+.pac-container {
+  z-index: 9999 !important;
+}
+
+.stepTitle {
+  color: #800001;
+  font-weight: bold;
 }
 </style>

@@ -693,7 +693,7 @@ export default defineComponent({
       let states = await searchComplaintStore.fetchState({
         perPage: 500,
       });
-      console.log(props)
+      console.log(props);
       if (props.state_new == true) {
         selectOptions.value.states = states.filter((x: any) => {
           return x.id == 1 || x.id == 18;
@@ -861,3 +861,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.form-control {
+  border-color: #800001;
+  border-width: 0.1em;
+}
+</style>

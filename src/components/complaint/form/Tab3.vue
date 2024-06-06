@@ -332,6 +332,9 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    r: {
+      type: String,
+    },
   },
   components: {
     dayjs,
@@ -352,8 +355,12 @@ export default defineComponent({
     // Fetch
     const fetchComplaintFileAttach = async () => {
       try {
+        let params = props.r
+          ? { secret_key: props.r }
+          : { complaint_id: complaint_item.value.id };
+
         const { data } = await ApiService.query("complaint-file-attach/", {
-          params: { complaint_id: complaint_item.value.id },
+          params: {...params},
         });
         Object.assign(complaint_file_attach, data.data);
       } catch (error) {

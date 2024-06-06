@@ -10,6 +10,27 @@
 
       <div class="mb-7 col-12 col-lg-12">
         <label for="complaint_title" class="required form-label"
+          >ประเภทเรื่อง</label
+        >
+        <v-select
+          name="complaint_type_id"
+          label="name_th"
+          placeholder="หมวดหมู่"
+          :options="selectOptions.complaint_types"
+          class="form-control"
+          :clearable="false"
+          v-model="complaint_item.complaint_type_id"
+        >
+        </v-select>
+        <div class="d-block mt-1" v-if="errors.complaint_title.error == 1">
+          <span role="alert" class="text-danger">{{
+            errors.complaint_title.text
+          }}</span>
+        </div>
+      </div>
+
+      <div class="mb-7 col-12 col-lg-12">
+        <label for="complaint_title" class="required form-label"
           >หัวข้อเรื่องร้องเรียน/แจ้งเบาะแส</label
         >
         <input
@@ -464,6 +485,7 @@ import Vue3TagsInput from "vue3-tags-input";
 // Use Address Composables
 import useBasicData from "@/composables/useBasicData";
 import useAddressData from "@/composables/useAddressData";
+import useComplaintTypeData from "@/composables/useComplaintTypeData";
 import useComplaintTopicData from "@/composables/useComplaintTopicData";
 import useOrganizationData from "@/composables/useOrganizationData";
 import useMasterData from "@/composables/useMasterData";
@@ -482,6 +504,9 @@ export default defineComponent({
     accused: {
       type: Array as () => any[],
       required: true,
+    },
+    r: {
+      type: String,
     },
   },
   components: {
@@ -508,7 +533,8 @@ export default defineComponent({
     // Uppy
     const uppy = new Uppy({
       meta: {
-        complaint_id: props.complaint_item.id,
+        complaint_id: null,
+        secret_key: props.r,
         id: null,
         table_name: "complaint",
       },
@@ -568,6 +594,7 @@ export default defineComponent({
       complaint_topic_all: useComplaintTopicData().complaint_topic_mapping(
         props.complaint_type.id
       ),
+      complaint_types: useComplaintTypeData().complaint_types,
       prefix_names: <any>[],
       complaint_channels: <any>[],
       positions: useBasicData().positions,
@@ -868,7 +895,6 @@ export default defineComponent({
     // Mounted
 
     onMounted(async () => {
-      console.log(complaint_item.value);
       selectOptions.value.prefix_names = await useMasterData().fetchPrefixName({
         is_active: 1,
         perPage: 500,
@@ -880,80 +906,10 @@ export default defineComponent({
           perPage: 500,
         });
 
-      //   getUserLocation();
-
-      if (complaint_item.value.location_coordinates) {
-        coords.value.lat = parseFloat(
-          complaint_item.value.location_coordinates.split(",")[0]
-        );
-        coords.value.lng = parseFloat(
-          complaint_item.value.location_coordinates.split(",")[1]
-        );
-      }
+      getUserLocation();
       //   Location
 
-      // Get Topic
-      let find_complaint_topic = selectOptions.value.complaint_topic_all.find(
-        (x: any) => {
-          return x.topic_type_id == complaint_item.value.topic_type_id;
-        }
-      );
-      props.complaint_item.complaint_topic = find_complaint_topic;
-
-      //   Get Address All
-      let find_address = selectOptions.value.address_all.find((x: any) => {
-        return x.sub_district_id == complaint_item.value.sub_district_id;
-      });
-      complaint_item.value.address_all = find_address;
-      complaint_item.value.province_id = find_address.province_id;
-      complaint_item.value.district_id = find_address.district_id;
-      complaint_item.value.sub_district_id = find_address.sub_district_id;
-      complaint_item.value.postal_code = find_address.post_code;
-
-      // Get Day Night
-      let day_time = selectOptions.value.day_times.find((x: any) => {
-        return x.value == complaint_item.value.day_time;
-      });
-
-      complaint_item.value.day_time = day_time;
-
-      // Get Incident Date
-      complaint_item.value.incident_date = dayjs(
-        complaint_item.value.incident_datetime
-      ).format("YYYY-MM-DD");
-
-      // Get Incident Time
-      if (complaint_item.value.incident_datetime) {
-        let date_time = dayjs(complaint_item.value.incident_datetime)
-          .utc()
-          .format("HH:mm");
-
-        complaint_item.value.incident_time = {
-          hours: date_time.split(":")[0],
-          minutes: date_time.split(":")[1],
-          seconds: 0,
-        };
-      }
-
-      if (complaint_item.value.channel_history.length > 0) {
-        complaint_item.value.complaint_channel_all = [];
-        complaint_item.value.channel_history.forEach((el: any) => {
-          complaint_item.value.complaint_channel_all.push(
-            el.complaint_channel_id
-          );
-        });
-      }
-
-      tags.value =
-        complaint_item.value.evidence_url != "" &&
-        complaint_item.value.evidence_url != null
-          ? complaint_item.value.evidence_url
-              .split(",")
-              .map((it: any) => it.replace(/(^'|'$)/g, ""))
-          : [];
-
-      fetchAccused();
-      fetchComplaintFileAttach();
+      tags.value = [];
     });
 
     watch(
@@ -964,11 +920,11 @@ export default defineComponent({
         complaint_item.value.sub_district_id = null;
         complaint_item.value.postal_code = null;
 
-        if (value !== null) {
+        if (value !== null && value != undefined) {
           complaint_item.value.province_id = value.province_id;
           complaint_item.value.district_id = value.district_id;
-          complaint_item.value.sub_district_id = value.sub_district_id;
-          complaint_item.value.postal_code = value.post_code;
+          complaint_item.value.sub_district_id = value?.sub_district_id;
+          complaint_item.value.postal_code = value?.post_code;
         }
       }
     );
@@ -976,15 +932,21 @@ export default defineComponent({
     watch(
       () => complaint_item.value.complaint_topic,
       (value: any) => {
-        complaint_item.value.complaint_type_id = null;
         complaint_item.value.topic_category_id = null;
         complaint_item.value.topic_type_id = null;
-        
-        if (value !== null) {
-          complaint_item.value.complaint_type_id = value.complaint_type_id;
+
+        if (value !== null && value != undefined) {
           complaint_item.value.topic_category_id = value.topic_category_id;
-          complaint_item.value.topic_type_id = value.topic_type_id;
+          complaint_item.value.topic_type_id = value?.topic_type_id;
         }
+      }
+    );
+
+    watch(
+      () => complaint_item.value.complaint_type_id,
+      (value: any) => {
+        selectOptions.value.complaint_topic_all =
+          useComplaintTopicData().complaint_topic_mapping(value.id);
       }
     );
 

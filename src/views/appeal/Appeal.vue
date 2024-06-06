@@ -164,7 +164,7 @@ export default defineComponent({
     const onTabChange = (prevIndex: number, nextIndex: number) => {
       tab_index.value = nextIndex;
     };
-    const otp_modal = ref(false);
+    const otp_modal = ref(false);r
     const captcha_modal = ref(true);
     const first_action = ref(false);
 
