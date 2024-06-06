@@ -47,7 +47,7 @@
         </div>
 
         <!-- Menu Button -->
-        <div class="card-footer">
+        <!-- <div class="card-footer">
           <nav class="nav nav-pills nav-fill">
             <a
               class="nav-link"
@@ -61,7 +61,7 @@
               {{ ct.name_th }}
             </a>
           </nav>
-        </div>
+        </div> -->
       </div>
 
       <div class="mb-5 mt-5">
@@ -70,178 +70,10 @@
           {{ cardStatus[0].total }} เรื่อง</span
         >
       </div>
-      <div class="row justify-content-center ms-1">
-        <div
-          class="card col-sm-12 col-md-4 col-lg-2 mx-2"
-          :style="[{ backgroundColor: it.bgColor }]"
-          v-for="(it, idx) in cardStatus.slice(1, 6)"
-          :key="idx"
-        >
-          <a
-            class="cursor-pointer"
-            @click="
-              () => {
-                search.status = it.status_id;
-                onSearch();
-              }
-            "
-          >
-            <div class="card-body text-center px-1">
-              <h5 class="card-title text-white">{{ it.description }}</h5>
-              <h1 class="card-title text-dark">{{ it.total }}</h1>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Chart -->
-      <div class="card mt-15">
-        <div class="card-body row">
-          <div class="col-12 col-md-4">
-            <h6>สถิติเรื่อง{{ complaint_type.name_th }}</h6>
-            <h6>(แยกตามประเภทเรื่อง{{ complaint_type.name_th }})</h6>
-            <div style="width: 400px" class="mx-auto">
-              <Doughnut
-                :data="chartTopicCategoryData"
-                :options="pieChartOptions"
-              />
-            </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <h6>สถิติเรื่อง{{ complaint_type.name_th }}</h6>
-            <h6>(แยกตามช่องทางการ{{ complaint_type.name_th }})</h6>
-            <div style="width: 400px" class="mx-auto">
-              <Doughnut :data="chartChannelData" :options="pieChartOptions" />
-            </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <h6>สถิติเรื่อง{{ complaint_type.name_th }}</h6>
-            <h6>(แยกตามสายงานที่ถูก{{ complaint_type.name_th }})</h6>
-            <div style="width: 400px" class="mx-auto">
-              <Doughnut :data="chartSectionData" :options="pieChartOptions" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-12 mb-3 mt-10">
-        <h4>สถิติ{{ complaint_type.name_th }} (แยกตามหน่วยงาน)</h4>
-        <div class="card">
-          <div class="card-body overflow-scroll">
-            <div style="width: 100%; height: 400px" class="mx-auto">
-              <Bar
-                :data="chartOrganizationData"
-                :options="chartOrganizationOptions"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row card-body">
-          <div class="col-12 col-md-6 mb-3 mt-10">
-            <h6>สถิติเรื่องร้องเรียน (แยกตามประเภทเรื่องร้องเรียน)</h6>
-            <table
-              class="table table-bordered table-striped bg-sky"
-              style="width: 100%"
-            >
-              <thead class="bg-color-police">
-                <tr>
-                  <th class="text-center text-white">
-                    ประเภทเรื่อง {{ complaint_type.name_th }}
-                  </th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                </tr>
-              </thead>
-              <tbody v-if="topic_category_data.labels.length != 0">
-                <tr v-for="(tc, idx) in topic_category_data.labels" :key="idx">
-                  <td class="text-center">{{ tc }}</td>
-                  <td class="text-center">
-                    {{ topic_category_data.data[idx] }}
-                  </td>
-                </tr>
-              </tbody>
-
-              <tbody v-else>
-                <tr>
-                  <td colspan="10">
-                    <div class="text-center"><span>ไม่พบข้อมูล</span></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="col-12 col-md-6 mb-3 mt-10">
-            <h6>สถิติเรื่องร้องเรียน (แยกตามช่องทางร้องเรียน)</h6>
-            <table
-              class="table table-bordered table-striped bg-sky"
-              style="width: 100%"
-            >
-              <thead class="bg-color-police">
-                <tr>
-                  <th class="text-center text-white">ช่องทางการร้องเรียน</th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                </tr>
-              </thead>
-              <tbody v-if="complaint_channel_data.labels.length != 0">
-                <tr
-                  v-for="(cc, idx) in complaint_channel_data.labels"
-                  :key="idx"
-                >
-                  <td class="text-center">{{ cc }}</td>
-                  <td class="text-center">
-                    {{ complaint_channel_data.data[idx] }}
-                  </td>
-                </tr>
-              </tbody>
-
-              <tbody v-else>
-                <tr>
-                  <td colspan="10">
-                    <div class="text-center"><span>ไม่พบข้อมูล</span></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
       <div class="card">
         <div class="card-body row">
-          <div class="col-12 col-md-6 mb-3 mt-10">
-            <h6>สถิติเรื่องร้องเรียน (แยกตามสายงาน)</h6>
-            <table
-              class="table table-bordered table-striped bg-sky"
-              style="width: 100%"
-            >
-              <thead class="bg-color-police">
-                <tr>
-                  <th class="text-center text-white">สายงาน</th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                </tr>
-              </thead>
-              <tbody v-if="section_data.labels.length != 0">
-                <tr v-for="(ss, idx) in section_data.labels" :key="idx">
-                  <td class="text-center">{{ ss }}</td>
-                  <td class="text-center">
-                    {{ section_data.data[idx] }}
-                  </td>
-                </tr>
-              </tbody>
-
-              <tbody v-else>
-                <tr>
-                  <td colspan="10">
-                    <div class="text-center"><span>ไม่พบข้อมูล</span></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col-12 col-md-6 mb-3 mt-10">
+          <div class="col-12 col-md-12 mb-3 mt-10">
             <h6>สถิติเรื่องร้องเรียน (แยกตามหน่วยงาน)</h6>
             <table
               class="table table-bordered table-striped bg-sky"
@@ -250,15 +82,40 @@
               <thead class="bg-color-police">
                 <tr>
                   <th class="text-center text-white">หน่วยงาน</th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
+                  <th class="text-center text-white">รับเรื่อง</th>
+                  <th class="text-center text-white">ดำเนินการแล้วเสร็จ</th>
+                  <th class="text-center text-white">อยู่ระหว่างดำเนินการ</th>
+                  <th class="text-center text-white">ผลปฏิบัติ</th>
                 </tr>
               </thead>
               <tbody v-if="organization_data.labels.length != 0">
                 <tr v-for="(or, idx) in organization_data.labels" :key="idx">
-                  <td class="text-center">{{ or }}</td>
+                  <td >{{ idx+1 }}. {{ or}}</td>
                   <td class="text-center">
                     {{ organization_data.data[idx] }}
                   </td>
+                  <td class="text-center">
+                    {{ organization_data.data[idx] }}
+                  </td>
+                  <td class="text-center">
+                    {{ organization_data.data[idx] }}
+                  </td>
+                  <td class="text-center">
+                    {{ organization_data.data[idx] }}%
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-center">รวม</td>
+                  <td class="text-center">
+                    {{ 380 }}
+                  </td>
+                  <td class="text-center">
+                    {{ 100 }}
+                  </td>
+                  <td class="text-center">
+                    {{ 180 }}
+                  </td>
+                  <td class="text-center">{{ 55.56 }}%</td>
                 </tr>
               </tbody>
 
@@ -686,6 +543,338 @@ export default defineComponent({
       ],
     });
 
+    const bureau_organizations = [
+      {
+        bureau_th: "สำนักงานยุทธศาสตร์ตำรวจ",
+        bureau_th_abbr: "สยศ.ตร.",
+        inspector_th: "กองตรวจราชการ 7",
+        inspector_th_abbr: "กต.7",
+        bureau_id: 1,
+        inspector_id: 7,
+      },
+      {
+        bureau_th: "สำนักงานส่งกำลังบำรุง",
+        bureau_th_abbr: "สกบ.",
+        inspector_th: "กองตรวจราชการ 5",
+        inspector_th_abbr: "กต.5",
+        bureau_id: 2,
+        inspector_id: 5,
+      },
+      {
+        bureau_th: "สำนักงานกำลังพล",
+        bureau_th_abbr: "สกพ.",
+        inspector_th: "กองตรวจราชการ 5",
+        inspector_th_abbr: "กต.5",
+        bureau_id: 3,
+        inspector_id: 5,
+      },
+      {
+        bureau_th: "สำนักงานงบประมาณและการเงิน",
+        bureau_th_abbr: "สงป.",
+        inspector_th: "กองตรวจราชการ 4",
+        inspector_th_abbr: "กต.4",
+        bureau_id: 4,
+        inspector_id: 4,
+      },
+      {
+        bureau_th: "สำนักงานกฎหมายและคดี",
+        bureau_th_abbr: "กมค.",
+        inspector_th: "กองตรวจราชการ 6",
+        inspector_th_abbr: "กต.6",
+        bureau_id: 5,
+        inspector_id: 6,
+      },
+      {
+        bureau_th: "สำนักงานคณะกรรมการข้าราชการตำรวจ",
+        bureau_th_abbr: "สง.ก.ตร.",
+        inspector_th: "กองตรวจราชการ 6",
+        inspector_th_abbr: "กต.6",
+        bureau_id: 6,
+        inspector_id: 6,
+      },
+      {
+        bureau_th: "สำนักงานจเรตำรวจ",
+        bureau_th_abbr: "จต.",
+        inspector_th: "กองบังคับการอำนวยการสำนักงานจเรตำรวจ",
+        inspector_th_abbr: "บก.อก.จต.",
+        bureau_id: 7,
+        inspector_id: 11,
+      },
+      {
+        bureau_th: "สำนักงานตรวจสอบภายใน",
+        bureau_th_abbr: "สตส.",
+        inspector_th: "กองตรวจราชการ 4",
+        inspector_th_abbr: "กต.4",
+        bureau_id: 8,
+        inspector_id: 4,
+      },
+      {
+        bureau_th: "สำนักงานเลขานุการตำรวจแห่งชาติ",
+        bureau_th_abbr: "สลก.ตร.",
+        inspector_th: "กองตรวจราชการ 4",
+        inspector_th_abbr: "กต.4",
+        bureau_id: 9,
+        inspector_id: 4,
+      },
+      {
+        bureau_th: "กองการต่างประเทศ",
+        bureau_th_abbr: "ตท.",
+        inspector_th: "กองตรวจราชการ 2",
+        inspector_th_abbr: "กต.2",
+        bureau_id: 10,
+        inspector_id: 2,
+      },
+      {
+        bureau_th: "กองสารนิเทศ",
+        bureau_th_abbr: "สท.",
+        inspector_th: "กองตรวจราชการ 2",
+        inspector_th_abbr: "กต.2",
+        bureau_id: 11,
+        inspector_id: 2,
+      },
+      {
+        bureau_th: "สำนักงานคณะกรรมการนโยบายตำรวจแห่งชาติ",
+        bureau_th_abbr: "สง.ก.ต.ช.",
+        inspector_th: "กองตรวจราชการ 2",
+        inspector_th_abbr: "กต.2",
+        bureau_id: 12,
+        inspector_id: 2,
+      },
+      {
+        bureau_th: "กองบินตำรวจ",
+        bureau_th_abbr: "บ.ตร.",
+        inspector_th: "กองตรวจราชการ 7",
+        inspector_th_abbr: "กต.7",
+        bureau_id: 13,
+        inspector_id: 7,
+      },
+      {
+        bureau_th: "กองวินัย",
+        bureau_th_abbr: "วน.",
+        inspector_th: "กองตรวจราชการ 5",
+        inspector_th_abbr: "กต.5",
+        bureau_id: 14,
+        inspector_id: 5,
+      },
+      {
+        bureau_th:
+          "สถาบันฝึกอบรมระหว่างประเทศว่าด้วยการดำเนินการให้เป็นไปตามกฎหมาย",
+        bureau_th_abbr: "ILEA",
+        inspector_th: "กองตรวจราชการ 1",
+        inspector_th_abbr: "กต.1",
+        bureau_id: 15,
+        inspector_id: 1,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจสอบสวนกลาง",
+        bureau_th_abbr: "บช.ก.",
+        inspector_th: "กองตรวจราชการ 9",
+        inspector_th_abbr: "กต.9",
+        bureau_id: 16,
+        inspector_id: 9,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจปราบปรามยาเสพติด",
+        bureau_th_abbr: "บช.ปส.",
+        inspector_th: "กองตรวจราชการ 2",
+        inspector_th_abbr: "กต.2",
+        bureau_id: 17,
+        inspector_id: 2,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจสันติบาล",
+        bureau_th_abbr: "บช.ส.",
+        inspector_th: "กองตรวจราชการ 3",
+        inspector_th_abbr: "กต.3",
+        bureau_id: 18,
+        inspector_id: 3,
+      },
+      {
+        bureau_th: "สำนักงานตรวจคนเข้าเมือง",
+        bureau_th_abbr: "สตม.",
+        inspector_th: "กองตรวจราชการ 8",
+        inspector_th_abbr: "กต.8",
+        bureau_id: 19,
+        inspector_id: 8,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจตระเวนชายแดน",
+        bureau_th_abbr: "ตชด.",
+        inspector_th: "กองตรวจราชการ 7",
+        inspector_th_abbr: "กต.7",
+        bureau_id: 20,
+        inspector_id: 7,
+      },
+      {
+        bureau_th: "สำนักงานพิสูจน์หลักฐานตำรวจ",
+        bureau_th_abbr: "สพฐ.ตร.",
+        inspector_th: "กองตรวจราชการ 10",
+        inspector_th_abbr: "กต.10",
+        bureau_id: 21,
+        inspector_id: 10,
+      },
+      {
+        bureau_th: "สำนักงานเทคโนโลยีสารสนเทศและการสื่อสาร ",
+        bureau_th_abbr: "สทส.",
+        inspector_th: "กองตรวจราชการ 10",
+        inspector_th_abbr: "กต.10",
+        bureau_id: 22,
+        inspector_id: 10,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจท่องเที่ยว",
+        bureau_th_abbr: "บช.ทท.",
+        inspector_th: "กองตรวจราชการ 9",
+        inspector_th_abbr: "กต.9",
+        bureau_id: 23,
+        inspector_id: 9,
+      },
+      {
+        bureau_th: "กองบัญชาการศึกษา",
+        bureau_th_abbr: "บช.ศ.",
+        inspector_th: "กองตรวจราชการ 2",
+        inspector_th_abbr: "กต.2",
+        bureau_id: 24,
+        inspector_id: 2,
+      },
+      {
+        bureau_th: "โรงเรียนนายร้อยตำรวจ",
+        bureau_th_abbr: "รร.นรต.",
+        inspector_th: "กองตรวจราชการ 7",
+        inspector_th_abbr: "กต.7",
+        bureau_id: 25,
+        inspector_id: 7,
+      },
+      {
+        bureau_th: "โรงพยาบาลตำรวจ",
+        bureau_th_abbr: "รพ.ตร.",
+        inspector_th: "กองตรวจราชการ 5",
+        inspector_th_abbr: "กต.5",
+        bureau_id: 26,
+        inspector_id: 5,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจนครบาล",
+        bureau_th_abbr: "บช.น.",
+        inspector_th: "กองตรวจราชการ 10",
+        inspector_th_abbr: "กต.10",
+        bureau_id: 27,
+        inspector_id: 10,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 1",
+        bureau_th_abbr: "ภ.1",
+        inspector_th: "กองตรวจราชการ 1",
+        inspector_th_abbr: "กต.1",
+        bureau_id: 28,
+        inspector_id: 1,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 2",
+        bureau_th_abbr: "ภ.2",
+        inspector_th: "กองตรวจราชการ 2",
+        inspector_th_abbr: "กต.2",
+        bureau_id: 29,
+        inspector_id: 2,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 3",
+        bureau_th_abbr: "ภ.3",
+        inspector_th: "กองตรวจราชการ 3",
+        inspector_th_abbr: "กต.3",
+        bureau_id: 30,
+        inspector_id: 3,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 4",
+        bureau_th_abbr: "ภ.4",
+        inspector_th: "กองตรวจราชการ 4",
+        inspector_th_abbr: "กต.4",
+        bureau_id: 31,
+        inspector_id: 4,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 5",
+        bureau_th_abbr: "ภ.5",
+        inspector_th: "กองตรวจราชการ 5",
+        inspector_th_abbr: "กต.5",
+        bureau_id: 32,
+        inspector_id: 5,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 6",
+        bureau_th_abbr: "ภ.6",
+        inspector_th: "กองตรวจราชการ 6",
+        inspector_th_abbr: "กต.6",
+        bureau_id: 33,
+        inspector_id: 6,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 7",
+        bureau_th_abbr: "ภ.7",
+        inspector_th: "กองตรวจราชการ 7",
+        inspector_th_abbr: "กต.7",
+        bureau_id: 34,
+        inspector_id: 7,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 8",
+        bureau_th_abbr: "ภ.8",
+        inspector_th: "กองตรวจราชการ 8",
+        inspector_th_abbr: "กต.8",
+        bureau_id: 35,
+        inspector_id: 8,
+      },
+      {
+        bureau_th: "ตำรวจภูธรภาค 9",
+        bureau_th_abbr: "ภ.9",
+        inspector_th: "กองตรวจราชการ 9",
+        inspector_th_abbr: "กต.9",
+        bureau_id: 36,
+        inspector_id: 9,
+      },
+      {
+        bureau_th: "หน่วยงานอื่นๆ",
+        bureau_th_abbr: "อื่นๆ",
+        inspector_th: "กองตรวจราชการ 1",
+        inspector_th_abbr: "กต.1",
+        bureau_id: 38,
+        inspector_id: 1,
+      },
+      {
+        bureau_th: "กองบัญชาการตำรวจสืบสวนสอบสวนอาชญากรรมทางเทคโนโลยี",
+        bureau_th_abbr: "สอท.",
+        inspector_th: "กองตรวจราชการ 6",
+        inspector_th_abbr: "กต.6",
+        bureau_id: 39,
+        inspector_id: 6,
+      },
+      {
+        bureau_th: "ศูนย์ปราบปรามการกระทำผิดเกี่ยวกับน้ำมันเชื้อเพลิง",
+        bureau_th_abbr: "ศปนม.ตร.",
+        inspector_th: "กองตรวจราชการ 1",
+        inspector_th_abbr: "กต.1",
+        bureau_id: 40,
+        inspector_id: 1,
+      },
+      {
+        bureau_th: "ศปอส.ตร.(ศูนย์ปราบปรามอาชญากรรมทางเทคโนโลยีสารสนเทศ)",
+        bureau_th_abbr: "ศปอส.ตร.(ศูนย์ปราบปรามอาชญากรรมทางเทคโนโลยีสารสนเทศ)",
+        inspector_th: "กองตรวจราชการ 1",
+        inspector_th_abbr: "กต.1",
+        bureau_id: 41,
+        inspector_id: 1,
+      },
+      {
+        bureau_th: "ศูนย์ปฏิบัติการสำนักงานตำรวจแห่งชาติ",
+        bureau_th_abbr: "ศปก.ตร.",
+        inspector_th: "กองตรวจราชการ 1",
+        inspector_th_abbr: "กต.1",
+        bureau_id: 42,
+        inspector_id: 1,
+      },
+    ];
+
     const search = reactive<any>({});
 
     const items = reactive<any>([]);
@@ -818,13 +1007,13 @@ export default defineComponent({
     });
 
     const organization_data = reactive<any>({
-      labels: selectOptions.value.organizations.map((x: any) => {
-        return x.name_th;
+      labels: bureau_organizations.map((x: any) => {
+        return x.bureau_th;
       }),
-      data: selectOptions.value.organizations.map((x: any) => {
+      data: bureau_organizations.map((x: any) => {
         return Math.floor(Math.random() * 50) + 1;
       }),
-      backgroundColor: selectOptions.value.organizations.map((x: any) => {
+      backgroundColor: bureau_organizations.map((x: any) => {
         return getRandomHexColor();
       }),
     });

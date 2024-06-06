@@ -92,6 +92,15 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/report",
+        name: "report",
+        component: () => import("@/views/report/index.vue"),
+        meta: {
+          pageTitle: "Report",
+          breadcrumbs: ["Report"],
+        },
+      },
+      {
         path: "/geo",
         name: "geo",
         component: () => import("@/views/Geo.vue"),

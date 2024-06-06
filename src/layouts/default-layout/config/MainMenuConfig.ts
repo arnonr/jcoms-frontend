@@ -25,7 +25,7 @@ const MainMenuConfig: Array<MenuItem> = [
       
       {
         heading: "สถิติ/รายงาน",
-        route: "/statistics",
+        route: "/report",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
