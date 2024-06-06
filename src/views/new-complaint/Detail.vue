@@ -163,7 +163,6 @@ export default defineComponent({
     
     // Event
     const onClose = ({ reload = false }: { reload?: boolean }) => {
-      mainModalObj.value.hide();
       if (reload === true) {
         emit("reload");
       }
