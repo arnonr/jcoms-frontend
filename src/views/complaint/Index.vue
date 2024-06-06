@@ -3,7 +3,12 @@
   <div class="container mt-5">
     <div class="card shadow-sm my-6">
       <!-- Search -->
-      <SearchComponent :search="search" :state_new="false" @search="fetchItems" @clear="onClear" />
+      <SearchComponent
+        :search="search"
+        :state_new="false"
+        @search="fetchItems"
+        @clear="onClear"
+      />
     </div>
     <div class="card shadow-sm my-5">
       <!-- Button Add & Export -->
@@ -223,7 +228,6 @@
         />
       </div>
 
-
       <!-- Modal Return Report จต. ส่งกลับรายงาน -->
       <div id="return-report1-modal">
         <ReturnReport1Page
@@ -251,7 +255,6 @@
           @reload="fetchItems"
         />
       </div>
-      
 
       <!-- Modal Receive Report 2 จต. รับรายงาน -->
       <div id="receive-report2-modal">
@@ -301,9 +304,11 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, watch } from "vue";
 import ApiService from "@/core/services/ApiService";
-
 // Import Dayjs
 import dayjs from "dayjs";
+// Excel
+import XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 // Component
 import SearchComponent from "@/components/complaint/Search.vue";
@@ -354,6 +359,7 @@ export default defineComponent({
     const search = reactive<any>({});
 
     const items = reactive<any[]>([]);
+    const items_export = reactive<any[]>([]);
     const item = reactive<any>({});
 
     const paginationData = reactive<any>({
@@ -423,6 +429,48 @@ export default defineComponent({
       paginationData.currentPage = data.currentPage;
       isLoading.value = false;
     };
+    const fetchExportItems = async () => {
+      isLoading.value = true;
+      const params = {
+        ...search,
+        create_year: search.year ?? undefined,
+        state_id: search.state_id?.id ?? undefined,
+        inspector_id: search.inspector_id?.id ?? undefined,
+        bureau_id: search.bureau_id?.id ?? undefined,
+        division_id: search.division_id?.id ?? undefined,
+        agency_id: search.agency_id?.id ?? undefined,
+        is_anonymous: search.is_anonymous?.value ?? undefined,
+        province_id: search.province_id?.id ?? undefined,
+        district_id: search.district_id?.id ?? undefined,
+        sub_district_id: search.sub_district_id?.id ?? undefined,
+        complaint_type_id: search.complaint_type_id?.id ?? undefined,
+        topic_category_id: search.topic_category_id?.id ?? undefined,
+        topic_type_id: search.topic_type_id?.id ?? undefined,
+        complaint_channel_id: search.complaint_channel_id?.id ?? undefined,
+        incident_datetime: search.incident_date
+          ? dayjs(search.incident_date).format("YYYY-MM-DD")
+          : undefined,
+        create_from: search.create_from
+          ? dayjs(search.create_from).format("YYYY-MM-DD")
+          : undefined,
+        create_to: search.create_to
+          ? dayjs(search.create_to).format("YYYY-MM-DD")
+          : undefined,
+        orderBy: "created_at",
+        order: "desc",
+        perPage: 1000000,
+        currentPage: paginationData.currentPage,
+        receive_status: 1,
+      };
+
+      const { data } = await ApiService.query("complaint", {
+        params: params,
+      });
+
+      items_export.length = 0;
+      Object.assign(items_export, data.data);
+      isLoading.value = false;
+    };
 
     // Event
     const onClear = () => {
@@ -436,7 +484,114 @@ export default defineComponent({
         }
       });
     };
-    const onExport = async () => {};
+
+    const exportExcel = async () => {
+      fetchExportItems();
+    };
+
+    const onExport = async () => {
+      exportExcel().then(() => {
+        setTimeout(async () => {
+          const workbook = new ExcelJS.Workbook();
+          const worksheet = workbook.addWorksheet("รายการ", {
+            pageSetup: { orientation: "landscape" },
+            headerFooter: {
+              firstHeader: "Hello Exceljs",
+              firstFooter: "Hello World",
+            },
+          });
+
+          worksheet.columns = [
+            {
+              header: "วันที่ร้องเรียน",
+              key: "created_at",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "รหัสคำร้อง",
+              key: "jcoms_no",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "ลักษณะความผิด",
+              key: "topic_type.name_th",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "ลักษณะความผิด",
+              key: "topic_type.name_th",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "ผู้ถูกร้อง",
+              key: "topic_type.name_th",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "หน่วยงานถูกร้อง",
+              key: "topic_type.name_th",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "สถานะ",
+              key: "topic_type.name_th",
+              width: 25,
+              outlineLevel: 1,
+            },
+          ];
+
+          // worksheet.properties.defaultRowHeight = 20;
+
+          worksheet.addRows(items_export);
+
+          worksheet.eachRow((row) => {
+            // row.height = 45;
+            row.eachCell(function (cell) {
+              cell.alignment = {
+                vertical: "middle",
+                horizontal: "center",
+                wrapText: true,
+              };
+            });
+          });
+
+          const row = worksheet.getRow(1);
+          row.height = 20;
+
+          worksheet.insertRow(1, "รายการเรื่องร้องเรียน");
+          worksheet.mergeCells("A1:K1");
+          worksheet.getCell("A1").value = "รายการเรื่องร้องเรียน";
+          worksheet.getCell("A1").alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+          const font = { name: "Arial", size: 18, bold: true };
+          worksheet.getCell("A1").font = font;
+
+          const font1 = { name: "Arial", size: 18, bold: true };
+          worksheet.getCell("A1").font = font1;
+
+          // Images
+          const buffer = await workbook.xlsx.writeBuffer();
+          const blob = new Blob([buffer], {
+            type: "application/octet-stream",
+          });
+          const href = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = href;
+          link.download = "รายการเรื่องร้องเรียน.xlsx";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }, 1000);
+      });
+    };
 
     // Modal action
     const onAddModal = () => {};
