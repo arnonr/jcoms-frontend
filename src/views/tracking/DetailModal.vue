@@ -54,7 +54,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, onUnmounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onMounted,
+  onUnmounted,
+  toRefs,
+} from "vue";
 import ApiService from "@/core/services/ApiService";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
@@ -94,7 +101,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
 
@@ -142,6 +149,8 @@ export default defineComponent({
             (x: any) => x.id == complaint_item.complaint_type_id
           )
         );
+
+        emit("update-tracking-satisfaction", data.data.tracking_satisfaction);
       } catch (error) {
         console.log(error);
       }
@@ -290,7 +299,7 @@ export default defineComponent({
         );
       }
       mainModalObj.value.hide();
-      emit("close-modal");
+      //   emit("close-modal");
     });
 
     // Return

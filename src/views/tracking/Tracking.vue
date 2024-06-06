@@ -96,6 +96,9 @@
         "
         :complaint_id="item.id"
         :complainant_id="item.complainant_id"
+        @update-tracking-satisfaction="(event: any) => {
+            item.tracking_satisfaction = event
+        }"
         @close-modal="
           () => {
             openDetailModal = false;

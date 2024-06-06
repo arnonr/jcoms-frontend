@@ -72,149 +72,6 @@
                     >รายละเอียด</a
                   >
                 </li>
-
-                <li v-if="it.state_id == 3">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleSend1({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >ฝรท. ส่งต่อเรื่อง</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 10">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleReceive2({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บช./ภ. รับเรื่อง</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 19">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleSend2({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บช./ภ. ส่งต่อเรื่อง</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 11">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleReceive3({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บก./ภ.จว. รับเรื่อง</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 20 || it.state_id == 29">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleSendReport1({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บก./ภ.จว. ส่งรายงาน</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 15">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleReceiveReport1({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บช./ภ. รับรายงาน</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 15 || it.state_id == 23">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleReturnReport1({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บช./ภ. ส่งกล้บรายงาน</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 23 || it.state_id == 30">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleSendReport2({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >บช./ภ. ส่งรายงาน</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 16">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleReceiveReport2({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >จต. รับรายงาน</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 24 || it.state_id == 16">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleReturnReport2({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >จต. ส่งกล้บรายงาน</a
-                  >
-                </li>
-
-                <li v-if="it.state_id == 24">
-                  <a
-                    class="dropdown-item cursor-pointer"
-                    @click="
-                      handleSuccessReport({
-                        id: it.id,
-                        complainant_id: it.complainant_id,
-                      })
-                    "
-                    >จต. ปิดเรื่อง</a
-                  >
-                </li>
               </ul>
             </div>
           </td>
@@ -365,7 +222,7 @@ export default defineComponent({
       };
     };
 
-    const convertDueDate = (date: any, complaint_type_id: any,) => {
+    const convertDueDate = (date: any, complaint_type_id: any) => {
       if (date == null) {
         return "";
       }
@@ -376,8 +233,8 @@ export default defineComponent({
 
       let count_day = dayjs().diff(dayjs(date), "day");
 
-    //   let _day = findComplaintType?.due_date - count_day;
-    //   console.log(complaint_types.value)
+      //   let _day = findComplaintType?.due_date - count_day;
+      //   console.log(complaint_types.value)
       //   findComplaintType.due_date
 
       //   วันครบกำหนด
