@@ -140,7 +140,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI Variable
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const tab_index = ref(0);

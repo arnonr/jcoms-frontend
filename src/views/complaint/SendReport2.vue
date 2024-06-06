@@ -215,7 +215,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI Variable
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);

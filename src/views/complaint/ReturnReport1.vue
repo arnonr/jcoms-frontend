@@ -10,7 +10,9 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">บช./ภ. ส่งกลับรายงาน ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">
+              บช./ภ. ส่งกลับรายงาน ({{ item.jcoms_no }})
+            </h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -127,7 +129,7 @@
         </div>
       </div>
     </div>
-        <Preloader :isLoading="isLoading" :position="'absolute'" />
+    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
@@ -178,7 +180,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI Variable
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
@@ -237,8 +239,6 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
-
-        isLoading.value = false;
       } catch (error) {
         isLoading.value = false;
         console.log(error);
@@ -353,6 +353,7 @@ export default defineComponent({
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>
           onClose({ reload: false })
         );
+        isLoading.value = false;
       } catch (error) {
         console.error("Error:", error);
       }

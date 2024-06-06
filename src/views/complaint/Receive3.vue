@@ -118,7 +118,7 @@
         </div>
       </div>
     </div>
-        <Preloader :isLoading="isLoading" :position="'absolute'" />
+    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
@@ -169,7 +169,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI Variable
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
@@ -228,8 +228,6 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
-
-        isLoading.value = false;
       } catch (error) {
         isLoading.value = false;
         console.log(error);
@@ -341,6 +339,7 @@ export default defineComponent({
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>
           onClose({ reload: false })
         );
+        isLoading.value = false;
       } catch (error) {
         console.error("Error:", error);
       }

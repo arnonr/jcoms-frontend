@@ -69,7 +69,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
 
     // Variable
     const selectOptions = ref({
@@ -240,7 +240,7 @@ export default defineComponent({
 
     // Mounted
     onMounted(async () => {
-      isLoading.value = false;
+      isLoading.value = true;
 
       await fetchComplaint();
       await fetchComplainant();
@@ -248,7 +248,7 @@ export default defineComponent({
       await fetchComplaintFileAttach();
 
       beforeShow();
-      isLoading.value = true;
+      isLoading.value = false;
     });
 
     onUnmounted(() => {});
