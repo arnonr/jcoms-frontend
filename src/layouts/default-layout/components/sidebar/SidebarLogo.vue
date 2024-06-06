@@ -9,8 +9,8 @@
           (themeMode === 'dark' && layout === 'light-sidebar')
         "
         alt="Logo"
-        :src="getAssetPath('media/logos/default-dark.svg')"
-        class="h-25px app-sidebar-logo-default"
+        :src="getAssetPath('media/logos/logo_jaray.svg')"
+        class="h-75px app-sidebar-logo-default"
       />
       <img
         v-if="themeMode === 'light' && layout === 'light-sidebar'"
