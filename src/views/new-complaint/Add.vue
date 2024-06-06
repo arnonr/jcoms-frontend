@@ -316,6 +316,16 @@ export default defineComponent({
         // updated_by: item.firstname + " " + props.item.lastname,
       };
 
+      if (complaint_item.is_anonymous == 2) {
+        data_complainant_item = {
+          phone_number: complainant_item.phone_number,
+          updated_by: complainant_item.firstname
+            ? complainant_item.firstname + " " + complainant_item.lastname
+            : complainant_item.phone_number,
+          complainant_type: complaint_type.id == 4 ? 2 : 1,
+        };
+      }
+
       let api = {
         type: "postFormData",
         url: "complainant/",

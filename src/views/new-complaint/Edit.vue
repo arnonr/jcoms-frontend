@@ -92,13 +92,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  reactive,
-  onMounted,
-  onUnmounted,
-} from "vue";
+import { defineComponent, ref, reactive, onMounted, onUnmounted } from "vue";
 import ApiService from "@/core/services/ApiService";
 
 // Import FormWizard
@@ -417,6 +411,16 @@ export default defineComponent({
         agency_id: complaint_type.value.id == 4 ? null : null,
         // updated_by: item.firstname + " " + props.item.lastname,
       };
+
+      if (complaint_item.is_anonymous == 2) {
+        data_complainant_item = {
+          phone_number: complainant_item.phone_number,
+          updated_by: complainant_item.firstname
+            ? complainant_item.firstname + " " + complainant_item.lastname
+            : complainant_item.phone_number,
+          complainant_type: complaint_type.id == 4 ? 2 : 1,
+        };
+      }
 
       await ApiService.putFormData(
         "complainant/" + complainant_item.id,
