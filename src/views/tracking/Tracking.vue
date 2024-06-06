@@ -204,7 +204,7 @@ export default defineComponent({
   },
   setup() {
     // UI
-    const isLoading = ref<Boolean>(false);
+    const isLoading = ref<any>(false);
     const openOtpModal = ref(false);
     const openDetailModal = ref(false);
     const evalModalRef = ref<any>(null);

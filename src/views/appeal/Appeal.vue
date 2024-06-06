@@ -77,7 +77,10 @@
                   {{ props.isLastStep ? "ส่งข้อมูล" : "Next" }}
                 </button>
               </div>
-              <Preloader :isLoading="isLoading" :position="'absolute'" />
+              <Preloader
+                :isLoading="isLoading ? isLoading : false"
+                :position="'absolute'"
+              />
             </template>
           </form-wizard>
         </div>
@@ -159,12 +162,12 @@ export default defineComponent({
   },
   setup() {
     // UI
-    const isLoading = ref<Boolean>(false);
+    const isLoading = ref<any>(false);
     const tab_index = ref(0);
     const onTabChange = (prevIndex: number, nextIndex: number) => {
       tab_index.value = nextIndex;
     };
-    const otp_modal = ref(false);r
+    const otp_modal = ref(false);
     const captcha_modal = ref(true);
     const first_action = ref(false);
 

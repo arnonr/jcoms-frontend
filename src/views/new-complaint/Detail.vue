@@ -70,7 +70,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI
-    const isLoading = ref<Boolean>(true);
+    const isLoading = ref<any>(false);
 
     // Variable
     const selectOptions = ref({
@@ -160,7 +160,7 @@ export default defineComponent({
         console.log(error);
       }
     };
-
+    
     // Event
     const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();

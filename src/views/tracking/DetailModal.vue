@@ -95,7 +95,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI
-    const isLoading = ref<Boolean>(true);
+    const isLoading = ref<any>(false);
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
 

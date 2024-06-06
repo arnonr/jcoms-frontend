@@ -350,7 +350,7 @@ export default defineComponent({
   },
   setup() {
     // UI Variable
-    const isLoading = ref<Boolean>(false);
+    const isLoading = ref<any>(false);
 
     // Variable
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");

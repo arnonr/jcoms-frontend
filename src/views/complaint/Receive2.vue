@@ -116,7 +116,10 @@
         </div>
       </div>
     </div>
-    <Preloader :isLoading="isLoading" :position="'absolute'" />
+    <Preloader
+      :isLoading="isLoading ? isLoading : false"
+      :position="'absolute'"
+    />
   </div>
 </template>
 
@@ -167,7 +170,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI Variable
-    const isLoading = ref<Boolean>(true);
+    const isLoading = ref<any>(false);
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
