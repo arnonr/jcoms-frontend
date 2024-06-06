@@ -45,7 +45,6 @@
                 </div>
               </div>
             </div>
-            <Preloader :isLoading="isLoading" />
           </div>
         </div>
         <Preloader :isLoading="isLoading" :position="'absolute'" />

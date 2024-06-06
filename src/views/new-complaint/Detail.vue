@@ -25,7 +25,6 @@
           </div>
         </div>
       </div>
-      <Preloader :isLoading="isLoading" />
     </div>
     <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
@@ -160,7 +159,7 @@ export default defineComponent({
         console.log(error);
       }
     };
-    
+
     // Event
     const onClose = ({ reload = false }: { reload?: boolean }) => {
       if (reload === true) {
@@ -241,19 +240,18 @@ export default defineComponent({
 
     // Mounted
     onMounted(async () => {
+      isLoading.value = false;
 
       await fetchComplaint();
       await fetchComplainant();
       await fetchAccused();
       await fetchComplaintFileAttach();
 
-      isLoading.value = false;
-
       beforeShow();
+      isLoading.value = true;
     });
 
-    onUnmounted(() => {
-    });
+    onUnmounted(() => {});
 
     // Return
     return {

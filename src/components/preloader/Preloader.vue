@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading" class="preloader" style="position: position">
+  <div v-if="isLoading" class="preloader" :style="`position: ${position}`" >
     <!-- You can use a spinner or any other preloader animation -->
     <div class="spinner"></div>
   </div>

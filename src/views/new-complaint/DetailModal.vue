@@ -55,7 +55,6 @@
                 </div>
               </div>
             </div>
-            <Preloader :isLoading="isLoading" />
           </div>
         </div>
         <Preloader :isLoading="isLoading" :position="'absolute'" />
@@ -162,7 +161,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // UI
-    const isLoading = ref<any>(false);
+    const isLoading = ref<any>(true);
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const html2Pdf = ref<any>(null);
