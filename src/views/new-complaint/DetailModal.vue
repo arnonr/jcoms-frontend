@@ -43,7 +43,15 @@
                     :complaint_file_attach="complaint_file_attach"
                   />
 
-                 
+                  <div class="mx-auto text-center">
+                    <button
+                      @click="generatePDF"
+                      type="button"
+                      class="btn btn-success"
+                    >
+                      พิมพ์ข้อมูลส่วนบุคคล
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -53,6 +61,52 @@
         <Preloader :isLoading="isLoading" :position="'absolute'" />
       </div>
     </div>
+
+    <!-- PDF -->
+    <vue3-html2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :paginate-elements-by-height="1400"
+      filename="jcoms_data"
+      :pdf-quality="2"
+      :manual-pagination="false"
+      pdf-format="a4"
+      pdf-orientation="portrait"
+      pdf-content-width="800px"
+      ref="html2Pdf"
+    >
+      <template v-slot:pdf-content>
+        <div
+          style="
+            margin-top: 50px;
+            margin-right: 50px;
+            margin-bottom: 50px;
+            margin-left: 50px;
+          "
+          class="generate-pdf"
+        >
+          <!-- <SectionPDF1 :complaint_item="complaint_item" /> -->
+
+          <SectionPDF2
+            :complaint_type="complaint_type"
+            :complaint_item="complaint_item"
+            :complainant_item="complainant_item"
+            :new_item="new_item"
+          />
+
+          <SectionPDF3
+            :complaint_type="complaint_type"
+            :complaint_item="complaint_item"
+            :complainant_item="complainant_item"
+            :new_item="new_item"
+            :accused_item="accused_item"
+            :complaint_file_attach="complaint_file_attach"
+          />
+        </div>
+      </template>
+    </vue3-html2pdf>
   </div>
 </template>
 
@@ -66,6 +120,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+// PDF
+import { jsPDF } from "jspdf";
+import Vue3Html2pdf from "vue3-html2pdf";
 
 // Use Composables
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
@@ -75,6 +132,9 @@ import Preloader from "@/components/Preloader.vue";
 import Section1 from "@/components/complaint/detail/Section1.vue";
 import Section2 from "@/components/complaint/detail/Section2.vue";
 import Section3 from "@/components/complaint/detail/Section3.vue";
+import SectionPDF1 from "@/components/complaint/detail/SectionPDF1.vue";
+import SectionPDF2 from "@/components/complaint/detail/SectionPDF2.vue";
+import SectionPDF3 from "@/components/complaint/detail/SectionPDF3.vue";
 
 export default defineComponent({
   name: "complaint-detail-modal",
@@ -94,12 +154,18 @@ export default defineComponent({
     Section1,
     Section2,
     Section3,
+    Vue3Html2pdf,
+    jsPDF,
+    SectionPDF1,
+    SectionPDF2,
+    SectionPDF3,
   },
   setup(props, { emit }) {
     // UI
     const isLoading = ref<Boolean>(true);
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
+    const html2Pdf = ref<any>(null);
 
     // Variable
     const selectOptions = ref({
@@ -129,6 +195,10 @@ export default defineComponent({
       incident_date: "",
       evidence_url: [],
     });
+
+    const generatePDF = () => {
+      html2Pdf.value.generatePdf();
+    };
 
     // Fetch
     const fetchComplaint = async () => {
@@ -269,7 +339,6 @@ export default defineComponent({
           : [];
     };
 
-
     // Mounted
     onMounted(async () => {
       mainModalObj.value = new Modal(mainModalRef.value, {});
@@ -309,16 +378,23 @@ export default defineComponent({
       complaint_type,
       new_item,
       onClose,
+      generatePDF,
+      html2Pdf,
     };
   },
 });
 </script>
 
 <style scoped>
+/* @import "https://fonts.googleapis.com/css2?family=Sarabun&display=swap"; */
 @media only screen and (max-width: 768px) {
   .card > .card-body {
     padding: 0px;
   }
+}
+
+.generate-pdf {
+  font-family: Sarabun, sans-serif;
 }
 
 .color-primary {
@@ -328,6 +404,4 @@ export default defineComponent({
 .modal-content {
   background-color: #d9f4fe;
 }
-
-
 </style>

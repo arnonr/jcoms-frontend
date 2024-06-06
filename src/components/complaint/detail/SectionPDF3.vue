@@ -22,6 +22,7 @@
           <span class="fst-italic">{{ complaint_item.receive_doc_no }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
+
         <div class="col-md-12">
           <span class="fw-bold">หัวข้อเรื่อง : </span>
           <span class="fst-italic">{{ complaint_item.complaint_title }}</span>
@@ -244,13 +245,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.bg-sky {
+/* .bg-sky {
   background-color: #d9f4fe;
-}
+} */
 
-.bg-header-grey {
+/* .bg-header-grey {
   background-color: #ddd;
-}
+} */
 
 .separator.separator-dotted {
   border-bottom-color: #aaa;
