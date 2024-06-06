@@ -274,7 +274,7 @@ export default defineComponent({
     // Save Event
     const onSaveComplainant = async () => {
       //
-      let data_complainant_item = {
+      let data_complainant_item: any = {
         card_photo:
           complainant_item.card_photo.length != 0
             ? complainant_item.card_photo
@@ -316,13 +316,13 @@ export default defineComponent({
         // updated_by: item.firstname + " " + props.item.lastname,
       };
 
-      if (complaint_item.is_anonymous == 2) {
+      if (item?.is_anonymous == 2) {
         data_complainant_item = {
           phone_number: complainant_item.phone_number,
           updated_by: complainant_item.firstname
             ? complainant_item.firstname + " " + complainant_item.lastname
             : complainant_item.phone_number,
-          complainant_type: complaint_type.id == 4 ? 2 : 1,
+          complainant_type: item?.id == 4 ? 2 : 1,
         };
       }
 
