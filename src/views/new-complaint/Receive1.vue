@@ -197,7 +197,7 @@ dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
 
 import useBasicData from "@/composables/useBasicData";
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 // Import Component
 import DetailPage from "@/views/new-complaint/Detail.vue";
 

@@ -123,7 +123,7 @@ dayjs.extend(customParseFormat);
 import Tab1 from "@/components/complaint/form/Tab1.vue";
 import Tab2 from "@/components/complaint/form/Tab2.vue";
 import Tab3 from "@/components/complaint/form/Tab3.vue";
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 
 export default defineComponent({
   name: "edit-complaint",

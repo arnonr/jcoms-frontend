@@ -187,7 +187,7 @@ import StarRating from "vue-star-rating";
 // Composable
 import useToast from "@/composables/useToast";
 // Component
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 import Otp from "@/components/tracking/Otp.vue";
 import ListComponent from "@/components/tracking/List.vue";
 import DetailPage from "@/views/tracking/DetailModal.vue";

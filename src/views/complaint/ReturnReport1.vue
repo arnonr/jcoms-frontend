@@ -159,7 +159,7 @@ import useBasicData from "@/composables/useBasicData";
 import useOrganizationData from "@/composables/useOrganizationData";
 // Import Component
 import DetailPage from "@/views/new-complaint/Detail.vue";
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 
 export default defineComponent({
   name: "return-report2-complaint",

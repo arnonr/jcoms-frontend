@@ -144,7 +144,7 @@ import Tab2 from "@/components/appeal/form/Tab2.vue";
 import Tab3 from "@/components/appeal/form/Tab3.vue";
 import Captcha from "@/components/appeal/form/Captcha.vue";
 import Otp from "@/components/appeal/form/Otp.vue";
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 
 export default defineComponent({
   name: "appeal",

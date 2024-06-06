@@ -128,7 +128,7 @@ import Vue3Html2pdf from "vue3-html2pdf";
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
 import useBasicData from "@/composables/useBasicData";
 import useStateData from "@/composables/useStateData";
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 import Section1 from "@/components/complaint/detail/Section1.vue";
 import Section2 from "@/components/complaint/detail/Section2.vue";
 import Section3 from "@/components/complaint/detail/Section3.vue";

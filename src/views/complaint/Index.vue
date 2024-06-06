@@ -313,7 +313,7 @@ import ExcelJS from "exceljs";
 // Component
 import SearchComponent from "@/components/complaint/Search.vue";
 import ListComponent from "@/components/complaint/List2.vue";
-import Preloader from "@/components/Preloader.vue";
+import Preloader from "@/components/preloader/Preloader.vue";
 import EditPage from "@/views/new-complaint/Edit.vue";
 import DetailPage from "@/views/new-complaint/DetailModal.vue";
 import Send1Page from "@/views/complaint/Send1.vue";
