@@ -1264,13 +1264,6 @@ export default defineComponent({
       await fetchComplaintFileAttach();
       await fetchForward();
       await fetchReport();
-      console.log(complaint_forward);
-      console.log(complaint_report);
-      //   console.log(complainant_item);
-      //   console.log(accused_item);
-      // console.log(complaint_file_attach);
-
-      // complaint_item.complaint_channel.name_th
 
       new_item.is_anonymous = selectOptions.value.is_anonymouses.find(
         (x: any) => {

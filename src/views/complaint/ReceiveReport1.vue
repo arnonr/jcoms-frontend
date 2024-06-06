@@ -241,8 +241,6 @@ export default defineComponent({
         item.receive_doc_no = data.data[0].receive_doc_no;
         item.receive_doc_date = data.data[0].receive_doc_date;
         item.receive_comment = data.data[0].receive_comment;
-
-        console.log(item);
       } catch (error) {
         console.log(error);
       }

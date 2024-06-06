@@ -184,7 +184,7 @@ export default defineComponent({
       complaint_type_id: { id: 1, name_th: "ร้องเรียน" },
       //   state_id
     });
-    console.log(item);
+
     const complainant_item = reactive<any>({
       phone_number: "",
       card_type: null,
@@ -477,13 +477,11 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        console.log(item);
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>
           onClose({ reload: false })
         );
-        console.log(item);
       } catch (error) {
         console.error("Error:", error);
       }

@@ -254,8 +254,6 @@ export default defineComponent({
         item.return_doc_no = data.data[0].return_doc_no;
         item.return_doc_date = data.data[0].return_doc_date;
         item.return_detail = data.data[0].return_detail;
-
-        console.log(item);
       } catch (error) {
         console.log(error);
       }

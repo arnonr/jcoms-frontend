@@ -868,7 +868,6 @@ export default defineComponent({
     // Mounted
 
     onMounted(async () => {
-      console.log(complaint_item.value);
       selectOptions.value.prefix_names = await useMasterData().fetchPrefixName({
         is_active: 1,
         perPage: 500,

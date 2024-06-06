@@ -408,7 +408,6 @@ export default defineComponent({
 
       items.length = 0;
       Object.assign(items, data.data);
-      //   console.log(data.data)
       totalPage.value = data.totalPage;
       totalItems.value = data.totalData;
       currentPage.value = data.currentPage;

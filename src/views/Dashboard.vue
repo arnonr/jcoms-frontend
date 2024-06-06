@@ -1148,14 +1148,6 @@ export default defineComponent({
       { deep: true }
     );
 
-    // watch(
-    //   [search.value],
-    //   () => {
-    //     console.log(search.value.year);
-    //   },
-    //   { deep: true }
-    // );
-
     // Mounted
     onMounted(() => {
       search.value.year = selectOptions.value.years[0];
