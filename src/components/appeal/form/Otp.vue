@@ -337,7 +337,9 @@ export default defineComponent({
         card_type: complainant_item.value.card_type
           ? complainant_item.value.card_type.value
           : undefined,
-        id_card: complainant_item.value.id_card,
+        id_card: complainant_item.value.id_card
+          ? complainant_item.value.id_card
+          : undefined,
         prefix_name_id: complainant_item.value.prefix_name_id
           ? complainant_item.value.prefix_name_id.id
           : undefined,
@@ -352,6 +354,8 @@ export default defineComponent({
           : undefined,
         occupation_id: undefined,
         occupation_text: complainant_item.value.occupation_text
+          ? complainant_item.value.occupation_text
+          : undefined
           ? complainant_item.value.occupation_text
           : undefined,
         phone_number: complainant_item.value.phone_number,
@@ -406,6 +410,23 @@ export default defineComponent({
             complainant_item.value.lastname
           : complainant_item.value.phone_number,
       };
+
+      if (complaint_item.value.is_anonymous == 2) {
+        data_complainant_item = {
+          phone_number: complainant_item.value.phone_number,
+          created_by: complainant_item.value.firstname
+            ? complainant_item.value.firstname +
+              " " +
+              complainant_item.value.lastname
+            : complainant_item.value.phone_number,
+          updated_by: complainant_item.value.firstname
+            ? complainant_item.value.firstname +
+              " " +
+              complainant_item.value.lastname
+            : complainant_item.value.phone_number,
+          complainant_type: complaint_type.value.id == 4 ? 2 : 1,
+        };
+      }
 
       let api = {
         type: "postFormData",
