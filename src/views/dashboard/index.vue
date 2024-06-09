@@ -102,6 +102,7 @@
             <h6>(แยกตามประเภทเรื่อง{{ complaint_type.name_th }})</h6>
             <div style="width: 400px" class="mx-auto">
               <Doughnut
+                ref="chartTopicCategoryRef"
                 :data="chartTopicCategoryData"
                 :options="pieChartOptions"
               />
@@ -342,6 +343,7 @@ export default defineComponent({
         }
       );
     };
+    const chartTopicCategoryRef = ref(null);
     const complaint_type = ref({
       id: 1,
       name_th: "ร้องเรียน",
@@ -365,41 +367,110 @@ export default defineComponent({
         status_id: 1,
         description: "ทั้งหมด",
         bgColor: "#F8285A",
-        total: "380",
+        total: 0,
       },
       {
         status_id: 2,
         description: "ข้อมูลไม่ครบถ้วน",
         bgColor: "#F8285A",
-        total: "200",
+        total: 0,
       },
       {
         status_id: 3,
         description: "รับเข้าระบบ",
         bgColor: "#FFC107",
-        total: "180",
+        total: 0,
       },
       {
         status_id: 4,
         description: "ส่งหน่วยตรวจสอบ",
         bgColor: "#A00001",
-        total: "180",
+        total: 0,
       },
 
       {
         status_id: 5,
         description: "ตรวจสอบเสร็จสิ้น",
         bgColor: "#17c653",
-        total: "100",
+        total: 0,
       },
 
       {
         status_id: 6,
         description: "อยู่ระหว่างตรวจสอบ",
         bgColor: "#1B84FF",
-        total: "80",
+        total: 0,
       },
     ]);
+
+    const defaultTopicCategories = [
+      {
+        id: 1,
+        name_th: "ทุจริตต่อหน้าที่",
+        name_en: null,
+        complaint_type_id: 1,
+      },
+      {
+        id: 2,
+        name_th: "ปฎิบัติหน้าที่มิชอบ",
+        name_en: null,
+        complaint_type_id: 1,
+      },
+      {
+        id: 3,
+        name_th: "ประพฤติตนไม่สมควร",
+        name_en: null,
+        complaint_type_id: 1,
+      },
+      {
+        id: 4,
+        name_th: "ไม่บริการประชาชน",
+        name_en: null,
+        complaint_type_id: 1,
+      },
+      {
+        id: 5,
+        name_th: "ขอความเป็นธรรม",
+        name_en: null,
+        complaint_type_id: 1,
+      },
+      {
+        id: 6,
+        name_th: "บัตรสนเท่ห์ร้องเรียนการปฏิบัติหน้าที่ของเจ้าหน้าที่ตำรวจ",
+        name_en: null,
+        complaint_type_id: 1,
+      },
+      {
+        id: 7,
+        name_th: "ขอความช่วยเหลือ",
+        name_en: null,
+        complaint_type_id: 2,
+      },
+      {
+        id: 8,
+        name_th: "แจ้งเบาะแส/แนะนำ",
+        name_en: null,
+        complaint_type_id: 2,
+      },
+      {
+        id: 10,
+        name_th: "แจ้งเบาะแสยาเสพติด",
+        name_en: null,
+        complaint_type_id: 2,
+      },
+      {
+        id: 11,
+        name_th: "แจ้งเบาะแสยาเสพติด",
+        name_en: null,
+        complaint_type_id: 3,
+      },
+      {
+        id: 12,
+        name_th: "ทุจริตต่อหน้าที่",
+        name_en: null,
+        complaint_type_id: 4,
+      },
+    ];
 
     const selectOptions = ref<any>({
       years: [],
@@ -646,50 +717,18 @@ export default defineComponent({
           name_en: null,
         },
       ],
-      topic_categories: [
-        {
-          id: 1,
-          name_th: "ทุจริตต่อหน้าที่",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 2,
-          name_th: "ปฎิบัติหน้าที่มิชอบ",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 3,
-          name_th: "ประพฤติตนไม่สมควร",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 4,
-          name_th: "ไม่บริการประชาชน",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 5,
-          name_th: "ขอความเป็นธรรม",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 6,
-          name_th: "บัตรสนเท่ห์ร้องเรียนการปฏิบัติหน้าที่ของเจ้าหน้าที่ตำรวจ",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-      ],
+      topic_categories: [],
     });
 
     const search = reactive<any>({});
 
     const items = reactive<any>([]);
     const item = reactive({});
+    const reject_items = ref<any>([]);
+    const receive1_items = ref<any>([]);
+    const send1_items = ref<any>([]);
+    const during_items = ref<any>([]);
+    const success_items = ref<any>([]);
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -720,16 +759,16 @@ export default defineComponent({
             boxWidth: 8, // ความกว้างของลูกศร
             boxHeight: 8, // ความสูงของลูกศร
             padding: 8, // ระยะห่างระหว่างลูกศรกับข้อความ
-            generateLabels: (chart) => {
-              const sortedData = [...chart.data.datasets[0].data].sort(
-                (a, b) => b - a
-              );
+            // generateLabels: (chart: any) => {
+            //   const sortedData = [...chart.data.datasets[0].data].sort(
+            //     (a, b) => b - a
+            //   );
 
-              return sortedData.map((data, i) => ({
-                text: `${chart.data.labels[i]} (${data})`,
-                fillStyle: chart.data.datasets[0].backgroundColor[i],
-              }));
-            },
+            //   return sortedData.map((data, i) => ({
+            //     text: `${chart.data.labels[i]} (${data})`,
+            //     fillStyle: chart.data.datasets[0].backgroundColor[i],
+            //   }));
+            // },
           },
         },
       },
@@ -739,25 +778,19 @@ export default defineComponent({
       responsive: true,
     };
 
-    const topic_category_data = reactive<any>({
-      labels: selectOptions.value.topic_categories.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.topic_categories.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.topic_categories.map((x: any) => {
-        return getRandomHexColor();
-      }),
+    const topic_category_data = ref<any>({
+      labels: [],
+      data: [],
+      backgroundColor: [],
     });
 
-    const chartTopicCategoryData = ref({
-      labels: topic_category_data.labels,
+    const chartTopicCategoryData = ref<any>({
+      labels: topic_category_data.value.labels,
       datasets: [
         {
           label: "จำนวนเรื่อง",
-          data: topic_category_data.data,
-          backgroundColor: topic_category_data.backgroundColor,
+          data: topic_category_data.value.data,
+          backgroundColor: topic_category_data.value.backgroundColor,
           hoverOffset: 10,
           borderRadius: 3,
           //   cutout: 80,
@@ -765,25 +798,19 @@ export default defineComponent({
       ],
     });
 
-    const complaint_channel_data = reactive<any>({
-      labels: selectOptions.value.complaint_channels.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.complaint_channels.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.complaint_channels.map((x: any) => {
-        return getRandomHexColor();
-      }),
+    const complaint_channel_data = ref<any>({
+      labels: [],
+      data: [],
+      backgroundColor: [],
     });
 
-    const chartChannelData = ref({
-      labels: complaint_channel_data.labels,
+    const chartChannelData = ref<any>({
+      labels: complaint_channel_data.value.labels,
       datasets: [
         {
           label: "จำนวนเรื่อง",
-          data: complaint_channel_data.data,
-          backgroundColor: complaint_channel_data.backgroundColor,
+          data: complaint_channel_data.value.data,
+          backgroundColor: complaint_channel_data.value.backgroundColor,
           hoverOffset: 10,
           borderRadius: 3,
           //   cutout: 80,
@@ -791,48 +818,35 @@ export default defineComponent({
       ],
     });
 
-    const section_data = reactive<any>({
-      labels: selectOptions.value.sections.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.sections.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.sections.map((x: any) => {
-        return getRandomHexColor();
-      }),
+    const section_data = ref<any>({
+      labels: [],
+      data: [],
+      backgroundColor: [],
     });
 
-    const chartSectionData = ref({
-      labels: section_data.labels,
+    const chartSectionData = ref<any>({
+      labels: section_data.value.labels,
       datasets: [
         {
           label: "จำนวนเรื่อง",
-          data: section_data.data,
-          backgroundColor: section_data.backgroundColor,
+          data: section_data.value.data,
+          backgroundColor: section_data.value.backgroundColor,
           hoverOffset: 10,
           borderRadius: 3,
-          //   cutout: 80,
         },
       ],
     });
 
-    const organization_data = reactive<any>({
-      labels: selectOptions.value.organizations.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.organizations.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.organizations.map((x: any) => {
-        return getRandomHexColor();
-      }),
+    const organization_data = ref<any>({
+      labels: [],
+      data: [],
+      backgroundColor: [],
     });
 
     const chartOrganizationOptions = <any>{
       plugins: {
         legend: {
-          display: true,
+          display: false,
           position: "right",
           labels: {
             boxWidth: 15, // ความกว้างของลูกศร
@@ -852,17 +866,17 @@ export default defineComponent({
         },
       },
       layout: {
-        width: 600,
+        width: 800,
       },
       responsive: true,
     };
-    const chartOrganizationData = ref({
-      labels: organization_data.labels,
+    const chartOrganizationData = ref<any>({
+      labels: organization_data.value.labels,
       datasets: [
         {
           label: "จำนวนเรื่อง",
-          data: organization_data.data,
-          backgroundColor: organization_data.backgroundColor,
+          data: organization_data.value.data,
+          backgroundColor: organization_data.value.backgroundColor,
           hoverOffset: 10,
           borderRadius: 3,
         },
@@ -870,11 +884,223 @@ export default defineComponent({
     });
 
     // Fetch Data
-    const fetchItems = () => {
-      const params = {
-        perPage: 1000000,
-        currentPage: 1,
-        ...search,
+    const fetchItems = async () => {
+      try {
+        const params = {
+          perPage: 1000000,
+          currentPage: 1,
+          ...search,
+          complaint_type_id: complaint_type.value.id,
+          year: search.year.value,
+        };
+        // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
+        const { data } = await ApiService.query("complaint/", {
+          params: params,
+        });
+
+        // ต้องการแยกเฉพาะส่วนที่รับ และไม่รับ
+        Object.assign(items, data.data);
+        items.value = [];
+        reject_items.value = [];
+        receive1_items.value = [];
+        send1_items.value = [];
+        during_items.value = [];
+        success_items.value = [];
+
+        data.data.forEach((x: any) => {
+          if (x.state_id == 18) {
+            reject_items.value.push(x);
+          } else {
+            receive1_items.value.push(x);
+          }
+        });
+
+        receive1_items.value.forEach((x: any) => {
+          if (x.state_id != 3) {
+            send1_items.value.push(x);
+          }
+
+          if (x.state_id == 17) {
+            success_items.value.push(x);
+          } else {
+            if (x.state_id != 3) {
+              during_items.value.push(x);
+            }
+          }
+        });
+
+        cardStatus.value[0].total = items.length;
+        cardStatus.value[1].total = reject_items.value.length;
+        cardStatus.value[2].total = receive1_items.value.length;
+        cardStatus.value[3].total = send1_items.value.length;
+        cardStatus.value[4].total = success_items.value.length;
+        cardStatus.value[5].total = during_items.value.length;
+
+        reloadData();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const reloadData = async () => {
+      // chart1
+      selectOptions.value.topic_categories = defaultTopicCategories.filter(
+        (x: any) => {
+          return x.complaint_type_id == complaint_type.value.id;
+        }
+      );
+
+      topic_category_data.value = {
+        labels: selectOptions.value.topic_categories.map((x: any) => {
+          return x.name_th;
+        }),
+        data: selectOptions.value.topic_categories.map((x: any) => {
+          let count = receive1_items.value.filter((e: any) => {
+            return e.topic_type.topic_category.id == x.id;
+          });
+          return count.length;
+        }),
+        backgroundColor: selectOptions.value.topic_categories.map((x: any) => {
+          return getRandomHexColor();
+        }),
+      };
+
+      //   let spit_zero: any = [];
+      //   topic_category_data.value.data.forEach((x: any, idx: any) => {
+      //     if (x == 0) {
+      //       spit_zero.push(idx);
+      //     }
+      //   });
+
+      //   spit_zero.forEach((x: any) => {
+      //     topic_category_data.value.labels.splice(x, 1);
+      //     topic_category_data.value.data.splice(x, 1);
+      //     topic_category_data.value.backgroundColor.splice(x, 1);
+      //   });
+
+      chartTopicCategoryData.value = {
+        labels: topic_category_data.value.labels,
+        datasets: [
+          {
+            data: topic_category_data.value.data,
+            backgroundColor: topic_category_data.value.backgroundColor,
+          },
+        ],
+      };
+
+      // labels: selectOptions.value.complaint_channels.map((x: any) => {
+      //     return x.name_th;
+      //   }),
+      //   data: selectOptions.value.complaint_channels.map((x: any) => {
+      //     return Math.floor(Math.random() * 50) + 1;
+      //   }),
+      //   backgroundColor: selectOptions.value.complaint_channels.map((x: any) => {
+      //     return getRandomHexColor();
+      //   }),
+
+      // chart2
+      complaint_channel_data.value = {
+        labels: selectOptions.value.complaint_channels.map((x: any) => {
+          return x.name_th;
+        }),
+        data: selectOptions.value.complaint_channels.map((x: any) => {
+          let count = receive1_items.value.filter((e: any) => {
+            return e.complaint_channel_id == x.id;
+          });
+          return count.length;
+        }),
+        backgroundColor: selectOptions.value.complaint_channels.map(
+          (x: any) => {
+            return getRandomHexColor();
+          }
+        ),
+      };
+
+      //   let spit_zero2: any = [];
+      //   complaint_channel_data.value.data.forEach((x: any, idx: any) => {
+      //     if (x == 0) {
+      //       spit_zero2.push(idx);
+      //     }
+      //   });
+
+      //   spit_zero2.forEach((x: any) => {
+      //     complaint_channel_data.value.labels.splice(x, 1);
+      //     complaint_channel_data.value.data.splice(x, 1);
+      //     complaint_channel_data.value.backgroundColor.splice(x, 1);
+      //   });
+
+      chartChannelData.value = {
+        labels: complaint_channel_data.value.labels,
+        datasets: [
+          {
+            data: complaint_channel_data.value.data,
+            backgroundColor: complaint_channel_data.value.backgroundColor,
+          },
+        ],
+      };
+
+      // chart3
+      section_data.value = {
+        labels: selectOptions.value.sections.map((x: any) => {
+          return x.name_th;
+        }),
+        // [5,10,29]
+        data: selectOptions.value.sections.map((x: any) => {
+          let count_section_ac = 0;
+          receive1_items.value.forEach((e: any) => {
+            let count_ac = e.accused.filter((a: any) => {
+              return a.section_id == x.id;
+            });
+            count_section_ac = count_section_ac + count_ac.length;
+          });
+
+          return count_section_ac;
+        }),
+        backgroundColor: selectOptions.value.sections.map((x: any) => {
+          return getRandomHexColor();
+        }),
+      };
+      chartSectionData.value = {
+        labels: section_data.value.labels,
+        datasets: [
+          {
+            data: section_data.value.data,
+            backgroundColor: section_data.value.backgroundColor,
+          },
+        ],
+      };
+
+      //   chart4
+      organization_data.value = {
+        labels: selectOptions.value.organizations.map((x: any) => {
+          return x.name_th_abbr;
+        }),
+        data: selectOptions.value.organizations.map((x: any) => {
+          let count_org_ac = 0;
+          receive1_items.value.forEach((e: any) => {
+            let count_ac = e.accused.filter((a: any) => {
+              return a.bureau_id == x.id;
+            });
+            count_org_ac = count_org_ac + count_ac.length;
+          });
+
+          return count_org_ac;
+        }),
+        backgroundColor: selectOptions.value.organizations.map((x: any) => {
+          return getRandomHexColor();
+        }),
+      };
+      chartOrganizationData.value = {
+        labels: organization_data.value.labels,
+        datasets: [
+          {
+            label: "จำนวนเรื่อง",
+            data: organization_data.value.data,
+            backgroundColor: organization_data.value.backgroundColor,
+            hoverOffset: 10,
+            borderRadius: 3,
+          },
+        ],
       };
     };
 
@@ -893,6 +1119,14 @@ export default defineComponent({
       search.year = selectOptions.value.years[0];
       await fetchItems();
     });
+
+    // watch
+    watch(
+      () => activeTab.value,
+      () => {
+        fetchItems();
+      }
+    );
 
     return {
       selectOptions,
@@ -917,6 +1151,7 @@ export default defineComponent({
       complaint_channel_data,
       section_data,
       organization_data,
+      chartTopicCategoryRef,
     };
   },
 });
