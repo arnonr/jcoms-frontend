@@ -438,7 +438,7 @@ export default defineComponent({
         return data.data;
       });
 
-      if (check_duplicate_complainant) {
+      if (check_duplicate_complainant.data.length != 0) {
         api.type = "putFormData";
         api.url = "complainant/" + check_duplicate_complainant[0].id;
       }
@@ -510,8 +510,6 @@ export default defineComponent({
         created_by:
           complaint_item.value.firstname + " " + complaint_item.value.lastname,
       };
-
-      console.log(data_item);
 
       await ApiService.postFormData("complaint/", { ...data_item })
         .then(({ data }) => {
