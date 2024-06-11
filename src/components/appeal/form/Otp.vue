@@ -438,7 +438,7 @@ export default defineComponent({
         return data.data;
       });
 
-      if (check_duplicate_complainant.data.length != 0) {
+      if (check_duplicate_complainant.length != 0) {
         api.type = "putFormData";
         api.url = "complainant/" + check_duplicate_complainant[0].id;
       }
