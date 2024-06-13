@@ -20,7 +20,7 @@ export default {
       new (window as any).google.translate.TranslateElement(
         {
           pageLanguage: "th",
-          includedLanguages: "th,en", // กำหนดภาษาที่ต้องการแสดงใน widget
+          includedLanguages: "th,en,my,km,ch,zh-CN", // กำหนดภาษาที่ต้องการแสดงใน widget
           layout: (window as any).google.translate.TranslateElement.InlineLayout
             .SIMPLE,
         },
