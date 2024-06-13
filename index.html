@@ -16,6 +16,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ระบบร้องเรียน</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: "en" },
+          "google_translate_element"
+        );
+      }
+    </script> -->
+
     <script>
       ((g) => {
         var h,
@@ -75,6 +84,7 @@
     <!--end::Theme mode setup on page load-->
 
     <div id="app"></div>
+    <!-- <div id="google_translate_element"></div> -->
 
     <!--begin::Loading markup-->
     <div id="splash-screen" class="splash-screen">
@@ -91,6 +101,11 @@
       <span>Loading ...</span>
     </div>
     <!--end::Loading markup-->
+
+    <script
+      type="text/javascript"
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    ></script>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

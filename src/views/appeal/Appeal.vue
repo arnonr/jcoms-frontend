@@ -3,7 +3,11 @@
     <!--begin::Wrapper-->
     <div class="container p-lg-10 mt-5" id="container">
       <h2 class="mt-10 mb-5 text-black">
-        แบบฟอร์ม{{ complaint_type.name_th }}
+        {{
+          getLang() == "en"
+            ? "Complaint Form"
+            : "แบบฟอร์ม" + complaint_type.name_th
+        }}
       </h2>
       <div class="card">
         <div class="card-body" style="background-color: #d9f4fe">
@@ -367,6 +371,9 @@ export default defineComponent({
     });
 
     // Watch
+    const getLang = () => {
+      return localStorage.getItem("lang");
+    };
 
     // Return
     return {
@@ -383,6 +390,7 @@ export default defineComponent({
       first_action,
       onTabChange,
       onComplete,
+      getLang,
     };
   },
 });

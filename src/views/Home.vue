@@ -5,11 +5,11 @@
       <router-link
         to="/sign-in"
         class="fw-bold text-gray-800 text-hover-primary fs-7"
-        >เข้าสู่ระบบสำหรับเจ้าหน้าที่</router-link
+        >{{ $t('sign_in') }}</router-link
       >
     </div>
 
-    <h2 class="mt-5 mb-5 text-black">เลือกเมนูร้องเรียน/แจ้งเบาะแส</h2>
+    <h2 class="mt-5 mb-5 text-black">{{ $t("Choose_Menu") }}</h2>
     <div class="row g-4 g-xl-4">
       <div class="col-xl-6 mt-3" v-for="(hm, idx) in home_menus" :key="idx">
         <div class="card card-xl-stretch" :class="[`bg-${hm.bgColor}`]">
@@ -24,7 +24,7 @@
             />
 
             <div class="d-flex flex-column flex-grow-1 py-2 py-lg-10 ms-8">
-              <span class="fw-bold fs-2 mb-2">{{ hm.name }}</span>
+              <span class="fw-bold fs-2 mb-2">{{ $t(hm.name) }}</span>
 
               <span
                 class="fw-semibold text-muted fs-5"
@@ -58,7 +58,7 @@ export default defineComponent({
     const home_menus = [
       {
         id: 1,
-        name: "ร้องเรียน (ประชาชนร้องเรียนตำรวจ)",
+        name: "Complaint_Menu",
         name_short: "ร้องเรียน",
         subName: "",
         route: "/appeal",
@@ -70,7 +70,7 @@ export default defineComponent({
       },
       {
         id: 2,
-        name: "แจ้งเบาะแส (ประชาชนแจ้งเบาะแส)",
+        name: "TipOff_Menu",
         name_short: "แจ้งเบาะแส",
         subName: "",
         route: "/appeal",
@@ -82,7 +82,7 @@ export default defineComponent({
       },
       {
         id: 3,
-        name: "แจ้งเบาะแสยาเสพติด (ทุกคนแจ้งได้)",
+        name: "Drug_Menu",
         name_short: "แจ้งเบาะแสยาเสพติด",
         subName: "",
         route: "/appeal",
@@ -94,7 +94,7 @@ export default defineComponent({
       },
       {
         id: 4,
-        name: "ตำรวจร้องเรียนตำรวจ",
+        name: "Police_Complaint_Menu",
         name_short: "ร้องเรียน",
         subName: "",
         route: "/appeal",
@@ -105,7 +105,7 @@ export default defineComponent({
         bgColor: "warning",
       },
       {
-        name: "ติดตามเรื่องร้องเรียน",
+        name: "Tracking",
         subName: "",
         route: "/tracking",
         icon: "notification-on",
@@ -115,9 +115,9 @@ export default defineComponent({
         bgColor: "success",
       },
       {
-        name: "คู่มือการใช้งานระบบ",
+        name: "Manual",
         subName: "",
-        route: "/tracking",
+        route: "/manual",
         icon: "book",
         textColor: "white",
         textHoverColor: "dark",

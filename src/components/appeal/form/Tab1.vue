@@ -4,10 +4,18 @@
     :before-change="onTab1Validate"
     color="#800001"
   >
+    <div id="google_translate_element"></div>
     <div class="row">
       <!--begin::Input group-->
       <div class="mb-5 mt-5">
-        <h4>1. ข้อมูลผู้{{ complaint_type?.name_th }}</h4>
+        <h4>
+          1.
+          {{
+            getLang() == "en"
+              ? "Complainant Information"
+              : "ข้อมูลผู้" + complaint_type?.name_th
+          }}
+        </h4>
       </div>
 
       <div class="input-group mb-7">
@@ -45,9 +53,9 @@
       <div class="col-12">
         <div class="row">
           <div class="mb-7 col-12 col-lg-4 col-lg-12">
-            <label for="phone_number" class="required form-label"
-              >หมายเลขโทรศัพท์</label
-            >
+            <label for="phone_number" class="required form-label">{{
+              $t("phone_number")
+            }}</label>
             <div class="d-flex">
               <input
                 type="text"
@@ -416,10 +424,14 @@ import * as Yup from "yup";
 // Use Toast Composables
 import useToast from "@/composables/useToast";
 
+
+
 // Use Address Composables
 import useBasicData from "@/composables/useBasicData";
 import useAddressData from "@/composables/useAddressData";
 import useMasterData from "@/composables/useMasterData";
+
+import TranslateWidget from "@/components/translate/TranslateWidget.vue";
 
 export default defineComponent({
   name: "appeal-form-tab1",
@@ -443,6 +455,7 @@ export default defineComponent({
     VueDatePicker,
     dayjs,
     TabContent,
+    TranslateWidget,
   },
   setup(props, { emit }) {
     // Variable
@@ -657,9 +670,9 @@ export default defineComponent({
 
       let checkPhone = isValidPhoneNumber(complainant_item.value.phone_number);
       if (!checkPhone) {
-          errors["phone_number"].error = 1;
-          errors["phone_number"].text = "Phone number รูปแบบไม่ถูกต้อง";
-          useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+        errors["phone_number"].error = 1;
+        errors["phone_number"].text = "Phone number รูปแบบไม่ถูกต้อง";
+        useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
         return false;
       }
 
@@ -692,6 +705,10 @@ export default defineComponent({
       }
     );
 
+    const getLang = () => {
+      return localStorage.getItem("lang");
+    };
+
     // Return
     return {
       getAssetPath,
@@ -703,6 +720,7 @@ export default defineComponent({
       onTab1Validate,
       errors,
       openFileInput,
+      getLang,
     };
   },
 });

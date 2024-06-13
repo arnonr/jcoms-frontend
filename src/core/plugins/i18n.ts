@@ -2,7 +2,17 @@ import { createI18n } from "vue-i18n";
 
 const messages = {
   en: {
+    Tracking: "Tracking",
     home: "Home",
+    Complaint: "Complaint",
+    Complaint_Menu: "Complaint (Public Complaint Against Police)",
+    TipOff_Menu: "Tip-off (Public Tip-off)",
+    Drug_Menu: "Drug Tip-off (Anyone Can Report)",
+    Police_Complaint_Menu: "Police Complaint Against Police",
+    Manual: "Manual",
+    Choose_Menu: "Menu",
+    sign_in: "Admin SignIn",
+    phone_number: "Phonenumber",
     dashboard: "Dashboard",
     layoutBuilder: "Layout builder",
     craft: "Crafted",
@@ -354,6 +364,17 @@ const messages = {
   },
   th: {
     home: "หน้าหลัก",
+    Tracking: "ติดตามเรื่องร้องเรียน",
+    Complaint: "ร้องเรียน",
+    Complaint_Menu: "ร้องเรียน (ประชาชนร้องเรียนตำรวจ)",
+    TipOff_Menu: "แจ้งเบาะแส (ประชาชนแจ้งเบาะแส)",
+    Drug_Menu: "แจ้งเบาะแสยาเสพติด (ทุกคนแจ้งได้)",
+    Police_Complaint_Menu: "ตำรวจร้องเรียนตำรวจ",
+    Manual: "คู่มือการใช้งาน",
+    Choose_Menu: "เลือกเมนูร้องเรียน/แจ้งเบาะแส",
+    sign_in: "เข้าสู่ระบบสำหรับเจ้าหน้าที่",
+    phone_number: "หมายเลขโทรศัพท์",
+
     dashboard: "Dashboard",
     layoutBuilder: "Layout builder",
     craft: "Crafted",

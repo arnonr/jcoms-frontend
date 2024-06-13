@@ -4,20 +4,20 @@ const MainMenuConfig: Array<MenuItem> = [
   {
     pages: [
       {
-        heading: "หน้าหลัก",
+        heading: "home",
         route: "/home",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
       {
-        heading: "ติดตามเรื่องร้องเรียน",
+        heading: "Tracking",
         route: "/tracking",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
 
       {
-        heading: "คู่มือการใช้งาน",
+        heading: "Manual",
         route: "/tracking",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",

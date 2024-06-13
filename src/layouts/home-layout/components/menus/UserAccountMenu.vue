@@ -306,7 +306,7 @@ import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "kt-user-menu",
-  components: {},
+  components: {  },
   setup() {
     const router = useRouter();
     const i18n = useI18n();

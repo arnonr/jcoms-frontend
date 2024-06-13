@@ -148,7 +148,8 @@
     data-kt-menu-placement="bottom-start"
     class="menu-item menu-lg-down-accordion me-lg-1"
   >
-    <div class="dropdown">
+    <TranslateWidget />
+    <!-- <div class="dropdown">
       <button
         class="btn btn-secondary dropdown-toggle"
         type="button"
@@ -165,7 +166,7 @@
       </button>
 
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <li v-for="country,idx in countries" :key="idx">
+        <li v-for="(country, idx) in countries" :key="idx">
           <button class="dropdown-item" type="button" @click="setLang(idx)">
             {{ country.name }}
             <img
@@ -176,7 +177,7 @@
           </button>
         </li>
       </ul>
-    </div>
+    </div> -->
 
     <!-- :class="{ active: hasActiveChildren(item.route) } -->
     <span class="menu-link py-3">
@@ -193,10 +194,11 @@ import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import MainMenuConfig from "@/layouts/home-layout/config/MainMenuConfig";
 import { headerMenuIcons } from "@/layouts/home-layout/config/helper";
+import TranslateWidget from "@/components/translate/TranslateWidget.vue";
 
 export default defineComponent({
   name: "KTMenu",
-  components: {},
+  components: { TranslateWidget },
   setup() {
     const { t, te } = useI18n();
     const route = useRoute();
@@ -256,4 +258,22 @@ export default defineComponent({
 .app-header-menu .menu .menu-item .menu-link .menu-title {
   color: #000;
 }
+</style>
+
+<style>
+
+/* .goog-te-combo > option[value="th"] {
+  display: visible !important;
+} */
+/* :not([value='th'] */
+
+/* .goog-te-menu2 .goog-te-menu2-item-selected {
+  display: block;
+}
+
+.goog-te-menu2 .goog-te-menu2-item span.text:lang(en),
+.goog-te-menu2 .goog-te-menu2-item span.text:lang(es),
+.goog-te-menu2 .goog-te-menu2-item span.text:lang(fr) {
+  display: block;
+} */
 </style>
