@@ -173,7 +173,7 @@ export default defineComponent({
     };
     const otp_modal = ref(false);
     const captcha_modal = ref(true);
-    const first_action = ref(false);
+    const first_action = ref(true);
 
     // Variable
     const route = useRoute();
