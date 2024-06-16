@@ -1,16 +1,9 @@
 <template>
-  <div class="accordion-item bg-sky">
-    <h2 class="accordion-header">
-      <button
-        class="accordion-button bg-header-grey rounded"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#item3"
-      >
-        <h4 class="color-primary">ข้อมูลผู้{{ complaint_type.name_th }}</h4>
-      </button>
+  <div class="bg-white">
+    <h2 class="">
+      <h4 class="color-primary">ข้อมูลผู้{{ complaint_type.name_th }}</h4>
     </h2>
-    <div id="item3" class="accordion-collapse collapse show">
+    <div id="item3" class="">
       <div class="accordion-body row">
         <div class="col-md-6">
           <span class="fw-bold">ประเภทการระบุตัวตน : </span>

@@ -1,16 +1,9 @@
 <template>
-  <div class="accordion-item bg-sky">
+  <div>
     <h2 class="accordion-header">
-      <button
-        class="accordion-button bg-header-grey rounded"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#item4"
-      >
-        <h4 class="color-primary">ข้อมูลเรื่อง{{ complaint_type.name_th }}</h4>
-      </button>
+      <h4 class="color-primary">ข้อมูลเรื่อง{{ complaint_type.name_th }}</h4>
     </h2>
-    <div id="item4" class="accordion-collapse collapse show">
+    <div id="item4">
       <div class="accordion-body">
         <div class="col-md-12">
           <span class="fw-bold">หมายเลขรหัส Jcoms : </span>
@@ -69,7 +62,7 @@
             :click="false"
             :zoom="14"
             map-type-id="terrain"
-            style="width: 100%; height: 400px"
+            style="width: 100%; height: 300px"
           >
             <GMapMarker
               :key="1"
@@ -124,13 +117,21 @@
           <div class="separator separator-dotted my-2"></div>
         </div>
 
-        <div v-for="(cf, idx) in complaint_file_attach" :key="idx">
+        <div>
+          <span class="fw-bold"
+            >ไฟล์หลักฐานเพิ่มเติม : {{ complaint_file_attach.length }} รายการ</span
+          >
+
+          <div class="separator separator-dotted my-2"></div>
+        </div>
+
+        <!-- <div v-for="(cf, idx) in complaint_file_attach" :key="idx">
           <span class="fw-bold">ไฟล์หลักฐานเพิ่มเติม {{ idx + 1 }} : </span>
           <a :href="cf.filename" target="_blank"
             ><span class="fst-italic">คลิก</span></a
           >
           <div class="separator separator-dotted my-2"></div>
-        </div>
+        </div> -->
 
         <div class="col-md-12">
           <span class="fw-bold">ลิ้งค์เพิ่มเติม : </span>
@@ -163,6 +164,17 @@
             complaint_item.channel_history_text
           }}</span>
           <div class="separator separator-dotted my-2"></div>
+        </div>
+
+        <div class="col-md-12">
+            <span class="fw-bold">วันที่พิมพ์ข้อมูล :  </span>
+            <span class="fst-italic"> {{ new Date() }}</span>
+            <div class="separator separator-dotted my-2"></div>
+        </div>
+        <div class="col-md-12">
+            <span class="fw-bold">ผู้พิมพ์ข้อมูล :  </span>
+            <span class="fst-italic"> {{ userData.fullname }}</span>
+            <div class="separator separator-dotted my-2"></div>
         </div>
       </div>
     </div>
@@ -211,6 +223,8 @@ export default defineComponent({
   },
   setup(props) {
     // Variable
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+ 
 
     // Event
     const showAccusedOrganization = (ac: any) => {
@@ -239,6 +253,7 @@ export default defineComponent({
     return {
       getAssetPath,
       showAccusedOrganization,
+      userData
     };
   },
 });

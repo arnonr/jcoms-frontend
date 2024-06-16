@@ -1313,6 +1313,10 @@ export default defineComponent({
       complaint_item.state = selectOptions.value.states.find(
         (x: any) => x.id === complaint_item.state_id
       );
+
+    //   complaint_item.state = selectOptions.value.states.find(
+    //     (x: any) => x.id === complaint_item.state_id
+    //   );
     });
 
     // Watch

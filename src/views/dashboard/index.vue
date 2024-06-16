@@ -63,17 +63,17 @@
         </div>
       </div>
 
-      <div class="mb-5 mt-5">
+      <!-- <div class="mb-5 mt-5">
         <span
           >เรื่อง{{ complaint_type.name_th }} {{ cardStatus[0].description }}
           {{ cardStatus[0].total }} เรื่อง</span
         >
-      </div>
-      <div class="row justify-content-center ms-1">
+      </div> -->
+      <div class="row justify-content-center ms-1 d-flex">
         <div
-          class="card col-sm-12 col-md-4 col-lg-2 mx-2"
+          class="card col-sm-12 col-md-2 col-lg-2 mx-1"
           :style="[{ backgroundColor: it.bgColor }]"
-          v-for="(it, idx) in cardStatus.slice(1, 6)"
+          v-for="(it, idx) in cardStatus.slice(1, 7)"
           :key="idx"
         >
           <a
@@ -392,7 +392,7 @@ export default defineComponent({
       },
       {
         status_id: 2,
-        description: "ข้อมูลไม่ครบถ้วน",
+        description: "เรื่องร้องเรียนใหม่",
         bgColor: "#F8285A",
         total: 0,
       },
@@ -402,26 +402,32 @@ export default defineComponent({
         bgColor: "#FFC107",
         total: 0,
       },
+    //   {
+    //     status_id: 7,
+    //     description: "ฝรท. ตรวจสอบ",
+    //     bgColor: "#FFC107",
+    //     total: 0,
+    //   },
       {
         status_id: 4,
-        description: "ส่งหน่วยตรวจสอบ",
+        description: "ส่งหน่วยดำเนินการ",
         bgColor: "#A00001",
         total: 0,
       },
 
       {
+        status_id: 6,
+        description: "อยู่ระหว่างดำเนินการ",
+        bgColor: "#1B84FF",
+        total: 0,
+      },
+      {
         status_id: 5,
-        description: "ตรวจสอบเสร็จสิ้น",
+        description: "ดำเนินการเสร็จสิ้น",
         bgColor: "#17c653",
         total: 0,
       },
 
-      {
-        status_id: 6,
-        description: "อยู่ระหว่างตรวจสอบ",
-        bgColor: "#1B84FF",
-        total: 0,
-      },
     ]);
 
     const defaultTopicCategories = [
@@ -541,7 +547,7 @@ export default defineComponent({
       }),
       complaint_statuses: [
         { name: "ทั้งหมด", value: 1 },
-        { name: "ข้อมูลไม่ครบถ้วน", value: 2 },
+        { name: "เรื่องร้องเรียนใหม่", value: 2 },
         { name: "รับเข้าระบบ", value: 3 },
         { name: "ส่งหน่วยตรวจสอบ", value: 4 },
         { name: "ตรวจสอบเสร็จสิ้น", value: 5 },
@@ -814,6 +820,7 @@ export default defineComponent({
     const send1_items = ref<any>([]);
     const during_items = ref<any>([]);
     const success_items = ref<any>([]);
+    const wating1_items = ref<any>([]);
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -1019,12 +1026,18 @@ export default defineComponent({
         send1_items.value = [];
         during_items.value = [];
         success_items.value = [];
+        wating1_items.value = [];
 
         data.data.forEach((x: any) => {
           if (x.state_id == 18) {
             reject_items.value.push(x);
-          } else {
+          } else if (x.state_id >= 3) {
             receive1_items.value.push(x);
+          } else {
+          }
+
+          if (x.state_id == 1) {
+            wating1_items.value.push(x);
           }
         });
 
@@ -1036,14 +1049,16 @@ export default defineComponent({
           if (x.state_id == 17) {
             success_items.value.push(x);
           } else {
-            if (x.state_id != 3) {
+            if (x.state_id > 3) {
               during_items.value.push(x);
             }
           }
         });
 
         cardStatus.value[0].total = items.length;
-        cardStatus.value[1].total = reject_items.value.length;
+
+        cardStatus.value[1].total = wating1_items.value.length;
+        // cardStatus.value[1].total = reject_items.value.length;
         cardStatus.value[2].total = receive1_items.value.length;
         cardStatus.value[3].total = send1_items.value.length;
         cardStatus.value[4].total = success_items.value.length;

@@ -10,7 +10,7 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">ฝรท. ส่งต่อเรื่อง ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">เร่งรัดเรื่อง ({{ item.jcoms_no }})</h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -121,7 +121,7 @@
                     </VueDatePicker>
                   </div>
 
-                  <div class="mb-7 col-12 col-lg-12">
+                  <!-- <div class="mb-7 col-12 col-lg-12">
                     <label for="">ข้อสั่งการ : </label>
                     <v-select
                       v-model="item.order_id"
@@ -133,9 +133,21 @@
                       class="form-control"
                       :clearable="true"
                     ></v-select>
+                  </div> -->
+
+                  <div class="mb-7 col-2 col-lg-2">
+                    <label for="">ครั้งที่ : </label>
+                    <input
+                      v-model="item.time_no"
+                      type="text"
+                      class="form-control"
+                      placeholder="ครั้งที่"
+                      aria-label="ครั้งที่"
+                      aria-describedby="basic-addon2"
+                    />
                   </div>
 
-                  <div class="mb-7 col-12 col-lg-12">
+                  <div class="mb-7 col-10 col-lg-10">
                     <label for="">หมายเหตุ : </label>
                     <input
                       v-model="item.order_detail"
@@ -164,7 +176,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  ส่งต่อเรื่อง
+                  เร่งรัดเรื่อง
                 </button>
               </div>
             </div>
@@ -250,6 +262,9 @@ export default defineComponent({
 
     // Item Variable
     const item = reactive<any>({});
+
+    const item_follow = reactive<any>([]);
+
     // Item Errors
     const item_errors = reactive<any>({
       forward_doc_no: { error: 0, text: "" },
@@ -271,6 +286,26 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
+        item.time_no = 1;
+        isLoading.value = false;
+      } catch (error) {
+        isLoading.value = false;
+        console.log(error);
+      }
+    };
+
+    const fetchComplaintFollow = async () => {
+      try {
+        const { data } = await ApiService.query(
+          "complaint/" + props.complaint_id,
+          {}
+        );
+
+        Object.assign(item_follow, data.data);
+
+        if (item_follow.length != 0) {
+          item.time_no = item_follow.length + 1;
+        }
 
         isLoading.value = false;
       } catch (error) {
@@ -311,28 +346,28 @@ export default defineComponent({
     };
     const onSaveComplaint = async () => {
       //
-      let state_id = 10;
+      let inspector_state_id = 3;
 
       let data_item = {
         complaint_id: item.complaint_id,
-        forward_doc_filename:
+        inspector_id: item.organization_all?.inspector_id,
+        follow_detail: item.order_detail,
+
+        follow_doc_filename:
           item.forward_doc_filename.length != 0
             ? item.forward_doc_filename
             : undefined,
-        forward_doc_no: item.forward_doc_no,
-        forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
-        forward_user_id: userData.id,
-        forward_at: dayjs().format("YYYY-MM-DD"),
-        to_bureau_id: item.organization_all?.bureau_id,
-        to_division_id: item.organization_all?.division_id,
-        to_agency_id: item.organization_all?.agency_id,
-        order_id: item.order_id?.value,
-        order_detail: item.order_detail,
-        state_id: state_id,
+        follow_doc_no: item.forward_doc_no,
+        follow_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
+        follow_user_id: userData.id,
+        follow_at: dayjs().format("YYYY-MM-DD"),
+        bureau_id: item.organization_all?.bureau_id,
+        time_no: item.time_no,
+        receive_status: 1,
         is_active: 1,
       };
 
-      await ApiService.postFormData("complaint-forward/", data_item)
+      await ApiService.postFormData("complaint-follow/", data_item)
         .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
@@ -340,9 +375,7 @@ export default defineComponent({
 
           //   ปรับสถานะ
           await ApiService.postFormData("complaint/" + item.complaint_id, {
-            state_id: state_id,
-            forward_doc_no: item.forward_doc_no,
-            forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
+            inspector_state_id: inspector_state_id,
           }).then(({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");
@@ -370,6 +403,8 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await fetchComplaint();
+        await fetchComplaintFollow();
+
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>

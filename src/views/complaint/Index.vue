@@ -110,6 +110,28 @@
                 Object.assign(item, it);
                 openReturnReport2Modal = true;
               }"
+          @sendToInspector="
+              (it: any) => {
+                Object.assign(item, it);
+                openSendToInspectorModal = true;
+              }
+            "
+          @receiveInspector=" (it: any) => {
+                Object.assign(item, it);
+                openReceiveInspectorModal = true;
+              }"
+          @sendHurry=" (it: any) => {
+                Object.assign(item, it);
+                openSendHurryModal = true;
+              }"
+          @receiveHurry=" (it: any) => {
+                Object.assign(item, it);
+                openReceiveHurryModal = true;
+              }"
+          @sendExtend=" (it: any) => {
+                Object.assign(item, it);
+                openSendExtendModal = true;
+              }"
         />
       </div>
     </div>
@@ -152,6 +174,34 @@
           @close-modal="
             () => {
               openSend1Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Send ฝรท. ส่งต่อเรื่อง ถึง กองตรวจราชการ -->
+      <div id="sendToInspector-modal">
+        <SendToInspectorPage
+          v-if="openSendToInspectorModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendToInspectorModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive2 บช./ภ. รับเรื่อง -->
+      <div id="receive-inspector-modal">
+        <ReceiveInspectorPage
+          v-if="openReceiveInspectorModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceiveInspectorModal = false;
             }
           "
           @reload="fetchItems"
@@ -297,6 +347,46 @@
           @reload="fetchItems"
         />
       </div>
+
+      <!-- Flow Inspector -->
+      <div id="send-hurry-modal">
+        <SendHurryPage
+          v-if="openSendHurryModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendHurryModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <div id="receive-hurry-modal">
+        <ReceiveHurryPage
+          v-if="openReceiveHurryModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceiveHurryModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <div id="send-extend-modal">
+        <SendExtendPage
+          v-if="openSendExtendModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendExtendModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -327,6 +417,11 @@ import ReceiveReport2Page from "@/views/complaint/ReceiveReport2.vue";
 import SuccessReportPage from "@/views/complaint/SuccessReport.vue";
 import ReturnReport1Page from "@/views/complaint/ReturnReport1.vue";
 import ReturnReport2Page from "@/views/complaint/ReturnReport2.vue";
+import SendToInspectorPage from "@/views/complaint/SendToInspector.vue";
+import ReceiveInspectorPage from "@/views/complaint/ReceiveInspector.vue";
+import SendHurryPage from "@/views/complaint/SendHurry.vue";
+import ReceiveHurryPage from "@/views/complaint/ReceiveHurry.vue";
+import SendExtendPage from "@/views/complaint/SendExtend.vue";
 
 export default defineComponent({
   name: "complaint",
@@ -347,6 +442,11 @@ export default defineComponent({
     SuccessReportPage,
     ReturnReport1Page,
     ReturnReport2Page,
+    SendToInspectorPage,
+    ReceiveInspectorPage,
+    SendHurryPage,
+    ReceiveHurryPage,
+    SendExtendPage,
   },
   setup() {
     // UI Variable
@@ -382,6 +482,12 @@ export default defineComponent({
     const openSuccessReportModal = ref(false);
     const openReturnReport1Modal = ref(false);
     const openReturnReport2Modal = ref(false);
+
+    const openSendToInspectorModal = ref(false);
+    const openReceiveInspectorModal = ref(false);
+    const openSendHurryModal = ref(false);
+    const openReceiveHurryModal = ref(false);
+    const openSendExtendModal = ref(false);
 
     // Fetch Data
     const fetchItems = async () => {
@@ -637,6 +743,11 @@ export default defineComponent({
       openSuccessReportModal,
       openReturnReport1Modal,
       openReturnReport2Modal,
+      openSendToInspectorModal,
+      openReceiveInspectorModal,
+      openSendHurryModal,
+      openReceiveHurryModal,
+      openSendExtendModal,
     };
   },
 });

@@ -13,7 +13,8 @@
           <th class="text-center text-white">เรื่องร้องเรียน</th>
           <th class="text-center text-white">ผู้ถูกร้อง</th>
           <th class="text-center text-white">หน่วยงานถูกร้อง</th>
-          <th class="text-center text-white">สถานะ</th>
+          <th class="text-center text-white">สถานะเรื่องร้องเรียน</th>
+          <th class="text-center text-white">สถานะกองตรวจดำเนินการ</th>
           <th class="text-center text-white">จัดการข้อมูล</th>
         </tr>
       </thead>
@@ -46,6 +47,16 @@
                 convertState(it.state_id).bg_color
               };`"
               >{{ convertState(it.state_id).name_th }}</span
+            >
+          </td>
+
+          <td class="text-center">
+            <span
+              class="badge p-2 text-black"
+              :style="`background-color: ${
+                convertInspectorState(it.inspector_state_id).bg_color
+              };`"
+              >{{ convertInspectorState(it.inspector_state_id).name_th }}</span
             >
           </td>
 
@@ -98,7 +109,7 @@
                         complainant_id: it.complainant_id,
                       })
                     "
-                    >ฝรท. ส่งต่อเรื่อง</a
+                    >ฝรท. ส่งต่อเรื่อง บช./ภ.</a
                   >
                 </li>
 
@@ -231,6 +242,91 @@
                     >จต. ปิดเรื่อง</a
                   >
                 </li>
+
+                <!--  -->
+                <li v-if="it.inspector_state_id == null">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendToInspector({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >ฝรท. ส่งต่อเรื่องกองตรวจราชการ</a
+                  >
+                </li>
+
+                <li v-if="it.inspector_state_id == 1">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceiveInspector({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >กองตรวจราชการรับเรื่อง
+                  </a>
+                </li>
+
+                <li
+                  v-if="
+                    it.state_id > 4 &&
+                    it.state_id != 17 &&
+                    it.state_id != 18 &&
+                    it.inspector_state_id > 1
+                  "
+                >
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendHurry({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >กองตรวจเร่งรัดเรื่อง
+                  </a>
+                </li>
+
+                <li v-if="it.inspector_state_id == 3">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceiveHurry({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บช./ภ. รับเรื่องติดตาม
+                  </a>
+                </li>
+
+                <li
+                  v-if="
+                    it.state_id == 10 ||
+                    it.state_id == 11 ||
+                    it.state_id == 15 ||
+                    it.state_id == 19 ||
+                    it.state_id == 20 ||
+                    it.state_id == 23 ||
+                    it.state_id == 28 ||
+                    it.state_id == 29 ||
+                    it.state_id == 30
+                  "
+                >
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendExtend({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บช./ภ. ขยายเวลา
+                  </a>
+                </li>
               </ul>
             </div>
           </td>
@@ -271,6 +367,7 @@ dayjs.extend(buddhistEra);
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 
 import useStateData from "@/composables/useStateData";
+import useInspectorStateData from "@/composables/useInspectorStateData";
 
 import ApiService from "@/core/services/ApiService";
 
@@ -294,6 +391,7 @@ export default defineComponent({
     const { paginationData } = toRefs(props);
     const internalCurrentPage = ref(paginationData.value.currentPage);
     let { states } = useStateData();
+    let { inspector_states } = useInspectorStateData();
 
     // fetch
     const prefix_names = ref([]);
@@ -327,6 +425,10 @@ export default defineComponent({
 
     const handleSend1 = (item: any) => {
       emit("send1", item);
+    };
+
+    const handleSendToInspector = (item: any) => {
+      emit("sendToInspector", item);
     };
 
     const handleReceive2 = (item: any) => {
@@ -369,6 +471,22 @@ export default defineComponent({
       emit("returnReport2", item);
     };
 
+    const handleReceiveInspector = (item: any) => {
+      emit("receiveInspector", item);
+    };
+
+    const handleSendHurry = (item: any) => {
+      emit("sendHurry", item);
+    };
+
+    const handleReceiveHurry = (item: any) => {
+      emit("receiveHurry", item);
+    };
+
+    const handleSendExtend = (item: any) => {
+      emit("sendExtend", item);
+    };
+
     const convertDate = (date: any) => {
       return dayjs(date).locale("th").format("DD MMM BBBB");
     };
@@ -381,7 +499,17 @@ export default defineComponent({
       };
     };
 
-    const convertDueDate = (date: any, complaint_type_id: any,) => {
+    const convertInspectorState = (inspector_state: any) => {
+      const findInspectorState = inspector_states.find(
+        (x: any) => x.id === inspector_state
+      );
+      return {
+        name_th: findInspectorState?.name_th,
+        bg_color: findInspectorState?.bg_color,
+      };
+    };
+
+    const convertDueDate = (date: any, complaint_type_id: any) => {
       if (date == null) {
         return "";
       }
@@ -392,7 +520,7 @@ export default defineComponent({
 
       let count_day = dayjs().diff(dayjs(date), "day");
 
-    //   let _day = findComplaintType?.due_date - count_day;
+      //   let _day = findComplaintType?.due_date - count_day;
       //   findComplaintType.due_date
 
       //   วันครบกำหนด
@@ -440,6 +568,7 @@ export default defineComponent({
       handleReceive3,
       convertDate,
       convertState,
+      convertInspectorState,
       convertAccused,
       convertDueDate,
       updateCurrentPage,
@@ -450,6 +579,11 @@ export default defineComponent({
       handleSuccessReport,
       handleReturnReport1,
       handleReturnReport2,
+      handleSendToInspector,
+      handleReceiveInspector,
+      handleSendHurry,
+      handleReceiveHurry,
+      handleSendExtend,
     };
   },
 });

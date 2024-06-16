@@ -10,7 +10,9 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">ฝรท. ส่งต่อเรื่อง ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">
+              ฝรท.แจ้งเรื่อง กองตรวจราชการ ({{ item.jcoms_no }})
+            </h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -63,7 +65,7 @@
                 <div class="row">
                   <div class="mb-7 col-12 col-lg-12">
                     <label for="organization_all" class="form-label"
-                      >หน่วยงานระดับ บช./ภ.</label
+                      >หน่วยงานระดับ กองตรวจราชการ</label
                     >
                     <v-select
                       name="accused_organization_all"
@@ -164,7 +166,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  ส่งต่อเรื่อง
+                  แจ้งเรื่อง กองตรวจราชการ
                 </button>
               </div>
             </div>
@@ -231,7 +233,7 @@ export default defineComponent({
     // Variable
     const forwardDocFilename = ref<any>(null);
     const selectOptions = ref({
-      organizations: useOrganizationData().organization_mapping("bureau"),
+      organizations: useOrganizationData().organization_mapping("inspector"),
       orders: useBasicData().orders,
     });
 
@@ -311,7 +313,6 @@ export default defineComponent({
     };
     const onSaveComplaint = async () => {
       //
-      let state_id = 10;
 
       let data_item = {
         complaint_id: item.complaint_id,
@@ -323,12 +324,10 @@ export default defineComponent({
         forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
         forward_user_id: userData.id,
         forward_at: dayjs().format("YYYY-MM-DD"),
-        to_bureau_id: item.organization_all?.bureau_id,
-        to_division_id: item.organization_all?.division_id,
-        to_agency_id: item.organization_all?.agency_id,
+        to_inspector_id: item.organization_all?.inspector_id,
         order_id: item.order_id?.value,
         order_detail: item.order_detail,
-        state_id: state_id,
+        inspector_state_id: 1,
         is_active: 1,
       };
 
@@ -337,21 +336,24 @@ export default defineComponent({
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
+        })
+        .catch(({ response }) => {
+          isLoading.value = false;
+          console.log(response);
+        });
 
-          //   ปรับสถานะ
-          await ApiService.postFormData("complaint/" + item.complaint_id, {
-            state_id: state_id,
-            forward_doc_no: item.forward_doc_no,
-            forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
-          }).then(({ data }) => {
-            if (data.msg != "success") {
-              throw new Error("ERROR");
-            }
+      //   ปรับสถานะ
+      await ApiService.postFormData("complaint/" + item.complaint_id, {
+        inspector_state_id: 1,
+      })
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
 
-            isLoading.value = true;
-            useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-            onClose({ reload: true });
-          });
+          isLoading.value = true;
+          useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+          onClose({ reload: true });
         })
         .catch(({ response }) => {
           isLoading.value = false;

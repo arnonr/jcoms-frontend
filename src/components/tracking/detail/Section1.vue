@@ -101,6 +101,79 @@
               </td>
             </tr>
 
+            <!-- ฝรท. แจ้งเรื่อง ไป กองตรวจ -->
+            <tr v-if="complaint_forward_state.state32 != null">
+              <td class="p-3">
+                {{ showDate(complaint_forward_state.state32.created_at) }}
+              </td>
+              <td class="fw-bold p-3">
+                {{ complaint_forward_state.state32.state.name_th }}
+                ({{ complaint_forward_state.state32.to_inspector?.name_th }})
+              </td>
+              <td class="p-3">
+                <div
+                  class="mb-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_forward_state.state32.forward_doc_date"
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    วันที่เอกสาร :
+                  </div>
+                  <div>
+                    {{
+                      showDate(complaint_forward_state.state32.forward_doc_date)
+                    }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_forward_state.state32.forward_doc_no"
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    เลขที่เอกสาร :
+                  </div>
+                  <div>
+                    {{ complaint_forward_state.state32.forward_doc_no }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_forward_state.state32.order.name_th"
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    คำสั่งการ :
+                  </div>
+                  <div>
+                    {{ complaint_forward_state.state32.order.name_th }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_forward_state.state32.order_detail"
+                >
+                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
+                  <div>
+                    {{ complaint_forward_state.state32.order_detail }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="complaint_forward_state.state32.forward_doc_filename"
+                >
+                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
+                  <div>
+                    <a
+                      :href="
+                        complaint_forward_state.state32.forward_doc_filename
+                      "
+                      target="_blank"
+                    >
+                      ดาวน์โหลด
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
             <!-- ฝรท. ส่งต่อเรื่อง ไป บช/ภ.-->
             <tr v-if="complaint_forward_state.state10 != null">
               <td class="p-3">
@@ -291,8 +364,7 @@
                 {{ showDate(complaint_item.closed_at) }}
               </td>
               <td class="fw-bold p-3 text-green">จต. ปิดเรื่อง</td>
-              <td class="p-3 text-green">
-              </td>
+              <td class="p-3 text-green"></td>
             </tr>
           </tbody>
         </table>
@@ -332,6 +404,7 @@ export default defineComponent({
     const complaint_forward_state = reactive<any>({
       state10: null,
       state11: null,
+      state32: null,
     });
 
     const complaint_report_state = reactive<any>({
@@ -355,6 +428,10 @@ export default defineComponent({
 
         complaint_forward_state.state11 = complaint_forward.find((x: any) => {
           return x.state_id == 11;
+        });
+
+        complaint_forward_state.state32 = complaint_forward.find((x: any) => {
+          return x.state_id == 32;
         });
       } catch (error) {
         console.log(error);

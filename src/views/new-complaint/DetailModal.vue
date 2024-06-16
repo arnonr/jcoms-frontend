@@ -87,7 +87,9 @@
           class="generate-pdf"
         >
           <!-- <SectionPDF1 :complaint_item="complaint_item" /> -->
-
+          <div class="text-danger text-center">
+            <h1 class="text-danger">ลับ</h1>
+          </div>
           <SectionPDF2
             :complaint_type="complaint_type"
             :complaint_item="complaint_item"
@@ -103,6 +105,10 @@
             :accused_item="accused_item"
             :complaint_file_attach="complaint_file_attach"
           />
+
+          <div class="text-danger text-center">
+            <h1 class="text-danger">ลับ</h1>
+          </div>
         </div>
       </template>
     </vue3-html2pdf>
@@ -127,6 +133,7 @@ import Vue3Html2pdf from "vue3-html2pdf";
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
 import useBasicData from "@/composables/useBasicData";
 import useStateData from "@/composables/useStateData";
+import useInspectorStateData from "@/composables/useInspectorStateData";
 import Preloader from "@/components/preloader/Preloader.vue";
 import Section1 from "@/components/complaint/detail/Section1.vue";
 import Section2 from "@/components/complaint/detail/Section2.vue";
@@ -173,6 +180,7 @@ export default defineComponent({
       is_anonymouses: useBasicData().is_anonymouses,
       day_times: useBasicData().day_times,
       states: useStateData().states,
+      inspector_states: useInspectorStateData().inspector_states,
     });
 
     const complaint_item = reactive<any>({});
@@ -329,6 +337,11 @@ export default defineComponent({
       complaint_item.state = selectOptions.value.states.find(
         (x: any) => x.id === complaint_item.state_id
       );
+
+      complaint_item.inspector_state =
+        selectOptions.value.inspector_states.find(
+          (x: any) => x.id === complaint_item.inspector_state_id
+        );
 
       new_item.evidence_url =
         complaint_item.evidence_url != "" && complaint_item.evidence_url != null
