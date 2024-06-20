@@ -110,6 +110,9 @@
               </div>
 
               <div class="mt-12 col-12 col-lg-12 text-center">
+                <button class="btn btn-danger me-2" @click="onClear">
+                  ล้าง
+                </button>
                 <button class="btn btn-success" @click="onValidate()">
                   รับรายงานผล
                 </button>
@@ -344,6 +347,13 @@ export default defineComponent({
       emit("close-modal");
     };
 
+    const onClear = () => {
+      item.receive_doc_filename = null;
+      item.receive_doc_no = null;
+      item.receive_doc_date = null;
+      item.receive_comment = "";
+    };
+
     onMounted(async () => {
       try {
         mainModalObj.value = new Modal(mainModalRef.value, {});
@@ -380,6 +390,7 @@ export default defineComponent({
       format,
       selectOptions,
       header,
+      onClear,
     };
   },
 });

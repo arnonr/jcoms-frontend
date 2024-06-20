@@ -118,6 +118,10 @@
               </div>
 
               <div class="mt-12 col-12 col-lg-12 text-center">
+                <button class="btn btn-danger me-2" @click="onClear">
+                  ล้าง
+                </button>
+
                 <button class="btn btn-success" @click="onValidate">
                   ส่งกลับรายงานผล
                 </button>
@@ -252,7 +256,6 @@ export default defineComponent({
         item.return_doc_no = data.data[0].return_doc_no;
         item.return_doc_date = data.data[0].return_doc_date;
         item.return_detail = data.data[0].return_detail;
-
       } catch (error) {
         console.log(error);
       }
@@ -333,6 +336,13 @@ export default defineComponent({
         });
     };
 
+    const onClear = () => {
+      item.return_doc_filename = null;
+      item.return_doc_no = null;
+      item.return_doc_date = null;
+      item.return_detail = "";
+    };
+
     const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();
       if (reload === true) {
@@ -381,6 +391,7 @@ export default defineComponent({
       onFileChange,
       onClose,
       mainModalRef,
+      onClear,
     };
   },
 });

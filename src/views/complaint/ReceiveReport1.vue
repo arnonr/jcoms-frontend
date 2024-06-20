@@ -107,6 +107,9 @@
               </div>
 
               <div class="mt-12 col-12 col-lg-12 text-center">
+                <button class="btn btn-danger me-2" @click="onClear">
+                  ล้าง
+                </button>
                 <button class="btn btn-success" @click="onValidate">
                   รับรายงานผล
                 </button>
@@ -341,6 +344,13 @@ export default defineComponent({
         });
     };
 
+    const onClear = () => {
+      item.receive_doc_filename = null;
+      item.receive_doc_no = null;
+      item.receive_doc_date = null;
+      item.receive_comment = "";
+    };
+
     const onClose = ({ reload = false }: { reload?: boolean }) => {
       mainModalObj.value.hide();
       if (reload === true) {
@@ -389,6 +399,7 @@ export default defineComponent({
       onFileChange,
       onClose,
       mainModalRef,
+      onClear,
     };
   },
 });

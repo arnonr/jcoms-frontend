@@ -151,6 +151,10 @@
               </div>
 
               <div class="mt-12 col-12 col-lg-12 text-center">
+                <button class="btn btn-danger me-2" @click="onClear">
+                  ล้าง
+                </button>
+
                 <button class="btn btn-success" @click="onValidate(1)">
                   ยืนยัน
                 </button>
@@ -394,6 +398,14 @@ export default defineComponent({
       emit("close-modal");
     };
 
+    const onClear = () => {
+      item.receive_doc_filename = null;
+      item.receive_doc_no = null;
+      item.receive_doc_date = null;
+      item.receive_comment = "";
+      item.type = null;
+    };
+
     onMounted(async () => {
       try {
         await fetchComplaint();
@@ -432,6 +444,7 @@ export default defineComponent({
       onFileChange,
       onClose,
       mainModalRef,
+      onClear,
     };
   },
 });
