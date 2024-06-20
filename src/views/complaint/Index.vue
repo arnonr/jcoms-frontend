@@ -132,6 +132,10 @@
                 Object.assign(item, it);
                 openSendExtendModal = true;
               }"
+          @approveExtend=" (it: any) => {
+                Object.assign(item, it);
+                openApproveExtendModal = true;
+              }"
         />
       </div>
     </div>
@@ -387,6 +391,19 @@
           @reload="fetchItems"
         />
       </div>
+
+      <div id="approve-extend-modal">
+        <ApproveExtendPage
+          v-if="openApproveExtendModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openApproveExtendModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -422,6 +439,7 @@ import ReceiveInspectorPage from "@/views/complaint/ReceiveInspector.vue";
 import SendHurryPage from "@/views/complaint/SendHurry.vue";
 import ReceiveHurryPage from "@/views/complaint/ReceiveHurry.vue";
 import SendExtendPage from "@/views/complaint/SendExtend.vue";
+import ApproveExtendPage from "@/views/complaint/ApproveExtend.vue";
 
 export default defineComponent({
   name: "complaint",
@@ -447,6 +465,7 @@ export default defineComponent({
     SendHurryPage,
     ReceiveHurryPage,
     SendExtendPage,
+    ApproveExtendPage,
   },
   setup() {
     // UI Variable
@@ -488,6 +507,7 @@ export default defineComponent({
     const openSendHurryModal = ref(false);
     const openReceiveHurryModal = ref(false);
     const openSendExtendModal = ref(false);
+    const openApproveExtendModal = ref(false);
 
     // Fetch Data
     const fetchItems = async () => {
@@ -748,6 +768,7 @@ export default defineComponent({
       openSendHurryModal,
       openReceiveHurryModal,
       openSendExtendModal,
+      openApproveExtendModal,
     };
   },
 });

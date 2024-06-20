@@ -24,7 +24,7 @@
             {{ convertDate(it.created_at) }}
           </td>
           <td class="text-center">
-            {{ convertDueDate(it.forward_doc_date, it.complaint_type_id) }}
+            {{ convertDueDate(it.forward_doc_date, it.due_day) }}
           </td>
           <td class="text-center">{{ it.jcoms_no }}</td>
 
@@ -305,15 +305,16 @@
 
                 <li
                   v-if="
-                    it.state_id == 10 ||
-                    it.state_id == 11 ||
-                    it.state_id == 15 ||
-                    it.state_id == 19 ||
-                    it.state_id == 20 ||
-                    it.state_id == 23 ||
-                    it.state_id == 28 ||
-                    it.state_id == 29 ||
-                    it.state_id == 30
+                    (it.state_id == 10 ||
+                      it.state_id == 11 ||
+                      it.state_id == 15 ||
+                      it.state_id == 19 ||
+                      it.state_id == 20 ||
+                      it.state_id == 23 ||
+                      it.state_id == 28 ||
+                      it.state_id == 29 ||
+                      it.state_id == 30) &&
+                    it.inspector_state_id != 6
                   "
                 >
                   <a
@@ -325,6 +326,19 @@
                       })
                     "
                     >บช./ภ. ขยายเวลา
+                  </a>
+                </li>
+
+                <li v-if="it.inspector_state_id == 6">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleApproveExtend({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >อนุมัติการขยายเวลา
                   </a>
                 </li>
               </ul>
@@ -487,6 +501,10 @@ export default defineComponent({
       emit("sendExtend", item);
     };
 
+    const handleApproveExtend = (item: any) => {
+      emit("approveExtend", item);
+    };
+
     const convertDate = (date: any) => {
       return dayjs(date).locale("th").format("DD MMM BBBB");
     };
@@ -509,14 +527,14 @@ export default defineComponent({
       };
     };
 
-    const convertDueDate = (date: any, complaint_type_id: any) => {
+    const convertDueDate = (date: any, due_day: any) => {
       if (date == null) {
         return "";
       }
 
-      const findComplaintType: any = complaint_types.value.find(
-        (x: any) => x.id === complaint_type_id
-      );
+      //   const findComplaintType: any = complaint_types.value.find(
+      //     (x: any) => x.id === complaint_type_id
+      //   );
 
       let count_day = dayjs().diff(dayjs(date), "day");
 
@@ -529,7 +547,7 @@ export default defineComponent({
       //   เหลือกี่ วันเอา
       //   findComplaintType.due_date;
 
-      return count_day;
+      return count_day + "/" + due_day;
     };
 
     const convertAccused = (accused: any) => {
@@ -584,6 +602,7 @@ export default defineComponent({
       handleSendHurry,
       handleReceiveHurry,
       handleSendExtend,
+      handleApproveExtend,
     };
   },
 });

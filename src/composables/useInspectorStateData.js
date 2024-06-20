@@ -30,6 +30,26 @@ export default () => {
       name_en: null,
       bg_color: "#17c653",
     },
+    {
+      id: 6,
+      name_th: "ขอขยายเวลา",
+      name_en: null,
+      bg_color: "#ffc107",
+    },
+    {
+      id: 7,
+      name_th: "อนุมัติการขยายเวลา",
+      name_en: null,
+      bg_color: "#17c653",
+    },
+    {
+      id: 8,
+      name_th: "ไม่อนุมัติการขยายเวลา",
+      name_en: null,
+      bg_color: "#f8285a",
+    },
+    
+    
   ];
 
   return {

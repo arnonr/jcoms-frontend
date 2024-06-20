@@ -1014,6 +1014,122 @@
                 </td>
               </tr>
             </template>
+
+            <!-- ขอขยาย -->
+            <template
+              v-if="complaint_extend.length != 0"
+              v-for="(ce, idx) in complaint_extend"
+              :key="idx"
+            >
+              <tr>
+                <td class="p-3">
+                  {{ showDate(ce.created_at) }}
+                </td>
+                <td class="fw-bold p-3">
+                  บช./ภ. ขอขยายเวลา ครั้งที่ {{ ce.time_no }}
+                </td>
+                <td class="p-3">
+                  <div class="mb-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(ce.extend_doc_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ ce.extend_doc_no }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      จำนวนวัน :
+                    </div>
+                    <div>{{ ce.extend_day }} วัน</div>
+                  </div>
+
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่สิ้นสุด :
+                    </div>
+                    <div>
+                      {{ showDate(ce.due_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ ce.extend_comment }}
+                    </div>
+                  </div>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="ce.extend_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div class="fst-italic">
+                      <a :href="ce.extend_doc_filename" target="_blank">
+                        ดาวน์โหลด
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr v-if="ce.approved_at != null">
+                <td class="p-3">
+                  {{ showDate(ce.approved_at) }}
+                </td>
+                <td class="fw-bold p-3">กองตรวจพิจารณากราขยายเวลา</td>
+                <td class="p-3">
+                  <div class="mb-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(ce.approved_doc_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ ce.approved_doc_no }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ ce.approved_comment }}
+                    </div>
+                  </div>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="ce.approved_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div class="fst-italic">
+                      <a :href="ce.approved_doc_filename" target="_blank">
+                        ดาวน์โหลด
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -1049,6 +1165,7 @@ export default defineComponent({
     const complaint_forward = reactive<any>([]);
     const complaint_report = reactive<any>([]);
     const complaint_follow = reactive<any>([]);
+    const complaint_extend = reactive<any>([]);
 
     const complaint_forward_state = reactive<any>({
       state10: null,
@@ -1131,6 +1248,19 @@ export default defineComponent({
       }
     };
 
+    const fetchExtend = async () => {
+      try {
+        const { data } = await ApiService.query("complaint-extend/", {
+          params: { complaint_id: complaint_item.value.id },
+        });
+
+        complaint_extend.length = 0;
+        Object.assign(complaint_extend, data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     // Event
     const showDate = (date: any) => {
       if (date == null) {
@@ -1144,6 +1274,7 @@ export default defineComponent({
       await fetchForward();
       await fetchReport();
       await fetchFollow();
+      await fetchExtend();
     });
 
     // Watch
@@ -1154,6 +1285,7 @@ export default defineComponent({
       complaint_forward_state,
       complaint_report_state,
       complaint_follow,
+      complaint_extend,
     };
   },
 });

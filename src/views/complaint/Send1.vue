@@ -202,6 +202,8 @@ dayjs.extend(customParseFormat);
 
 import useBasicData from "@/composables/useBasicData";
 import useOrganizationData from "@/composables/useOrganizationData";
+import useComplaintTypeData from "@/composables/useComplaintTypeData";
+
 // Import Component
 import DetailPage from "@/views/new-complaint/Detail.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
@@ -233,6 +235,7 @@ export default defineComponent({
     const selectOptions = ref({
       organizations: useOrganizationData().organization_mapping("bureau"),
       orders: useBasicData().orders,
+      complaint_types: useComplaintTypeData().complaint_types,
     });
 
     const format = (date: any) => {
@@ -271,6 +274,7 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
+        item.complaint_type_id = data.data.complaint_type_id;
 
         isLoading.value = false;
       } catch (error) {
@@ -338,11 +342,17 @@ export default defineComponent({
             throw new Error("ERROR");
           }
 
+          let check_ct = selectOptions.value.complaint_types.find((x: any) => {
+            return x.id == item.complaint_type_id;
+          });
+
           //   ปรับสถานะ
           await ApiService.postFormData("complaint/" + item.complaint_id, {
             state_id: state_id,
             forward_doc_no: item.forward_doc_no,
             forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
+            due_day: check_ct.due_date,
+            due_date: dayjs(item.forward_doc_date).add(check_ct.due_date, "day"),
           }).then(({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");
