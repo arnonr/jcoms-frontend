@@ -228,6 +228,7 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
+        item.phone_number = data.data.complainant?.phone_number;
       } catch (error) {
         isLoading.value = false;
         console.log(error);
@@ -306,14 +307,33 @@ export default defineComponent({
           //   ปรับสถานะ
           await ApiService.postFormData("complaint/" + item.complaint_id, {
             state_id: state_id,
-          }).then(({ data }) => {
+          }).then(async ({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");
             }
 
-            isLoading.value = true;
-            useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-            onClose({ reload: true });
+            //   SMS
+            let msisdn = item.phone_number;
+            if (msisdn != null) {
+              let message =
+                "แจ้งสถานะเรื่องร้องเรียน " +
+                item.jcoms_no +
+                " : บก./ภ.จว. รับเรื่อง ณ วันที่ " +
+                dayjs().locale("th").format("DD MMM BBBB");
+
+              await ApiService.post("sms/send-sms", {
+                msisdn,
+                message,
+              })
+                .then(() => {
+                  isLoading.value = false;
+                  useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+                  onClose({ reload: true });
+                })
+                .catch(({ response }) => {
+                  console.log(response);
+                });
+            }
           });
         })
         .catch(({ response }) => {

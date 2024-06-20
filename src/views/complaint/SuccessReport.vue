@@ -108,7 +108,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  ปิดเรื่อง (ดำเนินการแล้วเสร็จ)
+                  ปิดเรื่อง
                 </button>
               </div>
             </div>
@@ -116,7 +116,7 @@
         </div>
       </div>
     </div>
-        <Preloader :isLoading="isLoading" :position="'absolute'" />
+    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
@@ -227,6 +227,7 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
+        item.phone_number = data.data.complainant?.phone_number;
 
         isLoading.value = false;
       } catch (error) {
@@ -285,14 +286,33 @@ export default defineComponent({
       await ApiService.postFormData("complaint/" + item.complaint_id, {
         ...data_item,
       })
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
 
-          isLoading.value = false;
-          useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-          onClose({ reload: true });
+          //   SMS
+          let msisdn = item.phone_number;
+          if (msisdn != null) {
+            let message =
+              "แจ้งสถานะเรื่องร้องเรียน " +
+              item.jcoms_no +
+              " : จต. ปิดเรื่อง ณ วันที่ " +
+              dayjs().locale("th").format("DD MMM BBBB");
+
+            await ApiService.post("sms/send-sms", {
+              msisdn,
+              message,
+            })
+              .then(() => {
+                isLoading.value = false;
+                useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+                onClose({ reload: true });
+              })
+              .catch(({ response }) => {
+                console.log(response);
+              });
+          }
         })
         .catch(({ response }) => {
           isLoading.value = false;
@@ -340,7 +360,7 @@ export default defineComponent({
       selectOptions,
       item,
       format,
-    //   receiveDocFilename,
+      //   receiveDocFilename,
       // event
       onValidate,
       onFileChange,

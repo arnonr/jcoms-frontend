@@ -230,7 +230,7 @@
                   >
                 </li>
 
-                <li v-if="it.state_id == 24">
+                <li>
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="

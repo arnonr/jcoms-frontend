@@ -273,13 +273,14 @@ export default defineComponent({
         item.receive_doc_no = data.data.receive_doc_no;
         item.receive_doc_date = data.data.receive_doc_date;
         item.receive_comment = data.data.receive_comment;
-        item.receive_status = null ;
+        item.receive_status = null;
         // item.receive_status = data.data.receive_status ;
         item.state_id = data.data.state_id;
         item.receive_at = data.data.receive_at;
         item.jcoms_no = data.data.jcoms_no;
         item.complainant_id = data.data.complainant_id;
         item.receive_user_id = userData.receive_user_id;
+        item.phone_number = data.data.complainant?.phone_number;
         complaint_type.value = useComplaintTypeData().complaint_types.find(
           (x: any) => x.id == item.complaint_type_id
         );
@@ -346,12 +347,39 @@ export default defineComponent({
       };
 
       await ApiService.putFormData("complaint/" + item.id, data_item)
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-          onClose({ reload: true });
+
+          //   SMS
+          let msisdn = item.phone_number;
+          if (msisdn != null) {
+            let message =
+              "แจ้งสถานะเรื่องร้องเรียน " +
+              item.jcoms_no +
+              " : ฝรท. ไม่รับเรื่อง ณ วันที่ " +
+              dayjs().locale("th").format("DD MMM BBBB");
+
+            if (item.receive_status.state_id == 3) {
+              message =
+                "แจ้งสถานะเรื่องร้องเรียน " +
+                item.jcoms_no +
+                " : ฝรท. ลงรับเรื่อง ณ วันที่ " +
+                dayjs().locale("th").format("DD MMM BBBB");
+            }
+            await ApiService.post("sms/send-sms", {
+              msisdn,
+              message,
+            })
+              .then(() => {
+                useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+                onClose({ reload: true });
+              })
+              .catch(({ response }) => {
+                console.log(response);
+              });
+          }
         })
         .catch(({ response }) => {
           console.log(response);
