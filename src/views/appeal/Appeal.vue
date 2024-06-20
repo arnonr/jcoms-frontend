@@ -59,6 +59,22 @@
                 >
                   ย้อนกลับ
                 </button>
+
+                <button
+                  v-if="tab_index == 0"
+                  @click.native="onTab1Clear()"
+                  class="btn btn-danger ms-2 text-white"
+                >
+                  ล้าง
+                </button>
+
+                <button
+                  v-if="tab_index == 1"
+                  @click.native="onTab2Clear()"
+                  class="btn btn-danger ms-2 text-white"
+                >
+                  ล้าง
+                </button>
               </div>
 
               <div class="wizard-footer-right">
@@ -183,7 +199,7 @@ export default defineComponent({
     );
     const policy_checkbox = ref<boolean>(false);
 
-    const item = ref<any>({
+    const default_item: any = {
       complaint_type_id: Number(route.params.type_id),
       is_anonymous: 1,
       complaint_title: "",
@@ -213,9 +229,11 @@ export default defineComponent({
       complaint_channel_all: [],
       evidence_url: "",
       channel_history_text: "",
-    });
+    };
 
-    const complainant_item = ref<any>({
+    const item = ref<any>({ ...default_item });
+
+    const default_complainant_item: any = {
       phone_number: "",
       card_type: null,
       id_card: "",
@@ -235,9 +253,11 @@ export default defineComponent({
       line_id: "",
       card_photo_old: null,
       complaint_type_id: null,
-    });
+    };
 
-    const accused = reactive<any[]>([
+    const complainant_item = ref<any>({ ...default_complainant_item });
+
+    const default_accused = [
       {
         id: null,
         prefix_name_id: null,
@@ -254,7 +274,9 @@ export default defineComponent({
         detail: null,
         organization_all: null,
       },
-    ] as any[]);
+    ] as any[];
+
+    const accused = reactive<any[]>([...default_accused]);
 
     //Fetch
     const fetchComplainant = () => {
@@ -361,6 +383,15 @@ export default defineComponent({
       return false;
     };
 
+    const onTab1Clear = () => {
+      complainant_item.value = { ...default_complainant_item };
+    };
+
+    const onTab2Clear = () => {
+      item.value = { ...default_item };
+      Object.assign(accused, { ...default_accused });
+    };
+
     // Mounted
     const checkComplainantUUID = ref(null);
     onMounted(() => {
@@ -391,6 +422,8 @@ export default defineComponent({
       onTabChange,
       onComplete,
       getLang,
+      onTab1Clear,
+      onTab2Clear,
     };
   },
 });

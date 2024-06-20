@@ -63,6 +63,22 @@
                 >
                   ย้อนกลับ
                 </button>
+
+                <button
+                  v-if="tab_index == 0"
+                  @click.native="onTab1Clear()"
+                  class="btn btn-danger ms-2 text-white"
+                >
+                  ล้าง
+                </button>
+
+                <button
+                  v-if="tab_index == 1"
+                  @click.native="onTab2Clear()"
+                  class="btn btn-danger ms-2 text-white"
+                >
+                  ล้าง
+                </button>
               </div>
 
               <div class="wizard-footer-right">
@@ -152,7 +168,7 @@ export default defineComponent({
     const r = (Math.random() + 1).toString(36).substring(7);
 
     // Item Variable
-    const item = reactive<any>({
+    const default_item: any = {
       is_anonymous: 1,
       complaint_title: "",
       house_number: "",
@@ -183,9 +199,10 @@ export default defineComponent({
       channel_history_text: "",
       complaint_type_id: { id: 1, name_th: "ร้องเรียน" },
       //   state_id
-    });
+    };
+    const item = reactive<any>({ ...default_item });
 
-    const complainant_item = reactive<any>({
+    const default_complainant_item: any = {
       phone_number: "",
       card_type: null,
       id_card: "",
@@ -204,9 +221,10 @@ export default defineComponent({
       email: "",
       line_id: "",
       card_photo_old: null,
-    });
+    };
+    const complainant_item = reactive<any>({ ...default_complainant_item });
 
-    const accused = reactive<any[]>([
+    const default_accused = [
       {
         id: null,
         prefix_name_id: null,
@@ -223,7 +241,9 @@ export default defineComponent({
         detail: null,
         organization_all: null,
       },
-    ] as any[]);
+    ] as any[];
+
+    const accused = reactive<any[]>([...default_accused]);
 
     const accused_old = reactive([
       {
@@ -485,6 +505,15 @@ export default defineComponent({
       }
     };
 
+    const onTab1Clear = () => {
+      Object.assign(complainant_item, { ...default_complainant_item });
+    };
+
+    const onTab2Clear = () => {
+      Object.assign(item, { ...default_item });
+      Object.assign(accused, { ...default_accused });
+    };
+
     onMounted(async () => {
       try {
         mainModalObj.value = new Modal(mainModalRef.value, {});
@@ -523,6 +552,8 @@ export default defineComponent({
       onComplete,
       onClose,
       mainModalRef,
+      onTab1Clear,
+      onTab2Clear,
       r,
     };
   },
