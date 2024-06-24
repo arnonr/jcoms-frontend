@@ -4,118 +4,54 @@
     <div class="container mt-5">
       <div class="card shadow-sm my-5">
         <!-- Search -->
-        <div class="card-body">
-          <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
-            <!-- ปีที่ร้องเรียน -->
-            <div class="col-12 col-md-5 my-2">
-              <label for="slt-search-year">ปีที่ร้องเรียน</label>
-              <v-select
-                id="slt-search-year"
-                name="slt-search-year"
-                label="name"
-                placeholder="ปีที่ร้องเรียน"
-                :options="selectOptions.years"
-                v-model="search.year"
-                :reduce="(year: any) => year.value"
-                class="form-control"
-                :clearable="true"
-              ></v-select>
-            </div>
-
-            <!-- เดือน -->
-            <div class="col-12 col-md-5 my-2">
-              <label for="slt-search-month">เดือน</label>
-              <v-select
-                id="slt-search-month"
-                name="slt-search-month"
-                label="name"
-                placeholder="ทั้งหมด"
-                :options="selectOptions.months"
-                v-model="search.month"
-                class="form-control"
-                :clearable="true"
-              ></v-select>
-            </div>
-
-            <!-- ปุ่มค้นหา -->
-            <div class="col-12 col-md-2 my-2 d-flex align-items-end">
-              <button class="btn btn-success fw-bold w-100" @click="onSearch()">
-                ค้นหา
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Menu Button -->
-        <!-- <div class="card-footer">
-          <nav class="nav nav-pills nav-fill">
-            <a
-              class="nav-link"
-              v-for="(ct, idx) in selectOptions.complaint_types"
-              :key="idx"
-              :class="{ active: activeTab === ct.name_abbr_en }"
-              aria-current="page"
-              href="#"
-              @click.prevent="setActiveTab(ct.name_abbr_en)"
-            >
-              {{ ct.name_th }}
-            </a>
-          </nav>
-        </div> -->
+        <SearchComponent
+          :search="search"
+          :state_new="false"
+          @search="fetchItems"
+          @clear="onClear"
+        />
       </div>
 
-      <div class="mb-5 mt-5">
-        <span
-          >เรื่อง{{ complaint_type.name_th }} {{ cardStatus[0].description }}
-          {{ cardStatus[0].total }} เรื่อง</span
-        >
+      <!-- Chart -->
+      <div class="card mt-15">
+        <div class="card-body row">
+          <div
+            class="col-12 col-md-4 mx-auto"
+            style="min-height: 300px; min-width: 300px"
+          >
+            <v-chart
+              v-if="chartSectionData.series[0].data.length != 0"
+              class="chart"
+              :option="chartSectionData"
+            />
+          </div>
+        </div>
       </div>
 
       <div class="card">
         <div class="card-body row">
           <div class="col-12 col-md-12 mb-3 mt-10">
-            <h6>สถิติเรื่องร้องเรียน (แยกตามหน่วยงาน)</h6>
+            <h6>สถิติเรื่องร้องเรียน (แยกตามสายงาน)</h6>
             <table
               class="table table-bordered table-striped bg-sky"
               style="width: 100%"
             >
               <thead class="bg-color-police">
                 <tr>
-                  <th class="text-center text-white">หน่วยงาน</th>
-                  <th class="text-center text-white">รับเรื่อง</th>
-                  <th class="text-center text-white">ดำเนินการแล้วเสร็จ</th>
-                  <th class="text-center text-white">อยู่ระหว่างดำเนินการ</th>
-                  <th class="text-center text-white">ผลปฏิบัติ</th>
+                  <th class="text-center text-white">สายงาน</th>
+                  <th class="text-center text-white">จำนวนเรื่อง</th>
+                  <th class="text-center text-white">จำนวนผู้ถูกร้องเรียน</th>
                 </tr>
               </thead>
-              <tbody v-if="organization_data.labels.length != 0">
-                <tr v-for="(or, idx) in organization_data.labels" :key="idx">
-                  <td >{{ idx+1 }}. {{ or}}</td>
+              <tbody v-if="section_data.datas.length != 0">
+                <tr v-for="(ss, idx) in section_data.datas" :key="idx">
+                  <td class="text-center">{{ ss.name }}</td>
                   <td class="text-center">
-                    {{ organization_data.data[idx] }}
+                    {{ ss.value }}
                   </td>
                   <td class="text-center">
-                    {{ organization_data.data[idx] }}
+                    {{ ss.count_accused }}
                   </td>
-                  <td class="text-center">
-                    {{ organization_data.data[idx] }}
-                  </td>
-                  <td class="text-center">
-                    {{ organization_data.data[idx] }}%
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-center">รวม</td>
-                  <td class="text-center">
-                    {{ 380 }}
-                  </td>
-                  <td class="text-center">
-                    {{ 100 }}
-                  </td>
-                  <td class="text-center">
-                    {{ 180 }}
-                  </td>
-                  <td class="text-center">{{ 55.56 }}%</td>
                 </tr>
               </tbody>
 
@@ -135,7 +71,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, reactive, watch } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  reactive,
+  watch,
+  provide,
+  shallowRef,
+} from "vue";
 import ApiService from "@/core/services/ApiService";
 import { useRouter } from "vue-router";
 // Import Vue-select
@@ -149,33 +93,30 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
-// Import Custom Widget Dashboard
-import Widget1Custom from "@/components/dashboard-default-widgets/Widget1Custom.vue";
-// Chart
+// Import echarts
+import * as echarts from "echarts/core";
+import { CanvasRenderer } from "echarts/renderers";
+import { PieChart, BarChart } from "echarts/charts";
 import {
-  Chart as ChartJS,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  ArcElement,
-} from "chart.js";
-import { Pie, Bar, Doughnut } from "vue-chartjs";
-ChartJS.register(
-  //   Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  ArcElement
-);
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+} from "echarts/components";
+import VChart, { THEME_KEY } from "vue-echarts";
 
 // Components
+import SearchComponent from "@/components/report/Search.vue";
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
-import useComplaintTopicData from "@/composables/useComplaintTopicData";
+
+echarts.use([
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  BarChart,
+  PieChart,
+  CanvasRenderer,
+]);
 
 export default defineComponent({
   name: "dashboard",
@@ -183,13 +124,14 @@ export default defineComponent({
     VueDatePicker,
     dayjs,
     vSelect,
-    Doughnut,
-    Bar,
-    Widget1Custom,
     BlogPagination,
+    VChart,
+    SearchComponent,
   },
   setup() {
     // UI
+
+    provide(THEME_KEY, "light");
     const activeTab = ref("complaints"); // ค่าเริ่มต้น
     const setActiveTab = (tab: string) => {
       activeTab.value = tab;
@@ -199,6 +141,7 @@ export default defineComponent({
         }
       );
     };
+
     const complaint_type = ref({
       id: 1,
       name_th: "ร้องเรียน",
@@ -222,58 +165,160 @@ export default defineComponent({
         status_id: 1,
         description: "ทั้งหมด",
         bgColor: "#F8285A",
-        total: "380",
+        total: 0,
       },
       {
         status_id: 2,
-        description: "ข้อมูลไม่ครบถ้วน",
+        description: "เรื่องร้องเรียนใหม่",
         bgColor: "#F8285A",
-        total: "200",
+        total: 0,
       },
       {
         status_id: 3,
         description: "รับเข้าระบบ",
         bgColor: "#FFC107",
-        total: "180",
+        total: 0,
       },
+      //   {
+      //     status_id: 7,
+      //     description: "ฝรท. ตรวจสอบ",
+      //     bgColor: "#FFC107",
+      //     total: 0,
+      //   },
       {
         status_id: 4,
-        description: "ส่งหน่วยตรวจสอบ",
+        description: "ส่งหน่วยดำเนินการ",
         bgColor: "#A00001",
-        total: "180",
-      },
-
-      {
-        status_id: 5,
-        description: "ตรวจสอบเสร็จสิ้น",
-        bgColor: "#17c653",
-        total: "100",
+        total: 0,
       },
 
       {
         status_id: 6,
-        description: "อยู่ระหว่างตรวจสอบ",
+        description: "อยู่ระหว่างดำเนินการ",
         bgColor: "#1B84FF",
-        total: "80",
+        total: 0,
+      },
+      {
+        status_id: 5,
+        description: "ดำเนินการเสร็จสิ้น",
+        bgColor: "#17c653",
+        total: 0,
       },
     ]);
 
+    const defaultTopicCategories = [
+      {
+        id: 1,
+        name_th: "ทุจริตต่อหน้าที่",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 2,
+        name_th: "ปฎิบัติหน้าที่มิชอบ",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 3,
+        name_th: "ประพฤติตนไม่สมควร",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 4,
+        name_th: "ไม่บริการประชาชน",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 5,
+        name_th: "ขอความเป็นธรรม",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 6,
+        name_th: "บัตรสนเท่ห์ร้องเรียนการปฏิบัติหน้าที่ของเจ้าหน้าที่ตำรวจ",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 7,
+        name_th: "ขอความช่วยเหลือ",
+        name_en: null,
+        complaint_type_id: 2,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 8,
+        name_th: "แจ้งเบาะแส/แนะนำ",
+        name_en: null,
+        complaint_type_id: 2,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 10,
+        name_th: "แจ้งเบาะแสยาเสพติด",
+        name_en: null,
+        complaint_type_id: 2,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 11,
+        name_th: "แจ้งเบาะแสยาเสพติด",
+        name_en: null,
+        complaint_type_id: 3,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 12,
+        name_th: "ทุจริตต่อหน้าที่",
+        name_en: null,
+        complaint_type_id: 4,
+        count: 0,
+        count_accused: 0,
+      },
+    ];
+
     const selectOptions = ref<any>({
+      report_types: [
+        { value: 1, name: "รายวัน" },
+        { value: 2, name: "รายสัปดาห์" },
+        { value: 3, name: "รายเดือน" },
+        { value: 4, name: "รายปี" },
+      ],
       years: [],
       months: [
         { value: null, name: "ทั้งหมด" },
-        { value: 1, name: "มกราคม" },
-        { value: 2, name: "กุมภาพันธ์" },
-        { value: 3, name: "มีนาคม" },
-        { value: 4, name: "เมษายน" },
-        { value: 5, name: "พฤษภาคม" },
-        { value: 6, name: "มิถุนายน" },
-        { value: 7, name: "กรกฏาคม" },
-        { value: 8, name: "สิงหาคม" },
-        { value: 9, name: "กันยายน" },
-        { value: 10, name: "ตุลาคม" },
-        { value: 11, name: "พฤศจิกายน" },
-        { value: 12, name: "ธันวาคม" },
+        { value: "01", name: "มกราคม" },
+        { value: "02", name: "กุมภาพันธ์" },
+        { value: "03", name: "มีนาคม" },
+        { value: "04", name: "เมษายน" },
+        { value: "05", name: "พฤษภาคม" },
+        { value: "06", name: "มิถุนายน" },
+        { value: "07", name: "กรกฏาคม" },
+        { value: "08", name: "สิงหาคม" },
+        { value: "09", name: "กันยายน" },
+        { value: "10", name: "ตุลาคม" },
+        { value: "11", name: "พฤศจิกายน" },
+        { value: "12", name: "ธันวาคม" },
       ],
       complaint_types: useComplaintTypeData().complaint_types.map((x: any) => {
         if (x.id == 1) x.name_abbr_en = "complaints";
@@ -284,7 +329,7 @@ export default defineComponent({
       }),
       complaint_statuses: [
         { name: "ทั้งหมด", value: 1 },
-        { name: "ข้อมูลไม่ครบถ้วน", value: 2 },
+        { name: "เรื่องร้องเรียนใหม่", value: 2 },
         { name: "รับเข้าระบบ", value: 3 },
         { name: "ส่งหน่วยตรวจสอบ", value: 4 },
         { name: "ตรวจสอบเสร็จสิ้น", value: 5 },
@@ -297,6 +342,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 2,
@@ -304,6 +350,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 3,
@@ -311,6 +358,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 4,
@@ -318,6 +366,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 5,
@@ -325,6 +374,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 6,
@@ -332,6 +382,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 7,
@@ -339,6 +390,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 8,
@@ -346,6 +398,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 9,
@@ -353,6 +406,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 10,
@@ -360,6 +414,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
         {
           id: 11,
@@ -367,6 +422,7 @@ export default defineComponent({
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
+          count_section: 0,
         },
       ],
       complaint_channels: [
@@ -374,46 +430,64 @@ export default defineComponent({
           id: 1,
           name_th: "ร้องเรียนด้วยตนเอง",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 2,
           name_th: "จดหมาย",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 3,
           name_th: "สำนักงานปลัดสำนักนายกรัฐมนตรี",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 4,
           name_th: "1599 ศปก.ตร.",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 5,
           name_th: "ผู้บังคับบัญชาสั่งการ",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 6,
           name_th: "หนังสือพิมพ์, social, สื่อมวลชน",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 7,
           name_th: "หน่วยงานราชการอื่นๆ",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 8,
           name_th: "JCOM ร้องเรียน/แจ้งเบาะแส ",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
         {
           id: 9,
           name_th: "อื่น ๆ",
           name_en: null,
+          count: 0,
+          count_accused: 0,
         },
       ],
       organizations: [
@@ -424,6 +498,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 10,
+          count_org: 0,
         },
         {
           id: 28,
@@ -432,6 +507,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 1,
+          count_org: 0,
         },
         {
           id: 29,
@@ -440,6 +516,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 2,
+          count_org: 0,
         },
         {
           id: 30,
@@ -448,6 +525,8 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 3,
+          count_org: 0,
+          count_section: 0,
         },
         {
           id: 31,
@@ -456,6 +535,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 4,
+          count_org: 0,
         },
         {
           id: 32,
@@ -464,6 +544,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 5,
+          count_org: 0,
         },
         {
           id: 33,
@@ -472,6 +553,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 6,
+          count_org: 0,
         },
         {
           id: 34,
@@ -480,6 +562,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 7,
+          count_org: 0,
         },
         {
           id: 35,
@@ -488,6 +571,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 8,
+          count_org: 0,
         },
         {
           id: 36,
@@ -496,389 +580,42 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           inspector_id: 9,
+          count_org: 0,
         },
         {
           id: 100,
           name_th: "อื่น ๆ",
+          name_th_abbr: "อื่น ๆ",
           name_en: null,
+          count_org: 0,
         },
       ],
-      topic_categories: [
-        {
-          id: 1,
-          name_th: "ทุจริตต่อหน้าที่",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 2,
-          name_th: "ปฎิบัติหน้าที่มิชอบ",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 3,
-          name_th: "ประพฤติตนไม่สมควร",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 4,
-          name_th: "ไม่บริการประชาชน",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 5,
-          name_th: "ขอความเป็นธรรม",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-        {
-          id: 6,
-          name_th: "บัตรสนเท่ห์ร้องเรียนการปฏิบัติหน้าที่ของเจ้าหน้าที่ตำรวจ",
-          name_en: null,
-          complaint_type_id: 1,
-        },
-      ],
+      topic_categories: [],
     });
 
-    const bureau_organizations = [
-      {
-        bureau_th: "สำนักงานยุทธศาสตร์ตำรวจ",
-        bureau_th_abbr: "สยศ.ตร.",
-        inspector_th: "กองตรวจราชการ 7",
-        inspector_th_abbr: "กต.7",
-        bureau_id: 1,
-        inspector_id: 7,
-      },
-      {
-        bureau_th: "สำนักงานส่งกำลังบำรุง",
-        bureau_th_abbr: "สกบ.",
-        inspector_th: "กองตรวจราชการ 5",
-        inspector_th_abbr: "กต.5",
-        bureau_id: 2,
-        inspector_id: 5,
-      },
-      {
-        bureau_th: "สำนักงานกำลังพล",
-        bureau_th_abbr: "สกพ.",
-        inspector_th: "กองตรวจราชการ 5",
-        inspector_th_abbr: "กต.5",
-        bureau_id: 3,
-        inspector_id: 5,
-      },
-      {
-        bureau_th: "สำนักงานงบประมาณและการเงิน",
-        bureau_th_abbr: "สงป.",
-        inspector_th: "กองตรวจราชการ 4",
-        inspector_th_abbr: "กต.4",
-        bureau_id: 4,
-        inspector_id: 4,
-      },
-      {
-        bureau_th: "สำนักงานกฎหมายและคดี",
-        bureau_th_abbr: "กมค.",
-        inspector_th: "กองตรวจราชการ 6",
-        inspector_th_abbr: "กต.6",
-        bureau_id: 5,
-        inspector_id: 6,
-      },
-      {
-        bureau_th: "สำนักงานคณะกรรมการข้าราชการตำรวจ",
-        bureau_th_abbr: "สง.ก.ตร.",
-        inspector_th: "กองตรวจราชการ 6",
-        inspector_th_abbr: "กต.6",
-        bureau_id: 6,
-        inspector_id: 6,
-      },
-      {
-        bureau_th: "สำนักงานจเรตำรวจ",
-        bureau_th_abbr: "จต.",
-        inspector_th: "กองบังคับการอำนวยการสำนักงานจเรตำรวจ",
-        inspector_th_abbr: "บก.อก.จต.",
-        bureau_id: 7,
-        inspector_id: 11,
-      },
-      {
-        bureau_th: "สำนักงานตรวจสอบภายใน",
-        bureau_th_abbr: "สตส.",
-        inspector_th: "กองตรวจราชการ 4",
-        inspector_th_abbr: "กต.4",
-        bureau_id: 8,
-        inspector_id: 4,
-      },
-      {
-        bureau_th: "สำนักงานเลขานุการตำรวจแห่งชาติ",
-        bureau_th_abbr: "สลก.ตร.",
-        inspector_th: "กองตรวจราชการ 4",
-        inspector_th_abbr: "กต.4",
-        bureau_id: 9,
-        inspector_id: 4,
-      },
-      {
-        bureau_th: "กองการต่างประเทศ",
-        bureau_th_abbr: "ตท.",
-        inspector_th: "กองตรวจราชการ 2",
-        inspector_th_abbr: "กต.2",
-        bureau_id: 10,
-        inspector_id: 2,
-      },
-      {
-        bureau_th: "กองสารนิเทศ",
-        bureau_th_abbr: "สท.",
-        inspector_th: "กองตรวจราชการ 2",
-        inspector_th_abbr: "กต.2",
-        bureau_id: 11,
-        inspector_id: 2,
-      },
-      {
-        bureau_th: "สำนักงานคณะกรรมการนโยบายตำรวจแห่งชาติ",
-        bureau_th_abbr: "สง.ก.ต.ช.",
-        inspector_th: "กองตรวจราชการ 2",
-        inspector_th_abbr: "กต.2",
-        bureau_id: 12,
-        inspector_id: 2,
-      },
-      {
-        bureau_th: "กองบินตำรวจ",
-        bureau_th_abbr: "บ.ตร.",
-        inspector_th: "กองตรวจราชการ 7",
-        inspector_th_abbr: "กต.7",
-        bureau_id: 13,
-        inspector_id: 7,
-      },
-      {
-        bureau_th: "กองวินัย",
-        bureau_th_abbr: "วน.",
-        inspector_th: "กองตรวจราชการ 5",
-        inspector_th_abbr: "กต.5",
-        bureau_id: 14,
-        inspector_id: 5,
-      },
-      {
-        bureau_th:
-          "สถาบันฝึกอบรมระหว่างประเทศว่าด้วยการดำเนินการให้เป็นไปตามกฎหมาย",
-        bureau_th_abbr: "ILEA",
-        inspector_th: "กองตรวจราชการ 1",
-        inspector_th_abbr: "กต.1",
-        bureau_id: 15,
-        inspector_id: 1,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจสอบสวนกลาง",
-        bureau_th_abbr: "บช.ก.",
-        inspector_th: "กองตรวจราชการ 9",
-        inspector_th_abbr: "กต.9",
-        bureau_id: 16,
-        inspector_id: 9,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจปราบปรามยาเสพติด",
-        bureau_th_abbr: "บช.ปส.",
-        inspector_th: "กองตรวจราชการ 2",
-        inspector_th_abbr: "กต.2",
-        bureau_id: 17,
-        inspector_id: 2,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจสันติบาล",
-        bureau_th_abbr: "บช.ส.",
-        inspector_th: "กองตรวจราชการ 3",
-        inspector_th_abbr: "กต.3",
-        bureau_id: 18,
-        inspector_id: 3,
-      },
-      {
-        bureau_th: "สำนักงานตรวจคนเข้าเมือง",
-        bureau_th_abbr: "สตม.",
-        inspector_th: "กองตรวจราชการ 8",
-        inspector_th_abbr: "กต.8",
-        bureau_id: 19,
-        inspector_id: 8,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจตระเวนชายแดน",
-        bureau_th_abbr: "ตชด.",
-        inspector_th: "กองตรวจราชการ 7",
-        inspector_th_abbr: "กต.7",
-        bureau_id: 20,
-        inspector_id: 7,
-      },
-      {
-        bureau_th: "สำนักงานพิสูจน์หลักฐานตำรวจ",
-        bureau_th_abbr: "สพฐ.ตร.",
-        inspector_th: "กองตรวจราชการ 10",
-        inspector_th_abbr: "กต.10",
-        bureau_id: 21,
-        inspector_id: 10,
-      },
-      {
-        bureau_th: "สำนักงานเทคโนโลยีสารสนเทศและการสื่อสาร ",
-        bureau_th_abbr: "สทส.",
-        inspector_th: "กองตรวจราชการ 10",
-        inspector_th_abbr: "กต.10",
-        bureau_id: 22,
-        inspector_id: 10,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจท่องเที่ยว",
-        bureau_th_abbr: "บช.ทท.",
-        inspector_th: "กองตรวจราชการ 9",
-        inspector_th_abbr: "กต.9",
-        bureau_id: 23,
-        inspector_id: 9,
-      },
-      {
-        bureau_th: "กองบัญชาการศึกษา",
-        bureau_th_abbr: "บช.ศ.",
-        inspector_th: "กองตรวจราชการ 2",
-        inspector_th_abbr: "กต.2",
-        bureau_id: 24,
-        inspector_id: 2,
-      },
-      {
-        bureau_th: "โรงเรียนนายร้อยตำรวจ",
-        bureau_th_abbr: "รร.นรต.",
-        inspector_th: "กองตรวจราชการ 7",
-        inspector_th_abbr: "กต.7",
-        bureau_id: 25,
-        inspector_id: 7,
-      },
-      {
-        bureau_th: "โรงพยาบาลตำรวจ",
-        bureau_th_abbr: "รพ.ตร.",
-        inspector_th: "กองตรวจราชการ 5",
-        inspector_th_abbr: "กต.5",
-        bureau_id: 26,
-        inspector_id: 5,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจนครบาล",
-        bureau_th_abbr: "บช.น.",
-        inspector_th: "กองตรวจราชการ 10",
-        inspector_th_abbr: "กต.10",
-        bureau_id: 27,
-        inspector_id: 10,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 1",
-        bureau_th_abbr: "ภ.1",
-        inspector_th: "กองตรวจราชการ 1",
-        inspector_th_abbr: "กต.1",
-        bureau_id: 28,
-        inspector_id: 1,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 2",
-        bureau_th_abbr: "ภ.2",
-        inspector_th: "กองตรวจราชการ 2",
-        inspector_th_abbr: "กต.2",
-        bureau_id: 29,
-        inspector_id: 2,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 3",
-        bureau_th_abbr: "ภ.3",
-        inspector_th: "กองตรวจราชการ 3",
-        inspector_th_abbr: "กต.3",
-        bureau_id: 30,
-        inspector_id: 3,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 4",
-        bureau_th_abbr: "ภ.4",
-        inspector_th: "กองตรวจราชการ 4",
-        inspector_th_abbr: "กต.4",
-        bureau_id: 31,
-        inspector_id: 4,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 5",
-        bureau_th_abbr: "ภ.5",
-        inspector_th: "กองตรวจราชการ 5",
-        inspector_th_abbr: "กต.5",
-        bureau_id: 32,
-        inspector_id: 5,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 6",
-        bureau_th_abbr: "ภ.6",
-        inspector_th: "กองตรวจราชการ 6",
-        inspector_th_abbr: "กต.6",
-        bureau_id: 33,
-        inspector_id: 6,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 7",
-        bureau_th_abbr: "ภ.7",
-        inspector_th: "กองตรวจราชการ 7",
-        inspector_th_abbr: "กต.7",
-        bureau_id: 34,
-        inspector_id: 7,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 8",
-        bureau_th_abbr: "ภ.8",
-        inspector_th: "กองตรวจราชการ 8",
-        inspector_th_abbr: "กต.8",
-        bureau_id: 35,
-        inspector_id: 8,
-      },
-      {
-        bureau_th: "ตำรวจภูธรภาค 9",
-        bureau_th_abbr: "ภ.9",
-        inspector_th: "กองตรวจราชการ 9",
-        inspector_th_abbr: "กต.9",
-        bureau_id: 36,
-        inspector_id: 9,
-      },
-      {
-        bureau_th: "หน่วยงานอื่นๆ",
-        bureau_th_abbr: "อื่นๆ",
-        inspector_th: "กองตรวจราชการ 1",
-        inspector_th_abbr: "กต.1",
-        bureau_id: 38,
-        inspector_id: 1,
-      },
-      {
-        bureau_th: "กองบัญชาการตำรวจสืบสวนสอบสวนอาชญากรรมทางเทคโนโลยี",
-        bureau_th_abbr: "สอท.",
-        inspector_th: "กองตรวจราชการ 6",
-        inspector_th_abbr: "กต.6",
-        bureau_id: 39,
-        inspector_id: 6,
-      },
-      {
-        bureau_th: "ศูนย์ปราบปรามการกระทำผิดเกี่ยวกับน้ำมันเชื้อเพลิง",
-        bureau_th_abbr: "ศปนม.ตร.",
-        inspector_th: "กองตรวจราชการ 1",
-        inspector_th_abbr: "กต.1",
-        bureau_id: 40,
-        inspector_id: 1,
-      },
-      {
-        bureau_th: "ศปอส.ตร.(ศูนย์ปราบปรามอาชญากรรมทางเทคโนโลยีสารสนเทศ)",
-        bureau_th_abbr: "ศปอส.ตร.(ศูนย์ปราบปรามอาชญากรรมทางเทคโนโลยีสารสนเทศ)",
-        inspector_th: "กองตรวจราชการ 1",
-        inspector_th_abbr: "กต.1",
-        bureau_id: 41,
-        inspector_id: 1,
-      },
-      {
-        bureau_th: "ศูนย์ปฏิบัติการสำนักงานตำรวจแห่งชาติ",
-        bureau_th_abbr: "ศปก.ตร.",
-        inspector_th: "กองตรวจราชการ 1",
-        inspector_th_abbr: "กต.1",
-        bureau_id: 42,
-        inspector_id: 1,
-      },
-    ];
-
-    const search = reactive<any>({});
+    const search = reactive<any>({
+      year_range: [new Date().getFullYear(), new Date().getFullYear()],
+      month_range: [
+        {
+          month: new Date().getMonth(),
+          year: new Date().getFullYear(),
+        },
+        {
+          month: new Date().getMonth(),
+          year: new Date().getFullYear(),
+        },
+      ],
+      week_range: [],
+    });
 
     const items = reactive<any>([]);
     const item = reactive({});
+    const reject_items = ref<any>([]);
+    const receive1_items = ref<any>([]);
+    const send1_items = ref<any>([]);
+    const during_items = ref<any>([]);
+    const success_items = ref<any>([]);
+    const wating1_items = ref<any>([]);
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -895,176 +632,440 @@ export default defineComponent({
     };
     calYear();
 
-    const getRandomHexColor = () => {
-      const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-      return `#${randomColor.padStart(6, "0")}`;
-    };
-
-    const pieChartOptions = <any>{
-      plugins: {
-        legend: {
-          display: true,
-          position: "right",
-          labels: {
-            boxWidth: 8, // ความกว้างของลูกศร
-            boxHeight: 8, // ความสูงของลูกศร
-            padding: 8, // ระยะห่างระหว่างลูกศรกับข้อความ
-            generateLabels: (chart) => {
-              const sortedData = [...chart.data.datasets[0].data].sort(
-                (a, b) => b - a
-              );
-
-              return sortedData.map((data, i) => ({
-                text: `${chart.data.labels[i]} (${data})`,
-                fillStyle: chart.data.datasets[0].backgroundColor[i],
-              }));
+    //
+    const defaultPieChart = {
+      title: {
+        text: "",
+        left: "center",
+      },
+      tooltip: {
+        trigger: "item",
+      },
+      labels: [],
+      series: [
+        {
+          name: "",
+          type: "pie",
+          radius: "55%",
+          // avoidLabelOverlap: false,
+          // center: ["50%", "60%"],
+          data: [],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
             },
           },
-        },
-      },
-      layout: {
-        width: 400,
-      },
-      responsive: true,
-    };
-
-    const topic_category_data = reactive<any>({
-      labels: selectOptions.value.topic_categories.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.topic_categories.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.topic_categories.map((x: any) => {
-        return getRandomHexColor();
-      }),
-    });
-
-    const chartTopicCategoryData = ref({
-      labels: topic_category_data.labels,
-      datasets: [
-        {
-          label: "จำนวนเรื่อง",
-          data: topic_category_data.data,
-          backgroundColor: topic_category_data.backgroundColor,
-          hoverOffset: 10,
-          borderRadius: 3,
-          //   cutout: 80,
-        },
-      ],
-    });
-
-    const complaint_channel_data = reactive<any>({
-      labels: selectOptions.value.complaint_channels.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.complaint_channels.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.complaint_channels.map((x: any) => {
-        return getRandomHexColor();
-      }),
-    });
-
-    const chartChannelData = ref({
-      labels: complaint_channel_data.labels,
-      datasets: [
-        {
-          label: "จำนวนเรื่อง",
-          data: complaint_channel_data.data,
-          backgroundColor: complaint_channel_data.backgroundColor,
-          hoverOffset: 10,
-          borderRadius: 3,
-          //   cutout: 80,
-        },
-      ],
-    });
-
-    const section_data = reactive<any>({
-      labels: selectOptions.value.sections.map((x: any) => {
-        return x.name_th;
-      }),
-      data: selectOptions.value.sections.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: selectOptions.value.sections.map((x: any) => {
-        return getRandomHexColor();
-      }),
-    });
-
-    const chartSectionData = ref({
-      labels: section_data.labels,
-      datasets: [
-        {
-          label: "จำนวนเรื่อง",
-          data: section_data.data,
-          backgroundColor: section_data.backgroundColor,
-          hoverOffset: 10,
-          borderRadius: 3,
-          //   cutout: 80,
-        },
-      ],
-    });
-
-    const organization_data = reactive<any>({
-      labels: bureau_organizations.map((x: any) => {
-        return x.bureau_th;
-      }),
-      data: bureau_organizations.map((x: any) => {
-        return Math.floor(Math.random() * 50) + 1;
-      }),
-      backgroundColor: bureau_organizations.map((x: any) => {
-        return getRandomHexColor();
-      }),
-    });
-
-    const chartOrganizationOptions = <any>{
-      plugins: {
-        legend: {
-          display: true,
-          position: "right",
-          labels: {
-            boxWidth: 15, // ความกว้างของลูกศร
-            boxHeight: 15, // ความสูงของลูกศร
-            padding: 15, // ระยะห่างระหว่างลูกศรกับข้อความ
-            generateLabels: (chart) => {
-              const sortedData = [...chart.data.datasets[0].data].sort(
-                (a, b) => b - a
-              );
-
-              return sortedData.map((data, i) => ({
-                text: `${chart.data.labels[i]} (${data} เรื่อง)`,
-                fillStyle: chart.data.datasets[0].backgroundColor[i],
-              }));
-            },
+          label: {
+            show: true,
+            position: "outside",
+            fontSize: 10,
+            formatter: "{b}",
+            overflow: "breakAll",
+            width: 300, // เพิ่ม width
+            alignTo: "none",
+            bleedMargin: 10,
+            minAngle: 0,
+            lineHeight: 20,
+          },
+          labelLine: {
+            show: true,
           },
         },
-      },
-      layout: {
-        width: 600,
-      },
+      ],
       responsive: true,
+      maintainAspectRatio: true,
     };
+    const topic_category_data = ref<any>({
+      labels: [],
+      datas: [],
+    });
+    const chartTopicCategoryData = ref<any>({
+      ...defaultPieChart,
+      title: {
+        text: "สถิติเรื่องร้องเรียน (แยกตามประเภทเรื่อง)",
+        left: "center",
+      },
+    });
+    //
+    const complaint_channel_data = ref<any>({
+      labels: [],
+      datas: [],
+    });
+    const chartChannelData = ref<any>({
+      ...defaultPieChart,
+      title: {
+        text: "สถิติเรื่องร้องเรียน (แยกตามช่องทางการร้องเรียน)",
+        left: "center",
+      },
+    });
+    //
+    const section_data = ref<any>({
+      labels: [],
+      datas: [],
+    });
+    const chartSectionData = ref<any>({
+      ...defaultPieChart,
+      title: {
+        text: "สถิติเรื่องร้องเรียน (แยกตามสายงาน)",
+        left: "center",
+      },
+    });
+
+    const organization_data = ref<any>({
+      labels: [],
+      datas: [],
+      backgroundColor: [],
+    });
+
+    const defaultBarChart = {
+      title: {
+        text: "",
+        left: "center",
+      },
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "shadow",
+        },
+      },
+      xAxis: {
+        type: "category",
+        data: selectOptions.value.organizations.map((x: any) => {
+          return x.name_th_abbr;
+        }),
+        axisLabel: {
+          rotate: 45,
+          overflow: "truncate",
+        },
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          data: [],
+          type: "bar",
+        },
+      ],
+    };
+
     const chartOrganizationData = ref({
-      labels: organization_data.labels,
-      datasets: [
-        {
-          label: "จำนวนเรื่อง",
-          data: organization_data.data,
-          backgroundColor: organization_data.backgroundColor,
-          hoverOffset: 10,
-          borderRadius: 3,
-        },
-      ],
+      ...defaultBarChart,
+      title: {
+        text: "สถิติเรื่องร้องเรียน (แยกตามหน่วยงาน)",
+        left: "center",
+      },
     });
+
+    const getRandomColor = () => {
+      const letters = "0123456789ABCDEF";
+      let color = "#";
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    };
+
+    const isLeapYear = (year: any) => {
+      return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    };
 
     // Fetch Data
-    const fetchItems = () => {
-      const params = {
-        perPage: 1000000,
-        currentPage: 1,
-        ...search,
+    const fetchItems = async () => {
+      try {
+        let create_from: any = undefined;
+        let create_to: any = undefined;
+        if (search.month?.value != null) {
+          let last_day_month = "31";
+          if (search.month?.name.includes("พันธ์")) {
+            if (isLeapYear(search.year.value)) {
+              last_day_month = "29";
+            } else {
+              last_day_month = "28";
+            }
+          }
+
+          if (search.month?.name.includes("ยน")) {
+            last_day_month = "30";
+          }
+
+          create_from = search.year.value + "-" + search.month.value + "-01";
+          create_to =
+            search.year.value + "-" + search.month.value + "-" + last_day_month;
+        } else if (search.year?.value != null) {
+          create_from = search.year.value + "-01-01";
+          create_to = search.year.value + "-12-31";
+        } else {
+        }
+
+        const params = {
+          perPage: 1000000,
+          currentPage: 1,
+          ...search,
+          complaint_type_id: complaint_type.value.id,
+          create_from: create_from,
+          create_to: create_to,
+        };
+        // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
+        const { data } = await ApiService.query("complaint/", {
+          params: params,
+        });
+
+        // ต้องการแยกเฉพาะส่วนที่รับ และไม่รับ
+        Object.assign(items, data.data);
+        items.value = [];
+        reject_items.value = [];
+        receive1_items.value = [];
+        send1_items.value = [];
+        during_items.value = [];
+        success_items.value = [];
+        wating1_items.value = [];
+
+        data.data.forEach((x: any) => {
+          if (x.state_id == 18) {
+            reject_items.value.push(x);
+          } else if (x.state_id >= 3) {
+            receive1_items.value.push(x);
+          } else {
+          }
+
+          if (x.state_id == 1) {
+            wating1_items.value.push(x);
+          }
+        });
+
+        receive1_items.value.forEach((x: any) => {
+          if (x.state_id != 3) {
+            send1_items.value.push(x);
+          }
+
+          if (x.state_id == 17) {
+            success_items.value.push(x);
+          } else {
+            if (x.state_id > 3) {
+              during_items.value.push(x);
+            }
+          }
+        });
+
+        cardStatus.value[0].total = items.length;
+
+        cardStatus.value[1].total = wating1_items.value.length;
+        // cardStatus.value[1].total = reject_items.value.length;
+        cardStatus.value[2].total = receive1_items.value.length;
+        cardStatus.value[3].total = send1_items.value.length;
+        cardStatus.value[4].total = success_items.value.length;
+        cardStatus.value[5].total = during_items.value.length;
+
+        reloadData();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const reloadData = async () => {
+      // chart1
+      selectOptions.value.topic_categories = defaultTopicCategories
+        .filter((x: any) => {
+          return x.complaint_type_id == complaint_type.value.id;
+        })
+        .map((x: any) => {
+          x.count = 0;
+          x.count_accused = 0;
+          return x;
+        });
+
+      receive1_items.value.forEach((e: any) => {
+        if (e.topic_type.topic_category.id) {
+          let check = selectOptions.value.topic_categories.find((x: any) => {
+            return e.topic_type.topic_category.id == x.id;
+          });
+
+          if (check) {
+            check.count = check.count + 1;
+            check.count_accused = check.count_accused + e.accused.length;
+          }
+        }
+      });
+
+      topic_category_data.value = {
+        labels: selectOptions.value.topic_categories.map((x: any) => {
+          return x.name_th;
+        }),
+        datas: selectOptions.value.topic_categories
+          .map((x: any) => {
+            return {
+              name: x.name_th,
+              value: x.count,
+              count_accused: x.count_accused,
+            };
+          })
+          .filter((x: any) => {
+            return x.value != 0;
+          }),
       };
+
+      chartTopicCategoryData.value.series = [
+        {
+          ...chartTopicCategoryData.value.series[0],
+          data: topic_category_data.value.datas,
+        },
+      ];
+
+      // chart2
+
+      selectOptions.value.complaint_channels =
+        selectOptions.value.complaint_channels.map((x: any) => {
+          x.count = 0;
+          x.count_accused = 0;
+          return x;
+        });
+
+      receive1_items.value.forEach((e: any) => {
+        if (e.complaint_channel_id) {
+          let check = selectOptions.value.complaint_channels.find((x: any) => {
+            return x.id == e.complaint_channel_id;
+          });
+
+          if (check) {
+            check.count = check.count + 1;
+            check.count_accused = check.count_accused + e.accused.length;
+          } else {
+            selectOptions.value.complaint_channels[8]["count"] =
+              selectOptions.value.complaint_channels[8]["count"] + 1;
+
+            selectOptions.value.complaint_channels[8]["count_accused"] =
+              selectOptions.value.complaint_channels[8]["count_accused"] +
+              e.accused.length;
+          }
+        } else {
+          selectOptions.value.complaint_channels[8]["count"] =
+            selectOptions.value.complaint_channels[8]["count"] + 1;
+
+          selectOptions.value.complaint_channels[8]["count_accused"] =
+            selectOptions.value.complaint_channels[8]["count_accused"] +
+            e.accused.length;
+        }
+      });
+
+      complaint_channel_data.value = {
+        datas: selectOptions.value.complaint_channels
+          .map((x: any) => {
+            return {
+              name: x.name_th,
+              value: x.count,
+              count_accused: x.count_accused,
+            };
+          })
+          .filter((x: any) => {
+            return x.value != 0;
+          }),
+      };
+
+      chartChannelData.value.series = [
+        {
+          ...chartTopicCategoryData.value.series[0],
+          data: complaint_channel_data.value.datas,
+        },
+      ];
+
+      //   Section
+      selectOptions.value.sections = selectOptions.value.sections.map(
+        (x: any) => {
+          x.count_section = 0;
+          return x;
+        }
+      );
+
+      receive1_items.value.forEach((e: any) => {
+        e.accused.forEach((a: any) => {
+          if (a.section_id) {
+            let check = selectOptions.value.sections.find((x: any) => {
+              return x.id == a.section_id;
+            });
+
+            if (check) {
+              check.count_section = check.count_section + 1;
+            } else {
+              selectOptions.value.sections[10]["count_section"] =
+                selectOptions.value.sections[10]["count_section"] + 1;
+            }
+          } else {
+            selectOptions.value.sections[10]["count_section"] =
+              selectOptions.value.sections[10]["count_section"] + 1;
+          }
+        });
+      });
+
+      section_data.value = {
+        datas: selectOptions.value.sections
+          .map((x: any) => {
+            return {
+              name: x.name_th,
+              value: x.count_section,
+              count_accused: x.count_section,
+            };
+          })
+          .filter((x: any) => {
+            return x.value != 0;
+          }),
+      };
+
+      chartSectionData.value.series = [
+        {
+          ...chartSectionData.value.series[0],
+          data: section_data.value.datas,
+        },
+      ];
+
+      //   chart4
+      selectOptions.value.organizations = selectOptions.value.organizations.map(
+        (x: any) => {
+          x.count_org = 0;
+          return x;
+        }
+      );
+
+      receive1_items.value.forEach((e: any) => {
+        e.accused.forEach((a: any) => {
+          if (a.bureau_id) {
+            let check = selectOptions.value.organizations.find((x: any) => {
+              return x.id == a.bureau_id;
+            });
+
+            if (check) {
+              check.count_org = check.count_org + 1;
+            } else {
+              selectOptions.value.organizations[10]["count_org"] =
+                selectOptions.value.organizations[10]["count_org"] + 1;
+            }
+          } else {
+            selectOptions.value.organizations[10]["count_org"] =
+              selectOptions.value.organizations[10]["count_org"] + 1;
+          }
+        });
+      });
+
+      organization_data.value = {
+        datas: selectOptions.value.organizations.map((x: any) => {
+          return {
+            name: x.name_th_abbr,
+            value: x.count_org,
+            count_accused: x.count_org,
+          };
+        }),
+      };
+
+      chartOrganizationData.value.series = [
+        {
+          data: organization_data.value.datas.map((x: any) => {
+            return { value: x.value, itemStyle: { color: getRandomColor() } };
+          }),
+          type: "bar",
+        },
+      ];
     };
 
     // Event
@@ -1075,13 +1076,20 @@ export default defineComponent({
     const onClear = async () => {
       search.value = {};
     };
-    // const onExport = async () => {print};
 
     // Mounted
     onMounted(async () => {
       search.year = selectOptions.value.years[0];
       await fetchItems();
     });
+
+    // watch
+    watch(
+      () => activeTab.value,
+      () => {
+        fetchItems();
+      }
+    );
 
     return {
       selectOptions,
@@ -1091,11 +1099,9 @@ export default defineComponent({
       item,
       router,
       format,
-      pieChartOptions,
       chartTopicCategoryData,
       chartChannelData,
       chartSectionData,
-      chartOrganizationOptions,
       chartOrganizationData,
       onSearch,
       onClear,
@@ -1106,6 +1112,7 @@ export default defineComponent({
       complaint_channel_data,
       section_data,
       organization_data,
+      fetchItems,
     };
   },
 });
@@ -1167,3 +1174,5 @@ export default defineComponent({
   background-color: #d9f4fe;
 }
 </style>
+
+<style scoped></style>

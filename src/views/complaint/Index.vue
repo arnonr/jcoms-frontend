@@ -423,16 +423,10 @@
     >
       <template v-slot:pdf-content>
         <div
-          style="
-            margin-left: 10px;
-            margin-bottom: 50px;
-          "
+          style="margin-left: 10px; margin-bottom: 50px"
           class="generate-pdf"
         >
-          <table
-            class="table table-bordered table-striped"
-            style="width: 100%;"
-          >
+          <table class="table table-bordered table-striped" style="width: 100%">
             <thead class="bg-color-police">
               <tr>
                 <th class="text-white">วันที่</th>
@@ -632,6 +626,19 @@ export default defineComponent({
         receive_status: 1,
       };
 
+      if (userData.role_id == 1) {
+      } else if (userData.role_id == 2) {
+      } else if (userData.role_id == 3) {
+        params.bureau_id != userData.bureau_id;
+      } else if (userData.role_id == 4) {
+        params.bureau_id != userData.division_id;
+      } else if (userData.role_id == 5) {
+        params.inspector_id != userData.inspector_id;
+      } else if (userData.role_id == 6) {
+      } else {
+        return false;
+      }
+
       const { data } = await ApiService.query("complaint", {
         params: params,
       });
@@ -643,6 +650,7 @@ export default defineComponent({
       paginationData.currentPage = data.currentPage;
       isLoading.value = false;
     };
+
     const fetchExportItems = async () => {
       isLoading.value = true;
       const params = {
@@ -676,6 +684,19 @@ export default defineComponent({
         currentPage: paginationData.currentPage,
         receive_status: 1,
       };
+
+      if (userData.role_id == 1) {
+      } else if (userData.role_id == 2) {
+      } else if (userData.role_id == 3) {
+        params.bureau_id != userData.bureau_id;
+      } else if (userData.role_id == 4) {
+        params.bureau_id != userData.division_id;
+      } else if (userData.role_id == 5) {
+        params.inspector_id != userData.inspector_id;
+      } else if (userData.role_id == 6) {
+      } else {
+        return false;
+      }
 
       const { data } = await ApiService.query("complaint", {
         params: params,
@@ -967,6 +988,7 @@ export default defineComponent({
       items_export,
       html2Pdf,
       generatePDF,
+      userData,
     };
   },
 });

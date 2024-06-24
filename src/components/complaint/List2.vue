@@ -96,6 +96,7 @@
                         complainant_id: it.complainant_id,
                       })
                     "
+                    v-if="userData.role_id == 1 || userData.role_id == 2"
                     >แก้ไขข้อมูล</a
                   >
                 </li>
@@ -103,6 +104,7 @@
                 <li v-if="it.state_id == 3">
                   <a
                     class="dropdown-item cursor-pointer"
+                    v-if="userData.role_id == 1 || userData.role_id == 2"
                     @click="
                       handleSend1({
                         id: it.id,
@@ -116,6 +118,7 @@
                 <li v-if="it.state_id == 10">
                   <a
                     class="dropdown-item cursor-pointer"
+                    v-if="userData.role_id == 1 || userData.role_id == 3"
                     @click="
                       handleReceive2({
                         id: it.id,
@@ -128,6 +131,7 @@
 
                 <li v-if="it.state_id == 19">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 3"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleSend2({
@@ -141,6 +145,7 @@
 
                 <li v-if="it.state_id == 11">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 4"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleReceive3({
@@ -154,6 +159,7 @@
 
                 <li v-if="it.state_id == 20 || it.state_id == 29">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 4"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleSendReport1({
@@ -167,6 +173,7 @@
 
                 <li v-if="it.state_id == 15">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 3"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleReceiveReport1({
@@ -180,6 +187,7 @@
 
                 <li v-if="it.state_id == 15 || it.state_id == 23">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 3"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleReturnReport1({
@@ -193,6 +201,7 @@
 
                 <li v-if="it.state_id == 23 || it.state_id == 30">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 3"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleSendReport2({
@@ -206,6 +215,11 @@
 
                 <li v-if="it.state_id == 16">
                   <a
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 5
+                    "
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleReceiveReport2({
@@ -220,6 +234,11 @@
                 <li v-if="it.state_id == 24 || it.state_id == 16">
                   <a
                     class="dropdown-item cursor-pointer"
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 5
+                    "
                     @click="
                       handleReturnReport2({
                         id: it.id,
@@ -233,6 +252,11 @@
                 <li>
                   <a
                     class="dropdown-item cursor-pointer"
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 5
+                    "
                     @click="
                       handleSuccessReport({
                         id: it.id,
@@ -246,6 +270,7 @@
                 <!--  -->
                 <li v-if="it.inspector_state_id == null">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 2"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleSendToInspector({
@@ -259,6 +284,7 @@
 
                 <li v-if="it.inspector_state_id == 1">
                   <a
+                    v-if="userData.role_id == 1 || userData.role_id == 5"
                     class="dropdown-item cursor-pointer"
                     @click="
                       handleReceiveInspector({
@@ -275,7 +301,11 @@
                     it.state_id > 4 &&
                     it.state_id != 17 &&
                     it.state_id != 18 &&
-                    it.inspector_state_id > 1
+                    it.inspector_state_id > 1 &&
+                    (userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 5 ||
+                      userData.role_id == 6)
                   "
                 >
                   <a
@@ -286,11 +316,16 @@
                         complainant_id: it.complainant_id,
                       })
                     "
-                    >กองตรวจเร่งรัดเรื่อง
+                    >เร่งรัดเรื่อง
                   </a>
                 </li>
 
-                <li v-if="it.inspector_state_id == 3">
+                <li
+                  v-if="
+                    it.inspector_state_id == 3 &&
+                    (userData.role_id == 1 || userData.role_id == 3)
+                  "
+                >
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -314,7 +349,8 @@
                       it.state_id == 28 ||
                       it.state_id == 29 ||
                       it.state_id == 30) &&
-                    it.inspector_state_id != 6
+                    it.inspector_state_id != 6 &&
+                    (userData.role_id == 1 || userData.role_id == 3)
                   "
                 >
                   <a
@@ -329,7 +365,14 @@
                   </a>
                 </li>
 
-                <li v-if="it.inspector_state_id == 6">
+                <li
+                  v-if="
+                    it.inspector_state_id == 6 &&
+                    (userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 5)
+                  "
+                >
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -406,6 +449,7 @@ export default defineComponent({
     const internalCurrentPage = ref(paginationData.value.currentPage);
     let { states } = useStateData();
     let { inspector_states } = useInspectorStateData();
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     // fetch
     const prefix_names = ref([]);
@@ -603,6 +647,7 @@ export default defineComponent({
       handleReceiveHurry,
       handleSendExtend,
       handleApproveExtend,
+      userData,
     };
   },
 });
