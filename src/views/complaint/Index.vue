@@ -624,16 +624,21 @@ export default defineComponent({
         perPage: paginationData.perPage,
         currentPage: paginationData.currentPage,
         receive_status: 1,
+        state_in: undefined,
       };
-
+      
       if (userData.role_id == 1) {
       } else if (userData.role_id == 2) {
       } else if (userData.role_id == 3) {
-        params.bureau_id != userData.bureau_id;
+        params.bureau_id = userData.bureau_id;
+        params.state_in = "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
       } else if (userData.role_id == 4) {
-        params.bureau_id != userData.division_id;
+        params.division_id = userData.division_id;
+        params.state_in = "8,9,11,12,15,16,17,20,21,22,23,24";
       } else if (userData.role_id == 5) {
-        params.inspector_id != userData.inspector_id;
+        params.inspector_id = userData.inspector_id;
+        params.state_in =
+          "3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
       } else if (userData.role_id == 6) {
       } else {
         return false;
@@ -683,16 +688,21 @@ export default defineComponent({
         perPage: 1000000,
         currentPage: paginationData.currentPage,
         receive_status: 1,
+        state_in: undefined,
       };
 
       if (userData.role_id == 1) {
       } else if (userData.role_id == 2) {
       } else if (userData.role_id == 3) {
-        params.bureau_id != userData.bureau_id;
+        params.bureau_id = userData.bureau_id;
+        params.state_in = "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
       } else if (userData.role_id == 4) {
-        params.bureau_id != userData.division_id;
+        params.division_id = userData.division_id;
+        params.state_in = "8,9,11,12,15,16,17,20,21,22,23,24";
       } else if (userData.role_id == 5) {
-        params.inspector_id != userData.inspector_id;
+        params.inspector_id = userData.inspector_id;
+        params.state_in =
+          "3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
       } else if (userData.role_id == 6) {
       } else {
         return false;
