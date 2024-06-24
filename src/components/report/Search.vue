@@ -746,11 +746,11 @@ export default defineComponent({
 
     const weekFormat = (date: any) => {
       let week1: any = dayjs(date[0]).locale("th").format("MMM BBBB");
-      let month2: any = null;
+      let week2: any = null;
       if (date[1] != undefined)
-        month2 = dayjs(date[1]).locale("th").format("MMM BBBB");
+        week2 = dayjs(date[1]).locale("th").format("MMM BBBB");
 
-      return month1 + "-" + month2;
+      return week1 + "-" + week2;
     };
 
     const calYear = () => {
@@ -788,7 +788,7 @@ export default defineComponent({
       let states = await searchComplaintStore.fetchState({
         perPage: 500,
       });
-      console.log(props);
+      
       if (props.state_new == true) {
         selectOptions.value.states = states.filter((x: any) => {
           return x.id == 1 || x.id == 18;
@@ -954,6 +954,7 @@ export default defineComponent({
       format,
       yearFormat,
       monthFormat,
+      weekFormat,
     };
   },
 });

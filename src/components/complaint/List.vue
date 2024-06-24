@@ -182,7 +182,7 @@ export default defineComponent({
 
       prefix_names.value = data.data;
     };
-    fetchPrefixName({});
+    fetchPrefixName({ perPage: 500 });
 
     const handleDetail = (item: any) => {
       emit("detail", item);
@@ -219,6 +219,8 @@ export default defineComponent({
             const prefix: any = prefix_names.value.find(
               (p: any) => p.id === x.prefix_name_id
             );
+            console.log(x.prefix_name_id);
+            console.log(prefix_names.value);
 
             return `${prefix?.name_th}${x.firstname || ""} ${x.lastname || ""}`;
           })

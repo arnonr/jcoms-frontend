@@ -147,7 +147,7 @@ export default defineComponent({
 
       prefix_names.value = data.data;
     };
-    fetchPrefixName({});
+    fetchPrefixName({ perPage: 500 });
 
     const fetchComplaintType = async (params: any) => {
       const { data } = await ApiService.query("complaint-type", {
