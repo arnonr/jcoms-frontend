@@ -32,7 +32,24 @@
                 ></v-select>
               </div>
 
-              <div class="col-12 col-md-12 my-2">
+              <div class="col-12 col-md-12 my-2" v-if="show_complaint_type_id">
+                <label for="">หมวดหมู่เรื่อง : </label>
+                <v-select
+                  id="slt-search-complain-type-id-2"
+                  name="slt-search-complain-type-id-2"
+                  label="name_th"
+                  placeholder="หมวดหมู่เรื่อง"
+                  :options="selectOptions.complaint_types"
+                  v-model="search.complaint_type_id"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
+
+              <div
+                class="col-12 col-md-12 my-2"
+                v-if="search.report_type?.value == 1"
+              >
                 <label for="">เลือกช่วงปี</label>
                 <VueDatePicker
                   v-model="search.year_range"
@@ -54,7 +71,10 @@
                 </VueDatePicker>
               </div>
 
-              <div class="col-12 col-md-12 my-2">
+              <div
+                class="col-12 col-md-12 my-2"
+                v-if="search.report_type?.value == 2"
+              >
                 <label for="">เลือกช่วงเดือน</label>
                 <VueDatePicker
                   v-model="search.month_range"
@@ -75,12 +95,16 @@
                 </VueDatePicker>
               </div>
 
-              <div class="col-12 col-md-12 my-2">
+              <div
+                class="col-12 col-md-12 my-2"
+                v-if="search.report_type?.value == 3"
+              >
                 <label for="">เลือกช่วงสัปดาห์</label>
                 <VueDatePicker
                   v-model="search.week_range"
                   class="form-control"
-                  month-picker
+                  :enable-time-picker="false"
+                  week-picker
                   :locale="'th'"
                   placeholder="ช่วงสัปดาห์"
                   range
@@ -96,101 +120,28 @@
                 </VueDatePicker>
               </div>
 
-              <div class="col-12 col-md-8 my-2">
-                <label for="">เรื่องร้องเรียน</label>
-                <input
-                  type="text"
-                  id="txt-search-complain-title"
-                  name="txt-search-complain-title"
+              <div
+                class="col-12 col-md-12 my-2"
+                v-if="search.report_type?.value == 4"
+              >
+                <label for="">เลือกช่วงวันที่</label>
+                <VueDatePicker
+                  v-model="search.day_range"
                   class="form-control"
-                  v-model="search.complaint_title"
-                />
-              </div>
-              <div class="col-12 col-md-4 my-2">
-                <label for="">เลขคำร้องเรียน (Jcom No)</label>
-                <input
-                  type="text"
-                  id="txt-search-complain-code"
-                  name="txt-search-complain-code"
-                  class="form-control"
-                  v-model="search.jcoms_no"
-                />
-              </div>
-              <div class="col-12 col-md-4 my-2">
-                <label for="">ชื่อผู้ร้อง</label>
-                <input
-                  type="text"
-                  id="txt-search-complain-fullname"
-                  name="txt-search-complain-fullname"
-                  class="form-control"
-                  v-model="search.complainant_fullname"
-                />
-              </div>
+                  :enable-time-picker="false"
+                  :locale="'th'"
+                  placeholder="ช่วงวันที่"
+                  range
+                  :format="dayFormat"
+                >
+                  <template #year-overlay-value="{ text }">
+                    {{ parseInt(text) + 543 }}
+                  </template>
 
-              <div class="col-12 col-md-4 my-2">
-                <label for="">ชื่อผู้ถูกร้อง</label>
-                <input
-                  type="text"
-                  id="txt-search-accused-fullname"
-                  name="txt-search-accused-fullname"
-                  class="form-control"
-                  v-model="search.accused_fullname"
-                />
-              </div>
-
-              <!-- <div class="col-12 col-md-4 my-2">
-                <label for="">สถานะเรื่องร้องเรียน</label>
-                <v-select
-                  id="slt-search-state-id"
-                  name="slt-search-state-id"
-                  label="name_th"
-                  placeholder="สถานะเรื่องร้องเรียน"
-                  :options="selectOptions.states"
-                  v-model="search.state_id"
-                  class="form-control"
-                  :clearable="true"
-                ></v-select>
-              </div> -->
-
-              <div class="col-12 col-md-4 my-2">
-                <label for="">บช./ภ.</label>
-                <v-select
-                  id="slt-search-bureau-id"
-                  name="slt-search-bureau-id"
-                  label="name_th"
-                  placeholder="บช./ภ."
-                  :options="selectOptions.bureaus"
-                  v-model="search.bureau_id"
-                  class="form-control"
-                  :clearable="true"
-                ></v-select>
-              </div>
-              <div class="col-12 col-md-4 my-2">
-                <label for="">บก./ภ.จว.</label>
-                <v-select
-                  id="slt-search-division-id"
-                  name="slt-search-division-id"
-                  label="name_th"
-                  placeholder="บก./ภ.จว."
-                  :options="selectOptions.divisions"
-                  v-model="search.division_id"
-                  class="form-control"
-                  :clearable="true"
-                ></v-select>
-              </div>
-
-              <div class="col-12 col-md-4 my-2">
-                <label for="">หน่วยงาน(สถานีตำรวจ)</label>
-                <v-select
-                  id="slt-search-agency-id"
-                  name="slt-search-agency-id"
-                  label="name_th"
-                  placeholder="หน่วยงาน(สถานีตำรวจ)"
-                  :options="selectOptions.agencies"
-                  v-model="search.agency_id"
-                  class="form-control"
-                  :clearable="true"
-                ></v-select>
+                  <template #year="{ value }">
+                    {{ value + 543 }}
+                  </template>
+                </VueDatePicker>
               </div>
             </div>
             <div class="pt-5">
@@ -264,63 +215,6 @@
 
             <h4>ค้นหาจากข้อมูลร้องเรียน</h4>
             <hr />
-            <div class="mb-7">
-              <label for="">ปีที่ร้องเรียน</label>
-              <v-select
-                id="slt-search-year-2"
-                name="slt-search-year-2"
-                label="name"
-                placeholder="ปีที่ร้องเรียน"
-                :options="selectOptions.years"
-                v-model="search.year"
-                :reduce="(year: any) => year.value"
-                class="form-control"
-                :clearable="true"
-              ></v-select>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-7">
-                <label for="">ช่วงวันที่ร้องเรียน (จากวันที่)</label>
-                <VueDatePicker
-                  id="dp-search-startdate-2"
-                  name="dp-search-startdate-2"
-                  class="form-control"
-                  v-model="search.create_from"
-                  :enable-time-picker="false"
-                  locale="th"
-                  auto-apply
-                  :format="format"
-                >
-                  <template #year-overlay-value="{ text }">
-                    {{ parseInt(text) + 543 }}
-                  </template>
-                  <template #year="{ value }">
-                    {{ value + 543 }}
-                  </template>
-                </VueDatePicker>
-              </div>
-              <div class="col-md-6 mb-7">
-                <label for="">ช่วงวันที่ร้องเรียน (ถึงวันที่)</label>
-                <VueDatePicker
-                  id="dp-search-enddate-2"
-                  name="dp-search-enddate-2"
-                  class="form-control"
-                  v-model="search.create_to"
-                  :enable-time-picker="false"
-                  locale="th"
-                  auto-apply
-                  :format="format"
-                >
-                  <template #year-overlay-value="{ text }">
-                    {{ parseInt(text) + 543 }}
-                  </template>
-                  <template #year="{ value }">
-                    {{ value + 543 }}
-                  </template>
-                </VueDatePicker>
-              </div>
-            </div>
 
             <div class="mb-7">
               <label for="">เรื่องร้องเรียน : </label>
@@ -669,6 +563,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    show_complaint_type_id: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { emit }) {
     // Variable
@@ -745,12 +644,35 @@ export default defineComponent({
     };
 
     const weekFormat = (date: any) => {
+      console.log();
       let week1: any = dayjs(date[0]).locale("th").format("MMM BBBB");
       let week2: any = null;
       if (date[1] != undefined)
         week2 = dayjs(date[1]).locale("th").format("MMM BBBB");
 
       return week1 + "-" + week2;
+    };
+
+    const dayFormat = (date: any) => {
+      let day1 = dayjs(date[0]).locale("th").format("DD");
+      let month1 = dayjs(date[0]).locale("th").format("MMM");
+      let year1 = date[0].getFullYear() + 543;
+
+      let day2: any = null;
+      let month2: any = null;
+      let year2: any = null;
+
+      if (date[1] != undefined) {
+        day2 = dayjs(date[1]).locale("th").format("DD");
+        month2 = dayjs(date[1]).locale("th").format("MMM");
+        year2 = date[1].getFullYear() + 543;
+      } else {
+        day2 = dayjs(date[0]).locale("th").format("DD");
+        month2 = dayjs(date[0]).locale("th").format("MMM");
+        year2 = date[0].getFullYear() + 543;
+      }
+
+      return `${day1} ${month1} ${year1} - ${day2} ${month2} ${year2}`;
     };
 
     const calYear = () => {
@@ -788,7 +710,7 @@ export default defineComponent({
       let states = await searchComplaintStore.fetchState({
         perPage: 500,
       });
-      
+
       if (props.state_new == true) {
         selectOptions.value.states = states.filter((x: any) => {
           return x.id == 1 || x.id == 18;
@@ -955,6 +877,7 @@ export default defineComponent({
       yearFormat,
       monthFormat,
       weekFormat,
+      dayFormat,
     };
   },
 });

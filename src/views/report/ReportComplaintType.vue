@@ -6,7 +6,7 @@
         <!-- Search -->
         <SearchComponent
           :search="search"
-          :show_complaint_type_id="false"
+          :show_complaint_type_id="true"
           :state_new="false"
           @search="fetchItems"
           @clear="onClear"
@@ -21,9 +21,9 @@
             style="min-height: 400px; min-width: 800px"
           >
             <v-chart
-              v-if="chartSectionData.series[0].data.length != 0"
+              v-if="chartData.series[0]?.data.length != 0"
               class="chart"
-              :option="chartSectionData"
+              :option="chartData"
             />
           </div>
         </div>
@@ -31,7 +31,7 @@
 
       <div class="card mt-5">
         <div class="card-header">
-          <h6 class="card-title">สถิติสายงานที่ถูกร้องเรียน</h6>
+          <h6 class="card-title">สถิติประเภทเรื่องร้องเรียน</h6>
           <div class="card-toolbar">
             <div class="dropdown">
               <button
@@ -60,7 +60,7 @@
             >
               <thead class="bg-color-police">
                 <tr>
-                  <th class="text-center text-white">สายงาน</th>
+                  <th class="text-center text-white">ประเภทเรื่อง</th>
                   <th
                     class="text-center text-white"
                     v-if="search.report_type.value == 1"
@@ -95,8 +95,8 @@
                   </th>
                 </tr>
               </thead>
-              <tbody v-if="chartSectionData.series.length != 0">
-                <tr v-for="(ss, idx) in chartSectionData.series" :key="idx">
+              <tbody v-if="chartData.series.length != 0">
+                <tr v-for="(ss, idx) in chartData.series" :key="idx">
                   <td class="text-center">{{ ss.name }}</td>
                   <td class="text-center" v-for="(d, i) in ss.data" :key="i">
                     {{ d }}
@@ -197,6 +197,97 @@ export default defineComponent({
       const year = date.getFullYear() + 543;
       return `${day} ${month} ${year}`;
     };
+
+    const defaultTopicCategories = [
+      {
+        id: 1,
+        name_th: "ทุจริตต่อหน้าที่",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 2,
+        name_th: "ปฎิบัติหน้าที่มิชอบ",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 3,
+        name_th: "ประพฤติตนไม่สมควร",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 4,
+        name_th: "ไม่บริการประชาชน",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 5,
+        name_th: "ขอความเป็นธรรม",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 6,
+        name_th: "บัตรสนเท่ห์ร้องเรียนการปฏิบัติหน้าที่ของเจ้าหน้าที่ตำรวจ",
+        name_en: null,
+        complaint_type_id: 1,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 7,
+        name_th: "ขอความช่วยเหลือ",
+        name_en: null,
+        complaint_type_id: 2,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 8,
+        name_th: "แจ้งเบาะแส/แนะนำ",
+        name_en: null,
+        complaint_type_id: 2,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 10,
+        name_th: "แจ้งเบาะแสยาเสพติด",
+        name_en: null,
+        complaint_type_id: 2,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 11,
+        name_th: "แจ้งเบาะแสยาเสพติด",
+        name_en: null,
+        complaint_type_id: 3,
+        count: 0,
+        count_accused: 0,
+      },
+      {
+        id: 12,
+        name_th: "ทุจริตต่อหน้าที่",
+        name_en: null,
+        complaint_type_id: 4,
+        count: 0,
+        count_accused: 0,
+      },
+    ];
 
     const selectOptions = ref<any>({
       years: [],
@@ -313,6 +404,7 @@ export default defineComponent({
           count_section: 0,
         },
       ],
+      topic_categories: [],
     });
 
     const defaultSearch = {
@@ -333,6 +425,10 @@ export default defineComponent({
       accused_fullname: "",
       complainant_fullname: "",
       complaint_title: "",
+      complaint_type_id: {
+        id: 1,
+        name_th: "ร้องเรียน",
+      },
     };
 
     const search = reactive<any>({
@@ -373,10 +469,10 @@ export default defineComponent({
         },
       ],
     };
-    const chartSectionData = ref<any>({
+    const chartData = ref<any>({
       ...defaultBarChart,
       title: {
-        text: "สถิติสายงานที่ถูกร้องเรียน",
+        text: "สถิติประเภทเรื่องร้องเรียน",
         left: "center",
       },
     });
@@ -400,6 +496,7 @@ export default defineComponent({
           ...search,
           create_from: create_from,
           create_to: create_to,
+          complaint_type_id: search.complaint_type_id?.id,
         };
         // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
         const { data } = await ApiService.query("complaint/", {
@@ -418,10 +515,18 @@ export default defineComponent({
           }
         });
 
-        chartSectionData.value = {
+        selectOptions.value.topic_categories = defaultTopicCategories
+          .filter((x: any) => {
+            return x.complaint_type_id == search.complaint_type_id.id;
+          })
+          .map((x: any) => {
+            return x;
+          });
+
+        chartData.value = {
           ...defaultBarChart,
           title: {
-            text: "สถิติสายงานที่ถูกร้องเรียน",
+            text: "สถิติประเภทเรื่องร้องเรียน",
             left: "center",
           },
         };
@@ -446,7 +551,7 @@ export default defineComponent({
         search.year_range[1]
       ).map((year: any) => year + 543); // Convert to Buddhist calendar year
 
-      chartSectionData.value.xAxis = {
+      chartData.value.xAxis = {
         type: "category",
         axisTick: { show: false },
         data: yearsRange.value,
@@ -454,45 +559,51 @@ export default defineComponent({
 
       let groupedData: any = {};
 
-      const processAccused = (
-        accused: any,
+      const processComplaint = (
+        complaint: any,
         year: number,
-        section_id: number | null
+        topic_category: any
       ) => {
-        section_id = section_id ?? 12; // default to 12 if section_id is null
+        const category_id = topic_category?.id ?? 99;
 
-        if (!groupedData[section_id]) {
-          groupedData[section_id] = { section_id, year: [], data: [] };
+        if (!groupedData[category_id]) {
+          groupedData[category_id] = {
+            category_id,
+            year: [],
+            data: [],
+          };
         }
 
-        const yearIndex = groupedData[section_id].year.indexOf(year);
+        const yearIndex = groupedData[category_id].year.indexOf(year);
         if (yearIndex === -1) {
-          groupedData[section_id].year.push(year);
-          groupedData[section_id].data.push(1);
+          groupedData[category_id].year.push(year);
+          groupedData[category_id].data.push(1);
         } else {
-          groupedData[section_id].data[yearIndex]++;
+          groupedData[category_id].data[yearIndex]++;
         }
       };
 
       receive1_items.value.forEach((complaint: any) => {
         const year = new Date(complaint.created_at).getFullYear() + 543;
 
-        if (complaint.accused.length > 0) {
-          complaint.accused.forEach((accused: any) =>
-            processAccused(accused, year, accused.section_id)
+        if (complaint.topic_type && complaint.topic_type.topic_category) {
+          processComplaint(
+            complaint,
+            year,
+            complaint.topic_type.topic_category
           );
         } else {
-          processAccused(null, year, null);
+          processComplaint(complaint, year, null);
         }
       });
 
       const result = Object.values(groupedData).map((x: any) => {
-        const section = selectOptions.value.sections.find(
-          (e: any) => e.id == x.section_id
+        const tc = selectOptions.value.topic_categories.find(
+          (e: any) => e.id == x.category_id
         );
-        x.section_name = section ? section.name_th : "Unknown";
+        x.topic_category_name = tc ? tc.name_th : "Unknown";
 
-        x.data = chartSectionData.value.xAxis.data.map((year: string) => {
+        x.data = chartData.value.xAxis.data.map((year: string) => {
           const yearIndex = x.year.indexOf(parseInt(year));
           return yearIndex !== -1 ? x.data[yearIndex] : 0;
         });
@@ -500,9 +611,9 @@ export default defineComponent({
         return x;
       });
 
-      chartSectionData.value.series = result.map((x: any) => {
+      chartData.value.series = result.map((x: any) => {
         let data = {
-          name: x.section_name,
+          name: x.topic_category_name,
           type: "bar",
           barGap: 0.1,
           emphasis: { focus: "series" },
@@ -517,6 +628,7 @@ export default defineComponent({
 
         return data;
       });
+
     };
 
     // Month
@@ -544,7 +656,6 @@ export default defineComponent({
       }
       return months;
     };
-
     const reloadMonthData = async () => {
       const start = {
         month: search.month_range[0].month,
@@ -557,7 +668,7 @@ export default defineComponent({
 
       monthsRange.value = generateMonthRangeReversed(start, end);
 
-      chartSectionData.value.xAxis = {
+      chartData.value.xAxis = {
         type: "category",
         axisTick: { show: false },
         data: monthsRange.value,
@@ -565,47 +676,54 @@ export default defineComponent({
 
       let groupedData: any = {};
 
-      const processAccused = (
-        accused: any,
-        yearMonth: string,
-        section_id: number | null
+      const processComplaint = (
+        complaint: any,
+        yearMonth: number,
+        topic_category: any
       ) => {
-        section_id = section_id ?? 12; // default to 12 if section_id is null
+        const category_id = topic_category?.id ?? 99;
 
-        if (!groupedData[section_id]) {
-          groupedData[section_id] = { section_id, yearMonth: [], data: [] };
+        if (!groupedData[category_id]) {
+          groupedData[category_id] = {
+            category_id,
+            yearMonth: [],
+            data: [],
+          };
         }
 
-        const monthIndex = groupedData[section_id].yearMonth.indexOf(yearMonth);
+        const monthIndex =
+          groupedData[category_id].yearMonth.indexOf(yearMonth);
         if (monthIndex === -1) {
-          groupedData[section_id].yearMonth.push(yearMonth);
-          groupedData[section_id].data.push(1);
+          groupedData[category_id].yearMonth.push(yearMonth);
+          groupedData[category_id].data.push(1);
         } else {
-          groupedData[section_id].data[monthIndex]++;
+          groupedData[category_id].data[monthIndex]++;
         }
       };
 
       receive1_items.value.forEach((complaint: any) => {
-        const createdAt = dayjs(complaint.created_at)
+        const createdAt: any = dayjs(complaint.created_at)
           .locale("th")
           .format("MMM BB");
 
-        if (complaint.accused.length > 0) {
-          complaint.accused.forEach((accused: any) =>
-            processAccused(accused, createdAt, accused.section_id)
+        if (complaint.topic_type && complaint.topic_type.topic_category) {
+          processComplaint(
+            complaint,
+            createdAt,
+            complaint.topic_type.topic_category
           );
         } else {
-          processAccused(null, createdAt, null);
+          processComplaint(complaint, createdAt, null);
         }
       });
 
       const result = Object.values(groupedData).map((x: any) => {
-        const section = selectOptions.value.sections.find(
-          (e: any) => e.id == x.section_id
+        const tc = selectOptions.value.topic_categories.find(
+          (e: any) => e.id == x.category_id
         );
-        x.section_name = section ? section.name_th : "Unknown";
+        x.topic_category_name = tc ? tc.name_th : "Unknown";
 
-        x.data = chartSectionData.value.xAxis.data.map((yearMonth: string) => {
+        x.data = chartData.value.xAxis.data.map((yearMonth: string) => {
           const monthIndex = x.yearMonth.indexOf(yearMonth);
           return monthIndex !== -1 ? x.data[monthIndex] : 0;
         });
@@ -613,15 +731,26 @@ export default defineComponent({
         return x;
       });
 
-      chartSectionData.value.series = result.map((x: any) => ({
-        name: x.section_name,
-        type: "bar",
-        barGap: 0,
-        emphasis: { focus: "series" },
-        data: x.data,
-      }));
+      chartData.value.series = result.map((x: any) => {
+        let data = {
+          name: x.topic_category_name,
+          type: "bar",
+          barGap: 0,
+          emphasis: { focus: "series" },
+          data: x.data,
+        };
+
+        let _i = 0;
+        monthsRange.value.forEach((el: any) => {
+          data[el.toString()] = x.data[_i];
+          _i = _i + 1;
+        });
+
+        return data;
+      });
     };
 
+    // Week
     const generateAllWeeksInRange = (start: Date, end: Date) => {
       let current = dayjs(start);
       const endDay = dayjs(end);
@@ -652,37 +781,34 @@ export default defineComponent({
       );
       weeksRange.value = generateWeekLabels(allWeeks);
 
-      chartSectionData.value.xAxis = {
+      chartData.value.xAxis = {
         type: "category",
         axisTick: { show: false },
         data: weeksRange.value,
         axisLabel: {
-          rotate: 20, // ตั้งค่ามุมที่ต้องการให้ label เฉียง
-          //   formatter: (value: any) => {
-          //     return value.split(" ").join("\n"); // แยกบรรทัด label หากจำเป็น
-          //   },
+          rotate: 20,
         },
       };
 
       let groupedData: any = {};
 
-      const processAccused = (
-        accused: any,
+      const processComplaint = (
+        complaint: any,
         weekRange: string,
-        section_id: number | null
+        topic_category: any
       ) => {
-        section_id = section_id ?? 12; // default to 12 if section_id is null
+        const category_id = topic_category?.id ?? 99;
 
-        if (!groupedData[section_id]) {
-          groupedData[section_id] = { section_id, weekRange: [], data: [] };
+        if (!groupedData[category_id]) {
+          groupedData[category_id] = { category_id, weekRange: [], data: [] };
         }
 
-        const weekIndex = groupedData[section_id].weekRange.indexOf(weekRange);
+        const weekIndex = groupedData[category_id].weekRange.indexOf(weekRange);
         if (weekIndex === -1) {
-          groupedData[section_id].weekRange.push(weekRange);
-          groupedData[section_id].data.push(1);
+          groupedData[category_id].weekRange.push(weekRange);
+          groupedData[category_id].data.push(1);
         } else {
-          groupedData[section_id].data[weekIndex]++;
+          groupedData[category_id].data[weekIndex]++;
         }
       };
 
@@ -700,24 +826,26 @@ export default defineComponent({
               .locale("th")
               .format("DD MMM BB")}`;
 
-            if (complaint.accused.length > 0) {
-              complaint.accused.forEach((accused: any) =>
-                processAccused(accused, weekRange, accused.section_id)
+            if (complaint.topic_type && complaint.topic_type.topic_category) {
+              processComplaint(
+                complaint,
+                weekRange,
+                complaint.topic_type.topic_category
               );
             } else {
-              processAccused(null, weekRange, null);
+              processComplaint(complaint, weekRange, null);
             }
           }
         });
       });
 
       const result = Object.values(groupedData).map((x: any) => {
-        const section = selectOptions.value.sections.find(
-          (e: any) => e.id == x.section_id
+        const tc = selectOptions.value.topic_categories.find(
+          (e: any) => e.id == x.category_id
         );
-        x.section_name = section ? section.name_th : "Unknown";
+        x.topic_category_name = tc ? tc.name_th : "Unknown";
 
-        x.data = chartSectionData.value.xAxis.data.map((weekRange: string) => {
+        x.data = chartData.value.xAxis.data.map((weekRange: string) => {
           const weekIndex = x.weekRange.indexOf(weekRange);
           return weekIndex !== -1 ? x.data[weekIndex] : 0;
         });
@@ -725,13 +853,22 @@ export default defineComponent({
         return x;
       });
 
-      chartSectionData.value.series = result.map((x: any) => ({
-        name: x.section_name,
-        type: "bar",
-        barGap: 0,
-        emphasis: { focus: "series" },
-        data: x.data,
-      }));
+      chartData.value.series = result.map((x: any) => {
+        let data = {
+          name: x.topic_category_name,
+          type: "bar",
+          barGap: 0,
+          emphasis: { focus: "series" },
+          data: x.data,
+        };
+        let _i = 0;
+        weeksRange.value.forEach((el: any) => {
+          data[el.toString()] = x.data[_i];
+          _i = _i + 1;
+        });
+
+        return data;
+      });
     };
 
     // Day
@@ -761,7 +898,7 @@ export default defineComponent({
       );
       daysRange.value = generateDayLabels(allDays);
 
-      chartSectionData.value.xAxis = {
+      chartData.value.xAxis = {
         type: "category",
         axisTick: { show: false },
         data: daysRange.value,
@@ -772,19 +909,23 @@ export default defineComponent({
 
       let groupedData = {};
 
-      const processAccused = (accused: any, day: any, section_id: any) => {
-        section_id = section_id ?? 12; // default to 12 if section_id is null
+      const processComplaint = (
+        complaint: any,
+        day: any,
+        topic_category: any
+      ) => {
+        const category_id = topic_category?.id ?? 99;
 
-        if (!groupedData[section_id]) {
-          groupedData[section_id] = { section_id, day: [], data: [] };
+        if (!groupedData[category_id]) {
+          groupedData[category_id] = { category_id, day: [], data: [] };
         }
 
-        const dayIndex = groupedData[section_id].day.indexOf(day);
+        const dayIndex = groupedData[category_id].day.indexOf(day);
         if (dayIndex === -1) {
-          groupedData[section_id].day.push(day);
-          groupedData[section_id].data.push(1);
+          groupedData[category_id].day.push(day);
+          groupedData[category_id].data.push(1);
         } else {
-          groupedData[section_id].data[dayIndex]++;
+          groupedData[category_id].data[dayIndex]++;
         }
       };
 
@@ -793,25 +934,28 @@ export default defineComponent({
 
         allDays.forEach((day: any) => {
           const formattedDay = day.locale("th").format("DD MMM BB");
+
           if (complaintDate.isSame(day, "day")) {
-            if (complaint.accused.length > 0) {
-              complaint.accused.forEach((accused: any) =>
-                processAccused(accused, formattedDay, accused.section_id)
+            if (complaint.topic_type && complaint.topic_type.topic_category) {
+              processComplaint(
+                complaint,
+                formattedDay,
+                complaint.topic_type.topic_category
               );
             } else {
-              processAccused(null, formattedDay, null);
+              processComplaint(complaint, formattedDay, null);
             }
           }
         });
       });
 
       const result = Object.values(groupedData).map((x: any) => {
-        const section = selectOptions.value.sections.find(
-          (e: any) => e.id == x.section_id
+        const tc = selectOptions.value.topic_categories.find(
+          (e: any) => e.id == x.category_id
         );
-        x.section_name = section ? section.name_th : "Unknown";
+        x.topic_category_name = tc ? tc.name_th : "Unknown";
 
-        x.data = chartSectionData.value.xAxis.data.map((day: any) => {
+        x.data = chartData.value.xAxis.data.map((day: any) => {
           const dayIndex = x.day.indexOf(day);
           return dayIndex !== -1 ? x.data[dayIndex] : 0;
         });
@@ -819,13 +963,22 @@ export default defineComponent({
         return x;
       });
 
-      chartSectionData.value.series = result.map((x) => ({
-        name: x.section_name,
-        type: "bar",
-        barGap: 0,
-        emphasis: { focus: "series" },
-        data: x.data,
-      }));
+      chartData.value.series = result.map((x) => {
+        let data = {
+          name: x.topic_category_name,
+          type: "bar",
+          barGap: 0,
+          emphasis: { focus: "series" },
+          data: x.data,
+        };
+
+        let _i = 0;
+        daysRange.value.forEach((el: any) => {
+          data[el.toString()] = x.data[_i];
+          _i = _i + 1;
+        });
+        return data;
+      });
     };
 
     // Event
@@ -850,7 +1003,7 @@ export default defineComponent({
 
         let columns = [
           {
-            header: "สายงาน",
+            header: "ประเภทเรื่องร้องเรียน",
             key: "name",
             width: 25,
             outlineLevel: 1,
@@ -894,10 +1047,11 @@ export default defineComponent({
             });
           });
         }
+
         worksheet.columns = [...columns];
 
         // worksheet.properties.defaultRowHeight = 20;
-        worksheet.addRows(chartSectionData.value.series);
+        worksheet.addRows(chartData.value.series);
         worksheet.eachRow((row) => {
           // row.height = 45;
           row.eachCell(function (cell) {
@@ -910,9 +1064,9 @@ export default defineComponent({
         });
         const row = worksheet.getRow(1);
         row.height = 20;
-        worksheet.insertRow(1, "สถิติสายงานที่ถูกร้องเรียน");
+        worksheet.insertRow(1, "สถิติประเภทเรื่องร้องเรียน");
         worksheet.mergeCells("A1:K1");
-        worksheet.getCell("A1").value = "สถิติสายงานที่ถูกร้องเรียน";
+        worksheet.getCell("A1").value = "ประเภทเรื่องร้องเรียน";
         worksheet.getCell("A1").alignment = {
           vertical: "middle",
           horizontal: "center",
@@ -929,7 +1083,7 @@ export default defineComponent({
         const href = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = href;
-        link.download = "สถิติสายงานที่ถูกร้องเรียน.xlsx";
+        link.download = "ประเภทเรื่องร้องเรียน.xlsx";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -949,7 +1103,7 @@ export default defineComponent({
       item,
       router,
       format,
-      chartSectionData,
+      chartData,
       onSearch,
       onClear,
       fetchItems,
