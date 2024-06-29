@@ -92,6 +92,15 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/report-complaint",
+        name: "report-complaint",
+        component: () => import("@/views/report/ReportComplaint.vue"),
+        meta: {
+          pageTitle: "สถิติจำนวนเรื่องร้องเรียน",
+          breadcrumbs: ["Report"],
+        },
+      },
+      {
         path: "/report",
         name: "report",
         component: () => import("@/views/report/index.vue"),
@@ -124,6 +133,16 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/report/ReportComplaintTopicType.vue"),
         meta: {
           pageTitle: "สถิติข้อกล่าวหาที่ถูกร้องเรียน",
+          breadcrumbs: ["Report"],
+        },
+      },
+      {
+        path: "/report-complaint-organization",
+        name: "report-complaint-organization",
+        component: () =>
+          import("@/views/report/ReportComplaintOrganization.vue"),
+        meta: {
+          pageTitle: "สถิติหน่วยงานที่ถูกร้องเรียน",
           breadcrumbs: ["Report"],
         },
       },

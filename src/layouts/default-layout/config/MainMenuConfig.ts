@@ -30,8 +30,8 @@ const MainMenuConfig: Array<MenuItem> = [
     pages: [
 
       {
-        heading: "เรื่องร้องเรียน รายเดือน",
-        route: "/report",
+        heading: "จำนวนเรื่องร้องเรียน",
+        route: "/report-complaint",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
@@ -55,7 +55,7 @@ const MainMenuConfig: Array<MenuItem> = [
       },
       {
         heading: "หน่วยงานที่ถูกร้องเรียน",
-        route: "/report",
+        route: "/report-complaint-organization",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
