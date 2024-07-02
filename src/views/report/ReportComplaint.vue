@@ -118,6 +118,13 @@
       <div class="card mt-15">
         <div class="card-body row responsive">
           <div class="col-12 col-md-8 mx-auto" style="min-height: 800px">
+            <button
+              @click="backToProvinces"
+              v-if="showDistricts"
+              class="btn btn-primary"
+            >
+              Back to Provinces
+            </button>
             <v-chart
               class="chart-container3"
               :option="chartMapData"
@@ -342,6 +349,8 @@ export default defineComponent({
     };
 
     // Start Map Data
+    const showDistricts = ref(false);
+
     const defaultMapChart = {
       title: {
         text: "จำนวนเรื่องร้องเรียนเชิงพื้นที่",
@@ -437,9 +446,58 @@ export default defineComponent({
       let groupedMapData: any = [];
 
       for (const complaint of receive1_items.value) {
-        const year = new Date(complaint.created_at).getFullYear() + 543;
+        let checkSearchRange: any = false;
 
-        if (yearsRange.value.includes(year)) {
+        if (search.report_type.value == 1) {
+          let year = new Date(complaint.created_at).getFullYear() + 543;
+          if (yearsRange.value.includes(year)) {
+            checkSearchRange = true;
+          }
+        } else if (search.report_type.value == 2) {
+          // Month
+          const createdAt: any = dayjs(complaint.created_at)
+            .locale("th")
+            .format("MMM BB");
+
+          if (monthsRange.value.includes(createdAt)) {
+            checkSearchRange = true;
+          } else {
+            checkSearchRange = false;
+          }
+        } else if (search.report_type.value == 3) {
+          // Week
+          const complaintDate = dayjs(complaint.created_at);
+          const allWeeks = generateAllWeeksInRange(
+            search.week_range[0][0],
+            search.week_range[search.week_range.length - 1][1]
+          );
+
+          checkSearchRange = false; // Initialize to false
+
+          allWeeks.forEach((range: any) => {
+            const startOfWeek = dayjs(range[0]);
+            const endOfWeek = dayjs(range[1]);
+            if (complaintDate.isBetween(startOfWeek, endOfWeek, null, "[]")) {
+              checkSearchRange = true;
+            }
+          });
+        } else if (search.report_type.value == 4) {
+          // day
+          const complaintDate: any = dayjs(complaint.created_at);
+          const allDays = generateAllDaysInRange(
+            search.day_range[0],
+            search.day_range[1]
+          );
+
+          checkSearchRange = false; // Initialize to false
+          allDays.forEach((day: any) => {
+            if (complaintDate.isSame(day, "day")) {
+              checkSearchRange = true;
+            }
+          });
+        }
+
+        if (checkSearchRange == true) {
           const provinceName = complaint.province.name_th; // Assuming complaint has a province object with name_th
 
           let checkPro = groupedMapData.find((x: any) => {
@@ -476,8 +534,125 @@ export default defineComponent({
       chartMapData.value.series[0].data = groupedMapData;
     };
 
+    const getDistrictDataForProvince = (provinceName: any) => {
+      if (provinceName != "") {
+        const districts = districtJson.features.filter(
+          (feature) => feature.properties.pro_th === provinceName
+        );
+
+        console.log(districts);
+
+        let districtsGeo: any = { ...districtJson, features: districts };
+        console.log(districtsGeo);
+        // echarts.registerMap("districts", districtJson as any, {});
+        echarts.registerMap("districts", districtsGeo as any, {});
+
+        let districtComplaintData: any = [];
+
+        districts.forEach((district: any) => {
+          const districtName = district.properties.name; // Replace with actual property name for district name
+
+          let finished = 0;
+          let unfinished = 0;
+
+          provinceName;
+
+          let complaintCheck = receive1_items.value.filter((complaint: any) => {
+            return complaint.province.name_th == provinceName;
+          });
+
+          console.log(districtName);
+
+          complaintCheck = complaintCheck.filter((complaint: any) => {
+            console.log(complaint.district.name_th);
+            return complaint.district.name_th == districtName;
+          });
+
+          complaintCheck = complaintCheck.filter((complaint: any) => {
+            let checkSearchRange: any = false;
+
+            if (search.report_type.value == 1) {
+              let year = new Date(complaint.created_at).getFullYear() + 543;
+              if (yearsRange.value.includes(year)) {
+                checkSearchRange = true;
+              }
+            } else if (search.report_type.value == 2) {
+              // Month
+              const createdAt: any = dayjs(complaint.created_at)
+                .locale("th")
+                .format("MMM BB");
+
+              if (monthsRange.value.includes(createdAt)) {
+                checkSearchRange = true;
+              } else {
+                checkSearchRange = false;
+              }
+            } else if (search.report_type.value == 3) {
+              // Week
+              const complaintDate = dayjs(complaint.created_at);
+              const allWeeks = generateAllWeeksInRange(
+                search.week_range[0][0],
+                search.week_range[search.week_range.length - 1][1]
+              );
+
+              checkSearchRange = false; // Initialize to false
+
+              allWeeks.forEach((range: any) => {
+                const startOfWeek = dayjs(range[0]);
+                const endOfWeek = dayjs(range[1]);
+                if (
+                  complaintDate.isBetween(startOfWeek, endOfWeek, null, "[]")
+                ) {
+                  checkSearchRange = true;
+                }
+              });
+            } else if (search.report_type.value == 4) {
+              // day
+              const complaintDate: any = dayjs(complaint.created_at);
+              const allDays = generateAllDaysInRange(
+                search.day_range[0],
+                search.day_range[1]
+              );
+
+              checkSearchRange = false; // Initialize to false
+              allDays.forEach((day: any) => {
+                if (complaintDate.isSame(day, "day")) {
+                  checkSearchRange = true;
+                }
+              });
+            }
+
+            return checkSearchRange == true;
+          });
+
+          complaintCheck.forEach((el: any) => {
+            if (el.state_id == 8 || el.state_id == 17) {
+              finished++;
+            } else {
+              unfinished++;
+            }
+          });
+
+          let complaintCount = complaintCheck.length;
+
+          if (complaintCount > 0) {
+            districtComplaintData.push({
+              name: districtName,
+              value: complaintCount,
+              finished,
+              unfinished,
+            });
+          }
+        });
+
+        return districtComplaintData;
+      }
+
+      // This function should return data for the districts in the given province
+      return [];
+    };
+
     const renderDistrictChart = (provinceName: any) => {
-      console.log(provinceName);
       const districtData = getDistrictDataForProvince(provinceName);
       console.log(districtData);
 
@@ -570,61 +745,18 @@ export default defineComponent({
       chartMapData.value = districtChartData;
     };
 
-    const getDistrictDataForProvince = (provinceName: any) => {
-      if (provinceName != "") {
-        const districts = districtJson.features.filter(
-          (feature) => feature.properties.pro_th === provinceName
-        );
-        let districtsGeo: any = { ...districtJson, features: districts };
-        console.log(districtsGeo);
-        // echarts.registerMap("districts", districtJson as any, {});
-        echarts.registerMap("districts", districtsGeo as any, {});
-
-        let districtComplaintData: any = [];
-
-        districts.forEach((district: any) => {
-          const districtName = district.properties.name; // Replace with actual property name for district name
-
-          let finished = 0;
-          let unfinished = 0;
-          const complaintCheck = receive1_items.value.filter(
-            (complaint: any) => {
-              return complaint.district.name_th === districtName;
-            }
-          );
-
-          complaintCheck.forEach((el: any) => {
-            if (el.state_id == 8 || el.state_id == 17) {
-              finished++;
-            } else {
-              unfinished++;
-            }
-          });
-
-          let complaintCount = complaintCheck.length;
-
-          if (complaintCount > 0) {
-            districtComplaintData.push({
-              name: districtName,
-              value: complaintCount,
-              finished,
-              unfinished,
-            });
-          }
-        });
-
-        return districtComplaintData;
-      }
-
-      // This function should return data for the districts in the given province
-      return [];
-    };
-
     const handleMapClick = (params: any) => {
       if (params.componentType === "series" && params.seriesType === "map") {
+        showDistricts.value = true;
         const provinceName = params.name;
         renderDistrictChart(provinceName);
       }
+    };
+
+    // Function to go back to the province-level map
+    const backToProvinces = () => {
+      showDistricts.value = false;
+      chartMapData.value = { ...defaultMapChart };
     };
 
     // End Map
@@ -672,10 +804,13 @@ export default defineComponent({
           reloadMapData();
         } else if (search.report_type.value == 2) {
           reloadMonthData();
+          reloadMapData();
         } else if (search.report_type.value == 3) {
           reloadWeekData();
+          reloadMapData();
         } else if (search.report_type.value == 4) {
           reloadDayData();
+          reloadMapData();
         }
       } catch (error) {
         console.log(error);
@@ -752,6 +887,7 @@ export default defineComponent({
           currentYear--;
         }
       }
+      console.log(months);
       return months;
     };
     const reloadMonthData = async () => {
@@ -839,6 +975,7 @@ export default defineComponent({
         search.week_range[0][0],
         search.week_range[search.week_range.length - 1][1]
       );
+
       weeksRange.value = generateWeekLabels(allWeeks);
 
       chartData.value.xAxis = {
@@ -1109,6 +1246,8 @@ export default defineComponent({
       onExport,
       chartMapData,
       handleMapClick,
+      backToProvinces,
+      showDistricts,
     };
   },
 });
