@@ -141,8 +141,7 @@
               <thead class="bg-color-police">
                 <tr>
                   <th class="text-white">จังหวัด</th>
-                  <th class="text-center text-white">จำนวน/เรื่อง</th>
-                  <th class="text-center text-white">จำนวน/คน</th>
+                  <th class="text-center text-white">จำนวน</th>
                   <th class="text-center text-white">เสร็จสิ้น</th>
                   <th class="text-center text-white">อยู่ระหว่างดำเนินการ</th>
                 </tr>
@@ -151,7 +150,6 @@
                 <tr v-for="(d, idx) in chartMapData.series[0].data" :key="idx">
                   <td>{{ d.name }}</td>
                   <td class="text-center">{{ d.value }}</td>
-                  <td class="text-center">{{ d.person }}</td>
                   <td class="text-center">{{ d.finished }}</td>
                   <td class="text-center">{{ d.unfinished }}</td>
                 </tr>
@@ -369,7 +367,6 @@ export default defineComponent({
           return `
             จังหวัด: ${data?.name}<br/>
             จำนวนเรื่องร้องเรียน: ${data?.value}<br/>
-            จำนวนผู้ถูกร้องเรียน: ${data?.person}<br/>
             เสร็จแล้ว: ${data?.finished}<br/>
             ยังไม่เสร็จ: ${data?.unfinished}
           `;
@@ -509,7 +506,6 @@ export default defineComponent({
 
           if (checkPro) {
             checkPro.value++;
-            checkPro.person = checkPro.person + complaint.accused.length;
             if (complaint.state_id == 8 || complaint.state_id == 17) {
               checkPro.finished++;
             } else {
@@ -528,7 +524,6 @@ export default defineComponent({
             groupedMapData.push({
               name: provinceName,
               value: 1,
-              person: complaint.accused.length,
               finished: finished,
               unfinished: unfinished,
             });
@@ -622,9 +617,7 @@ export default defineComponent({
             return checkSearchRange == true;
           });
 
-          let person = 0;
           complaintCheck.forEach((el: any) => {
-            person = person + el.accused.length;
             if (el.state_id == 8 || el.state_id == 17) {
               finished++;
             } else {
@@ -638,7 +631,6 @@ export default defineComponent({
             districtComplaintData.push({
               name: districtName,
               value: complaintCount,
-              person: person,
               finished,
               unfinished,
             });
@@ -670,7 +662,6 @@ export default defineComponent({
             return `
             จังหวัด: ${data?.name}<br/>
             จำนวนเรื่องร้องเรียน: ${data?.value}<br/>
-            จำนวนผู้ถูกร้องเรียน: ${data?.person}<br/>
             เสร็จแล้ว: ${data?.finished}<br/>
             ยังไม่เสร็จ: ${data?.unfinished}
           `;
