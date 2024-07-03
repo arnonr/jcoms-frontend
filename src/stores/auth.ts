@@ -45,8 +45,12 @@ export const useAuthStore = defineStore("auth", () => {
             ...data.data,
           })
         );
-        localStorage.setItem('id_token',data.data.token)
-       
+        localStorage.setItem("id_token", data.data.token);
+
+        // หลังจากที่ผู้ใช้ล็อกอินสำเร็จ matomo
+        const userId = data.data.officer_code; // ดึงค่า USER_ID ของผู้ใช้งานที่ล็อกอิน
+        window._paq.push(['setUserId', userId]);
+        window._paq.push(['trackPageView']); // ติดตามการเข้าชมหน้าเว็บ
       })
       .catch(({ response }) => {
         setError(response.data.msg);
@@ -56,7 +60,7 @@ export const useAuthStore = defineStore("auth", () => {
   function logout() {
     purgeAuth();
     localStorage.removeItem("userData");
-    localStorage.removeItem('id_token')
+    localStorage.removeItem("id_token");
   }
 
   function register(credentials: User) {
