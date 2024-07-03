@@ -147,6 +147,15 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/report-satisfaction",
+        name: "report-satisfaction",
+        component: () => import("@/views/report/ReportSatisfaction.vue"),
+        meta: {
+          pageTitle: "รายงานความพึงพอใจ",
+          breadcrumbs: ["Report"],
+        },
+      },
+      {
         path: "/geo",
         name: "geo",
         component: () => import("@/views/Geo.vue"),

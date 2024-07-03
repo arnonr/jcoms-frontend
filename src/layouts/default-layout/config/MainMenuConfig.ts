@@ -66,8 +66,8 @@ const MainMenuConfig: Array<MenuItem> = [
         bootstrapIcon: "bi-app-indicator",
       },
       {
-        heading: "สถิติเชิงพื้นที่",
-        route: "/geo",
+        heading: "รายงานความพึงพอใจ",
+        route: "/report-satisfaction",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
