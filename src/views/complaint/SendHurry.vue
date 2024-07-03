@@ -354,7 +354,7 @@ export default defineComponent({
         follow_detail: item.order_detail,
 
         follow_doc_filename:
-          item.forward_doc_filename.length != 0
+          item.forward_doc_filename?.length != 0
             ? item.forward_doc_filename
             : undefined,
         follow_doc_no: item.forward_doc_no,

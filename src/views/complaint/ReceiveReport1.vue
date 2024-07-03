@@ -286,7 +286,7 @@ export default defineComponent({
 
       let data_item = {
         receive_doc_filename:
-          item.receive_doc_filename.length != 0
+          item.receive_doc_filename?.length != 0
             ? item.receive_doc_filename
             : undefined,
         id: item.id,

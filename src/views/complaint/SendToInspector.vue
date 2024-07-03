@@ -317,7 +317,7 @@ export default defineComponent({
       let data_item = {
         complaint_id: item.complaint_id,
         forward_doc_filename:
-          item.forward_doc_filename.length != 0
+          item.forward_doc_filename?.length != 0
             ? item.forward_doc_filename
             : undefined,
         forward_doc_no: item.forward_doc_no,
