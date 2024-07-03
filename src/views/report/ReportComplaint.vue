@@ -539,11 +539,7 @@ export default defineComponent({
         const districts = districtJson.features.filter(
           (feature) => feature.properties.pro_th === provinceName
         );
-
-        console.log(districts);
-
         let districtsGeo: any = { ...districtJson, features: districts };
-        console.log(districtsGeo);
         // echarts.registerMap("districts", districtJson as any, {});
         echarts.registerMap("districts", districtsGeo as any, {});
 
@@ -555,13 +551,9 @@ export default defineComponent({
           let finished = 0;
           let unfinished = 0;
 
-          provinceName;
-
           let complaintCheck = receive1_items.value.filter((complaint: any) => {
             return complaint.province.name_th == provinceName;
           });
-
-          console.log(districtName);
 
           complaintCheck = complaintCheck.filter((complaint: any) => {
             console.log(complaint.district.name_th);
@@ -654,7 +646,6 @@ export default defineComponent({
 
     const renderDistrictChart = (provinceName: any) => {
       const districtData = getDistrictDataForProvince(provinceName);
-      console.log(districtData);
 
       const districtChartData = {
         title: {
@@ -753,12 +744,10 @@ export default defineComponent({
       }
     };
 
-    // Function to go back to the province-level map
     const backToProvinces = () => {
       showDistricts.value = false;
       chartMapData.value = { ...defaultMapChart };
     };
-
     // End Map
 
     // Fetch Data

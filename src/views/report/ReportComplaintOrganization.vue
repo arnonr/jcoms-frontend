@@ -117,6 +117,64 @@
           </div>
         </div>
       </div>
+
+      <!-- Map Chart -->
+      <div class="card mt-15">
+        <div class="card-body row">
+          <div class="col-12 col-md-12 mx-auto" style="min-height: 800px">
+            <button
+              @click="backToProvinces"
+              v-if="showDistricts"
+              class="btn btn-primary"
+            >
+              Back to Provinces
+            </button>
+            <v-chart
+              class="chart-container3"
+              :option="chartMapData"
+              style="min-height: 800px"
+              @click="handleMapClick"
+            />
+          </div>
+          <div
+            class="col-12 col-md-12 mx-auto table-responsive"
+            style="min-height: 800px"
+          >
+            <table
+              class="table table-bordered table-striped bg-sky"
+              style="width: 100%"
+              v-if="chartMapData?.series[0]?.data?.length != 0"
+            >
+              <thead class="bg-color-police">
+                <tr>
+                  <th class="text-white">จังหวัด</th>
+                  <th class="text-center text-white">จำนวน</th>
+                  <th
+                    class="text-center text-white"
+                    v-for="(c, idx) in grouped_map_data"
+                    :key="idx"
+                  >
+                    {{ c == undefined ? "ไม่ระบุ" : c }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(d, idx) in chartMapData.series[0].data" :key="idx">
+                  <td>{{ d.name }}</td>
+                  <td class="text-center">{{ d.value }}</td>
+                  <td
+                    class="text-center"
+                    v-for="(c, idx) in grouped_map_data"
+                    :key="idx"
+                  >
+                    {{ showOrganization(c, d.organization) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -146,6 +204,9 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(buddhistEra);
 dayjs.extend(isBetween);
+// Geo
+import provinceJson from "@/assets/geo/provinces.json";
+import districtJson from "@/assets/geo/districts.json";
 
 // Excel
 import XLSX from "xlsx";
@@ -153,11 +214,14 @@ import ExcelJS from "exceljs";
 // Import echarts
 import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { PieChart, BarChart } from "echarts/charts";
+import { PieChart, BarChart, MapChart } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
   GridComponent,
+  GeoComponent,
+  VisualMapComponent,
+  ToolboxComponent,
 } from "echarts/components";
 import VChart, { THEME_KEY } from "vue-echarts";
 
@@ -172,7 +236,13 @@ echarts.use([
   BarChart,
   PieChart,
   CanvasRenderer,
+  GeoComponent,
+  VisualMapComponent,
+  ToolboxComponent,
+  MapChart,
 ]);
+
+echarts.registerMap("TH", provinceJson as any, {});
 
 export default defineComponent({
   name: "dashboard",
@@ -582,6 +652,7 @@ export default defineComponent({
     const monthsRange = ref<any>([]);
     const weeksRange = ref<any>([]);
     const daysRange = ref<any>([]);
+    const grouped_map_data = ref<any>([]);
 
     const defaultBarChart = {
       title: {
@@ -609,6 +680,7 @@ export default defineComponent({
         },
       ],
     };
+
     const chartData = ref<any>({
       ...defaultBarChart,
       title: {
@@ -624,6 +696,457 @@ export default defineComponent({
       }
       return years;
     };
+
+    // Start Map Data
+    const showDistricts = ref(false);
+
+    const defaultMapChart = {
+      title: {
+        text: "จำนวนเรื่องร้องเรียนเชิงพื้นที่",
+        //     subtext: "Data from www.census.gov",
+        //     sublink: "http://www.census.gov/popest/data/datasets.html",
+        left: "center",
+      },
+      tooltip: {
+        trigger: "item",
+        showDelay: 0,
+        transitionDuration: 0.2,
+        formatter: (params: any) => {
+          const data = params.data;
+          let text = "";
+          data?.organization?.forEach((x: any) => {
+            text = text + `${x.name} : ${x.value}<br/>`;
+          });
+
+          return `
+            จังหวัด: ${data?.name}<br/>
+            จำนวนเรื่อง: ${data?.value}<br/>
+            ${text}
+          `;
+        },
+      },
+      visualMap: {
+        left: "right",
+        min: 0,
+        max: 1000,
+        text: ["High", "Low"],
+        inRange: {
+          color: [
+            "#313695",
+            "#4575b4",
+            "#74add1",
+            "#abd9e9",
+            "#e0f3f8",
+            "#ffffbf",
+            "#fee090",
+            "#fdae61",
+            "#f46d43",
+            "#d73027",
+            "#a50026",
+          ],
+        },
+        top: "bottom",
+        calculable: true,
+      },
+      geo: {
+        map: "TH",
+        aspectScale: 0.9,
+        emphasis: {
+          label: {
+            show: false,
+          },
+          //   itemStyle: {
+          //     areaColor: "#000000",
+          //   },
+        },
+        itemStyle: {
+          areaColor: "#eeeeee",
+          borderColor: "#111",
+        },
+      },
+      toolbox: {
+        show: true,
+        //orient: 'vertical',
+        left: "left",
+        top: "top",
+        feature: {
+          dataView: { readOnly: false },
+          restore: {},
+          saveAsImage: {},
+        },
+      },
+      series: [
+        {
+          name: "จำนวนเรื่องร้องเรียน",
+          type: "map",
+          geoIndex: 0,
+          emphasis: {
+            label: {
+              show: true,
+            },
+          },
+        },
+      ],
+    };
+    const chartMapData = ref<any>({ ...defaultMapChart });
+
+    const reloadMapData = async () => {
+      yearsRange.value = generateYearRange(
+        search.year_range[0],
+        search.year_range[1]
+      ).map((year: any) => year + 543); // Convert to Buddhist calendar year
+
+      let groupedMapData: any = [];
+
+      for (const complaint of receive1_items.value) {
+        let checkSearchRange: any = false;
+
+        if (search.report_type.value == 1) {
+          let year = new Date(complaint.created_at).getFullYear() + 543;
+          if (yearsRange.value.includes(year)) {
+            checkSearchRange = true;
+          }
+        } else if (search.report_type.value == 2) {
+          // Month
+          const createdAt: any = dayjs(complaint.created_at)
+            .locale("th")
+            .format("MMM BB");
+
+          if (monthsRange.value.includes(createdAt)) {
+            checkSearchRange = true;
+          } else {
+            checkSearchRange = false;
+          }
+        } else if (search.report_type.value == 3) {
+          // Week
+          const complaintDate = dayjs(complaint.created_at);
+          const allWeeks = generateAllWeeksInRange(
+            search.week_range[0][0],
+            search.week_range[search.week_range.length - 1][1]
+          );
+
+          checkSearchRange = false; // Initialize to false
+
+          allWeeks.forEach((range: any) => {
+            const startOfWeek = dayjs(range[0]);
+            const endOfWeek = dayjs(range[1]);
+            if (complaintDate.isBetween(startOfWeek, endOfWeek, null, "[]")) {
+              checkSearchRange = true;
+            }
+          });
+        } else if (search.report_type.value == 4) {
+          // day
+          const complaintDate: any = dayjs(complaint.created_at);
+          const allDays = generateAllDaysInRange(
+            search.day_range[0],
+            search.day_range[1]
+          );
+
+          checkSearchRange = false; // Initialize to false
+          allDays.forEach((day: any) => {
+            if (complaintDate.isSame(day, "day")) {
+              checkSearchRange = true;
+            }
+          });
+        }
+
+        if (checkSearchRange == true) {
+          const provinceName = complaint.province.name_th; // Assuming complaint has a province object with name_th
+
+          let checkPro: any = groupedMapData.find((x: any) => {
+            return x.name == provinceName;
+          });
+
+          if (checkPro) {
+            checkPro.value++;
+
+            let or = complaint.bureau?.name_th_abbr;
+
+            let checkOrganization = checkPro.organization.find((x: any) => {
+              return x.name == or;
+            });
+
+            if (checkOrganization) {
+              checkOrganization.value++;
+            } else {
+              checkPro.organization.push({
+                name: or,
+                value: 1,
+              });
+            }
+          } else {
+            let or = complaint.bureau?.name_th_abbr;
+
+            groupedMapData.push({
+              name: provinceName,
+              value: 1,
+              organization: [
+                {
+                  name: or,
+                  value: 1,
+                },
+              ],
+            });
+          }
+        }
+      }
+
+      const uniqueOrganizations = new Set();
+
+      console.log(groupedMapData);
+      groupedMapData.forEach((item: any) => {
+        item.organization.forEach((org: any) => {
+          if (org.name) {
+            uniqueOrganizations.add(org.name);
+          } else {
+            uniqueOrganizations.add(undefined);
+          }
+        });
+      });
+
+      grouped_map_data.value = Array.from(uniqueOrganizations);
+      console.log(grouped_map_data.value);
+      chartMapData.value.series[0].data = groupedMapData;
+    };
+
+    const getDistrictDataForProvince = (provinceName: any) => {
+      if (provinceName != "") {
+        const districts = districtJson.features.filter(
+          (feature) => feature.properties.pro_th === provinceName
+        );
+        let districtsGeo: any = { ...districtJson, features: districts };
+        echarts.registerMap("districts", districtsGeo as any, {});
+
+        let districtComplaintData: any = [];
+
+        districts.forEach((district: any) => {
+          const districtName = district.properties.name; // Replace with actual property name for district name
+
+          let complaintCheck = receive1_items.value.filter((complaint: any) => {
+            return complaint.province.name_th == provinceName;
+          });
+
+          complaintCheck = complaintCheck.filter((complaint: any) => {
+            return complaint.district.name_th == districtName;
+          });
+
+          complaintCheck = complaintCheck.filter((complaint: any) => {
+            let checkSearchRange: any = false;
+
+            if (search.report_type.value == 1) {
+              let year = new Date(complaint.created_at).getFullYear() + 543;
+              if (yearsRange.value.includes(year)) {
+                checkSearchRange = true;
+              }
+            } else if (search.report_type.value == 2) {
+              // Month
+              const createdAt: any = dayjs(complaint.created_at)
+                .locale("th")
+                .format("MMM BB");
+
+              if (monthsRange.value.includes(createdAt)) {
+                checkSearchRange = true;
+              } else {
+                checkSearchRange = false;
+              }
+            } else if (search.report_type.value == 3) {
+              // Week
+              const complaintDate = dayjs(complaint.created_at);
+              const allWeeks = generateAllWeeksInRange(
+                search.week_range[0][0],
+                search.week_range[search.week_range.length - 1][1]
+              );
+
+              checkSearchRange = false; // Initialize to false
+
+              allWeeks.forEach((range: any) => {
+                const startOfWeek = dayjs(range[0]);
+                const endOfWeek = dayjs(range[1]);
+                if (
+                  complaintDate.isBetween(startOfWeek, endOfWeek, null, "[]")
+                ) {
+                  checkSearchRange = true;
+                }
+              });
+            } else if (search.report_type.value == 4) {
+              // day
+              const complaintDate: any = dayjs(complaint.created_at);
+              const allDays = generateAllDaysInRange(
+                search.day_range[0],
+                search.day_range[1]
+              );
+
+              checkSearchRange = false; // Initialize to false
+              allDays.forEach((day: any) => {
+                if (complaintDate.isSame(day, "day")) {
+                  checkSearchRange = true;
+                }
+              });
+            }
+
+            return checkSearchRange == true;
+          });
+
+          let organization: any = [];
+
+          complaintCheck.forEach((el: any) => {
+            let or = el.division?.name_th_abbr;
+
+            let checkOrganization: any = organization.find((x: any) => {
+              return x.name == or;
+            });
+
+            if (checkOrganization) {
+              checkOrganization.value++;
+            } else {
+              organization.push({
+                name: or,
+                value: 1,
+              });
+            }
+          });
+
+          let complaintCount = complaintCheck.length;
+
+          if (complaintCount > 0) {
+            districtComplaintData.push({
+              name: districtName,
+              value: complaintCount,
+              organization,
+            });
+          }
+        });
+
+        const uniqueOrganizations = new Set();
+
+        districtComplaintData.forEach((item: any) => {
+          item.organization.forEach((org: any) => {
+            if (org.name) {
+              uniqueOrganizations.add(org.name);
+            } else {
+              uniqueOrganizations.add(undefined);
+            }
+          });
+        });
+
+        grouped_map_data.value = Array.from(uniqueOrganizations);
+
+        return districtComplaintData;
+      }
+
+      // This function should return data for the districts in the given province
+      return [];
+    };
+
+    const renderDistrictChart = (provinceName: any) => {
+      const districtData = getDistrictDataForProvince(provinceName);
+
+      const districtChartData = {
+        title: {
+          text: `จำนวนเรื่องร้องเรียนเชิงพื้นที่: ${provinceName}`,
+          left: "center",
+        },
+        tooltip: {
+          trigger: "item",
+          //   formatter: "{b}: {c}",
+          showDelay: 0,
+          transitionDuration: 0.2,
+          formatter: (params: any) => {
+            const data = params.data;
+            let text = "";
+            data?.organization?.forEach((x: any) => {
+              text = text + `${x.name} : ${x.value}<br/>`;
+            });
+
+            return `
+            จังหวัด: ${data?.name}<br/>
+            จำนวนเรื่อง: ${data?.value}<br/>
+            ${text}
+          `;
+          },
+        },
+        visualMap: {
+          left: "right",
+          min: 0,
+          max: 1000,
+          text: ["High", "Low"],
+          inRange: {
+            color: [
+              "#313695",
+              "#4575b4",
+              "#74add1",
+              "#abd9e9",
+              "#e0f3f8",
+              "#ffffbf",
+              "#fee090",
+              "#fdae61",
+              "#f46d43",
+              "#d73027",
+              "#a50026",
+            ],
+          },
+          top: "bottom",
+          calculable: true,
+        },
+        geo: {
+          map: "districts",
+          aspectScale: 0.9,
+          roam: true,
+          layoutCenter: ["50%", "50%"],
+          layoutSize: "100%",
+          emphasis: {
+            label: {
+              show: false,
+            },
+          },
+          itemStyle: {
+            areaColor: "#eeeeee",
+            borderColor: "#111",
+          },
+        },
+        toolbox: {
+          show: true,
+          //   orient: "vertical",
+          left: "left",
+          top: "top",
+          feature: {
+            dataView: { readOnly: false },
+            restore: {},
+            saveAsImage: { show: true },
+          },
+        },
+        series: [
+          {
+            name: "จำนวนเรื่องร้องเรียน",
+            type: "map",
+            geoIndex: 0,
+            emphasis: {
+              label: {
+                show: true,
+              },
+            },
+            data: districtData,
+            // nameProperty: "amp_th",
+          },
+        ],
+      };
+
+      chartMapData.value = districtChartData;
+    };
+
+    const handleMapClick = (params: any) => {
+      if (params.componentType === "series" && params.seriesType === "map") {
+        showDistricts.value = true;
+        const provinceName = params.name;
+        renderDistrictChart(provinceName);
+      }
+    };
+
+    const backToProvinces = () => {
+      showDistricts.value = false;
+      chartMapData.value = { ...defaultMapChart };
+    };
+    // End Map
 
     // Fetch Data
     const fetchItems = async () => {
@@ -665,12 +1188,16 @@ export default defineComponent({
 
         if (search.report_type.value == 1) {
           reloadData();
+          reloadMapData();
         } else if (search.report_type.value == 2) {
           reloadMonthData();
+          reloadMapData();
         } else if (search.report_type.value == 3) {
           reloadWeekData();
+          reloadMapData();
         } else if (search.report_type.value == 4) {
           reloadDayData();
+          reloadMapData();
         }
       } catch (error) {
         console.log(error);
@@ -929,8 +1456,7 @@ export default defineComponent({
           };
         }
 
-        const weekIndex =
-          groupedData[bureau_id].weekRange.indexOf(weekRange);
+        const weekIndex = groupedData[bureau_id].weekRange.indexOf(weekRange);
         if (weekIndex === -1) {
           groupedData[bureau_id].weekRange.push(weekRange);
           groupedData[bureau_id].data.push(1);
@@ -954,11 +1480,7 @@ export default defineComponent({
               .format("DD MMM BB")}`;
 
             if (complaint && complaint.bureau_id) {
-              processComplaint(
-                complaint,
-                weekRange,
-                complaint.bureau_id
-              );
+              processComplaint(complaint, weekRange, complaint.bureau_id);
             } else {
               processComplaint(complaint, weekRange, null);
             }
@@ -1036,11 +1558,7 @@ export default defineComponent({
 
       let groupedData = {};
 
-      const processComplaint = (
-        complaint: any,
-        day: any,
-        bureau_id: any
-      ) => {
+      const processComplaint = (complaint: any, day: any, bureau_id: any) => {
         bureau_id = complaint.bureau_id ?? 99;
 
         if (!groupedData[bureau_id]) {
@@ -1068,11 +1586,7 @@ export default defineComponent({
 
           if (complaintDate.isSame(day, "day")) {
             if (complaint && complaint.bureau_id) {
-              processComplaint(
-                complaint,
-                formattedDay,
-                complaint.bureau_id
-              );
+              processComplaint(complaint, formattedDay, complaint.bureau_id);
             } else {
               processComplaint(complaint, formattedDay, null);
             }
@@ -1227,6 +1741,18 @@ export default defineComponent({
       await fetchItems();
     });
 
+    const showOrganization = (c: any, organization: any) => {
+      let check = organization.find((x: any) => {
+        return x.name == c;
+      });
+
+      //   let check2 = organization.find((x: any) => {
+      //     return x.name == c;
+      //   });
+
+      return check ? check.value : 0;
+    };
+
     return {
       selectOptions,
       search,
@@ -1243,6 +1769,12 @@ export default defineComponent({
       weeksRange,
       daysRange,
       onExport,
+      chartMapData,
+      handleMapClick,
+      showDistricts,
+      backToProvinces,
+      showOrganization,
+      grouped_map_data,
     };
   },
 });
