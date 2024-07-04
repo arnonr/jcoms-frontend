@@ -138,7 +138,7 @@
                 <span v-else></span>
               </td>
               <td class="text-center">
-                {{ it.role.name_th }}
+                {{ it.role?.name_th }}
               </td>
 
               <td class="text-center">

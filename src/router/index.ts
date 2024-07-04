@@ -156,6 +156,15 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/report-login",
+        name: "report-login",
+        component: () => import("@/views/report/ReportLogin.vue"),
+        meta: {
+          pageTitle: "รายงานการเข้าใช้งาน",
+          breadcrumbs: ["Report"],
+        },
+      },
+      {
         path: "/geo",
         name: "geo",
         component: () => import("@/views/Geo.vue"),

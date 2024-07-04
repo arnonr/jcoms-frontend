@@ -71,6 +71,12 @@ const MainMenuConfig: Array<MenuItem> = [
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
+      {
+        heading: "รายงานการเข้าใช้งาน",
+        route: "/report-login",
+        keenthemesIcon: "element-11",
+        bootstrapIcon: "bi-app-indicator",
+      },
     ],
   },
   {

@@ -63,7 +63,7 @@
 
               <div class="mb-7 col-12 col-lg-12">
                 <label for="organization_all" class="form-label"
-                  >หน่วยงานระดับ บก./ภ.จว.</label
+                  >หน่วยงานระดับ บช./ภ.</label
                 >
                 <v-select
                   name="accused_organization_all"
