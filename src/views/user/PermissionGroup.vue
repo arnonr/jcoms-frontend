@@ -88,6 +88,10 @@ import "vue-select/dist/vue-select.css";
 export default defineComponent({
   name: "permission-user",
   props: {
+    id: {
+      type: Number,
+      required: true,
+    },
   },
   components: { vSelect },
   setup(props, context) {

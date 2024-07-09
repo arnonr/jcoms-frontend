@@ -278,6 +278,7 @@
     <div id="permissiom-modal">
       <PermissionGroup
         v-if="openPermissionGroupModal == true"
+        :id="1"
         @reload="
           () => {
             fetchItems();
