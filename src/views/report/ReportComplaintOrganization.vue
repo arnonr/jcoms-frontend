@@ -121,21 +121,6 @@
       <!-- Map Chart -->
       <div class="card mt-15">
         <div class="card-body row">
-          <div class="col-12 col-md-12 mx-auto" style="min-height: 800px">
-            <button
-              @click="backToProvinces"
-              v-if="showDistricts"
-              class="btn btn-primary"
-            >
-              Back to Provinces
-            </button>
-            <v-chart
-              class="chart-container3"
-              :option="chartMapData"
-              style="min-height: 800px"
-              @click="handleMapClick"
-            />
-          </div>
           <div
             class="col-12 col-md-12 mx-auto table-responsive"
             style="min-height: 800px"
@@ -172,6 +157,21 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="col-12 col-md-12 mx-auto" style="min-height: 800px">
+            <button
+              @click="backToProvinces"
+              v-if="showDistricts"
+              class="btn btn-primary"
+            >
+              Back to Provinces
+            </button>
+            <v-chart
+              class="chart-container3"
+              :option="chartMapData"
+              style="min-height: 800px"
+              @click="handleMapClick"
+            />
           </div>
         </div>
       </div>
@@ -1273,6 +1273,10 @@ export default defineComponent({
           barGap: 0.1,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
@@ -1387,6 +1391,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
@@ -1509,6 +1517,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
         let _i = 0;
         weeksRange.value.forEach((el: any) => {
@@ -1615,6 +1627,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;

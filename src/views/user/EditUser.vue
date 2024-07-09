@@ -397,7 +397,6 @@ import {
   onMounted,
   onUnmounted,
   watch,
-  watchEffect,
 } from "vue";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";

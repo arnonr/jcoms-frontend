@@ -120,21 +120,6 @@
       <div class="card mt-15">
         <div class="card-body row responsive">
           <div class="col-12 col-md-6 mx-auto" style="min-height: 800px">
-            <button
-              @click="backToProvinces"
-              v-if="showDistricts"
-              class="btn btn-primary"
-            >
-              Back to Provinces
-            </button>
-            <v-chart
-              class="chart-container3"
-              :option="chartMapData"
-              style="min-height: 800px"
-              @click="handleMapClick"
-            />
-          </div>
-          <div class="col-12 col-md-6 mx-auto" style="min-height: 800px">
             <table
               class="table table-bordered table-striped bg-sky"
               style="width: 100%"
@@ -166,6 +151,21 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="col-12 col-md-6 mx-auto" style="min-height: 800px">
+            <button
+              @click="backToProvinces"
+              v-if="showDistricts"
+              class="btn btn-primary"
+            >
+              Back to Provinces
+            </button>
+            <v-chart
+              class="chart-container3"
+              :option="chartMapData"
+              style="min-height: 800px"
+              @click="handleMapClick"
+            />
           </div>
         </div>
       </div>
@@ -514,6 +514,10 @@ export default defineComponent({
         text: "",
         left: "center",
       },
+      legend: {
+        data: [],
+        top: "top", // แสดง legend ที่ด้านล่างของกราฟ
+      },
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -532,6 +536,10 @@ export default defineComponent({
         {
           data: [],
           type: "bar",
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ],
     };
@@ -1114,6 +1122,10 @@ export default defineComponent({
           barGap: 0.1,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
@@ -1121,6 +1133,8 @@ export default defineComponent({
           data[el.toString()] = x.data[_i];
           _i = _i + 1;
         });
+
+        chartData.value.legend.data = result.map((x) => x.topic_category_name);
 
         return data;
       });
@@ -1233,6 +1247,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
@@ -1355,6 +1373,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
         let _i = 0;
         weeksRange.value.forEach((el: any) => {
@@ -1465,6 +1487,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;

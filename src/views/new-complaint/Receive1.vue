@@ -372,6 +372,15 @@ export default defineComponent({
                 " : ฝรท. ลงรับเรื่อง ณ วันที่ " +
                 dayjs().locale("th").format("DD MMM BBBB");
             }
+
+            if (item.receive_status.state_id == 18) {
+              message =
+                "แจ้งสถานะเรื่องร้องเรียน " +
+                item.jcoms_no +
+                " : ฝรท. ไม่รับเรื่อง เพราะ " +
+                item.receive_comment;
+            }
+
             await ApiService.post("sms/send-sms", {
               msisdn,
               message,

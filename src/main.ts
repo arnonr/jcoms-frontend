@@ -23,9 +23,10 @@ import VueMatomo from "vue-matomo";
 // import VueMatomo1 from '@betomorrow/vue-matomo';
 
 import { abilitiesPlugin } from "@casl/vue";
-import ability from "./services/ability";
+import { ability } from "./services/ability1";
 
-const app = createApp(App);
+
+const app = createApp(App); 
 
 app.use(createPinia());
 app.use(router);
@@ -63,9 +64,7 @@ app.use(VueGoogleMaps, {
   autobindAllEvents: true,
 });
 
-app.use(abilitiesPlugin, ability, {
-  useGlobalProperties: true,
-});
+app.use(abilitiesPlugin, ability);
 
 ApiService.init(app);
 initApexCharts(app);

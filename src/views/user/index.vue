@@ -104,7 +104,17 @@
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
         <h4 class="card-title">รายการผู้ใช้งาน</h4>
-        <div class="card-toolbar"></div>
+        <div class="card-toolbar">
+          <button
+            class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
+            @click="openPermissionGroupModal = true"
+          >
+            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+            <span class="d-none d-lg-inline-block ms-2"
+              >จัดการสิทธิกลุ่มผู้ใช้งาน</span
+            >
+          </button>
+        </div>
       </div>
       <div class="card-body table-responsive">
         <!-- <div class="overflow-visible"> -->
@@ -191,6 +201,18 @@
                         >แก้ไขข้อมูล/เปลี่ยนสถานะ</a
                       >
                     </li>
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="
+                          () => {
+                            Object.assign(item, it);
+                            openPermissionModal = true;
+                          }
+                        "
+                        >สิทธิ์การใช้งาน</a
+                      >
+                    </li>
                   </ul>
                 </div>
               </td>
@@ -251,6 +273,24 @@
       />
     </div>
     <!--  -->
+
+    <!-- Modal สิทธิ์ -->
+    <div id="permissiom-modal">
+      <PermissionGroup
+        v-if="openPermissionGroupModal == true"
+        @reload="
+          () => {
+            fetchItems();
+          }
+        "
+        @close-modal="
+          () => {
+            openPermissionGroupModal = false;
+          }
+        "
+      />
+    </div>
+    <!--  -->
   </div>
 </template>
 
@@ -285,6 +325,8 @@ import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 
 import DetailUser from "@/views/user/DetailUser.vue";
 import EditUser from "@/views/user/EditUser.vue";
+import PermissionUser from "@/views/user/PermissionUser.vue";
+import PermissionGroup from "@/views/user/PermissionGroup.vue";
 
 import useBasicData from "@/composables/useBasicData";
 
@@ -298,6 +340,8 @@ export default defineComponent({
     BlogPagination,
     DetailUser,
     EditUser,
+    PermissionUser,
+    PermissionGroup,
   },
   setup() {
     // Variable
@@ -330,6 +374,8 @@ export default defineComponent({
 
     const openDetailModal = ref(false);
     const openEditModal = ref(false);
+    const openPermissionModal = ref(false);
+    const openPermissionGroupModal = ref(false);
 
     // Fetch Data
     const fetchRole = async () => {
@@ -429,6 +475,8 @@ export default defineComponent({
       return find_status;
     };
 
+    const onPermissionGroup = () => {};
+
     // Mounted
     onMounted(() => {
       fetchPrefixName();
@@ -483,6 +531,8 @@ export default defineComponent({
       fetchItems,
       openDetailModal,
       openEditModal,
+      openPermissionModal,
+      openPermissionGroupModal,
     };
   },
 });

@@ -117,21 +117,6 @@
       <!-- Map Chart -->
       <div class="card mt-15">
         <div class="card-body row responsive">
-          <div class="col-12 col-md-8 mx-auto" style="min-height: 800px">
-            <button
-              @click="backToProvinces"
-              v-if="showDistricts"
-              class="btn btn-primary"
-            >
-              Back to Provinces
-            </button>
-            <v-chart
-              class="chart-container3"
-              :option="chartMapData"
-              style="min-height: 800px"
-              @click="handleMapClick"
-            />
-          </div>
           <div class="col-12 col-md-4 mx-auto" style="min-height: 800px">
             <table
               class="table table-bordered table-striped bg-sky"
@@ -157,6 +142,21 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="col-12 col-md-8 mx-auto" style="min-height: 800px">
+            <button
+              @click="backToProvinces"
+              v-if="showDistricts"
+              class="btn btn-primary"
+            >
+              Back to Provinces
+            </button>
+            <v-chart
+              class="chart-container3"
+              :option="chartMapData"
+              style="min-height: 800px"
+              @click="handleMapClick"
+            />
           </div>
         </div>
       </div>
@@ -330,6 +330,10 @@ export default defineComponent({
         {
           data: [],
           type: "bar",
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ],
     };
@@ -858,6 +862,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };

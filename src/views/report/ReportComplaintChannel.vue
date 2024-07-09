@@ -477,6 +477,10 @@ export default defineComponent({
           barGap: 0.1,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
@@ -596,6 +600,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
@@ -723,6 +731,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
         let _i = 0;
         weeksRange.value.forEach((el: any) => {
@@ -837,6 +849,10 @@ export default defineComponent({
           barGap: 0,
           emphasis: { focus: "series" },
           data: x.data,
+          label: {
+            show: true,
+            position: "top",
+          },
         };
 
         let _i = 0;
