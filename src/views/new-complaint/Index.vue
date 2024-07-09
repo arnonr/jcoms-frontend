@@ -20,6 +20,14 @@
             >
           </button>
 
+          <button
+            class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
+            @click="onImport1111()"
+          >
+            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+            <span class="d-none d-lg-inline-block ms-2">โหลดข้อมูล 1111</span>
+          </button>
+
           <div class="dropdown">
             <button
               class="btn btn-outline btn-outline-success pe-sm-3 ps-sm-5 dropdown-toggle"
@@ -196,6 +204,8 @@ import ExcelJS from "exceljs";
 // PDF
 import { jsPDF } from "jspdf";
 import Vue3Html2pdf from "vue3-html2pdf";
+// Use Toast Composables
+import useToast from "@/composables/useToast";
 
 // Component
 import SearchComponent from "@/components/complaint/Search.vue";
@@ -589,6 +599,13 @@ export default defineComponent({
       Object.assign(item, it);
     };
 
+    const onImport1111 = async () => {
+      await ApiService.query("opm/sync-all",{});
+
+      //   prefix_names.value = data.data;
+      useToast("นำเข้าข้อมูลเสร็จสิ้น");
+    };
+
     // Mounted
     onMounted(() => {
       fetchItems();
@@ -620,6 +637,7 @@ export default defineComponent({
       items_export,
       html2Pdf,
       generatePDF,
+      onImport1111,
     };
   },
 });
