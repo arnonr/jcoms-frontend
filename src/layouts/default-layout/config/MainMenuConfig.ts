@@ -28,7 +28,6 @@ const MainMenuConfig: Array<MenuItem> = [
     heading: "สถิติ/รายงาน",
     route: "/crafted",
     pages: [
-
       {
         heading: "จำนวนเรื่องร้องเรียน",
         route: "/report-complaint",
@@ -98,6 +97,12 @@ const MainMenuConfig: Array<MenuItem> = [
       {
         heading: "ทะเบียนผู้ใช้งาน",
         route: "/user",
+        keenthemesIcon: "element-11",
+        bootstrapIcon: "bi-app-indicator",
+      },
+      {
+        heading: "สิทธิระหว่างหน่วยงาน",
+        route: "/permission-org",
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },

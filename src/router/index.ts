@@ -57,6 +57,14 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/permission-org",
+        name: "permission-org",
+        component: () => import("@/views/permission/org.vue"),
+        meta: {
+          pageTitle: "จัดการผู้ใช้งาน",
+        },
+      },
+      {
         path: "/new-complaint",
         name: "new-complaint",
         component: () => import("@/views/new-complaint/Index.vue"),

@@ -18,12 +18,12 @@
             <form @submit.prevent="updatePermissions">
               <div class="mb-3">
                 <label for="line_id" class="form-label required"
-                  >สิทธิผู้ใช้งาน</label
+                  >กลุ่มผู้ใช้งาน</label
                 >
                 <v-select
                   label="name_th"
                   name="role_id"
-                  placeholder="สิทธิผู้ใช้งาน"
+                  placeholder="กลุ่มผู้ใช้งาน"
                   :options="selectOptions.roles"
                   class="form-control form-control-lg"
                   :clearable="false"
@@ -32,11 +32,15 @@
                 </v-select>
               </div>
 
-              <table class="table table-bordered">
-                <thead>
+              <table class="table table-bordered table-striped bg-sky" v-if="item.role_id">
+                <thead class="bg-color-police">
                   <tr>
-                    <th>Menu</th>
-                    <th v-for="permission in permissions" :key="permission">
+                    <th class="text-white">Menu</th>
+                    <th
+                      v-for="permission in permissions"
+                      :key="permission"
+                      class="text-center text-white"
+                    >
                       {{ permission }}
                     </th>
                   </tr>
@@ -44,9 +48,14 @@
                 <tbody>
                   <tr v-for="menu in menus" :key="menu">
                     <td>{{ menu.name_th }}</td>
-                    <td v-for="permission in permissions" :key="permission">
+                    <td
+                      v-for="permission in permissions"
+                      :key="permission"
+                      class="text-center"
+                    >
                       <input
                         type="checkbox"
+                        class="form-check-input"
                         v-model="menuPermissions[menu.name_th][permission]"
                       />
                     </td>
@@ -54,7 +63,11 @@
                 </tbody>
               </table>
 
-              <button type="submit" class="btn btn-primary">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                :disabled="isLoading"
+              >
                 Update Permissions
               </button>
             </form>
@@ -73,35 +86,36 @@ import {
   toRefs,
   onMounted,
   onUnmounted,
+  watch,
 } from "vue";
-import { defineAbilitiesFor, ability } from "@/services/ability1";
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
 import ApiService from "@/core/services/ApiService";
-
 import useMenuData from "@/composables/useMenuData";
-
+import useToast from "@/composables/useToast";
 // Import Vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 
+interface Permissions {
+  view: boolean;
+  create: boolean;
+  update: boolean;
+  delete: boolean;
+  export: boolean;
+}
+
 export default defineComponent({
-  name: "permission-user",
-  props: {
-    id: {
-      type: Number,
-      required: true,
-    },
-  },
+  name: "permission-group",
   components: { vSelect },
   setup(props, context) {
     // Variable
     const emit = context.emit;
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
-
+    const isLoading = ref<any>(null);
+    const group_permission_items = reactive<any>([]);
     const item = reactive<any>({});
-
     const selectOptions = ref({
       // complaint_channels: <any>[],
       roles: <any>[],
@@ -113,10 +127,9 @@ export default defineComponent({
         role: "guest",
       },
       selectedMenu: "",
-      //   menus: ["Dashboard", "Articles", "Settings"],
       menus: useMenuData().menus,
       permissions: ["view", "create", "update", "delete"],
-      menuPermissions: {},
+      menuPermissions: {} as Record<string, Permissions>,
     });
 
     state.menus.forEach((menu: any) => {
@@ -125,17 +138,12 @@ export default defineComponent({
         create: false,
         update: false,
         delete: false,
+        export: false,
       };
     });
 
     const fetchRole = async () => {
-      let api = {
-        type: "query",
-        url: "role",
-      };
-
-      // ส่งไรไป ID phone เก็บ tracking_state ไว้  มี ID หรือเบอร์โทร
-      await ApiService[api.type](api.url, {
+      await ApiService.query("role", {
         params: { is_active: 1, perPage: 500 },
       })
         .then(({ data }) => {
@@ -151,13 +159,88 @@ export default defineComponent({
         });
     };
 
-    const updatePermissions = () => {
-      // อัปเดตสิทธิ์การเข้าถึงโดยอ้างอิงจากบทบาทของผู้ใช้
-      const newAbilities = defineAbilitiesFor(state.user);
-      ability.update(newAbilities.rules);
+    // fetch User Permission
+    const fetchPermissions = async () => {
+      state.menus.forEach((menu: any) => {
+        state.menuPermissions[menu.name_th] = {
+          view: false,
+          create: false,
+          update: false,
+          delete: false,
+          export: false,
+        };
+      });
+      if (item.role_id != null) {
+        const params = {
+          perPage: 100,
+          currentPage: 1,
+          role_id: item.role_id.id,
+          is_active: 1,
+        };
 
-      // แสดงข้อความยืนยันหรือดำเนินการเพิ่มเติม
-      alert("Permissions updated successfully!");
+        const { data } = await ApiService.query("permission", {
+          params: params,
+        });
+
+        group_permission_items.length = 0;
+        Object.assign(group_permission_items, data.data);
+
+        group_permission_items.forEach((el: any) => {
+          menuPermissions.value[el.menu] = {
+            view: el.action_view == 1 ? true : false,
+            create: el.action_create == 1 ? true : false,
+            update: el.action_update == 1 ? true : false,
+            delete: el.action_delete == 1 ? true : false,
+            export: el.action_export == 1 ? true : false,
+          };
+        });
+      }
+    };
+    const updatePermissions = async () => {
+      if (item.role_id != null) {
+        isLoading.value = true;
+        await ApiService.delete("permission/with-role-id/" + item.role_id.id)
+          .then(async ({ data }) => {
+            if (data.msg != "success") {
+              throw new Error("ERROR");
+            }
+          })
+          .catch(({ response }) => {
+            console.log(response);
+          });
+
+        for (const [menu, permissions] of Object.entries(
+          menuPermissions.value
+        )) {
+          let permission_data = <any>{
+            role_id: item.role_id.id,
+            menu: menu,
+            action_view: 0,
+            action_create: 0,
+            action_update: 0,
+            action_delete: 0,
+            action_export: 0,
+            is_active: 1,
+          };
+          for (const [permission, value] of Object.entries(permissions)) {
+            permission_data["action_" + permission] = value == true ? 1 : 0;
+          }
+          await ApiService.post("permission/", {
+            ...permission_data,
+          })
+            .then(async ({ data }) => {
+              if (data.msg != "success") {
+                throw new Error("ERROR");
+              }
+            })
+            .catch(({ response }) => {
+              console.log(response);
+            });
+        }
+
+        isLoading.value = false;
+        useToast("อัพเดทสิทธิเสร็จสิ้น", "success");
+      }
     };
 
     // ส่งออกสถานะและฟังก์ชันเพื่อให้สามารถใช้งานใน template ได้
@@ -172,7 +255,8 @@ export default defineComponent({
 
     // Mounted
     onMounted(async () => {
-      fetchRole();  
+      fetchRole();
+      fetchPermissions();
       mainModalObj.value = new Modal(mainModalRef.value, {});
       mainModalObj.value.show();
     });
@@ -181,6 +265,13 @@ export default defineComponent({
       mainModalObj.value.hide();
       emit("close-modal");
     });
+
+    watch(
+      () => item.role_id,
+      async () => {
+        fetchPermissions();
+      }
+    );
 
     return {
       user,
@@ -193,11 +284,19 @@ export default defineComponent({
       mainModalRef,
       selectOptions,
       item,
+      isLoading,
     };
   },
 });
 </script>
 
 <style scoped>
+.bg-sky {
+  background-color: #d9f4fe;
+}
+
+.form-check-input[type="checkbox"] {
+  border-color: #800002;
+}
 /* Add your styles here */
 </style>

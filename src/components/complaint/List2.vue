@@ -157,7 +157,39 @@
                   >
                 </li>
 
-                <li v-if="it.state_id == 20 || it.state_id == 29">
+                <li v-if="it.state_id == 20">
+                  <a
+                    v-if="userData.role_id == 1 || userData.role_id == 4"
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSend3({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บก./ภ.จว. ส่งต่อเรื่อง</a
+                  >
+                </li>
+
+                <li
+                  v-if="
+                    it.state_id == 20 || it.state_id == 12 || it.state_id == 29
+                  "
+                >
+                  <a
+                    v-if="userData.role_id == 1 || userData.role_id == 4"
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceiveReport0({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >บก./ภ.จว. รับรายงาน</a
+                  >
+                </li>
+
+                <li v-if="it.state_id == 20 || it.state_id == 22 || it.state_id == 29">
                   <a
                     v-if="userData.role_id == 1 || userData.role_id == 4"
                     class="dropdown-item cursor-pointer"
@@ -501,12 +533,20 @@ export default defineComponent({
       emit("send2", item);
     };
 
+    const handleSend3 = (item: any) => {
+      emit("send3", item);
+    };
+
     const handleSendReport1 = (item: any) => {
       emit("sendReport1", item);
     };
 
     const handleSendReport2 = (item: any) => {
       emit("sendReport2", item);
+    };
+
+    const handleReceiveReport0 = (item: any) => {
+      emit("receiveReport0", item);
     };
 
     const handleReceiveReport1 = (item: any) => {
@@ -597,8 +637,6 @@ export default defineComponent({
     const convertAccused = (accused: any) => {
       let text = "";
 
-
-
       if (accused != null && accused.length != 0) {
         if (!accused?.length) return "";
 
@@ -629,6 +667,7 @@ export default defineComponent({
       handleSend1,
       handleReceive2,
       handleSend2,
+      handleSend3,
       handleReceive3,
       convertDate,
       convertState,
@@ -640,6 +679,7 @@ export default defineComponent({
       handleSendReport2,
       handleReceiveReport1,
       handleReceiveReport2,
+      handleReceiveReport0,
       handleSuccessReport,
       handleReturnReport1,
       handleReturnReport2,

@@ -11,7 +11,7 @@
             aria-expanded="false"
             aria-controls="collapseOne"
           >
-            <i class="fa fa-search pe-2"></i> ค้นหาผู้ใช้งาน
+            <i class="fa fa-search pe-2"></i> ค้นหาหน่วยงาน
           </h6>
           <div
             id="collapseOne"
@@ -21,67 +21,39 @@
             <div class="accordion-body">
               <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
                 <div class="col-12 col-md-4 my-2">
-                  <label for="">ชื่อผู้ใช้งาน</label>
-                  <input
-                    type="text"
-                    id="txt-search-fullname"
-                    name="txt-search-fullname"
-                    class="form-control"
-                    v-model="search.fullname"
-                  />
-                </div>
-
-                <div class="col-12 col-md-4 my-2">
-                  <label for="">บช./ภ.</label>
-                  <v-select
-                    id="slt-search-bureau-id"
-                    name="slt-search-bureau-id"
-                    label="name_th"
-                    placeholder="บช./ภ."
-                    :options="selectOptions.bureaus"
-                    v-model="search.bureau_id"
-                    class="form-control"
-                    :clearable="true"
-                  ></v-select>
-                </div>
-
-                <div class="col-12 col-md-4 my-2">
-                  <label for="">บก./ภ.จว.</label>
-                  <v-select
-                    id="slt-search-division-id"
-                    name="slt-search-division-id"
-                    label="name_th"
-                    placeholder="บก./ภ.จว."
-                    :options="selectOptions.divisions"
-                    v-model="search.division_id"
-                    class="form-control"
-                    :clearable="true"
-                  ></v-select>
-                </div>
-
-                <div class="col-12 col-md-4 my-2">
-                  <label for="">สถานะผู้ใช้งาน</label>
-                  <v-select
-                    id="slt-search-status-id"
-                    name="slt-search-status-id"
-                    label="name"
-                    placeholder="สถานะผู้ใช้งาน"
-                    :options="selectOptions.user_statuses"
-                    v-model="search.status"
-                    class="form-control"
-                    :clearable="true"
-                  ></v-select>
-                </div>
-
-                <div class="col-12 col-md-4 my-2">
-                  <label for="">กลุ่มผู้ใช้งาน</label>
+                  <label for="">ระดับหน่วยงานต้นทาง</label>
                   <v-select
                     id="slt-search-role-id"
                     name="slt-search-role-id"
                     label="name_th"
-                    placeholder="กลุ่มผู้ใช้งาน"
+                    placeholder="ระดับหน่วยงาน"
                     :options="selectOptions.roles"
                     v-model="search.role_id"
+                    class="form-control"
+                    :clearable="true"
+                  ></v-select>
+                </div>
+                <div class="col-12 col-md-4 my-2">
+                  <label for="">ค้นหาหน่วยงานต้นทาง</label>
+                  <v-select
+                    id="slt-search-source-org"
+                    name="slt-search-source-org"
+                    label="name_th"
+                    :options="selectOptions.orgs"
+                    v-model="search.source_org"
+                    class="form-control"
+                    :clearable="true"
+                  ></v-select>
+                </div>
+
+                <div class="col-12 col-md-4 my-2">
+                  <label for="">ค้นหาหน่วยงานปลายทาง</label>
+                  <v-select
+                    id="slt-search-destination-org"
+                    name="slt-search-destination-org"
+                    label="name_th"
+                    :options="selectOptions.orgs"
+                    v-model="search.destination_org"
                     class="form-control"
                     :clearable="true"
                   ></v-select>
@@ -103,27 +75,17 @@
 
     <div class="card shadow-sm my-5">
       <div class="card-header bg-white">
-        <h4 class="card-title">รายการผู้ใช้งาน</h4>
+        <h4 class="card-title">รายการหน่วยงาน</h4>
         <div class="card-toolbar">
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
-            @click="openPermissionGroupModal = true"
+            @click="openPermissionOrgModal = true"
           >
             <i class="bi bi-file-earmark-plus-fill fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2"
-              >จัดการสิทธิกลุ่มผู้ใช้งาน</span
+              >เพิ่มสิทธิการแสดงหน่วยงาน</span
             >
           </button>
-
-          <!-- <button
-            class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
-            @click="openPermissionGroupModal = true"
-          >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2"
-              >จัดการสิทธิการมองเห็นหน่วยงาน</span
-            >
-          </button> -->
         </div>
       </div>
       <div class="card-body table-responsive">
@@ -131,44 +93,17 @@
         <table class="table table-bordered table-striped" style="width: 100%">
           <thead class="bg-color-police">
             <tr>
-              <th class="text-center text-white">รหัสเจ้าหน้าที่</th>
-              <th class="text-center text-white">ชื่อผู้ใช้งาน</th>
-              <th class="text-center text-white">หน่วยงาน</th>
-              <th class="text-center text-white">กลุ่มผู้ใช้งาน</th>
-              <th class="text-center text-white">สถานะ</th>
+              <th class="text-center text-white">ระดับหน่วยงานต้นทาง</th>
+              <th class="text-center text-white">หน่วยงานต้นทาง</th>
+              <th class="text-center text-white">หน่วยงานปลายทาง</th>
               <th class="text-center text-white">จัดการข้อมูล</th>
             </tr>
           </thead>
           <tbody v-if="items.length != 0">
             <tr v-for="(it, idx) in items" :key="idx">
-              <td class="text-center">
-                {{ it.officer_code }}
-              </td>
-              <td class="text-center">
-                {{ it.firstname + " " + it.lastname }}
-              </td>
-              <td>
-                <span v-if="it.division_id"
-                  >{{ it.division.name_th }} > {{ it.bureau.name_th }}</span
-                >
-                <span v-else-if="it.bureau_id">{{ it.bureau.name_th }}</span>
-                <span v-else-if="it.inspector_id">{{
-                  it.inspector.name_th
-                }}</span>
-                <span v-else></span>
-              </td>
-              <td class="text-center">
-                {{ it.role?.name_th }}
-              </td>
-
-              <td class="text-center">
-                <span
-                  class="badge p-2 text-white fw-bold"
-                  :class="['bg-' + showStatus(it.status).color]"
-                  >{{ showStatus(it.status).name }}</span
-                >
-              </td>
-
+              <td class="text-center"></td>
+              <td class="text-center"></td>
+              <td class="text-center"></td>
               <td class="text-center">
                 <div class="dropdown">
                   <button
@@ -193,22 +128,10 @@
                         @click="
                           () => {
                             Object.assign(item, it);
-                            openDetailModal = true;
-                          }
-                        "
-                        >รายละเอียด</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        class="dropdown-item cursor-pointer"
-                        @click="
-                          () => {
-                            Object.assign(item, it);
                             openEditModal = true;
                           }
                         "
-                        >แก้ไขข้อมูล/เปลี่ยนสถานะ</a
+                        >แก้ไข</a
                       >
                     </li>
                     <li>
@@ -220,7 +143,7 @@
                             openPermissionModal = true;
                           }
                         "
-                        >สิทธิ์การใช้งาน</a
+                        >ลบ</a
                       >
                     </li>
                   </ul>
@@ -251,23 +174,9 @@
       </div>
     </div>
 
-    <!-- Modal ดูรายละเอียด -->
-    <div id="detail-modal">
-      <DetailUser
-        :id="item.id"
-        v-if="openDetailModal == true"
-        @close-modal="
-          () => {
-            openDetailModal = false;
-          }
-        "
-      />
-    </div>
-    <!--  -->
-
     <!-- Modal แก้ไขข้อมูล -->
     <div id="edit-modal">
-      <EditUser
+      <!-- <EditUser
         :id="item.id"
         v-if="openEditModal == true"
         @reload="
@@ -280,13 +189,13 @@
             openEditModal = false;
           }
         "
-      />
+      /> -->
     </div>
     <!--  -->
 
     <!-- Modal สิทธิ์ -->
-    <div id="permissiom-modal">
-      <PermissionUser
+    <div id="add-modal">
+      <!-- <PermissionUser
         v-if="openPermissionModal == true"
         :user_id="item.id"
         :is_custom_role="item.is_custom_role ? item.is_custom_role : 0"
@@ -300,25 +209,7 @@
             openPermissionModal = false;
           }
         "
-      />
-    </div>
-    <!--  -->
-
-    <!-- Modal สิทธิ์ -->
-    <div id="permissiom-group-modal">
-      <PermissionGroup
-        v-if="openPermissionGroupModal == true"
-        @reload="
-          () => {
-            fetchItems();
-          }
-        "
-        @close-modal="
-          () => {
-            openPermissionGroupModal = false;
-          }
-        "
-      />
+      /> -->
     </div>
     <!--  -->
   </div>
@@ -350,28 +241,17 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
-// Import ExcelJS
-// import ExcelJS from "exceljs";
-
-import DetailUser from "@/views/user/DetailUser.vue";
-import EditUser from "@/views/user/EditUser.vue";
-import PermissionUser from "@/views/user/PermissionUser.vue";
-import PermissionGroup from "@/views/user/PermissionGroup.vue";
 
 import useBasicData from "@/composables/useBasicData";
 
 // Component
 export default defineComponent({
-  name: "complaint",
+  name: "permission-org",
   components: {
     VueDatePicker,
     dayjs,
     vSelect,
     BlogPagination,
-    DetailUser,
-    EditUser,
-    PermissionUser,
-    PermissionGroup,
   },
   setup() {
     // Variable
@@ -402,32 +282,11 @@ export default defineComponent({
     const totalPage = ref(1);
     const totalItems = ref(0);
 
-    const openDetailModal = ref(false);
     const openEditModal = ref(false);
-    const openPermissionModal = ref(false);
-    const openPermissionGroupModal = ref(false);
+    const openAddModal = ref(false);
+    const openPermissionOrgModal = ref(false);
 
     // Fetch Data
-    const fetchRole = async () => {
-      const { data } = await ApiService.query("role", {
-        params: {
-          is_active: 1,
-          perPage: 500,
-        },
-      });
-      selectOptions.value.roles = data.data;
-    };
-
-    const fetchPrefixName = async () => {
-      const { data } = await ApiService.query("prefix-name", {
-        params: {
-          is_active: 1,
-          perPage: 500,
-        },
-      });
-      selectOptions.value.prefix_names = data.data;
-    };
-
     const fetchInspector = async () => {
       const { data } = await ApiService.query("inspector", {
         params: {
@@ -438,7 +297,6 @@ export default defineComponent({
       });
       selectOptions.value.inspectors = data.data;
     };
-
     const fetchBureau = async () => {
       const { data } = await ApiService.query("bureau", {
         params: {
@@ -450,7 +308,6 @@ export default defineComponent({
       });
       selectOptions.value.bureaus = data.data;
     };
-
     const fetchDivision = async () => {
       const { data } = await ApiService.query("division", {
         params: {
@@ -509,8 +366,6 @@ export default defineComponent({
 
     // Mounted
     onMounted(() => {
-      fetchPrefixName();
-      fetchRole();
       fetchInspector();
       fetchBureau();
       fetchItems();
@@ -559,10 +414,9 @@ export default defineComponent({
       onSearch,
       onClear,
       fetchItems,
-      openDetailModal,
       openEditModal,
-      openPermissionModal,
-      openPermissionGroupModal,
+      openAddModal,
+      openPermissionOrgModal,
     };
   },
 });

@@ -75,6 +75,12 @@
                 openReceive3Modal = true;
               }
             "
+          @send3="
+              (it: any) => {
+                Object.assign(item, it);
+                openSend3Modal = true;
+              }
+            "
           @sendReport1="
               (it: any) => {
                 Object.assign(item, it);
@@ -85,6 +91,12 @@
               (it: any) => {
                 Object.assign(item, it);
                 openSendReport2Modal = true;
+              }
+            "
+          @receiveReport0="
+              (it: any) => {
+                Object.assign(item, it);
+                openReceiveReport0Modal = true;
               }
             "
           @receiveReport1="
@@ -255,6 +267,20 @@
         />
       </div>
 
+      <!-- Modal Send  บก./ภจ.ว. ส่งต่อเรื่อง -->
+      <div id="send3-modal">
+        <Send3Page
+          v-if="openSend3Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSend3Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
       <!-- Modal Send Report บก./ภจ.ว. ส่งรายงาน -->
       <div id="send-report1-modal">
         <SendReport1Page
@@ -263,6 +289,20 @@
           @close-modal="
             () => {
               openSendReport1Modal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive Report 0 บก./ภจ.ว. รับรายงาน -->
+      <div id="receive-report1-modal">
+        <ReceiveReport0Page
+          v-if="openReceiveReport0Modal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceiveReport0Modal = false;
             }
           "
           @reload="fetchItems"
@@ -488,8 +528,10 @@ import Send1Page from "@/views/complaint/Send1.vue";
 import Receive2Page from "@/views/complaint/Receive2.vue";
 import Send2Page from "@/views/complaint/Send2.vue";
 import Receive3Page from "@/views/complaint/Receive3.vue";
+import Send3Page from "@/views/complaint/Send3.vue";
 import SendReport1Page from "@/views/complaint/SendReport1.vue";
 import SendReport2Page from "@/views/complaint/SendReport2.vue";
+import ReceiveReport0Page from "@/views/complaint/ReceiveReport0.vue";
 import ReceiveReport1Page from "@/views/complaint/ReceiveReport1.vue";
 import ReceiveReport2Page from "@/views/complaint/ReceiveReport2.vue";
 import SuccessReportPage from "@/views/complaint/SuccessReport.vue";
@@ -514,8 +556,10 @@ export default defineComponent({
     Receive2Page,
     Send2Page,
     Receive3Page,
+    Send3Page,
     SendReport1Page,
     SendReport2Page,
+    ReceiveReport0Page,
     ReceiveReport1Page,
     ReceiveReport2Page,
     SuccessReportPage,
@@ -557,12 +601,14 @@ export default defineComponent({
     const openSend1Modal = ref(false);
     const openReceive2Modal = ref(false);
     const openSend2Modal = ref(false);
+    const openSend3Modal = ref(false);
     const openReceive3Modal = ref(false);
     const openSendReport1Modal = ref(false);
     const openSendReport2Modal = ref(false);
     const openReceiveReport1Modal = ref(false);
     const openReceiveReport2Modal = ref(false);
     const openSuccessReportModal = ref(false);
+    const openReceiveReport0Modal = ref(false);
     const openReturnReport1Modal = ref(false);
     const openReturnReport2Modal = ref(false);
 
@@ -626,7 +672,7 @@ export default defineComponent({
         receive_status: 1,
         state_in: undefined,
       };
-      
+
       if (userData.role_id == 1) {
       } else if (userData.role_id == 2) {
       } else if (userData.role_id == 3) {
@@ -982,8 +1028,10 @@ export default defineComponent({
       openReceive2Modal,
       openSend2Modal,
       openReceive3Modal,
+      openSend3Modal,
       openSendReport1Modal,
       openSendReport2Modal,
+      openReceiveReport0Modal,
       openReceiveReport1Modal,
       openReceiveReport2Modal,
       openSuccessReportModal,

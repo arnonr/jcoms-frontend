@@ -20,7 +20,7 @@ export default () => {
     },
     {
       id: 4,
-      name_th: "รายงาน/สถิติ",
+      name_th: "สถิติ/รายงาน",
       name_en: null,
       is_active: 1,
     },
@@ -39,6 +39,12 @@ export default () => {
     {
       id: 7,
       name_th: "ทะเบียนผู้ใช้งาน",
+      name_en: null,
+      is_active: 1,
+    },
+    {
+      id: 8,
+      name_th: "สิทธิระหว่างหน่วยงาน",
       name_en: null,
       is_active: 1,
     },

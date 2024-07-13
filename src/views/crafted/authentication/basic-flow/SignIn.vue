@@ -11,6 +11,13 @@
     >
       <!--begin::Heading-->
       <div class="text-center mb-10">
+        <router-link to="/" class="mb-6 mb-lg-12">
+          <img
+            alt="Logo"
+            :src="getAssetPath('media/logos/logo_jaray.svg')"
+            style="width: 10rem"
+          />
+        </router-link>
         <!--begin::Title-->
         <h1 class="text-gray-900 mb-3">
           ระบบบริหารจัดการเรื่องร้องเรียน<br />เจ้าหน้าที่ตำรวจ
@@ -49,7 +56,7 @@
             >Password</label
           >
           <!--end::Label-->
-          
+
           <!--begin::Link-->
           <router-link to="/password-reset" class="link-primary fs-6 fw-bold">
             ลืมรหัสผ่าน ?

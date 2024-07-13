@@ -377,6 +377,75 @@
                       </td>
                     </tr>
 
+                    <!-- ส่งต่อเรื่อง ไป บก./จ. -->
+                    <tr v-if="complaint_forward_state.state12 != null">
+                      <td class="p-3">
+                        {{
+                          showDate(complaint_forward_state.state12.created_at)
+                        }}
+                      </td>
+                      <td class="fw-bold p-3">
+                        {{ complaint_forward_state.state12.state.name_th }}
+                        ({{
+                          complaint_forward_state.state12.to_agency?.name_th
+                        }})
+                      </td>
+                      <td class="p-3">
+                        <div class="mb-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            วันที่เอกสาร :
+                          </div>
+                          <div>
+                            {{
+                              showDate(
+                                complaint_forward_state.state12.forward_doc_date
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            เลขที่เอกสาร :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state12.forward_doc_no }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            คำสั่งการ :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state12.order.name_th }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            หมายเหตุ :
+                          </div>
+                          <div>
+                            {{ complaint_forward_state.state12.order_detail }}
+                          </div>
+                        </div>
+                        <div class="mt-0 pt-0 pb-0 d-flex">
+                          <div class="fw-bold" style="min-width: 100px">
+                            ไฟล์แนบ :
+                          </div>
+                          <div>
+                            <a
+                              :href="
+                                complaint_forward_state.state12
+                                  .forward_doc_filename
+                              "
+                              target="_blank"
+                            >
+                              เอกสาร
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
                     <!-- ส่งรายงานกลับ -->
                     <tr v-if="complaint_report_state.state15 != null">
                       <td class="p-3">
@@ -449,7 +518,7 @@
                       </td>
                     </tr>
 
-                    <!-- บช./ภ. รับเรื่อง -->
+                    <!-- บช./ภ. รับรายงาน-->
                     <tr
                       v-if="
                         complaint_report_state.state15 != null &&
@@ -1125,6 +1194,7 @@ export default defineComponent({
     const complaint_forward_state = reactive<any>({
       state10: null,
       state11: null,
+      state12: null,
     });
 
     const complaint_report_state = reactive<any>({
@@ -1209,6 +1279,12 @@ export default defineComponent({
         complaint_forward_state.state11 = complaint_forward.find((x: any) => {
           return x.state_id == 11;
         });
+
+        complaint_forward_state.state12 = complaint_forward.find((x: any) => {
+          return x.state_id == 12;
+        });
+
+        console.log(complaint_forward_state);
       } catch (error) {
         console.log(error);
       }
@@ -1314,9 +1390,9 @@ export default defineComponent({
         (x: any) => x.id === complaint_item.state_id
       );
 
-    //   complaint_item.state = selectOptions.value.states.find(
-    //     (x: any) => x.id === complaint_item.state_id
-    //   );
+      //   complaint_item.state = selectOptions.value.states.find(
+      //     (x: any) => x.id === complaint_item.state_id
+      //   );
     });
 
     // Watch
