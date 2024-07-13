@@ -33,11 +33,11 @@
           <td>{{ convertAccused(it.accused) }}</td>
           <td>
             <div v-if="it.agency_id">
-              <span>{{ it.agency.name_th }}</span>
+              <span>{{ it.agency.name_th_abbr }}</span>
             </div>
-            <span v-else-if="it.division_id">{{ it.division.name_th }}</span>
-            <span v-else-if="it.bureau_id">{{ it.bureau.name_th }}</span>
-            <span v-else-if="it.inspector_id">{{ it.inspector.name_th }}</span>
+            <span v-else-if="it.division_id">{{ it.division.name_th_abbr }}</span>
+            <span v-else-if="it.bureau_id">{{ it.bureau.name_th_abbr }}</span>
+            <span v-else-if="it.inspector_id">{{ it.inspector.name_th_abbr }}</span>
             <span v-else></span>
           </td>
           <td>
@@ -720,7 +720,7 @@ export default defineComponent({
               (p: any) => p.id === x.prefix_name_id
             );
 
-            return `${prefix?.name_th !== undefined ? prefix?.name_th : ""}${
+            return `${prefix?.name_th_abbr !== undefined ? prefix?.name_th_abbr : ""}${
               x.firstname || ""
             } ${x.lastname || ""}`;
           })

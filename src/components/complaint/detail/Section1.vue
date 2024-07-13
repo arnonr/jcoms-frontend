@@ -197,8 +197,12 @@
                 {{ showDate(complaint_forward_state.state10.created_at) }}
               </td>
               <td class="fw-bold p-3">
-                {{ complaint_forward_state.state10.state.name_th }}
-                ({{ complaint_forward_state.state10.to_bureau?.name_th }})
+                <!-- {{ complaint_forward_state.state10.state.name_th }} -->
+                {{
+                  "ฝรท. ส่งถึง " +
+                  complaint_forward_state.state10.to_bureau?.name_th_abbr
+                }}
+                <!-- ({{ complaint_forward_state.state10.to_bureau?.name_th }}) -->
               </td>
               <td class="p-3">
                 <div
@@ -275,9 +279,8 @@
                 {{ showDate(complaint_forward_state.state10.receive_at) }}
               </td>
               <td class="fw-bold p-3">
-                บช./ภ. รับเรื่อง/ดำเนินการ ({{
-                  complaint_forward_state.state10.to_bureau?.name_th
-                }})
+                {{ complaint_forward_state.state10.to_bureau?.name_th_abbr }}
+                รับเรื่อง/ดำเนินการ
               </td>
               <td class="p-3">
                 <div class="mb-0 pt-0 pb-0 d-flex">
@@ -313,8 +316,13 @@
                 {{ showDate(complaint_forward_state.state11.created_at) }}
               </td>
               <td class="fw-bold p-3">
-                {{ complaint_forward_state.state11.state.name_th }}
-                ({{ complaint_forward_state.state11.to_division?.name_th }})
+                <!-- {{ complaint_forward_state.state11.state.name_th }} -->
+                <!-- ({{ complaint_forward_state.state11.to_division?.name_th }}) -->
+                {{
+                  complaint_forward_state.state10.to_bureau?.name_th_abbr +
+                  " ส่งถึง " +
+                  complaint_forward_state.state11.to_division?.name_th_abbr
+                }}
               </td>
               <td class="p-3">
                 <div
@@ -391,9 +399,8 @@
                 {{ showDate(complaint_forward_state.state11.receive_at) }}
               </td>
               <td class="fw-bold p-3">
-                บก./จ. รับเรื่อง/ดำเนินการ ({{
-                  complaint_forward_state.state11.to_division?.name_th
-                }})
+                {{ complaint_forward_state.state11.to_division?.name_th_abbr }}
+                รับเรื่อง/ดำเนินการ
               </td>
               <td class="p-3">
                 <div
@@ -438,8 +445,13 @@
                 {{ showDate(complaint_forward_state.state12.created_at) }}
               </td>
               <td class="fw-bold p-3">
-                {{ complaint_forward_state.state12.state.name_th }}
-                ({{ complaint_forward_state.state12.to_division?.name_th }})
+                <!-- {{ complaint_forward_state.state12.state.name_th }}
+                ({{ complaint_forward_state.state12.to_division?.name_th }}) -->
+                {{
+                  complaint_forward_state.state11.to_division?.name_th_abbr +
+                  " ส่งถึง " +
+                  complaint_forward_state.state12.to_agency?.name_th_abbr
+                }}
               </td>
               <td class="p-3">
                 <div
@@ -569,7 +581,10 @@
                 <td class="p-3 text-green">
                   {{ showDate(cr.receive_at) }}
                 </td>
-                <td class="fw-bold p-3 text-green">บก./ภ.จว. รับรายงาน</td>
+                <td class="fw-bold p-3 text-green">
+                  {{ complaint_forward_state.state11.to_division.name_th_abbr }}
+                  รับรายงาน
+                </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_date">
                     <div class="fw-bold" style="min-width: 100px">
@@ -609,7 +624,8 @@
                   {{ showDate(cr.created_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ cr.state.name_th }}
+                  {{ complaint_forward_state.state11.to_division.name_th_abbr }}
+                  รายงานถึง {{ cr.to_bureau.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_date">
@@ -715,7 +731,9 @@
                 <td class="p-3 text-green">
                   {{ showDate(cr.receive_at) }}
                 </td>
-                <td class="fw-bold p-3 text-green">บช./ภ. รับรายงาน</td>
+                <td class="fw-bold p-3 text-green">
+                  {{ cr.to_bureau.name_th_abbr }} รับรายงาน
+                </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_date">
                     <div class="fw-bold" style="min-width: 100px">
@@ -755,7 +773,8 @@
                   {{ showDate(cr.created_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ cr.state.name_th }}
+                  {{ complaint_report_state.state15[0].to_bureau.name_th_abbr }}
+                  รายงานถึง {{ cr.to_inspector.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_date">
@@ -866,7 +885,9 @@
                 <td class="p-3 text-green">
                   {{ showDate(cr.receive_at) }}
                 </td>
-                <td class="fw-bold p-3 text-green">จต. รับรายงาน</td>
+                <td class="fw-bold p-3 text-green">
+                  {{ cr.to_inspector.name_th_abbr }} รับรายงาน
+                </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
@@ -896,12 +917,14 @@
               </tr>
             </template>
 
-            <!-- จต. ปิดเรื่อง -->
+            <!-- กต. ปิดเรื่อง -->
             <tr v-if="complaint_item.closed_at != null">
               <td class="p-3 text-green">
                 {{ showDate(complaint_item.closed_at) }}
               </td>
-              <td class="fw-bold p-3 text-green">จต. ปิดเรื่อง</td>
+              <td class="fw-bold p-3 text-green">
+                {{ complaint_item.inspector.name_th_abbr }} ปิดเรื่อง
+              </td>
               <td class="p-3 text-green">
                 <div class="mt-0 pt-0 pb-0 d-flex">
                   <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
@@ -940,14 +963,11 @@
                 }}
               </td>
               <td class="fw-bold p-3">
+                ฝรท. ส่งถึง
                 {{
-                  complaint_forward_state.inspector_state_1.inspector_state
-                    .name_th
-                }}
-                ({{
                   complaint_forward_state.inspector_state_1.to_inspector
-                    ?.name_th
-                }})
+                    ?.name_th_abbr
+                }}
               </td>
               <td class="p-3">
                 <div
@@ -1041,10 +1061,11 @@
                 }}
               </td>
               <td class="fw-bold p-3">
-                กองตรวจราชการ รับเรื่อง/ดำเนินการ ({{
+                {{
                   complaint_forward_state.inspector_state_1.to_inspector
-                    ?.name_th
-                }})
+                    ?.name_th_abbr
+                }}
+                รับเรื่อง/ดำเนินการ
               </td>
               <td class="p-3">
                 <div class="mb-0 pt-0 pb-0 d-flex">
@@ -1092,7 +1113,8 @@
                   {{ showDate(cf.created_at) }}
                 </td>
                 <td class="fw-bold p-3">
-                  กองตรวจราชการ เร่งรัดเรื่อง ครั้งที่ {{ cf.time_no }}
+                  {{ cf.inspector.name_th_abbr }} เร่งรัดเรื่อง ครั้งที่
+                  {{ cf.time_no }}
                 </td>
                 <td class="p-3">
                   <div class="mb-0 pt-0 pb-0 d-flex">
@@ -1189,12 +1211,7 @@
                   showDate(complaint_forward_state.inspector_state_9.created_at)
                 }}
               </td>
-              <td class="fw-bold p-3">
-                {{
-                  complaint_forward_state.inspector_state_9.inspector_state
-                    .name_th
-                }}
-              </td>
+              <td class="fw-bold p-3">ฝรท. ส่งถึง ผบ.ตร.</td>
               <td class="p-3">
                 <div
                   class="mb-0 pt-0 pb-0 d-flex"
@@ -1311,7 +1328,7 @@
                   {{ showDate(cf.created_at) }}
                 </td>
                 <td class="fw-bold p-3">
-                  ผบ.ตร. เร่งรัดเรื่อง ครั้งที่ {{ cf.time_no }}
+                  ผบ.ตร. เร่งรัดเรื่อง
                 </td>
                 <td class="p-3">
                   <div class="mb-0 pt-0 pb-0 d-flex">

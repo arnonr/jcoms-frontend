@@ -94,7 +94,7 @@
                 <v-select
                   id="slt-search-bureau-id"
                   name="slt-search-bureau-id"
-                  label="name_th"
+                  label="name_th_abbr"
                   placeholder="บช./ภ."
                   :options="selectOptions.bureaus"
                   v-model="search.bureau_id"
@@ -107,7 +107,7 @@
                 <v-select
                   id="slt-search-division-id"
                   name="slt-search-division-id"
-                  label="name_th"
+                  label="name_th_abbr"
                   placeholder="บก./ภ.จว."
                   :options="selectOptions.divisions"
                   v-model="search.division_id"
@@ -121,7 +121,7 @@
                 <v-select
                   id="slt-search-agency-id"
                   name="slt-search-agency-id"
-                  label="name_th"
+                  label="name_th_abbr"
                   placeholder="หน่วยงาน(สถานีตำรวจ)"
                   :options="selectOptions.agencies"
                   v-model="search.agency_id"
@@ -351,11 +351,11 @@
             <h4>ค้นหาจากข้อมูลหน่วยงาน</h4>
             <hr />
             <div class="mb-7">
-              <label for="">กต</label>
+              <label for="">กต.</label>
               <v-select
                 id="slt-search-inspector-id-2"
                 name="slt-search-inspector-id-2"
-                label="name_th"
+                label="name_th_abbr"
                 placeholder="กต."
                 :options="selectOptions.inspectors"
                 v-model="search.inspector_id"
@@ -369,7 +369,7 @@
               <v-select
                 id="slt-search-bureau-id-2"
                 name="slt-search-bureau-id-2"
-                label="name_th"
+                label="name_th_abbr"
                 placeholder="บช./ภ."
                 :options="selectOptions.bureaus"
                 v-model="search.bureau_id"
@@ -383,7 +383,7 @@
               <v-select
                 id="slt-search-division-id-2"
                 name="slt-search-division-id-2"
-                label="name_th"
+                label="name_th_abbr"
                 placeholder="บก./ภ.จว."
                 :options="selectOptions.divisions"
                 v-model="search.division_id"
@@ -397,7 +397,7 @@
               <v-select
                 id="slt-search-agency-id-2"
                 name="slt-search-agency-id-2"
-                label="name_th"
+                label="name_th_abbr"
                 placeholder="หน่วยงาน(สถานีตำรวจ)"
                 :options="selectOptions.agencies"
                 v-model="search.agency"

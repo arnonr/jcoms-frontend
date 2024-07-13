@@ -44329,7 +44329,6 @@ export default () => {
       inspector_id: 1,
     },
   ];
-
   const inspector_organizations = [
     {
       inspector_th: "กองตรวจราชการ1",
@@ -44387,25 +44386,29 @@ export default () => {
       inspector_id: 11,
     },
   ];
-
   const organization_mapping = (type = "all") => {
     const a = agency_organizations.map((el) => {
-      el.label = el.agency_th + " > " + el.division_th + " > " + el.bureau_th;
+      el.label =
+        el.agency_th_abbr +
+        " > " +
+        el.division_th_abbr +
+        " > " +
+        el.bureau_th_abbr;
       return el;
     });
 
     const d = division_organizations.map((el) => {
-      el.label = el.division_th + " > " + el.bureau_th;
+      el.label = el.division_th_abbr + " > " + el.bureau_th_abbr;
       return el;
     });
 
     const b = bureau_organizations.map((el) => {
-      el.label = el.bureau_th;
+      el.label = el.bureau_th_abbr;
       return el;
     });
 
     const i = inspector_organizations.map((el) => {
-      el.label = el.inspector_th;
+      el.label = el.inspector_th_abbr;
       return el;
     });
 
