@@ -18,7 +18,7 @@
         >
           <div class="accordion-body">
             <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
-              <div class="col-12 col-md-12 my-2">
+              <div class="col-6 col-md-6 my-2">
                 <label for="">เลือกรูปแบบรายงาน</label>
                 <v-select
                   id="slt-search-bureau-id"
@@ -32,7 +32,7 @@
                 ></v-select>
               </div>
 
-              <div class="col-12 col-md-12 my-2" v-if="show_complaint_type_id">
+              <div class="col-6 col-md-6 my-2" v-if="show_complaint_type_id">
                 <label for="">หมวดหมู่เรื่อง : </label>
                 <v-select
                   id="slt-search-complain-type-id-2"
@@ -47,7 +47,7 @@
               </div>
 
               <div
-                class="col-12 col-md-12 my-2"
+                class="col-6 col-md-6 my-2"
                 v-if="search.report_type?.value == 1"
               >
                 <label for="">เลือกช่วงปี</label>
@@ -72,7 +72,7 @@
               </div>
 
               <div
-                class="col-12 col-md-12 my-2"
+                class="col-6 col-md-6 my-2"
                 v-if="search.report_type?.value == 2"
               >
                 <label for="">เลือกช่วงเดือน</label>
@@ -96,7 +96,7 @@
               </div>
 
               <div
-                class="col-12 col-md-12 my-2"
+                class="col-6 col-md-6 my-2"
                 v-if="search.report_type?.value == 3"
               >
                 <label for="">เลือกช่วงสัปดาห์</label>
@@ -121,7 +121,7 @@
               </div>
 
               <div
-                class="col-12 col-md-12 my-2"
+                class="col-6 col-md-6 my-2"
                 v-if="search.report_type?.value == 4"
               >
                 <label for="">เลือกช่วงวันที่</label>

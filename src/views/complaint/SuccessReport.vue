@@ -228,6 +228,7 @@ export default defineComponent({
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
         item.phone_number = data.data.complainant?.phone_number;
+        item.receive_at = data.data.complainant?.receive_at;
 
         isLoading.value = false;
       } catch (error) {
@@ -290,6 +291,13 @@ export default defineComponent({
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
+
+          //   if 1111
+          await ApiService.post("opm/add-operating/" + item.complaint_id, {
+            detail: item.closed_comment,
+            date_opened: dayjs(item.receive_at).format("YYYY-MM-DD HH:ii:ss"),
+            date_closed: dayjs().format("YYYY-MM-DD HH:ii:ss"),
+          });
 
           //   SMS
           let msisdn = item.phone_number;

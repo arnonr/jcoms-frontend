@@ -6,29 +6,29 @@
     >
       <thead class="bg-color-police">
         <tr>
-          <th class="text-center text-white">วันที่ร้องเรียน</th>
-          <th class="text-center text-white">ระยะเวลา (วัน)</th>
-          <th class="text-center text-white">รหัสคำร้อง</th>
-          <th class="text-center text-white">ลักษณะความผิด</th>
-          <th class="text-center text-white">เรื่องร้องเรียน</th>
-          <th class="text-center text-white">ผู้ถูกร้อง</th>
-          <th class="text-center text-white">หน่วยงานถูกร้อง</th>
-          <th class="text-center text-white">สถานะเรื่องร้องเรียน</th>
-          <th class="text-center text-white">สถานะกองตรวจดำเนินการ</th>
-          <th class="text-center text-white">จัดการข้อมูล</th>
+          <th class="text-white">วันที่ร้องเรียน</th>
+          <th class="text-white">ระยะเวลา (วัน)</th>
+          <th class="text-white">รหัสคำร้อง</th>
+          <th class="text-white">ลักษณะความผิด</th>
+          <th class=" text-white">เรื่องร้องเรียน</th>
+          <th class=" text-white">ผู้ถูกร้อง</th>
+          <th class=" text-white">หน่วยงานถูกร้อง</th>
+          <th class=" text-white">สถานะเรื่องร้องเรียน</th>
+          <th class=" text-white">สถานะกองตรวจดำเนินการ</th>
+          <th class="text-white">จัดการข้อมูล</th>
         </tr>
       </thead>
       <tbody v-if="items.length != 0">
         <tr v-for="(it, idx) in items" :key="idx">
-          <td class="text-center">
+          <td>
             {{ convertDate(it.created_at) }}
           </td>
-          <td class="text-center">
+          <td>
             {{ convertDueDate(it.forward_doc_date, it.due_day) }}
           </td>
-          <td class="text-center">{{ it.jcoms_no }}</td>
+          <td>{{ it.jcoms_no }}</td>
 
-          <td class="text-center">{{ it.topic_type?.name_th }}</td>
+          <td>{{ it.topic_type?.name_th }}</td>
           <td>{{ it.complaint_title }}</td>
           <td>{{ convertAccused(it.accused) }}</td>
           <td>
@@ -40,7 +40,7 @@
             <span v-else-if="it.inspector_id">{{ it.inspector.name_th }}</span>
             <span v-else></span>
           </td>
-          <td class="text-center">
+          <td>
             <span
               class="badge p-2 text-black"
               :style="`background-color: ${
@@ -50,7 +50,7 @@
             >
           </td>
 
-          <td class="text-center">
+          <td >
             <span
               class="badge p-2 text-black"
               :style="`background-color: ${
@@ -60,7 +60,7 @@
             >
           </td>
 
-          <td class="text-center">
+          <td >
             <div class="dropdown">
               <button
                 class="btn btn-primary btn-sm dropdown-toggle"

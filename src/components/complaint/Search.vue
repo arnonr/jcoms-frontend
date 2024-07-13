@@ -129,6 +129,33 @@
                   :clearable="true"
                 ></v-select>
               </div>
+
+              <div class="col-6 col-md-6 my-2">
+                <label for="">สถานะเรื่องร้องเรียน</label>
+                <v-select
+                  id="slt-search-proceed-state-2"
+                  name="slt-search-procees-state-2"
+                  label="name_th"
+                  placeholder="สถานะเรื่องร้องเรียน"
+                  :options="selectOptions.states"
+                  v-model="search.state_id"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
+              <div class="col-6 col-md-6 my-2">
+                <label for="">สถานะกองตรวจดำเนินการ</label>
+                <v-select
+                  id="slt-search-proceed-state-2"
+                  name="slt-search-procees-state-2"
+                  label="name_th"
+                  placeholder="สถานะกองตรวจดำเนินการ"
+                  :options="selectOptions.inspector_states"
+                  v-model="search.inspector_state_id"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
             </div>
             <div class="pt-5">
               <button class="btn btn-success fw-bold" @click="onSearch()">
@@ -161,7 +188,7 @@
       data-kt-drawer-name="search"
       data-kt-drawer-activate="true"
       data-kt-drawer-overlay="true"
-      data-kt-drawer-width="{default:'350px', 'md': '525px'}"
+      data-kt-drawer-width="{default:'400px', 'md': '600px'}"
       data-kt-drawer-direction="end"
       data-kt-drawer-toggle="#kt_search_toggle"
       data-kt-drawer-close="#kt_search_close"
@@ -293,7 +320,7 @@
             </div>
 
             <div class="row">
-              <div class="col-md-6 mb-7">
+              <div class="col-md-12 mb-7">
                 <label for="">ประเภทการระบุตัวตน</label>
                 <v-select
                   id="slt-search-is-anonymous-2"
@@ -306,7 +333,7 @@
                   :clearable="true"
                 ></v-select>
               </div>
-              <div class="col-md-6 mb-7">
+              <div class="col-md-12 mb-7">
                 <label for="">สถานะเรื่องร้องเรียน</label>
                 <v-select
                   id="slt-search-proceed-state-2"
@@ -590,6 +617,7 @@ dayjs.extend(buddhistEra);
 
 // Import Store
 import { useSearchComplaintStore } from "@/stores/searchComplaint";
+import useInspectorStateData from "@/composables/useInspectorStateData";
 
 export default defineComponent({
   name: "search-complaint",
@@ -649,6 +677,7 @@ export default defineComponent({
       topic_categories: [],
       topic_types: [],
       prefix_names: [],
+      inspector_states: useInspectorStateData().inspector_states,
     });
 
     const format = (date: any) => {
@@ -700,7 +729,23 @@ export default defineComponent({
         });
       } else {
         selectOptions.value.states = states.filter((x: any) => {
-          return x.id != 1 && x.id != 18;
+          return (
+            x.id != 1 &&
+            x.id != 18 &&
+            x.id != 4 &&
+            x.id != 5 &&
+            x.id != 6 &&
+            x.id != 7 &&
+            x.id != 8 &&
+            x.id != 9 &&
+            x.id != 13 &&
+            x.id != 14 &&
+            x.id != 21 &&
+            x.id != 25 &&
+            x.id != 26 &&
+            x.id != 27 &&
+            x.id != 32
+          );
         });
       }
 

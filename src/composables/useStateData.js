@@ -4,7 +4,7 @@ export default () => {
       id: 1,
       name_th: "เรื่องรอการตรวจสอบ",
       name_en: null,
-      bg_color: "#f8285a",
+      bg_color: "#17c653",
     },
     {
       id: 3,
@@ -66,7 +66,7 @@ export default () => {
     },
     {
       id: 12,
-      name_th: "หน่วย ภ.จว./บก. ส่งถึง กก./สถานี ดำเนินการ",
+      name_th: "ภ.จว./บก. ส่งถึง กก./สถานี ดำเนินการ",
       name_en: null,
       bg_color: "#ffc107",
       bg_bureau_color: "#ffc107",
@@ -90,7 +90,7 @@ export default () => {
     },
     {
       id: 15,
-      name_th: "หน่วย ภ.จว./บก. รายงานถึง บช./ภ.",
+      name_th: "ภ.จว./บก. รายงานถึง บช./ภ.",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
@@ -98,7 +98,7 @@ export default () => {
     },
     {
       id: 16,
-      name_th: "หน่วย บช./ภ. รายงานถึง จต.",
+      name_th: "บช./ภ. รายงานถึง จต.",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
@@ -114,11 +114,11 @@ export default () => {
       id: 18,
       name_th: "ไม่รับเรื่อง",
       name_en: null,
-      bg_color: "#17c653",
+      bg_color: "#f8285a",
     },
     {
       id: 19,
-      name_th: "หน่วย บช./ภ. รับเรื่อง",
+      name_th: "บช./ภ. รับเรื่อง",
       name_en: null,
       bg_color: "#ff8c00",
       bg_bureau_color: "#ff8c00",
@@ -126,7 +126,7 @@ export default () => {
     },
     {
       id: 20,
-      name_th: "หน่วย ภ.จว./บก. รับเรื่อง",
+      name_th: "ภ.จว./บก. รับเรื่อง",
       name_en: null,
       bg_color: "#ff8c00",
       bg_bureau_color: "#ff8c00",
@@ -150,7 +150,7 @@ export default () => {
     },
     {
       id: 23,
-      name_th: "หน่วย บช./ภ. รับรายงาน",
+      name_th: "บช./ภ. รับรายงาน",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
@@ -189,16 +189,16 @@ export default () => {
       bg_division_color: "#7be382",
     },
     {
-      id: 29,
-      name_th: "บช./ภ. ส่งกลับให้ ภ.จว./บก. แก้ไขรายงาน",
+      id: 28,
+      name_th: "ภ.จว./บก. ส่งกลับแก้ไขรายงาน",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
       bg_division_color: "#7be382",
     },
     {
-      id: 28,
-      name_th: "ภ.จว./บก. ส่งกลับให้ กก./สถานี แก้ไขรายงาน",
+      id: 29,
+      name_th: "บช./ภ. ส่งกลับแก้ไขรายงาน",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
@@ -206,7 +206,7 @@ export default () => {
     },
     {
       id: 30,
-      name_th: "จต. ส่งกลับให้ บช./ภ. แก้ไขรายงาน",
+      name_th: "จต. ส่งกลับแก้ไขรายงาน",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",

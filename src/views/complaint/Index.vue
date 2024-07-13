@@ -6,7 +6,12 @@
       <SearchComponent
         :search="search"
         :state_new="false"
-        @search="fetchItems"
+        @search="
+          () => {
+            paginationData.currentPage = 1;
+            fetchItems();
+          }
+        "
         @clear="onClear"
       />
     </div>
@@ -708,6 +713,7 @@ export default defineComponent({
         ...search,
         create_year: search.year ?? undefined,
         state_id: search.state_id?.id ?? undefined,
+        inspector_state_id: search.inspector_state_id?.id ?? undefined,
         inspector_id: search.inspector_id?.id ?? undefined,
         bureau_id: search.bureau_id?.id ?? undefined,
         division_id: search.division_id?.id ?? undefined,
