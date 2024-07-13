@@ -133,9 +133,23 @@
                 Object.assign(item, it);
                 openReceiveInspectorModal = true;
               }"
+          @sendToCommissioner="
+              (it: any) => {
+                Object.assign(item, it);
+                openSendToCommissionerModal = true;
+              }
+            "
+          @receiveCommissioner=" (it: any) => {
+                Object.assign(item, it);
+                openReceiveCommissionerModal = true;
+              }"
           @sendHurry=" (it: any) => {
                 Object.assign(item, it);
                 openSendHurryModal = true;
+              }"
+          @sendCommissionerHurry=" (it: any) => {
+                Object.assign(item, it);
+                openSendCommissionerHurryModal = true;
               }"
           @receiveHurry=" (it: any) => {
                 Object.assign(item, it);
@@ -394,6 +408,34 @@
       </div>
 
       <!-- Flow Inspector -->
+
+      <div id="sendToCommissioner-modal">
+        <SendToCommissionerPage
+          v-if="openSendToCommissionerModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendToCommissionerModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <!-- Modal Receive -->
+      <div id="receive-commissioner-modal">
+        <ReceiveCommissionerPage
+          v-if="openReceiveCommissionerModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openReceiveCommissionerModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
       <div id="send-hurry-modal">
         <SendHurryPage
           v-if="openSendHurryModal == true"
@@ -401,6 +443,19 @@
           @close-modal="
             () => {
               openSendHurryModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
+      <div id="send-commissioner-hurry-modal">
+        <SendCommissionerHurryPage
+          v-if="openSendCommissionerHurryModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSendCommissionerHurryModal = false;
             }
           "
           @reload="fetchItems"
@@ -539,6 +594,9 @@ import ReturnReport1Page from "@/views/complaint/ReturnReport1.vue";
 import ReturnReport2Page from "@/views/complaint/ReturnReport2.vue";
 import SendToInspectorPage from "@/views/complaint/SendToInspector.vue";
 import ReceiveInspectorPage from "@/views/complaint/ReceiveInspector.vue";
+import SendToCommissionerPage from "@/views/complaint/SendToCommissioner.vue";
+import ReceiveCommissionerPage from "@/views/complaint/ReceiveCommissioner.vue";
+import SendCommissionerHurryPage from "@/views/complaint/SendCommissionerHurry.vue";
 import SendHurryPage from "@/views/complaint/SendHurry.vue";
 import ReceiveHurryPage from "@/views/complaint/ReceiveHurry.vue";
 import SendExtendPage from "@/views/complaint/SendExtend.vue";
@@ -567,6 +625,9 @@ export default defineComponent({
     ReturnReport2Page,
     SendToInspectorPage,
     ReceiveInspectorPage,
+    SendToCommissionerPage,
+    SendCommissionerHurryPage,
+    ReceiveCommissionerPage,
     SendHurryPage,
     ReceiveHurryPage,
     SendExtendPage,
@@ -618,6 +679,9 @@ export default defineComponent({
     const openReceiveHurryModal = ref(false);
     const openSendExtendModal = ref(false);
     const openApproveExtendModal = ref(false);
+    const openSendToCommissionerModal = ref(false);
+    const openReceiveCommissionerModal = ref(false);
+    const openSendCommissionerHurryModal = ref(false);
 
     const prefix_names = ref([]);
     const fetchPrefixName = async (params: any) => {
@@ -1039,6 +1103,9 @@ export default defineComponent({
       openReturnReport2Modal,
       openSendToInspectorModal,
       openReceiveInspectorModal,
+      openSendToCommissionerModal,
+      openReceiveCommissionerModal,
+      openSendCommissionerHurryModal,
       openSendHurryModal,
       openReceiveHurryModal,
       openSendExtendModal,

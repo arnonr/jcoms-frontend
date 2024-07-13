@@ -140,7 +140,7 @@
                         @click="
                           () => {
                             Object.assign(item, it);
-                            openPermissionModal = true;
+                            openPermissionOrgModal = true;
                           }
                         "
                         >ลบ</a
@@ -285,6 +285,7 @@ export default defineComponent({
     const openEditModal = ref(false);
     const openAddModal = ref(false);
     const openPermissionOrgModal = ref(false);
+    
 
     // Fetch Data
     const fetchInspector = async () => {

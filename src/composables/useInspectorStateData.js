@@ -48,8 +48,18 @@ export default () => {
       name_en: null,
       bg_color: "#f8285a",
     },
-    
-    
+    {
+      id: 9,
+      name_th: "ส่งต่อเรื่องถึง ผบ. ตร.",
+      name_en: null,
+      bg_color: "#17c653",
+    },
+    {
+      id: 10,
+      name_th: "ผบ. ตร. รับเรื่อง",
+      name_en: null,
+      bg_color: "#17c653",
+    },
   ];
 
   return {

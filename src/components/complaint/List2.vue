@@ -189,7 +189,11 @@
                   >
                 </li>
 
-                <li v-if="it.state_id == 20 || it.state_id == 22 || it.state_id == 29">
+                <li
+                  v-if="
+                    it.state_id == 20 || it.state_id == 22 || it.state_id == 29
+                  "
+                >
                   <a
                     v-if="userData.role_id == 1 || userData.role_id == 4"
                     class="dropdown-item cursor-pointer"
@@ -328,6 +332,65 @@
                   </a>
                 </li>
 
+                <!--  -->
+                <li
+                  v-if="
+                    it.inspector_state_id > 1 &&
+                    it.inspector_state_id != 9 &&
+                    it.inspector_state_id != 10 &&
+                    it.inspector_state_id != 14 &&
+                    it.inspector_state_id != 4
+                  "
+                >
+                  <a
+                    v-if="userData.role_id == 1 || userData.role_id == 2"
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendToCommissioner({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >ส่งต่อเรื่องถึง ผบ.ตร.</a
+                  >
+                </li>
+
+                <li v-if="it.inspector_state_id == 9">
+                  <a
+                    v-if="userData.role_id == 1 || userData.role_id == 6"
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleReceiveCommissioner({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >ผบ.ตร. รับเรื่อง
+                  </a>
+                </li>
+                <!--  -->
+
+                <li
+                  v-if="
+                    it.state_id > 4 &&
+                    it.state_id != 17 &&
+                    it.state_id != 18 &&
+                    it.inspector_state_id > 1 &&
+                    (userData.role_id == 6 || userData.role_id == 1)
+                  "
+                >
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    @click="
+                      handleSendCommissionerHurry({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >ผบ. ตร. เร่งรัดเรื่อง
+                  </a>
+                </li>
+
                 <li
                   v-if="
                     it.state_id > 4 &&
@@ -336,8 +399,7 @@
                     it.inspector_state_id > 1 &&
                     (userData.role_id == 1 ||
                       userData.role_id == 2 ||
-                      userData.role_id == 5 ||
-                      userData.role_id == 6)
+                      userData.role_id == 5)
                   "
                 >
                   <a
@@ -521,6 +583,10 @@ export default defineComponent({
       emit("sendToInspector", item);
     };
 
+    const handleSendToCommissioner = (item: any) => {
+      emit("sendToCommissioner", item);
+    };
+
     const handleReceive2 = (item: any) => {
       emit("receive2", item);
     };
@@ -573,8 +639,16 @@ export default defineComponent({
       emit("receiveInspector", item);
     };
 
+    const handleReceiveCommissioner = (item: any) => {
+      emit("receiveCommissioner", item);
+    };
+
     const handleSendHurry = (item: any) => {
       emit("sendHurry", item);
+    };
+
+    const handleSendCommissionerHurry = (item: any) => {
+      emit("sendCommissionerHurry", item);
     };
 
     const handleReceiveHurry = (item: any) => {
@@ -690,6 +764,9 @@ export default defineComponent({
       handleSendExtend,
       handleApproveExtend,
       userData,
+      handleSendToCommissioner,
+      handleReceiveCommissioner,
+      handleSendCommissionerHurry,
     };
   },
 });

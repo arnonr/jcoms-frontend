@@ -43,7 +43,7 @@
                 ฝรท.
                 {{
                   complaint_item.receive_status == 1
-                    ? "รับเรื่อง"
+                    ? "รับเรื่อง/ดำเนินการ"
                     : "ไม่รับเรื่อง"
                 }}
               </td>
@@ -123,7 +123,7 @@
                 ฝรท.
                 {{
                   complaint_item.receive_status == 1
-                    ? "รับเรื่อง"
+                    ? "รับเรื่อง/ดำเนินการ"
                     : "ไม่รับเรื่อง"
                 }}
               </td>
@@ -275,7 +275,7 @@
                 {{ showDate(complaint_forward_state.state10.receive_at) }}
               </td>
               <td class="fw-bold p-3">
-                บช./ภ. รับเรื่อง ({{
+                บช./ภ. รับเรื่อง/ดำเนินการ ({{
                   complaint_forward_state.state10.to_bureau?.name_th
                 }})
               </td>
@@ -391,7 +391,7 @@
                 {{ showDate(complaint_forward_state.state11.receive_at) }}
               </td>
               <td class="fw-bold p-3">
-                บก./จ. รับเรื่อง ({{
+                บก./จ. รับเรื่อง/ดำเนินการ ({{
                   complaint_forward_state.state11.to_division?.name_th
                 }})
               </td>
@@ -1041,7 +1041,7 @@
                 }}
               </td>
               <td class="fw-bold p-3">
-                กองตรวจราชการ รับเรื่อง ({{
+                กองตรวจราชการ รับเรื่อง/ดำเนินการ ({{
                   complaint_forward_state.inspector_state_1.to_inspector
                     ?.name_th
                 }})
@@ -1087,12 +1087,231 @@
               v-for="(cf, idx) in complaint_follow"
               :key="idx"
             >
-              <tr>
+              <tr v-if="cf.is_commissioner == null">
                 <td class="p-3">
                   {{ showDate(cf.created_at) }}
                 </td>
                 <td class="fw-bold p-3">
                   กองตรวจราชการ เร่งรัดเรื่อง ครั้งที่ {{ cf.time_no }}
+                </td>
+                <td class="p-3">
+                  <div class="mb-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(cf.follow_doc_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ cf.follow_doc_no }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ cf.folllow_detail }}
+                    </div>
+                  </div>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="cf.follow_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div class="fst-italic">
+                      <a :href="cf.follow_doc_filename" target="_blank">
+                        ดาวน์โหลด
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr v-if="cf.receive_at != null">
+                <td class="p-3">
+                  {{ showDate(cf.receive_at) }}
+                </td>
+                <td class="fw-bold p-3">บช./ภ. รับเรื่องเร่งรัด</td>
+                <td class="p-3">
+                  <div class="mb-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ showDate(cf.receive_doc_date) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ cf.receive_doc_no }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ cf.receive_comment }}
+                    </div>
+                  </div>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="cf.receive_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div class="fst-italic">
+                      <a :href="cf.receive_doc_filename" target="_blank">
+                        ดาวน์โหลด
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </template>
+
+            <!-- ฝรท. แจ้งเรื่อง ไป ผบ.ตร. -->
+            <tr v-if="complaint_forward_state.inspector_state_9 != null">
+              <td class="p-3">
+                {{
+                  showDate(complaint_forward_state.inspector_state_9.created_at)
+                }}
+              </td>
+              <td class="fw-bold p-3">
+                {{
+                  complaint_forward_state.inspector_state_9.inspector_state
+                    .name_th
+                }}
+              </td>
+              <td class="p-3">
+                <div
+                  class="mb-0 pt-0 pb-0 d-flex"
+                  v-if="
+                    complaint_forward_state.inspector_state_9.forward_doc_date
+                  "
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    วันที่เอกสาร :
+                  </div>
+                  <div>
+                    {{
+                      showDate(
+                        complaint_forward_state.inspector_state_9
+                          .forward_doc_date
+                      )
+                    }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="
+                    complaint_forward_state.inspector_state_9.forward_doc_no
+                  "
+                >
+                  <div class="fw-bold" style="min-width: 100px">
+                    เลขที่เอกสาร :
+                  </div>
+                  <div>
+                    {{
+                      complaint_forward_state.inspector_state_9.forward_doc_no
+                    }}
+                  </div>
+                </div>
+                <div
+                  class="mt-0 pt-0 pb-0 d-flex"
+                  v-if="
+                    complaint_forward_state.inspector_state_9
+                      .forward_doc_filename
+                  "
+                >
+                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
+                  <div>
+                    <a
+                      :href="
+                        complaint_forward_state.inspector_state_9
+                          .forward_doc_filename
+                      "
+                      target="_blank"
+                    >
+                      ดาวน์โหลด
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ผบ. ตร. รับเรื่อง -->
+            <tr
+              v-if="
+                complaint_forward_state.inspector_state_9 != null &&
+                complaint_forward_state.inspector_state_9.receive_status == 1
+              "
+            >
+              <td class="p-3">
+                {{
+                  showDate(complaint_forward_state.inspector_state_9.receive_at)
+                }}
+              </td>
+              <td class="fw-bold p-3">ผบ.ตร. รับเรื่อง/ดำเนินการ</td>
+              <td class="p-3">
+                <div class="mb-0 pt-0 pb-0 d-flex">
+                  <div class="fw-bold" style="min-width: 100px">
+                    วันที่เอกสาร :
+                  </div>
+                  <div>
+                    {{
+                      showDate(
+                        complaint_forward_state.inspector_state_9
+                          .forward_doc_date
+                      )
+                    }}
+                  </div>
+                </div>
+                <div class="mt-0 pt-0 pb-0 d-flex">
+                  <div class="fw-bold" style="min-width: 100px">
+                    เลขที่เอกสาร :
+                  </div>
+                  <div>
+                    {{
+                      complaint_forward_state.inspector_state_9.receive_doc_no
+                    }}
+                  </div>
+                </div>
+                <div class="mt-0 pt-0 pb-0 d-flex">
+                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
+                  <div>
+                    {{
+                      complaint_forward_state.inspector_state_9.receive_comment
+                    }}
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ผบ. ตร. เร่งรัด -->
+            <template
+              v-if="complaint_follow.length != 0"
+              v-for="(cf, idx) in complaint_follow"
+              :key="idx"
+            >
+              <tr v-if="cf.is_commissioner == 1">
+                <td class="p-3">
+                  {{ showDate(cf.created_at) }}
+                </td>
+                <td class="fw-bold p-3">
+                  ผบ.ตร. เร่งรัดเรื่อง ครั้งที่ {{ cf.time_no }}
                 </td>
                 <td class="p-3">
                   <div class="mb-0 pt-0 pb-0 d-flex">
@@ -1255,7 +1474,7 @@
                 <td class="p-3">
                   {{ showDate(ce.approved_at) }}
                 </td>
-                <td class="fw-bold p-3">กองตรวจพิจารณากราขยายเวลา</td>
+                <td class="fw-bold p-3">กองตรวจพิจารณาขยายเวลา</td>
                 <td class="p-3">
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
@@ -1372,6 +1591,12 @@ export default defineComponent({
         complaint_forward_state.inspector_state_1 = complaint_forward.find(
           (x: any) => {
             return x.inspector_state_id == 1;
+          }
+        );
+
+        complaint_forward_state.inspector_state_9 = complaint_forward.find(
+          (x: any) => {
+            return x.inspector_state_id == 9;
           }
         );
       } catch (error) {
