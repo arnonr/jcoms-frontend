@@ -411,6 +411,8 @@ export default defineComponent({
       checkComplainantUUID.value = getComplainantUUIDWithExpiry();
       if (checkComplainantUUID.value != null) {
         fetchItems(checkComplainantUUID.value);
+      } else {
+        captcha_modal.value = true;
       }
     });
 
