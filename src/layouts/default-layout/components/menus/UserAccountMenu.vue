@@ -1,7 +1,7 @@
 <template>
   <!--begin::Menu-->
   <div
-    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold py-4 fs-6 w-275px"
+    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold py-4 fs-6 w-350px"
     data-kt-menu="true"
   >
     <!--begin::Menu item-->
@@ -17,19 +17,25 @@
         <div class="d-flex flex-column">
           <div class="fw-bold d-flex align-items-center fs-5">
             {{
-              userData?.prefix_name?.name_th +
+              userData?.prefix_name?.name_th_abbr +
               userData?.firstname +
               " " +
               userData.lastname
             }}
-            <span
-              class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2"
-              >{{ userData.role?.name }}</span
-            >
           </div>
           <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{
             userData.email
           }}</a>
+          <div>
+            <span class="badge badge-light-primary fw-bold fs-8 px-2 py-1"
+              >สังกัด {{ showOrganization(userData) }}</span
+            >
+          </div>
+          <div>
+            <span class="badge badge-light-success fw-bold fs-8 px-2 py-1"
+              >ระดับสิทธิ์ {{ userData.role?.name_th }}</span
+            >
+          </div>
         </div>
         <!--end::Username-->
       </div>
@@ -126,6 +132,26 @@ export default defineComponent({
       return countries[i18n.locale.value as keyof typeof countries];
     });
 
+    const showOrganization = (el: any) => {
+      let organzation = "";
+      if (el.agency) {
+        if (el.agency.name_th_abbr != "") {
+          organzation = organzation + el.agency.name_th_abbr + " > ";
+        } else {
+          organzation = organzation + el.agency.name_th + " > ";
+        }
+      }
+      if (el.division) {
+        organzation = organzation + el.division.name_th_abbr + " > ";
+      }
+
+      if (el.bureau) {
+        organzation = organzation + el.bureau.name_th_abbr;
+      }
+
+      return organzation;
+    };
+
     return {
       signOut,
       setLang,
@@ -134,6 +160,7 @@ export default defineComponent({
       countries,
       getAssetPath,
       userData,
+      showOrganization,
     };
   },
 });

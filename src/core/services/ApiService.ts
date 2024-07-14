@@ -115,6 +115,7 @@ class ApiService {
     resource: string,
     params: any
   ): Promise<AxiosResponse> {
+    
     return ApiService.vueInstance.axios.post(`${resource}`, params, {
       headers: {
         "Content-Type": "multipart/form-data",

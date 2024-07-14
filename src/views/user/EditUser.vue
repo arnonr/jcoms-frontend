@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">แก้ไขข้อมูล/เปลี่ยนสถานะ</h3>
+          <h3 class="modal-title">แก้ไขข้อมูล/เปลี่ยนสถานะ/กำหนดสิทธิ</h3>
           <button
             @click="onClose"
             type="button"
@@ -859,11 +859,19 @@ export default defineComponent({
       await onSaveUser();
     };
 
+    const createFormData = (data) => {
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
+      return formData;
+    };
+
     const onSaveUser = async () => {
       //
+      console.log(item);
       let data_item = {
-        file_attach:
-          item.file_attach != null ? item.file_attach : null,
+        file_attach: item.file_attach != null ? item.file_attach : null,
         id_card: item.id_card,
         prefix_name_id: item.prefix_name_id ? item.prefix_name_id.id : null,
         firstname: item.firstname,
@@ -888,8 +896,11 @@ export default defineComponent({
         // updated_by: item.value.firstname + " " + item.value.lastname,
         // รูป
       };
+      console.log(data_item);
 
-      await ApiService.putFormData("user/" + item.id, data_item)
+      const formData = createFormData(data_item);
+
+      await ApiService.putFormData("user/" + item.id, formData)
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
