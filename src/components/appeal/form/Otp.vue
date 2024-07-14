@@ -212,6 +212,7 @@ export default defineComponent({
 
     const otp_secret_key = ref<any>(null);
 
+    const emojis = ["😡", "😟", "😐", "😊", "😁"];
     const rating = ref(0);
     const rating_text = ref("");
     const setRating = (value) => {
@@ -712,6 +713,7 @@ export default defineComponent({
       onEvalModal,
       onEvalConfirm,
       result_complaint,
+      emojis,
     };
   },
 });
