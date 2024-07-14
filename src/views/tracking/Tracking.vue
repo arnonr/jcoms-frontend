@@ -225,7 +225,7 @@ export default defineComponent({
     const openDetailModal = ref(false);
     const evalModalRef = ref<any>(null);
     const evalModalObj = ref<any>(null);
-    const captcha_modal = ref(true);
+    const captcha_modal = ref(false);
 
     const checkComplainantUUID = ref(null);
     const request_otp = reactive<any>({
