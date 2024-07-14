@@ -172,6 +172,18 @@
       </div>
     </div>
     <!--end::Wrapper-->
+
+    <div id="captcha">
+      <!-- first_action -->
+      <Captcha
+        v-if="captcha_modal"
+        @close-captcha-modal="
+          () => {
+            captcha_modal = false;
+          }
+        "
+      />
+    </div>
   </div>
 </template>
 
@@ -194,6 +206,7 @@ import Preloader from "@/components/preloader/Preloader.vue";
 import Otp from "@/components/tracking/Otp.vue";
 import ListComponent from "@/components/tracking/List.vue";
 import DetailPage from "@/views/tracking/DetailModal.vue";
+import Captcha from "@/components/tracking/Captcha.vue";
 
 export default defineComponent({
   name: "tracking",
@@ -204,6 +217,7 @@ export default defineComponent({
     DetailPage,
     Preloader,
     StarRating,
+    Captcha,
   },
   setup() {
     // UI
@@ -212,6 +226,7 @@ export default defineComponent({
     const openDetailModal = ref(false);
     const evalModalRef = ref<any>(null);
     const evalModalObj = ref<any>(null);
+    const captcha_modal = ref(true);
 
     const checkComplainantUUID = ref(null);
     const request_otp = reactive<any>({
@@ -400,6 +415,7 @@ export default defineComponent({
       setRating,
       evalModalRef,
       evalModalObj,
+      captcha_modal,
     };
   },
 });
