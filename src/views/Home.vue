@@ -5,7 +5,7 @@
       <router-link
         to="/sign-in"
         class="fw-bold text-gray-800 text-hover-primary fs-7"
-        >{{ $t('sign_in') }}</router-link
+        >{{ $t("sign_in") }}</router-link
       >
     </div>
 
@@ -46,8 +46,19 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import ApiService from "@/core/services/ApiService";
+import { UAParser } from "ua-parser-js";
+// Import Dayjs
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(buddhistEra);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default defineComponent({
   name: "home",
@@ -134,6 +145,29 @@ export default defineComponent({
         },
       });
     };
+
+    const getBrowserInfo = () => {
+      const parser = new UAParser();
+      const result = parser.getResult();
+      return result;
+    };
+
+    onMounted(async () => {
+      let ua = getBrowserInfo();
+      
+      await ApiService.post("visit-website-log/", {
+        ...ua,
+        created_at: dayjs().format("YYYY-MM-DD"),
+      })
+        .then(async ({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    });
 
     return {
       getAssetPath,

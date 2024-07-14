@@ -264,6 +264,7 @@ export default defineComponent({
               data.data[0].prefix_name_id != null
                 ? {
                     name_th: data.data[0].prefix_name.name_th,
+                    name_th_abbr: data.data[0].prefix_name.name_th_abbr,
                     id: data.data[0].prefix_name_id,
                   }
                 : null,

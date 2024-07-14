@@ -208,7 +208,7 @@
               >คำนำหน้า</label
             >
             <v-select
-              label="name_th"
+              label="name_th_abbr"
               name="id"
               placeholder="คำนำหน้า (ยศ)/prefix"
               :options="selectOptions.prefix_names"
@@ -262,7 +262,7 @@
           <div class="mb-3 col-12 col-lg-6">
             <label for="accused_position_id" class="form-label">ตำแหน่ง</label>
             <v-select
-              label="name_th"
+              label="name_th_abbr"
               name="accused_position_id"
               placeholder="ตำแหน่งงาน/Position"
               :options="selectOptions.positions"
@@ -681,7 +681,8 @@ export default defineComponent({
         if (el.prefix_name_id != null) {
           let prefix_name_id = {
             id: el.prefix_name_id,
-            name_th: el.prefix_name.name_th,
+            name_th: el.prefix_name.name_th, 
+            name_th_abbr: el.prefix_name.name_th_abbr,    
           };
           el.prefix_name_id = prefix_name_id;
         }
@@ -722,6 +723,7 @@ export default defineComponent({
 
         return el;
       });
+      console.log(props.accused)
       Object.assign(props.accused, ac);
     };
 
@@ -980,9 +982,9 @@ export default defineComponent({
         complaint_item.value.topic_type_id = null;
         
         if (value !== null) {
-          complaint_item.value.complaint_type_id = value.complaint_type_id;
-          complaint_item.value.topic_category_id = value.topic_category_id;
-          complaint_item.value.topic_type_id = value.topic_type_id;
+          complaint_item.value.complaint_type_id = value?.complaint_type_id;
+          complaint_item.value.topic_category_id = value?.topic_category_id;
+          complaint_item.value.topic_type_id = value?.topic_type_id;
         }
       }
     );

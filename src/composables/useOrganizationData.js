@@ -44389,26 +44389,26 @@ export default () => {
   const organization_mapping = (type = "all") => {
     const a = agency_organizations.map((el) => {
       el.label =
-        el.agency_th_abbr +
+        (el.agency_th_abbr != null ? el.agency_th_abbr : el.agency_th) +
         " > " +
-        el.division_th_abbr +
+        el.division_th +
         " > " +
-        el.bureau_th_abbr;
+        el.bureau_th;
       return el;
     });
 
     const d = division_organizations.map((el) => {
-      el.label = el.division_th_abbr + " > " + el.bureau_th_abbr;
+      el.label = el.division_th + " > " + el.bureau_th;
       return el;
     });
 
     const b = bureau_organizations.map((el) => {
-      el.label = el.bureau_th_abbr;
+      el.label = el.bureau_th;
       return el;
     });
 
     const i = inspector_organizations.map((el) => {
-      el.label = el.inspector_th_abbr;
+      el.label = el.inspector_th;
       return el;
     });
 

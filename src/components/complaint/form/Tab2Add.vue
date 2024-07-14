@@ -229,7 +229,7 @@
               >คำนำหน้า</label
             >
             <v-select
-              label="name_th"
+              label="name_th_abbr"
               name="id"
               placeholder="คำนำหน้า (ยศ)/prefix"
               :options="selectOptions.prefix_names"
@@ -283,7 +283,7 @@
           <div class="mb-3 col-12 col-lg-6">
             <label for="accused_position_id" class="form-label">ตำแหน่ง</label>
             <v-select
-              label="name_th"
+              label="name_th_abbr"
               name="accused_position_id"
               placeholder="ตำแหน่งงาน/Position"
               :options="selectOptions.positions"

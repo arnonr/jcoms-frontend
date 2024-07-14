@@ -111,7 +111,7 @@
               >คำนำหน้า</label
             >
             <v-select
-              label="name_th"
+              label="name_th_abbr"
               name="id"
               placeholder="คำนำหน้า/Prefix"
               :options="selectOptions.prefix_names"
