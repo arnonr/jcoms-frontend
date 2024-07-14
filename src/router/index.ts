@@ -14,6 +14,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/layouts/home-layout/HomeLayout.vue"),
     children: [
       {
+        path: "/thaid-callback",
+        name: "thaid-callback",
+        component: () => import("@/views/thaid/callback.vue"),
+        meta: {
+          pageTitle: "ThaiD CallBack",
+        },
+      },
+      {
         path: "/home",
         name: "home",
         component: () => import("@/views/Home.vue"),

@@ -18,7 +18,7 @@
         </h4>
       </div>
 
-      <div class="input-group mb-7">
+      <div class="input-group">
         <div class="me-5 fs-5 mb-2">ประเภทการระบุตัวตน</div>
         <div class="form-check form-check-custom form-check-solid me-5 mb-2">
           <input
@@ -50,7 +50,22 @@
         </div>
       </div>
 
-      <div class="col-12">
+      <div
+        class="mb-0 mt-0 col-12 col-lg-12"
+        v-if="parseInt(complaint_item.is_anonymous) == 1"
+      >
+        <button @click="loginWithThaiD" class="btn" style="padding-left: 0px">
+          <!-- Data with ThaiD -->
+          <img
+            src="/media/logos/thaid.png"
+            alt=""
+            style="width: 100px; border-radius: 0.5em"
+          />
+          ระบุตัวตนด้วย ThaiD
+        </button>
+      </div>
+
+      <div class="col-12 mt-7">
         <div class="row">
           <div class="mb-7 col-12 col-lg-4 col-lg-12">
             <label for="phone_number" class="required form-label">{{
@@ -424,8 +439,6 @@ import * as Yup from "yup";
 // Use Toast Composables
 import useToast from "@/composables/useToast";
 
-
-
 // Use Address Composables
 import useBasicData from "@/composables/useBasicData";
 import useAddressData from "@/composables/useAddressData";
@@ -709,6 +722,17 @@ export default defineComponent({
       return localStorage.getItem("lang");
     };
 
+    const loginWithThaiD = () => {
+      const clientId = "YOUR_CLIENT_ID";
+      const redirectUri = "YOUR_REDIRECT_URI";
+      const responseType = "code";
+      const scope = "openid profile email";
+      const state = "RANDOM_STATE_STRING";
+
+      const authUrl = `https://thaid.example.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&state=${state}`;
+      window.location.href = authUrl;
+    };
+
     // Return
     return {
       getAssetPath,
@@ -721,6 +745,7 @@ export default defineComponent({
       errors,
       openFileInput,
       getLang,
+      loginWithThaiD,
     };
   },
 });
