@@ -80,7 +80,6 @@ export default defineComponent({
     const i18n = useI18n();
     const store = useAuthStore();
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    console.log(userData);
 
     i18n.locale.value = localStorage.getItem("lang")
       ? (localStorage.getItem("lang") as string)

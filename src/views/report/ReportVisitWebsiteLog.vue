@@ -31,7 +31,7 @@
 
       <div class="card mt-5">
         <div class="card-header">
-          <h6 class="card-title">สถิติการเข้าใช้งาน</h6>
+          <h6 class="card-title">สถิติการเยี่ยมชมเว็บไซต์</h6>
           <div class="card-toolbar">
             <div class="dropdown">
               <button
@@ -121,34 +121,38 @@
             >
               <thead class="bg-color-police">
                 <tr>
-                  <th class="text-center text-white">วันที่เข้าใช้งาน</th>
-                  <th class="text-center text-white">ผู้ใช้งาน</th>
-                  <th class="text-center text-white">หน่วยงาน</th>
-                  <!-- <th class="text-center text-white">IP</th> -->
-                  <th class="text-center text-white">ช่องทางเข้าใช้งาน</th>
+                  <th class="text-center text-white">วันที่</th>
+                  <!-- <th class="text-center text-white">ip</th> -->
+                  <th class="text-center text-white">browser</th>
+                  <th class="text-center text-white">device</th>
+                  <th class="text-center text-white">engine</th>
+                  <th class="text-center text-white">os</th>
+
+                  <th class="text-center text-white">user agent</th>
                 </tr>
               </thead>
               <tbody v-if="receive1_items.length != 0">
                 <tr v-for="(ri, idx) in receive1_items" :key="idx">
                   <td class="text-center">
-                    {{ showDate(ri.logined_at) }}
+                    {{ showDate(ri.created_at) }}
                   </td>
-                  <td class="text-center">
-                    {{
-                      ri.user.prefix_name.name_th_abbr +
-                      ri.user.firstname +
-                      " " +
-                      ri.user.lastname
-                    }}
-                  </td>
-                  <td class="text-center">
-                    {{ showOrganization(ri.user) }}
-                  </td>
-                  <!-- <td>
+                  <!-- <td class="text-center">
                     {{ ri.ip_address }}
                   </td> -->
                   <td class="text-center">
-                    {{ ri.user_agent }}
+                    {{ ri.browser }}
+                  </td>
+                  <td class="text-center">
+                    {{ ri.device }}
+                  </td>
+                  <td class="text-center">
+                    {{ ri.engine }}
+                  </td>
+                  <td class="text-center">
+                    {{ ri.os }}
+                  </td>
+                  <td class="text-center">
+                    {{ ri.ua }}
                   </td>
                 </tr>
               </tbody>
@@ -342,7 +346,7 @@ export default defineComponent({
     const chartData = ref<any>({
       ...defaultBarChart,
       title: {
-        text: "สถิติการเข้าใช้งาน",
+        text: "สถิติการเยี่ยมชมเว็บไซต์",
         left: "center",
       },
     });
@@ -368,7 +372,7 @@ export default defineComponent({
           create_to: create_to,
         };
         // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
-        const { data } = await ApiService.query("login-log/", {
+        const { data } = await ApiService.query("visit-website-log/", {
           params: params,
         });
 
@@ -383,7 +387,7 @@ export default defineComponent({
         chartData.value = {
           ...defaultBarChart,
           title: {
-            text: "สถิติการเข้าใช้งาน",
+            text: "สถิติการเยี่ยมชมเว็บไซต์",
             left: "center",
           },
         };
@@ -424,7 +428,7 @@ export default defineComponent({
       };
 
       receive1_items.value.forEach((complaint: any) => {
-        const year = new Date(complaint.logined_at).getFullYear() + 543;
+        const year = new Date(complaint.created_at).getFullYear() + 543;
         processComplaint(year);
       });
 
@@ -439,7 +443,7 @@ export default defineComponent({
 
       chartData.value.series = [
         {
-          name: "จำนวนเข้าใช้งาน",
+          name: "จำนวนผู้เข้าเยี่ยมชม",
           type: "bar",
           barGap: 0.1,
           emphasis: { focus: "series" },
@@ -503,7 +507,7 @@ export default defineComponent({
       };
 
       receive1_items.value.forEach((complaint: any) => {
-        const createdAt: any = dayjs(complaint.logined_at)
+        const createdAt: any = dayjs(complaint.created_at)
           .locale("th")
           .format("MMM BB");
 
@@ -582,7 +586,7 @@ export default defineComponent({
       };
 
       receive1_items.value.forEach((complaint: any) => {
-        const complaintDate = dayjs(complaint.logined_at);
+        const complaintDate = dayjs(complaint.created_at);
 
         allWeeks.forEach((range: any) => {
           const startOfWeek = dayjs(range[0]);
@@ -666,7 +670,7 @@ export default defineComponent({
       };
 
       receive1_items.value.forEach((complaint: any) => {
-        const complaintDate: any = dayjs(complaint.logined_at);
+        const complaintDate: any = dayjs(complaint.created_at);
 
         allDays.forEach((day: any) => {
           const formattedDay = day.locale("th").format("DD MMM BB");
@@ -688,7 +692,7 @@ export default defineComponent({
 
       chartData.value.series = [
         {
-          name: "จำนวนผู้เข้าใช้งาน",
+          name: "จำนวนการเยี่ยมชมเว็บไซต์",
           type: "bar",
           barGap: 0.1,
           emphasis: { focus: "series" },
@@ -718,14 +722,7 @@ export default defineComponent({
           },
         });
 
-        let columns: any = [
-          //   {
-          //     header: "เรื่องร้องเรียน",
-          //     key: "name",
-          //     width: 25,
-          //     outlineLevel: 1,
-          //   },
-        ];
+        let columns: any = [];
 
         if (search.report_type.value == 1) {
           yearsRange.value.forEach((el: any) => {
@@ -781,9 +778,9 @@ export default defineComponent({
         });
         const row = worksheet.getRow(1);
         row.height = 20;
-        worksheet.insertRow(1, "สถิติการเข้าใช้งาน");
+        worksheet.insertRow(1, "สถิติการเยี่ยมชมเว็บไซต์");
         worksheet.mergeCells("A1:K1");
-        worksheet.getCell("A1").value = "การเข้าใช้งาน";
+        worksheet.getCell("A1").value = "การเยี่ยมชมเว็บไซต์";
         worksheet.getCell("A1").alignment = {
           vertical: "middle",
           horizontal: "center",
@@ -800,7 +797,7 @@ export default defineComponent({
         const href = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = href;
-        link.download = "การเข้าใช้งาน.xlsx";
+        link.download = "การเยี่ยมชมเว็บไซต์.xlsx";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -812,26 +809,6 @@ export default defineComponent({
         return "";
       }
       return dayjs(date).locale("th").format("DD MMM BB");
-    };
-
-    const showOrganization = (el: any) => {
-      let organzation = "";
-      if (el.agency) {
-        if(el.agency.name_th_abbr != ""){
-            organzation = organzation + el.agency.name_th_abbr + " > ";
-        }else{
-            organzation = organzation + el.agency.name_th + " > ";
-        }
-        
-      }
-      if (el.division) {
-        organzation = organzation + el.division.name_th_abbr + " > ";
-      }
-      if (el.bureau) {
-        organzation = organzation + el.bureau.name_th_abbr;
-      }
-
-      return organzation;
     };
 
     // Mounted
@@ -858,7 +835,6 @@ export default defineComponent({
       onExport,
       receive1_items,
       showDate,
-      showOrganization,
     };
   },
 });
