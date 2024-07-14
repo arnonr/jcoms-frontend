@@ -116,16 +116,17 @@
               <div class="col-md-12 text-center mt-3">
                 <div class="mb-3">โปรดให้คะแนนความพึงพอใจการใช้งานระบบ</div>
                 <div class="text-center mx-auto">
-                  <star-rating
-                    class="justify-content-center"
-                    :glow="10"
-                    :rounded-corners="true"
-                    @update:rating="setRating"
-                    :star-points="[
-                      23, 2, 14, 17, 0, 19, 10, 34, 7, 50, 23, 43, 38, 50, 36,
-                      34, 46, 19, 31, 17,
-                    ]"
-                  ></star-rating>
+                  <span
+                    v-for="(emoji, index) in emojis"
+                    :key="index"
+                    @click="setRating(index + 1)"
+                    class="rating-emoji"
+                  >
+                    {{ emoji }}
+                  </span>
+                </div>
+                <div>
+                  <h4>{{ rating_text }}</h4>
                 </div>
                 <!--  -->
                 <div class="separator separator-dotted my-2"></div>
@@ -163,8 +164,6 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Modal } from "bootstrap";
 // Import Dayjs
 import dayjs from "dayjs";
-// Import Rating
-import StarRating from "vue-star-rating";
 // Use Toast Composables
 import useToast from "@/composables/useToast";
 
@@ -194,7 +193,7 @@ export default defineComponent({
       required: true,
     },
   },
-  components: { StarRating },
+  components: {},
   setup(props, { emit }) {
     // Variable
     const router = useRouter();
@@ -212,7 +211,29 @@ export default defineComponent({
     });
 
     const otp_secret_key = ref<any>(null);
+
     const rating = ref(0);
+    const rating_text = ref("");
+    const setRating = (value) => {
+      rating.value = value;
+      if (value == 1) {
+        rating_text.value = "ไม่พอใจมาก";
+      }
+      if (value == 2) {
+        rating_text.value = "ไม่พอใจ";
+      }
+      if (value == 3) {
+        rating_text.value = "พอใช้";
+      }
+      if (value == 4) {
+        rating_text.value = "พึงพอใจ";
+      }
+      if (value == 5) {
+        rating_text.value = "พึงพอใจมาก";
+      }
+      console.log("Selected rating:", value);
+    };
+
     const result_complaint = ref<any>({
       complainant_id: null,
       complaint_id: null,
@@ -666,10 +687,6 @@ export default defineComponent({
 
     // watch(rating.value, (value: any) => {});
 
-    const setRating = (rate: number) => {
-      rating.value = rate;
-    };
-
     // Return
     return {
       loadingTimeout,
@@ -684,6 +701,7 @@ export default defineComponent({
       evalModalRef,
       evalModalObj,
       rating,
+      rating_text,
       setRating,
       APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
       otp_secret_key,
