@@ -170,11 +170,13 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import MainMenuConfig from "@/layouts/default-layout/config/MainMenuConfig";
 import { sidebarMenuIcons } from "@/layouts/default-layout/config/helper";
 import { useI18n } from "vue-i18n";
+// import { useAbility } from "@casl/vue";
+import { inject } from "vue";
 
 export default defineComponent({
   name: "sidebar-menu",
@@ -183,6 +185,12 @@ export default defineComponent({
     const { t, te } = useI18n();
     const route = useRoute();
     const scrollElRef = ref<null | HTMLElement>(null);
+
+    // const ability = useAbility();
+    const useAbility = inject("useAbility");
+    const ability = useAbility();
+
+    const canViewDashboard = computed(() => ability.can("view", "Dashboard"));
 
     onMounted(() => {
       if (scrollElRef.value) {
@@ -203,7 +211,7 @@ export default defineComponent({
     };
 
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-
+    // console.log(userData);
     return {
       hasActiveChildren,
       MainMenuConfig,
@@ -211,6 +219,7 @@ export default defineComponent({
       translate,
       getAssetPath,
       userData,
+      canViewDashboard,
     };
   },
 });

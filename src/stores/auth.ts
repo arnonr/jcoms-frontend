@@ -2,6 +2,16 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
+import ability from "../services/ability";
+
+// async function fetchAbilities() {
+//     // สมมติว่า fetchAbilities จะดึงข้อมูลสิทธิ์จาก API
+//     const response = await fetch('/api/abilities');
+//     const data = await response.json();
+
+//     const abilities = defineAbilitiesFor(data.abilities);
+//     return abilities;
+//   }
 
 export interface User {
   name: string;
@@ -39,6 +49,18 @@ export const useAuthStore = defineStore("auth", () => {
     return ApiService.post("user/login", credentials)
       .then(({ data }) => {
         setAuth(data);
+
+        // data.data.abilities
+        const userAbilities = [
+          { menu: "Dashboard", action: "view" },
+          //   { menu: "Dashboard", action: "create" },
+          // ... สิทธิ์อื่นๆ
+        ];
+
+        ability.update(
+          userAbilities.map((a) => ({ action: a.action, subject: a.menu }))
+        );
+
         localStorage.setItem(
           "userData",
           JSON.stringify({
@@ -49,8 +71,8 @@ export const useAuthStore = defineStore("auth", () => {
 
         // หลังจากที่ผู้ใช้ล็อกอินสำเร็จ matomo
         const userId = data.data.officer_code; // ดึงค่า USER_ID ของผู้ใช้งานที่ล็อกอิน
-        window._paq.push(['setUserId', userId]);
-        window._paq.push(['trackPageView']); // ติดตามการเข้าชมหน้าเว็บ
+        window._paq.push(["setUserId", userId]);
+        window._paq.push(["trackPageView"]); // ติดตามการเข้าชมหน้าเว็บ
       })
       .catch(({ response }) => {
         setError(response.data.msg);
