@@ -187,10 +187,10 @@ export default defineComponent({
     const scrollElRef = ref<null | HTMLElement>(null);
 
     // const ability = useAbility();
-    const useAbility = inject("useAbility");
-    const ability = useAbility();
+    // const useAbility = inject("useAbility");
+    // const ability = useAbility();
 
-    const canViewDashboard = computed(() => ability.can("view", "Dashboard"));
+    // const canViewDashboard = computed(() => ability.can("view", "Dashboard"));
 
     onMounted(() => {
       if (scrollElRef.value) {
@@ -219,7 +219,7 @@ export default defineComponent({
       translate,
       getAssetPath,
       userData,
-      canViewDashboard,
+    //   canViewDashboard,
     };
   },
 });
