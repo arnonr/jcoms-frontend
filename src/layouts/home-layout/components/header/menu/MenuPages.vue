@@ -143,11 +143,9 @@
 
   <!-- Change Language -->
 
-  <div
-    data-kt-menu-trigger="click"
-    data-kt-menu-placement="bottom-start"
-    class="menu-item menu-lg-down-accordion me-lg-1"
-  >
+  <!-- data-kt-menu-trigger="click"
+    data-kt-menu-placement="bottom-start" -->
+  <div class="menu-item menu-lg-down-accordion me-lg-1">
     <TranslateWidget />
     <!-- <div class="dropdown">
       <button
@@ -261,7 +259,6 @@ export default defineComponent({
 </style>
 
 <style>
-
 /* .goog-te-combo > option[value="th"] {
   display: visible !important;
 } */
