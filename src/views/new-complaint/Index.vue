@@ -12,6 +12,7 @@
         <div class="card-toolbar">
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
+            v-if="canCreate"
             @click="onAddModal()"
           >
             <i class="bi bi-file-earmark-plus-fill fs-4"></i>
@@ -192,7 +193,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onMounted,
+  watch,
+  computed,
+} from "vue";
 import ApiService from "@/core/services/ApiService";
 
 // Import Dayjs
@@ -215,6 +223,7 @@ import EditPage from "@/views/new-complaint/Edit.vue";
 import AddPage from "@/views/new-complaint/Add.vue";
 import DetailPage from "@/views/new-complaint/DetailModal.vue";
 import Receive1Page from "@/views/new-complaint/Receive1.vue";
+import { useAbility } from "@casl/vue";
 
 export default defineComponent({
   name: "complaint",
@@ -243,6 +252,24 @@ export default defineComponent({
     const items = reactive<any[]>([]);
     const items_export = reactive<any[]>([]);
     const item = reactive<any>({});
+
+    const ability = useAbility();
+
+    const canView = computed(() => ability.can("view", "เรื่องรอการตรวจสอบ"));
+    const canCreate = computed(() =>
+      ability.can("create", "เรื่องรอการตรวจสอบ")
+    );
+    const canUpdate = computed(() =>
+      ability.can("update", "เรื่องรอการตรวจสอบ")
+    );
+
+    const canDelete = computed(() =>
+      ability.can("delete", "เรื่องรอการตรวจสอบ")
+    );
+
+    const canExport = computed(() =>
+      ability.can("export", "เรื่องรอการตรวจสอบ")
+    );
 
     const paginationData = reactive<any>({
       perPage: 20,
@@ -600,7 +627,7 @@ export default defineComponent({
     };
 
     const onImport1111 = async () => {
-      await ApiService.query("opm/sync-all",{});
+      await ApiService.query("opm/sync-all", {});
 
       //   prefix_names.value = data.data;
       useToast("นำเข้าข้อมูลเสร็จสิ้น");
@@ -638,6 +665,11 @@ export default defineComponent({
       html2Pdf,
       generatePDF,
       onImport1111,
+      canView,
+      canCreate,
+      canUpdate,
+      canDelete,
+      canExport,
     };
   },
 });

@@ -10,11 +10,11 @@
           <th class="text-white">ระยะเวลา (วัน)</th>
           <th class="text-white">รหัสคำร้อง</th>
           <th class="text-white">ลักษณะความผิด</th>
-          <th class=" text-white">เรื่องร้องเรียน</th>
-          <th class=" text-white">ผู้ถูกร้อง</th>
-          <th class=" text-white">หน่วยงานถูกร้อง</th>
-          <th class=" text-white">สถานะเรื่องร้องเรียน</th>
-          <th class=" text-white">สถานะกองตรวจดำเนินการ</th>
+          <th class="text-white">เรื่องร้องเรียน</th>
+          <th class="text-white">ผู้ถูกร้อง</th>
+          <th class="text-white">หน่วยงานถูกร้อง</th>
+          <th class="text-white">สถานะเรื่องร้องเรียน</th>
+          <th class="text-white">สถานะกองตรวจดำเนินการ</th>
           <th class="text-white">จัดการข้อมูล</th>
         </tr>
       </thead>
@@ -35,9 +35,13 @@
             <div v-if="it.agency_id">
               <span>{{ it.agency.name_th_abbr }}</span>
             </div>
-            <span v-else-if="it.division_id">{{ it.division.name_th_abbr }}</span>
+            <span v-else-if="it.division_id">{{
+              it.division.name_th_abbr
+            }}</span>
             <span v-else-if="it.bureau_id">{{ it.bureau.name_th_abbr }}</span>
-            <span v-else-if="it.inspector_id">{{ it.inspector.name_th_abbr }}</span>
+            <span v-else-if="it.inspector_id">{{
+              it.inspector.name_th_abbr
+            }}</span>
             <span v-else></span>
           </td>
           <td>
@@ -50,7 +54,7 @@
             >
           </td>
 
-          <td >
+          <td>
             <span
               class="badge p-2 text-black"
               :style="`background-color: ${
@@ -60,7 +64,7 @@
             >
           </td>
 
-          <td >
+          <td>
             <div class="dropdown">
               <button
                 class="btn btn-primary btn-sm dropdown-toggle"
@@ -96,7 +100,7 @@
                         complainant_id: it.complainant_id,
                       })
                     "
-                    v-if="userData.role_id == 1 || userData.role_id == 2"
+                    v-if="canUpdate"
                     >แก้ไขข้อมูล</a
                   >
                 </li>
@@ -506,13 +510,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref } from "vue";
+import { defineComponent, toRefs, ref, computed } from "vue";
 
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import { useAbility } from "@casl/vue";
 
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
@@ -548,6 +553,26 @@ export default defineComponent({
     // fetch
     const prefix_names = ref([]);
     const complaint_types = ref([]);
+
+    const ability = useAbility();
+
+    const canView = computed(() =>
+      ability.can("view", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+    const canCreate = computed(() =>
+      ability.can("create", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+    const canUpdate = computed(() =>
+      ability.can("update", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+
+    const canDelete = computed(() =>
+      ability.can("delete", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+
+    const canExport = computed(() =>
+      ability.can("export", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
 
     const fetchPrefixName = async (params: any) => {
       const { data } = await ApiService.query("prefix-name", {
@@ -720,9 +745,9 @@ export default defineComponent({
               (p: any) => p.id === x.prefix_name_id
             );
 
-            return `${prefix?.name_th_abbr !== undefined ? prefix?.name_th_abbr : ""}${
-              x.firstname || ""
-            } ${x.lastname || ""}`;
+            return `${
+              prefix?.name_th_abbr !== undefined ? prefix?.name_th_abbr : ""
+            }${x.firstname || ""} ${x.lastname || ""}`;
           })
           .join(", ");
       }
@@ -767,6 +792,11 @@ export default defineComponent({
       handleSendToCommissioner,
       handleReceiveCommissioner,
       handleSendCommissionerHurry,
+      canView,
+      canCreate,
+      canUpdate,
+      canDelete,
+      canExport,
     };
   },
 });

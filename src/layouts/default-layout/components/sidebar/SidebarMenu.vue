@@ -30,14 +30,37 @@
           <template v-for="(menuItem, j) in item.pages" :key="j">
             <template
               v-if="
-                menuItem.heading &&
-                ((menuItem.route == '/user' && userData.role_id == 1) ||
-                  (menuItem.route == '/new-complaint' &&
-                    (userData.role_id == 1 || userData.role_id == 2)) ||
-                  (menuItem.route != '/new-complaint' &&
-                    menuItem.route != '/user'))
+                (menuItem.route == '/dashboard' && canViewDashboard) ||
+                (menuItem.route == '/new-complaint' && canViewNewComplaint) ||
+                (menuItem.route == '/complaint' && canViewComplaint) ||
+                (menuItem.route == '/report-complaint' && canViewReport) ||
+                (menuItem.route == '/report' && canViewReport) ||
+                (menuItem.route == '/report-complaint-type' && canViewReport) ||
+                (menuItem.route == '/report-complaint-channel' &&
+                  canViewReport) ||
+                (menuItem.route == '/report-complaint-topic-type' &&
+                  canViewReport) ||
+                (menuItem.route == '/report-complaint-organization' &&
+                  canViewReport) ||
+                (menuItem.route == '/report-satisfaction' &&
+                  canViewReportSatis) ||
+                (menuItem.route == '/report-login' && canViewReportLogin) ||
+                (menuItem.route == '/report-visit-website-log' &&
+                  canViewReportLogin) ||
+                (menuItem.route == '/user' && canViewUser) ||
+                (menuItem.route == '/permission-org' && canViewPermissionOrg)
               "
             >
+              <!-- v-if="
+                (menuItem.heading &&
+                  ((menuItem.route == '/user' && userData.role_id == 1) ||
+                    (menuItem.route == '/new-complaint' &&
+                      (userData.role_id == 1 || userData.role_id == 2)) ||
+                    (menuItem.route != '/new-complaint' &&
+                      menuItem.route != '/user'))) ||
+                (menuItem.route == '/dashboard' && canViewDashboard) ||
+                (menuItem.route == '/new-complaint' && canViewNewComplaint)
+              " -->
               <div class="menu-item">
                 <router-link
                   v-if="menuItem.route"
@@ -60,9 +83,10 @@
                       icon-class="fs-2"
                     />
                   </span>
-                  <span class="menu-title">{{
-                    translate(menuItem.heading)
-                  }}</span>
+                  <span class="menu-title">
+                    {{ menuItem.heading }}
+                    <!-- // translate(menuItem.heading) -->
+                  </span>
                 </router-link>
               </div>
             </template>
@@ -175,8 +199,7 @@ import { useRoute } from "vue-router";
 import MainMenuConfig from "@/layouts/default-layout/config/MainMenuConfig";
 import { sidebarMenuIcons } from "@/layouts/default-layout/config/helper";
 import { useI18n } from "vue-i18n";
-// import { useAbility } from "@casl/vue";
-import { inject } from "vue";
+import { useAbility } from "@casl/vue";
 
 export default defineComponent({
   name: "sidebar-menu",
@@ -186,11 +209,30 @@ export default defineComponent({
     const route = useRoute();
     const scrollElRef = ref<null | HTMLElement>(null);
 
-    // const ability = useAbility();
-    // const useAbility = inject("useAbility");
-    // const ability = useAbility();
+    const ability = useAbility();
 
-    // const canViewDashboard = computed(() => ability.can("view", "Dashboard"));
+    const canViewDashboard = computed(() => ability.can("view", "Dashboard"));
+    const canViewNewComplaint = computed(() =>
+      ability.can("view", "เรื่องรอการตรวจสอบ")
+    );
+    const canViewComplaint = computed(() =>
+      ability.can("view", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+    const canViewReport = computed(() => ability.can("view", "สถิติ/รายงาน"));
+
+    const canViewReportSatis = computed(() =>
+      ability.can("view", "รายงานความพึงพอใจ")
+    );
+    const canViewReportLogin = computed(() =>
+      ability.can("view", "รายงานการเข้าใช้งาน")
+    );
+
+    const canViewUser = computed(() => ability.can("view", "ทะเบียนผู้ใช้งาน"));
+    const canViewPermissionOrg = computed(() =>
+      ability.can("view", "สิทธิระหว่างหน่วยงาน")
+    );
+
+    console.log(canViewDashboard.value);
 
     onMounted(() => {
       if (scrollElRef.value) {
@@ -219,7 +261,14 @@ export default defineComponent({
       translate,
       getAssetPath,
       userData,
-    //   canViewDashboard,
+      canViewDashboard,
+      canViewNewComplaint,
+      canViewComplaint,
+      canViewReport,
+      canViewReportSatis,
+      canViewReportLogin,
+      canViewUser,
+      canViewPermissionOrg,
     };
   },
 });

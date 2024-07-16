@@ -567,7 +567,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onMounted,
+  watch,
+  computed,
+} from "vue";
 import ApiService from "@/core/services/ApiService";
 // Import Dayjs
 import dayjs from "dayjs";
@@ -577,6 +584,7 @@ import ExcelJS from "exceljs";
 // PDF
 import { jsPDF } from "jspdf";
 import Vue3Html2pdf from "vue3-html2pdf";
+import { useAbility } from "@casl/vue";
 
 // Component
 import SearchComponent from "@/components/complaint/Search.vue";
@@ -647,7 +655,27 @@ export default defineComponent({
 
     // Variable
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
+    const ability = useAbility();
     // let { states } = useStateData();
+
+    const canView = computed(() =>
+      ability.can("view", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+    const canCreate = computed(() =>
+      ability.can("create", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+    const canUpdate = computed(() =>
+      ability.can("update", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+
+    const canDelete = computed(() =>
+      ability.can("delete", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
+
+    const canExport = computed(() =>
+      ability.can("export", "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส")
+    );
 
     const search = reactive<any>({});
 
@@ -1120,6 +1148,11 @@ export default defineComponent({
       html2Pdf,
       generatePDF,
       userData,
+      canView,
+      canCreate,
+      canUpdate,
+      canDelete,
+      canExport,
     };
   },
 });

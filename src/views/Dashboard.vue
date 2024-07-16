@@ -2,9 +2,6 @@
   <!--begin::Wrapper-->
   <div class="container mt-5">
     <div class="card shadow-sm my-6">
-      <!-- <div class="card-header bg-white d-flex">
-        <h4 class="card-title">กรองข้อมูล Dashboard</h4>
-      </div> -->
       <div class="card-body">
         <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
           <div class="col-12 col-md-5 my-2">

@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import ability from "../services/ability";
+import { useAbilityStore } from "@/stores/ability";
 
 // async function fetchAbilities() {
 //     // สมมติว่า fetchAbilities จะดึงข้อมูลสิทธิ์จาก API
@@ -51,15 +51,79 @@ export const useAuthStore = defineStore("auth", () => {
         setAuth(data);
 
         // data.data.abilities
-        const userAbilities = [
-          { menu: "Dashboard", action: "view" },
-          //   { menu: "Dashboard", action: "create" },
-          // ... สิทธิ์อื่นๆ
-        ];
 
-        ability.update(
-          userAbilities.map((a) => ({ action: a.action, subject: a.menu }))
-        );
+        // let abilities = [
+        //   {
+        //     menu: "Dashboard",
+        //     action: "view",
+        //   },
+        //   {
+        //     menu: "Dashboard",
+        //     action: "create",
+        //   },
+        //   {
+        //     menu: "Dashboard",
+        //     action: "update",
+        //   },
+        //   {
+        //     menu: "Dashboard",
+        //     action: "delete",
+        //   },
+        //   {
+        //     menu: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส",
+        //     action: "view",
+        //   },
+        //   {
+        //     menu: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส",
+        //     action: "create",
+        //   },
+        //   {
+        //     menu: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส",
+        //     action: "update",
+        //   },
+        //   {
+        //     menu: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส",
+        //     action: "delete",
+        //   },
+        //   {
+        //     menu: "สถิติ/รายงาน",
+        //     action: "view",
+        //   },
+        //   {
+        //     menu: "สถิติ/รายงาน",
+        //     action: "create",
+        //   },
+        //   {
+        //     menu: "สถิติ/รายงาน",
+        //     action: "update",
+        //   },
+        //   {
+        //     menu: "สถิติ/รายงาน",
+        //     action: "delete",
+        //   },
+        // ];
+        const userAbilities = data.data.abilities;
+
+        const abilityStore = useAbilityStore();
+
+        abilityStore.setAbility(userAbilities);
+        console.log(userAbilities);
+
+        // [
+        //   { menu: "Dashboard", action: "view" },
+        //   { menu: "เรื่องรอการตรวจสอบ", action: "view" },
+        //   { menu: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส", action: "view" },
+        //   { menu: "สถิติ/รายงาน", action: "view" },
+        //   { menu: "รายงานความพึงพอใจ", action: "view" },
+        //   { menu: "รายงานการเข้าใช้งาน", action: "view" },
+        //   { menu: "ทะเบียนผู้ใช้งาน", action: "view" },
+        //   { menu: "สิทธิระหว่างหน่วยงาน", action: "view" },
+        //   // ... สิทธิ์อื่นๆ
+        // ];
+
+        // ability.update(
+        //   userAbilities.map((a: any) => ({ action: a.action, subject: a.menu }))
+        // );
 
         localStorage.setItem(
           "userData",

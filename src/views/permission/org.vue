@@ -78,6 +78,7 @@
         <h4 class="card-title">รายการหน่วยงาน</h4>
         <div class="card-toolbar">
           <button
+            v-if="canCreate"
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="openPermissionOrgModal = true"
           >
@@ -124,6 +125,7 @@
                   >
                     <li>
                       <a
+                        v-if="canUpdate"
                         class="dropdown-item cursor-pointer"
                         @click="
                           () => {
@@ -137,6 +139,7 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
+                        v-if="canDelete"
                         @click="
                           () => {
                             Object.assign(item, it);
@@ -223,6 +226,7 @@ import {
   onMounted,
   onUnmounted,
   watch,
+  computed,
 } from "vue";
 import { useRouter } from "vue-router";
 import { useAbility } from "@casl/vue";
@@ -285,7 +289,22 @@ export default defineComponent({
     const openEditModal = ref(false);
     const openAddModal = ref(false);
     const openPermissionOrgModal = ref(false);
-    
+
+    const canView = computed(() => ability.can("view", "สิทธิระหว่างหน่วยงาน"));
+    const canCreate = computed(() =>
+      ability.can("create", "สิทธิระหว่างหน่วยงาน")
+    );
+    const canUpdate = computed(() =>
+      ability.can("update", "สิทธิระหว่างหน่วยงาน")
+    );
+
+    const canDelete = computed(() =>
+      ability.can("delete", "สิทธิระหว่างหน่วยงาน")
+    );
+
+    const canExport = computed(() =>
+      ability.can("export", "สิทธิระหว่างหน่วยงาน")
+    );
 
     // Fetch Data
     const fetchInspector = async () => {
@@ -418,6 +437,11 @@ export default defineComponent({
       openEditModal,
       openAddModal,
       openPermissionOrgModal,
+      canView,
+      canCreate,
+      canUpdate,
+      canDelete,
+      canExport,
     };
   },
 });

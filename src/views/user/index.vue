@@ -106,6 +106,7 @@
         <h4 class="card-title">รายการผู้ใช้งาน</h4>
         <div class="card-toolbar">
           <button
+            v-if="canUpdate"
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="openPermissionGroupModal = true"
           >
@@ -202,6 +203,7 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
+                        v-if="canUpdate"
                         @click="
                           () => {
                             Object.assign(item, it);
@@ -214,6 +216,7 @@
                     <li>
                       <a
                         class="dropdown-item cursor-pointer"
+                        v-if="canUpdate"
                         @click="
                           () => {
                             Object.assign(item, it);
@@ -332,9 +335,9 @@ import {
   onMounted,
   onUnmounted,
   watch,
+  computed,
 } from "vue";
 import { useRouter } from "vue-router";
-import { useAbility } from "@casl/vue";
 import ApiService from "@/core/services/ApiService";
 
 import dayjs from "dayjs";
@@ -359,6 +362,7 @@ import PermissionUser from "@/views/user/PermissionUser.vue";
 import PermissionGroup from "@/views/user/PermissionGroup.vue";
 
 import useBasicData from "@/composables/useBasicData";
+import { useAbility } from "@casl/vue";
 
 // Component
 export default defineComponent({
@@ -406,6 +410,16 @@ export default defineComponent({
     const openEditModal = ref(false);
     const openPermissionModal = ref(false);
     const openPermissionGroupModal = ref(false);
+
+    // let { states } = useStateData();
+
+    const canView = computed(() => ability.can("view", "ทะเบียนผู้ใช้งาน"));
+    const canCreate = computed(() => ability.can("create", "ทะเบียนผู้ใช้งาน"));
+    const canUpdate = computed(() => ability.can("update", "ทะเบียนผู้ใช้งาน"));
+
+    const canDelete = computed(() => ability.can("delete", "ทะเบียนผู้ใช้งาน"));
+
+    const canExport = computed(() => ability.can("export", "ทะเบียนผู้ใช้งาน"));
 
     // Fetch Data
     const fetchRole = async () => {
@@ -563,6 +577,11 @@ export default defineComponent({
       openEditModal,
       openPermissionModal,
       openPermissionGroupModal,
+      canView,
+      canCreate,
+      canUpdate,
+      canDelete,
+      canExport,
     };
   },
 });

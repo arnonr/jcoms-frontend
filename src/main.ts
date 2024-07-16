@@ -14,6 +14,7 @@ import i18n from "@/core/plugins/i18n";
 import { abilitiesPlugin } from "@casl/vue";
 import ability from "./services/ability";
 import abilityPlugin from "./plugins/abilityPlugin";
+import { useAbilityStore } from "@/stores/ability";
 
 //imports for app initialization
 import ApiService from "@/core/services/ApiService";
@@ -29,9 +30,6 @@ app.use(createPinia());
 app.use(router);
 app.use(ElementPlus);
 
-// app.use(abilitiesPlugin, ability, {
-//   useGlobalProperties: true,
-// });
 // app.use(VueGtag, {
 //   config: {
 //     id: "G-0B7JRGBX5F",
@@ -41,7 +39,13 @@ app.use(ElementPlus);
 //   },
 // });
 
-app.use(abilitiesPlugin, ability);
+const abilityStore = useAbilityStore();
+abilityStore.loadAbility();
+
+app.use(abilitiesPlugin, abilityStore.ability, {
+  useGlobalProperties: true,
+});
+// app.use(abilitiesPlugin, ability);
 app.use(abilityPlugin);
 
 ApiService.init(app);

@@ -77,6 +77,7 @@
                 <li>
                   <a
                     class="dropdown-item cursor-pointer"
+                    v-if="canUpdate"
                     @click="
                       handleEdit({
                         id: it.id,
@@ -140,7 +141,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref } from "vue";
+import { defineComponent, toRefs, ref, computed } from "vue";
 
 // Import Dayjs
 import dayjs from "dayjs";
@@ -154,6 +155,7 @@ import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 import useStateData from "@/composables/useStateData";
 
 import ApiService from "@/core/services/ApiService";
+import { useAbility } from "@casl/vue";
 
 export default defineComponent({
   name: "list-complaint",
@@ -178,6 +180,24 @@ export default defineComponent({
 
     // fetch
     const prefix_names = ref([]);
+
+    const ability = useAbility();
+
+    const canView = computed(() => ability.can("view", "เรื่องรอการตรวจสอบ"));
+    const canCreate = computed(() =>
+      ability.can("create", "เรื่องรอการตรวจสอบ")
+    );
+    const canUpdate = computed(() =>
+      ability.can("update", "เรื่องรอการตรวจสอบ")
+    );
+
+    const canDelete = computed(() =>
+      ability.can("delete", "เรื่องรอการตรวจสอบ")
+    );
+
+    const canExport = computed(() =>
+      ability.can("export", "เรื่องรอการตรวจสอบ")
+    );
 
     const fetchPrefixName = async (params: any) => {
       const { data } = await ApiService.query("prefix-name", {
@@ -247,6 +267,11 @@ export default defineComponent({
       convertState,
       convertAccused,
       updateCurrentPage,
+      canView,
+      canCreate,
+      canUpdate,
+      canDelete,
+      canExport,
     };
   },
 });
