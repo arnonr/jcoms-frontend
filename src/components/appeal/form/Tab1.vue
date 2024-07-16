@@ -751,7 +751,7 @@ export default defineComponent({
       const responseType = "code";
       const scope = import.meta.env.VITE_APP_THAID_SCOPE;
       const state = import.meta.env.VITE_APP_THAID_STATE;
-      const authUrl = `https://imauth.bora.dopa.go.th/api/v2/oauth2/auth?authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+      const authUrl = `https://imauth.bora.dopa.go.th/api/v2/oauth2/auth/?authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
       window.location.href = authUrl;
     };
 
