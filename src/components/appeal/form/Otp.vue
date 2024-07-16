@@ -536,7 +536,6 @@ export default defineComponent({
         created_by:
           complaint_item.value.firstname + " " + complaint_item.value.lastname,
       };
-
       await ApiService.postFormData("complaint/", { ...data_item })
         .then(({ data }) => {
           if (data.msg != "success") {

@@ -86,6 +86,12 @@
               "
               />
             </div>
+
+            <div class="col-md-12">
+              <button @click="onHome()" class="btn btn-danger ms-2 text-white">
+                ย้อนกลับ
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -215,6 +221,7 @@ import Otp from "@/components/tracking/Otp.vue";
 import ListComponent from "@/components/tracking/List.vue";
 import DetailPage from "@/views/tracking/DetailModal.vue";
 import Captcha from "@/components/tracking/Captcha.vue";
+import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   name: "tracking",
@@ -245,7 +252,10 @@ export default defineComponent({
 
     const rating = ref(0);
     const rating_text = ref("");
-    const setRating = (value) => {
+
+    const router = useRouter();
+
+    const setRating = (value: any) => {
       rating.value = value;
       if (value == 1) {
         rating_text.value = "ไม่พอใจมาก";
@@ -418,6 +428,10 @@ export default defineComponent({
       search.type_of_track = 1;
     };
 
+    const onHome = async () => {
+      router.push({ name: "home" });
+    };
+
     // Mounted
     onMounted(async () => {
       evalModalObj.value = new Modal(evalModalRef.value, {});
@@ -460,6 +474,7 @@ export default defineComponent({
       emojis,
       rating_text,
       onClear,
+      onHome,
     };
   },
 });
