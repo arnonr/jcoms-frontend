@@ -755,10 +755,10 @@ export default defineComponent({
       window.location.href = authUrl;
     };
 
-    //imauth.bora.dopa.go.th/api/v2/oauth2/auth/?response_type=code&client_id=ZFNWckpuWmg4c1ZMSnFvVHFUallrNjFJMk5laWRVU0g&redirect_uri=https://jcoms2.police.go.th/thaid/callback&scope=openid%20pid%20name%20birthdate%20address%20given_name%20middle_name%20family_name%20gender%20smartcard_code%20title&state=%22HC1UAbHvRc%22;
+    
 
     // Return
-    https: return {
+    return {
       getAssetPath,
       format,
       selectOptions,
