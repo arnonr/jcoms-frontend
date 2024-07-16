@@ -134,7 +134,7 @@
               >คำนำหน้า</label
             >
             <v-select
-              label="name_th"
+              label="name_th_abbr"
               name="id"
               placeholder="คำนำหน้า/Prefix"
               :options="selectOptions.prefix_names"
@@ -692,12 +692,35 @@ export default defineComponent({
       return true;
     };
 
+    const sortPrefixNames = (prefixNames) => {
+      const priority = ["นาย", "นาง", "นางสาว"];
+      return prefixNames.sort((a, b) => {
+        const aIndex = priority.indexOf(a.name_th_abbr);
+        const bIndex = priority.indexOf(b.name_th_abbr);
+
+        if (aIndex === -1 && bIndex === -1) {
+          return 0; // Neither a nor b is in the priority list
+        } else if (aIndex === -1) {
+          return 1; // a is not in the priority list, b is
+        } else if (bIndex === -1) {
+          return -1; // b is not in the priority list, a is
+        } else {
+          return aIndex - bIndex; // Both a and b are in the priority list
+        }
+      });
+    };
+
     // Mounted
     onMounted(async () => {
       selectOptions.value.prefix_names = await useMasterData().fetchPrefixName({
         is_active: 1,
         perPage: 500,
       });
+
+      // Sort the prefix names
+      selectOptions.value.prefix_names = sortPrefixNames(
+        selectOptions.value.prefix_names
+      );
     });
 
     // Watch

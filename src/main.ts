@@ -23,7 +23,7 @@ import { initInlineSvg } from "@/core/plugins/inline-svg";
 import { initVeeValidate } from "@/core/plugins/vee-validate";
 import { initKtIcon } from "@/core/plugins/keenthemes";
 import "@/core/plugins/prismjs";
-// import VueGoogleMaps from "@fawmi/vue-google-maps";
+import VueGoogleMaps from "@fawmi/vue-google-maps";
 const app = createApp(App);
 
 app.use(createPinia());
@@ -38,6 +38,13 @@ app.use(ElementPlus);
 //     },
 //   },
 // });
+
+app.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyAW9TSuY2zGSjL_1CdoaTkhz2gJApl95Zw",
+    libraries: "places", // หรือ 'places,drawing,visualization' ตามที่คุณต้องการ
+  },
+});
 
 const abilityStore = useAbilityStore();
 abilityStore.loadAbility();

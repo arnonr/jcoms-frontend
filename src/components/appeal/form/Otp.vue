@@ -99,7 +99,7 @@
 
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-12 text-center">
+              <div class="col-md-12 text-center" ref="captureElement">
                 <span>สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว</span
                 ><br />
                 <span>เลขคำร้องของท่าน (JCOM No.) : </span><br />
@@ -108,13 +108,15 @@
                 }}</span
                 ><br />
                 <span>ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : </span><br />
-                <span class="fst-italic"
-                  >{{ APP_BASE_URL }}/jcoms/tracking</span
-                >
-                <div class="separator separator-dotted my-2"></div>
+                <span class="fst-italic">{{ APP_BASE_URL }}/tracking</span>
               </div>
+              <div class="col-md-12 text-center mt-5">
+                <button @click="downloadImage" class="btn btn-primary">ดาวน์โหลด</button>
+              </div>
+              <div class="separator separator-dotted my-2"></div>
+
               <div class="col-md-12 text-center mt-3">
-                <div class="mb-3">โปรดให้คะแนนความพึงพอใจการใช้งานระบบ</div>
+                <div class="mb-3">โปรดคลิกที่ EMOJI <br>เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ</div>
                 <div class="text-center mx-auto">
                   <span
                     v-for="(emoji, index) in emojis"
@@ -168,6 +170,7 @@ import dayjs from "dayjs";
 import useToast from "@/composables/useToast";
 
 import { useRouter } from "vue-router";
+import html2canvas from "html2canvas";
 
 export default defineComponent({
   name: "otp",
@@ -211,6 +214,7 @@ export default defineComponent({
     });
 
     const otp_secret_key = ref<any>(null);
+    const captureElement = ref(null);
 
     const emojis = ["😡", "😟", "😐", "😊", "😁"];
     const rating = ref(0);
@@ -630,9 +634,9 @@ export default defineComponent({
           };
 
           await ApiService[api_sms.type](api_sms.url, {
-            msisdn: otpData.value.phone,
+            msisdn: complainant_item.value.phone_number,
             message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านรียบร้อยแล้ว เลขคำร้องของท่าน (JCOM No.) : ${
-              result_complaint.jcoms_no
+              result_complaint.value.jcoms_no
             } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${
               import.meta.env.VITE_APP_BASE_URL
             }/jcoms/tracking`,
@@ -653,6 +657,17 @@ export default defineComponent({
         .catch(({ response }) => {
           console.log(response);
         });
+    };
+
+    const downloadImage = () => {
+      if (captureElement.value) {
+        html2canvas(captureElement.value).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "complaint.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        });
+      }
     };
 
     // Mounted
@@ -714,6 +729,8 @@ export default defineComponent({
       onEvalConfirm,
       result_complaint,
       emojis,
+      downloadImage,
+      captureElement,
     };
   },
 });
@@ -724,5 +741,16 @@ export default defineComponent({
   .card > .card-body {
     padding: 0px;
   }
+}
+
+.rating-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rating-emoji {
+  font-size: 4rem;
+  cursor: pointer;
+  margin: 0 0.5rem;
 }
 </style>
