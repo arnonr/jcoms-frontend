@@ -7,7 +7,7 @@
       id="kt_login_signin_form"
       @submit="onSubmitLogin"
       :validation-schema="login"
-      :initial-values="{ email: 'admin@demo.com', password: 'demo' }"
+      :initial-values="{ email: '', password: '' }"
     >
       <!--begin::Heading-->
       <div class="text-center mb-10">
@@ -100,6 +100,14 @@
               class="spinner-border spinner-border-sm align-middle ms-2"
             ></span>
           </span>
+        </button>
+
+        <button
+          tabindex="4"
+          type="reset"
+          class="btn btn-lg btn-danger w-100 mb-5"
+        >
+          <span class="indicator-label"> ล้าง </span>
         </button>
         <!--end::Submit button-->
       </div>
