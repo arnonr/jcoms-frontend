@@ -751,9 +751,12 @@ export default defineComponent({
       const responseType = "code";
       const scope = import.meta.env.VITE_APP_THAID_SCOPE;
       const state = import.meta.env.VITE_APP_THAID_STATE;
+
       const authUrl = `https://imauth.bora.dopa.go.th/api/v2/oauth2/auth/?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
       window.location.href = authUrl;
     };
+
+    https://jcoms2.police.go.th/thaid-callback?code=Y2QzNjk4MTMtNmJiMi00ZjlhLTgzMzgtYzg1NDQ4YzRkODk5I2IxNmZlNmRmLTBlMTYtNDU0ZC05NTY5LTE2Mzc4NjI4NDFhNQ&state=%22HC1UAbHvRc%22
 
     
 
