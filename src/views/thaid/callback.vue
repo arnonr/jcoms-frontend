@@ -29,11 +29,12 @@ export default defineComponent({
           const { data } = await ApiService.post(
             "https://thaid.example.com/oauth2/token",
             {
-              client_id: "YOUR_CLIENT_ID",
-              client_secret: "YOUR_CLIENT_SECRET",
+              client_id: import.meta.env.VITE_APP_THAID_CLIENTID,
+              client_secret: import.meta.env.VITE_APP_THAID_CLIENT_SECRET,
               code: code,
-              redirect_uri: "YOUR_REDIRECT_URI",
+              redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
               grant_type: "authorization_code",
+              //   bbA1vJhFiMYTZPPHYXZGLnRootVdDg17byrnBTyJ
             }
           );
           const token = data.data.access_token;

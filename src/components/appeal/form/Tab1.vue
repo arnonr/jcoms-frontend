@@ -746,13 +746,12 @@ export default defineComponent({
     };
 
     const loginWithThaiD = () => {
-      const clientId = "YOUR_CLIENT_ID";
-      const redirectUri = "YOUR_REDIRECT_URI";
+      const clientId = import.meta.env.VITE_APP_THAID_CLIENTID;
+      const redirectUri = import.meta.env.VITE_APP_THAID_REDIRECT_URI;
       const responseType = "code";
-      const scope = "openid profile email";
-      const state = "RANDOM_STATE_STRING";
-
-      const authUrl = `https://thaid.example.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&state=${state}`;
+      const scope = import.meta.env.VITE_APP_THAID_SCOPE;
+      const state = import.meta.env.VITE_APP_THAID_STATE;
+      const authUrl = `https://imauth.bora.dopa.go.th/api/v2/oauth2/auth?authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
       window.location.href = authUrl;
     };
 
