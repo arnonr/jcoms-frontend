@@ -56,6 +56,8 @@ export default defineComponent({
               ),
           };
 
+          console.log(headers.Authorization);
+
           axios
             .post(
               "https://imauth.bora.dopa.go.th/api/v2/oauth2/token/",
