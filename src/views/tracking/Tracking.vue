@@ -141,7 +141,7 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-md-12 text-center mt-3">
-                <div class="mb-3">โปรดให้คะแนนความพึงพอใจการใช้งานระบบ</div>
+                <div class="mb-3">โปรดคลิกที่ EMOJI <br>เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ</div>
                 <div class="text-center mx-auto">
                   <span
                     v-for="(emoji, index) in emojis"

@@ -75,6 +75,14 @@
                 >
                   ล้าง
                 </button>
+
+                <button
+                  v-if="tab_index == 2"
+                  @click.native="onTab3Cancel()"
+                  class="btn btn-danger ms-2 text-white"
+                >
+                  ยกเลิก
+                </button>
               </div>
 
               <div class="wizard-footer-right">
@@ -159,7 +167,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
 // Import route
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 // Import Component
 import Tab1 from "@/components/appeal/form/Tab1.vue";
@@ -193,6 +201,7 @@ export default defineComponent({
 
     // Variable
     const route = useRoute();
+    const router = useRouter();
     const r = (Math.random() + 1).toString(36).substring(7);
     const complaint_type = useComplaintTypeData().complaint_types.find(
       (x: any) => x.id == Number(route.query.type_id)
@@ -392,6 +401,10 @@ export default defineComponent({
       Object.assign(accused, { ...default_accused });
     };
 
+    const onTab3Cancel = () => {
+      router.push({ name: "home" });
+    };
+
     // Mounted
     const checkComplainantUUID = ref(null);
     onMounted(() => {
@@ -424,6 +437,7 @@ export default defineComponent({
       getLang,
       onTab1Clear,
       onTab2Clear,
+      onTab3Cancel,
     };
   },
 });

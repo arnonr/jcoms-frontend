@@ -360,8 +360,9 @@
         <div class="mb-7 row">
           <div class="col-12 col-lg-12">
             <label for="formFile" class="form-label"
-              >แนบไฟล์หลักฐานเพิ่มเติม (แนบได้หลายไฟล์) /Attach evidence
-              files</label
+              >แนบไฟล์หลักฐานเพิ่มเติม (แนบได้หลายไฟล์ ภาพถ่าย วิดีโอ เสียง
+              เอกสาร) เช่น ข้อมูลผู้ถูกร้องเรียน, ข้อมูลเรื่องร้องเรียน /Attach
+              evidence files</label
             >
             <dashboard
               :uppy="uppy"
@@ -519,7 +520,15 @@ export default defineComponent({
       },
       debug: true,
       restrictions: {
-        allowedFileTypes: ["image/*", "video/*", "application/*"],
+        allowedFileTypes: [
+          "image/*",
+          "video/*",
+          "application/*",
+          "audio/*",
+          ".mp3",
+          ".ogg",
+          ".wav",
+        ],
       },
     })
       .use(XHRUpload, {
