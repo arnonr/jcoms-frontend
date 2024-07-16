@@ -13,7 +13,7 @@
           <th class="text-center text-white">ผู้ถูกร้อง</th>
           <th class="text-center text-white">หน่วยงานถูกร้อง</th>
           <th class="text-center text-white">สถานะ</th>
-          <th class="text-center text-white">จัดการข้อมูล</th>
+          <th class="text-center text-white">ดูข้อมูล</th>
         </tr>
       </thead>
       <tbody v-if="items.length != 0">

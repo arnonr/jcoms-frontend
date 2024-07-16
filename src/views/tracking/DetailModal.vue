@@ -42,6 +42,16 @@
                     :accused_item="accused_item"
                     :complaint_file_attach="complaint_file_attach"
                   />
+
+                  <div class="text-center">
+                    <button
+                      @click="onClose({ reload: false })"
+                      type="button"
+                      class="btn btn-danger"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    >ปิด</button>
+                  </div>
                 </div>
               </div>
             </div>

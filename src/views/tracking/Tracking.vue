@@ -58,6 +58,12 @@
               <button class="btn btn-bg-primary text-white" @click="onSearch">
                 ค้นหา
               </button>
+              <button
+                class="btn btn-bg-danger text-white ms-2"
+                @click="onClear"
+              >
+                ล้าง
+              </button>
             </div>
           </div>
           <div class="separator my-10 mt-5"></div>
@@ -141,7 +147,9 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-md-12 text-center mt-3">
-                <div class="mb-3">โปรดคลิกที่ EMOJI <br>เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ</div>
+                <div class="mb-3">
+                  โปรดคลิกที่ EMOJI <br />เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ
+                </div>
                 <div class="text-center mx-auto">
                   <span
                     v-for="(emoji, index) in emojis"
@@ -405,6 +413,11 @@ export default defineComponent({
         });
     };
 
+    const onClear = async () => {
+      search.id_card_or_jcoms_no = "";
+      search.type_of_track = 1;
+    };
+
     // Mounted
     onMounted(async () => {
       evalModalObj.value = new Modal(evalModalRef.value, {});
@@ -446,6 +459,7 @@ export default defineComponent({
       captcha_modal,
       emojis,
       rating_text,
+      onClear,
     };
   },
 });
