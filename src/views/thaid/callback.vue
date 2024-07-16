@@ -24,8 +24,7 @@ export default defineComponent({
 
     // Mounted
     onMounted(async () => {
-      const code = 1;
-      //   new URLSearchParams(window.location.search).get("code");
+      const code = new URLSearchParams(window.location.search).get("code");
       if (code) {
         try {
           //   const { data } = await ApiService.post(
@@ -63,7 +62,7 @@ export default defineComponent({
               {
                 grant_type: "authorization_code",
                 redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
-                code: "NmY0MTVhNTItMDc3MC00ZjkzLTkyZTUtODI3NDU1Y2FiY2I3IzJlMWYzZGZlLTI5OWItNGNkNi1hODExLWE0NjMxY2RhYzcyNw",
+                code: code,
               },
               {
                 headers: headers,
