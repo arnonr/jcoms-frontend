@@ -337,6 +337,10 @@ export default defineComponent({
         {
           data: [],
           type: "bar",
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ],
     };

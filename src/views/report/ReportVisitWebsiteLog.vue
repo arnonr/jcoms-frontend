@@ -449,6 +449,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -531,6 +535,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -621,6 +629,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -698,6 +710,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };

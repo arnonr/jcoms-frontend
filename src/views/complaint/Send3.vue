@@ -84,6 +84,17 @@
                 </div>
               </div>
 
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="text"
+                  v-model="item.email"
+                  class="form-control"
+                  placeholder=""
+                  aria-label=""
+                />
+              </div>
+
               <div class="mb-7 col-12 col-lg-6">
                 <label for="send" class="form-label"
                   >เลขทะเบียนหนังสือส่ง</label
@@ -166,7 +177,7 @@
         </div>
       </div>
     </div>
-        <Preloader :isLoading="isLoading" :position="'absolute'" />
+    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
@@ -344,6 +355,21 @@ export default defineComponent({
             useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
             onClose({ reload: true });
           });
+        })
+        .catch(({ response }) => {
+          isLoading.value = false;
+          console.log(response);
+        });
+
+      await ApiService.post("email/send-email", {
+        mailto: item.email,
+        subject: "JCOMS",
+        body: "มีเรื่องร้องเรียน.......",
+      })
+        .then(async ({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
         })
         .catch(({ response }) => {
           isLoading.value = false;

@@ -445,6 +445,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -527,6 +531,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -617,6 +625,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -694,6 +706,10 @@ export default defineComponent({
           emphasis: { focus: "series" },
           data: sortedData,
           ...data_export,
+          label: {
+            show: true,
+            position: "top",
+          },
         },
       ];
     };
@@ -817,12 +833,11 @@ export default defineComponent({
     const showOrganization = (el: any) => {
       let organzation = "";
       if (el.agency) {
-        if(el.agency.name_th_abbr != ""){
-            organzation = organzation + el.agency.name_th_abbr + " > ";
-        }else{
-            organzation = organzation + el.agency.name_th + " > ";
+        if (el.agency.name_th_abbr != "") {
+          organzation = organzation + el.agency.name_th_abbr + " > ";
+        } else {
+          organzation = organzation + el.agency.name_th + " > ";
         }
-        
       }
       if (el.division) {
         organzation = organzation + el.division.name_th_abbr + " > ";

@@ -42,35 +42,35 @@ export default defineComponent({
 
           router.push(import.meta.env.VITE_APP_BASE_URL + "/appeal?type_id=1");
 
-          //   const headers = {
-          //     "Content-Type": "application/x-www-form-urlencoded",
-          //     Authorization:
-          //       "Basic " +
-          //       btoa(
-          //         import.meta.env.VITE_APP_THAID_CLIENTID +
-          //           ":" +
-          //           import.meta.env.VITE_APP_THAID_CLIENT_SECRET
-          //       ),
-          //   };
+            // const headers = {
+            //   "Content-Type": "application/x-www-form-urlencoded",
+            //   Authorization:
+            //     "Basic " +
+            //     btoa(
+            //       import.meta.env.VITE_APP_THAID_CLIENTID +
+            //         ":" +
+            //         import.meta.env.VITE_APP_THAID_CLIENT_SECRET
+            //     ),
+            // };
 
-          //   console.log(headers.Authorization);
+            // console.log(headers.Authorization);
 
-          //   axios
-          //     .post(
-          //       "https://imauth.bora.dopa.go.th/api/v2/oauth2/token/",
-          //       {
-          //         grant_type: "authorization_code",
-          //         redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
-          //         code: code,
-          //       },
-          //       {
-          //         headers: headers,
-          //       }
-          //     )
-          //     .then((response) => {
-          //       console.log(response);
-          //     })
-          //     .catch((error) => {});
+            // axios
+            //   .post(
+            //     "https://imauth.bora.dopa.go.th/api/v2/oauth2/token/",
+            //     {
+            //       grant_type: "authorization_code",
+            //       redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
+            //       code: code,
+            //     },
+            //     {
+            //       headers: headers,
+            //     }
+            //   )
+            //   .then((response) => {
+            //     console.log(response);
+            //   })
+            //   .catch((error) => {});
 
           //   const token = data.data.access_token;
           //   console.log("Access Token:", token);
