@@ -685,7 +685,7 @@
                   {{ showDate(cr.receive_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ complaint_forward_state.state11.to_division.name_th_abbr }}
+                  {{ complaint_forward_state.state11.to_division?.name_th_abbr }}
                   รับรายงาน
                 </td>
                 <td class="p-3 text-green">
@@ -744,8 +744,8 @@
                   {{ showDate(cr.created_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ complaint_forward_state.state11.to_division.name_th_abbr }}
-                  รายงานถึง {{ cr.to_bureau.name_th_abbr }}
+                  {{ complaint_forward_state.state11.to_division?.name_th_abbr }}
+                  รายงานถึง {{ cr.to_bureau?.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
                   <div
@@ -866,7 +866,7 @@
                   {{ showDate(cr.receive_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ cr.to_bureau.name_th_abbr }} รับรายงาน
+                  {{ cr.to_bureau?.name_th_abbr }} รับรายงาน
                 </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_date">
@@ -907,8 +907,8 @@
                   {{ showDate(cr.created_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ complaint_report_state.state15[0].to_bureau.name_th_abbr }}
-                  รายงานถึง {{ cr.to_inspector.name_th_abbr }}
+                  {{ complaint_report_state.state15[0].to_bureau?.name_th_abbr }}
+                  รายงานถึง {{ cr.to_inspector?.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
                   <div
@@ -1033,7 +1033,7 @@
                   {{ showDate(cr.receive_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ cr.to_inspector.name_th_abbr }} รับรายงาน
+                  {{ cr.to_inspector?.name_th_abbr }} รับรายงาน
                 </td>
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex">
@@ -1070,7 +1070,7 @@
                 {{ showDate(complaint_item.closed_at) }}
               </td>
               <td class="fw-bold p-3 text-green">
-                {{ complaint_item.inspector.name_th_abbr }} ปิดเรื่อง
+                {{ complaint_item.inspector?.name_th_abbr }} ปิดเรื่อง
               </td>
               <td class="p-3 text-green">
                 <div

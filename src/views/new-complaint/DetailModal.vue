@@ -304,7 +304,7 @@ export default defineComponent({
           ? dayjs(complainant_item.birthday).locale("th").format("DD MMMM BBBB")
           : "";
 
-        complainant_item.address_all = `${complainant_item.sub_district.name_th} > ${complainant_item.district.name_th} > ${complainant_item.province.name_th} > ${complainant_item.postal_code}`;
+        complainant_item.address_all = `${complainant_item.sub_district?.name_th} > ${complainant_item.district?.name_th} > ${complainant_item.province?.name_th} > ${complainant_item?.postal_code}`;
       }
 
       complaint_item.address_all = "";
