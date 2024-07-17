@@ -50,60 +50,72 @@
               <td class="p-3">
                 <div
                   v-if="
-                    complaint_item.receive_status == 2 ||
-                    complaint_item.receive_status == 3
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 6
                   "
                 >
-                  <span class="fw-bold">เหตุผล : </span>
-                  <span class="fst-italic">{{
-                    complaint_item.receive_status == 2
-                      ? "ข้อมูลไม่ครบถ้วน"
-                      : "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา"
-                  }}</span>
-                </div>
-                <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_doc_date"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                  <div
+                    v-if="
+                      complaint_item.receive_status == 2 ||
+                      complaint_item.receive_status == 3
+                    "
+                  >
+                    <span class="fw-bold">เหตุผล : </span>
+                    <span class="fst-italic">{{
+                      complaint_item.receive_status == 2
+                        ? "ข้อมูลไม่ครบถ้วน"
+                        : "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา"
+                    }}</span>
                   </div>
-                  <div class="fst-italic">
-                    {{ showDate(complaint_item.receive_doc_date) }}
+                  <div
+                    class="mb-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_doc_date"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div class="fst-italic">
+                      {{ showDate(complaint_item.receive_doc_date) }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_doc_no"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div class="fst-italic">
+                      {{ complaint_item.receive_doc_no }}
+                    </div>
                   </div>
-                  <div class="fst-italic">
-                    {{ complaint_item.receive_doc_no }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_comment"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div class="fst-italic">
+                      {{ complaint_item.receive_comment }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_comment"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div class="fst-italic">
-                    {{ complaint_item.receive_comment }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div class="fst-italic">
-                    <a
-                      :href="complaint_item.receive_doc_filename"
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div class="fst-italic">
+                      <a
+                        :href="complaint_item.receive_doc_filename"
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -130,62 +142,74 @@
               <td class="p-3">
                 <div
                   v-if="
-                    complaint_item.receive_status == 2 ||
-                    complaint_item.receive_status == 3
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 6
                   "
                 >
-                  <span class="fw-bold" style="min-width: 100px"
-                    >เหตุผล :
-                  </span>
-                  <span class="fst-italic">{{
-                    complaint_item.receive_status == 2
-                      ? "ข้อมูลไม่ครบถ้วน"
-                      : "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา"
-                  }}</span>
-                </div>
-                <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_doc_date"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                  <div
+                    v-if="
+                      complaint_item.receive_status == 2 ||
+                      complaint_item.receive_status == 3
+                    "
+                  >
+                    <span class="fw-bold" style="min-width: 100px"
+                      >เหตุผล :
+                    </span>
+                    <span class="fst-italic">{{
+                      complaint_item.receive_status == 2
+                        ? "ข้อมูลไม่ครบถ้วน"
+                        : "เป็นการร้องทุกข์ กล่าวโทษคดีอาญา"
+                    }}</span>
                   </div>
-                  <div class="fst-italic">
-                    {{ showDate(complaint_item.receive_doc_date) }}
+                  <div
+                    class="mb-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_doc_date"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div class="fst-italic">
+                      {{ showDate(complaint_item.receive_doc_date) }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_doc_no"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div class="fst-italic">
+                      {{ complaint_item.receive_doc_no }}
+                    </div>
                   </div>
-                  <div class="fst-italic">
-                    {{ complaint_item.receive_doc_no }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_comment"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div class="fst-italic">
+                      {{ complaint_item.receive_comment }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_comment"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div class="fst-italic">
-                    {{ complaint_item.receive_comment }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_item.receive_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div class="fst-italic">
-                    <a
-                      :href="complaint_item.receive_doc_filename"
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.receive_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div class="fst-italic">
+                      <a
+                        :href="complaint_item.receive_doc_filename"
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -206,63 +230,79 @@
               </td>
               <td class="p-3">
                 <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state10.forward_doc_date"
+                  v-if="
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 3 ||
+                    userData.role_id == 5 ||
+                    userData.role_id == 6
+                  "
                 >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                  <div
+                    class="mb-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state10.forward_doc_date"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{
+                        showDate(
+                          complaint_forward_state.state10.forward_doc_date
+                        )
+                      }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_forward_state.state10.forward_doc_date)
-                    }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state10.forward_doc_no"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state10.forward_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state10.forward_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state10.order.name_th"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      คำสั่งการ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state10.order.name_th }}
+                    </div>
                   </div>
-                  <div>
-                    {{ complaint_forward_state.state10.forward_doc_no }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state10.order_detail"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state10.order_detail }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state10.order.name_th"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    คำสั่งการ :
-                  </div>
-                  <div>
-                    {{ complaint_forward_state.state10.order.name_th }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state10.order_detail"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_forward_state.state10.order_detail }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state10.forward_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div>
-                    <a
-                      :href="
-                        complaint_forward_state.state10.forward_doc_filename
-                      "
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state10.forward_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div>
+                      <a
+                        :href="
+                          complaint_forward_state.state10.forward_doc_filename
+                        "
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -283,28 +323,42 @@
                 รับเรื่อง/ดำเนินการ
               </td>
               <td class="p-3">
-                <div class="mb-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                <div
+                  v-if="
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 3 ||
+                    userData.role_id == 5 ||
+                    userData.role_id == 6
+                  "
+                >
+                  <div class="mb-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{
+                        showDate(
+                          complaint_forward_state.state10.forward_doc_date
+                        )
+                      }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_forward_state.state10.forward_doc_date)
-                    }}
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state10.receive_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div class="mt-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
-                  </div>
-                  <div>
-                    {{ complaint_forward_state.state10.receive_doc_no }}
-                  </div>
-                </div>
-                <div class="mt-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_forward_state.state10.receive_comment }}
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state10.receive_comment }}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -326,63 +380,80 @@
               </td>
               <td class="p-3">
                 <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.forward_doc_date"
+                  v-if="
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 3 ||
+                    userData.role_id == 4 ||
+                    userData.role_id == 5 ||
+                    userData.role_id == 6
+                  "
                 >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                  <div
+                    class="mb-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.forward_doc_date"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{
+                        showDate(
+                          complaint_forward_state.state11.forward_doc_date
+                        )
+                      }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_forward_state.state11.forward_doc_date)
-                    }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.forward_doc_no"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state11.forward_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.forward_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.order.name_th"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      คำสั่งการ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state11.order.name_th }}
+                    </div>
                   </div>
-                  <div>
-                    {{ complaint_forward_state.state11.forward_doc_no }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.order_detail"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state11.order_detail }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.order.name_th"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    คำสั่งการ :
-                  </div>
-                  <div>
-                    {{ complaint_forward_state.state11.order.name_th }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.order_detail"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_forward_state.state11.order_detail }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.forward_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div>
-                    <a
-                      :href="
-                        complaint_forward_state.state11.forward_doc_filename
-                      "
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.forward_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div>
+                      <a
+                        :href="
+                          complaint_forward_state.state11.forward_doc_filename
+                        "
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -404,36 +475,51 @@
               </td>
               <td class="p-3">
                 <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.forward_doc_date"
+                  v-if="
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 3 ||
+                    userData.role_id == 4 ||
+                    userData.role_id == 5 ||
+                    userData.role_id == 6
+                  "
                 >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                  <div
+                    class="mb-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.forward_doc_date"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{
+                        showDate(
+                          complaint_forward_state.state11.forward_doc_date
+                        )
+                      }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_forward_state.state11.forward_doc_date)
-                    }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.receive_doc_no"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state11.receive_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.receive_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
-                  </div>
-                  <div>
-                    {{ complaint_forward_state.state11.receive_doc_no }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state11.receive_comment"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_forward_state.state11.receive_comment }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state11.receive_comment"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state11.receive_comment }}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -455,63 +541,80 @@
               </td>
               <td class="p-3">
                 <div
-                  class="mb-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state12.forward_doc_date"
+                  v-if="
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 3 ||
+                    userData.role_id == 4 ||
+                    userData.role_id == 5 ||
+                    userData.role_id == 6
+                  "
                 >
-                  <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                  <div
+                    class="mb-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state12.forward_doc_date"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      วันที่เอกสาร :
+                    </div>
+                    <div>
+                      {{
+                        showDate(
+                          complaint_forward_state.state12.forward_doc_date
+                        )
+                      }}
+                    </div>
                   </div>
-                  <div>
-                    {{
-                      showDate(complaint_forward_state.state12.forward_doc_date)
-                    }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state12.forward_doc_no"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      เลขที่เอกสาร :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state12.forward_doc_no }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state12.forward_doc_no"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state12.order.name_th"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      คำสั่งการ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state12.order.name_th }}
+                    </div>
                   </div>
-                  <div>
-                    {{ complaint_forward_state.state12.forward_doc_no }}
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state12.order_detail"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ complaint_forward_state.state12.order_detail }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state12.order.name_th"
-                >
-                  <div class="fw-bold" style="min-width: 100px">
-                    คำสั่งการ :
-                  </div>
-                  <div>
-                    {{ complaint_forward_state.state12.order.name_th }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state12.order_detail"
-                >
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_forward_state.state12.order_detail }}
-                  </div>
-                </div>
-                <div
-                  class="mt-0 pt-0 pb-0 d-flex"
-                  v-if="complaint_forward_state.state12.forward_doc_filename"
-                >
-                  <div class="fw-bold" style="min-width: 100px">ไฟล์แนบ :</div>
-                  <div>
-                    <a
-                      :href="
-                        complaint_forward_state.state12.forward_doc_filename
-                      "
-                      target="_blank"
-                    >
-                      ดาวน์โหลด
-                    </a>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_forward_state.state12.forward_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 100px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div>
+                      <a
+                        :href="
+                          complaint_forward_state.state12.forward_doc_filename
+                        "
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -586,28 +689,45 @@
                   รับรายงาน
                 </td>
                 <td class="p-3 text-green">
-                  <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_date">
-                    <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                  <div
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 3 ||
+                      userData.role_id == 4 ||
+                      userData.role_id == 5 ||
+                      userData.role_id == 6
+                    "
+                  >
+                    <div
+                      class="mb-0 pt-0 pb-0 d-flex"
+                      v-if="cr.receive_doc_date"
+                    >
+                      <div class="fw-bold" style="min-width: 100px">
+                        วันที่เอกสาร :
+                      </div>
+                      <div>
+                        {{ showDate(cr.receive_doc_date) }}
+                      </div>
                     </div>
-                    <div>
-                      {{ showDate(cr.receive_doc_date) }}
+                    <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_no">
+                      <div class="fw-bold" style="min-width: 100px">
+                        เลขที่เอกสาร :
+                      </div>
+                      <div>
+                        {{ cr.receive_doc_no }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_no">
-                    <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
-                    </div>
-                    <div>
-                      {{ cr.receive_doc_no }}
-                    </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_comment">
-                    <div class="fw-bold" style="min-width: 100px">
-                      หมายเหตุ :
-                    </div>
-                    <div>
-                      {{ cr.receive_comment }}
+                    <div
+                      class="mt-0 pt-0 pb-0 d-flex"
+                      v-if="cr.receive_comment"
+                    >
+                      <div class="fw-bold" style="min-width: 100px">
+                        หมายเหตุ :
+                      </div>
+                      <div>
+                        {{ cr.receive_comment }}
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -628,98 +748,112 @@
                   รายงานถึง {{ cr.to_bureau.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
-                  <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_date">
-                    <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
-                    </div>
-                    <div>
-                      {{ showDate(cr.report_doc_date) }}
-                    </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
-                    <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
-                    </div>
-                    <div>
-                      {{ cr.report_doc_no }}
-                    </div>
-                  </div>
                   <div
-                    class="mt-0 pt-0 pb-0 d-flex"
-                    v-if="cr.proceed_status.name_th"
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 3 ||
+                      userData.role_id == 4 ||
+                      userData.role_id == 5 ||
+                      userData.role_id == 6
+                    "
                   >
-                    <div class="fw-bold" style="min-width: 100px">
-                      ผลดำเนินการ :
-                    </div>
-                    <div>
-                      {{ cr.proceed_status.name_th }}
-                    </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_detail">
-                    <div class="fw-bold" style="min-width: 100px">
-                      หมายเหตุ :
-                    </div>
-                    <div>
-                      {{ cr.report_detail }}
-                    </div>
-                  </div>
-                  <div
-                    class="mt-0 pt-0 pb-0 d-flex"
-                    v-if="cr.report_doc_filename"
-                  >
-                    <div class="fw-bold" style="min-width: 100px">
-                      ไฟล์แนบ :
-                    </div>
-                    <div>
-                      <a :href="cr.report_doc_filename" target="_blank">
-                        ดาวน์โหลด
-                      </a>
-                    </div>
-                  </div>
-
-                  <!-- Return -->
-                  <div v-if="cr.status == 3">
-                    <hr />
-                    <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
-                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
-                      <div class="fw-bold" style="min-width: 150px">
-                        วันที่เอกสารส่งกลับ :
+                    <div
+                      class="mb-0 pt-0 pb-0 d-flex"
+                      v-if="cr.report_doc_date"
+                    >
+                      <div class="fw-bold" style="min-width: 100px">
+                        วันที่เอกสาร :
                       </div>
                       <div>
-                        {{ showDate(cr.return_doc_date) }}
+                        {{ showDate(cr.report_doc_date) }}
                       </div>
                     </div>
-                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
-                      <div class="fw-bold" style="min-width: 150px">
-                        เลขที่เอกสารส่งกลับ :
+                    <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
+                      <div class="fw-bold" style="min-width: 100px">
+                        เลขที่เอกสาร :
                       </div>
                       <div>
-                        {{ cr.return_doc_no }}
-                      </div>
-                    </div>
-                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
-                      <div class="fw-bold" style="min-width: 150px">
-                        เหตุผลการส่งกลับ :
-                      </div>
-                      <div>
-                        {{ cr.return_detail }}
+                        {{ cr.report_doc_no }}
                       </div>
                     </div>
                     <div
-                      class="mt-0 pt-0 pb-0 d-flex text-danger"
-                      v-if="cr.return_doc_filename"
+                      class="mt-0 pt-0 pb-0 d-flex"
+                      v-if="cr.proceed_status.name_th"
                     >
-                      <div class="fw-bold" style="min-width: 150px">
+                      <div class="fw-bold" style="min-width: 100px">
+                        ผลดำเนินการ :
+                      </div>
+                      <div>
+                        {{ cr.proceed_status.name_th }}
+                      </div>
+                    </div>
+                    <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_detail">
+                      <div class="fw-bold" style="min-width: 100px">
+                        หมายเหตุ :
+                      </div>
+                      <div>
+                        {{ cr.report_detail }}
+                      </div>
+                    </div>
+                    <div
+                      class="mt-0 pt-0 pb-0 d-flex"
+                      v-if="cr.report_doc_filename"
+                    >
+                      <div class="fw-bold" style="min-width: 100px">
                         ไฟล์แนบ :
                       </div>
                       <div>
-                        <a
-                          :href="cr.return_doc_filename"
-                          target="_blank"
-                          class="text-danger"
-                        >
+                        <a :href="cr.report_doc_filename" target="_blank">
                           ดาวน์โหลด
                         </a>
+                      </div>
+                    </div>
+
+                    <!-- Return -->
+                    <div v-if="cr.status == 3">
+                      <hr />
+                      <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
+                      <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                        <div class="fw-bold" style="min-width: 150px">
+                          วันที่เอกสารส่งกลับ :
+                        </div>
+                        <div>
+                          {{ showDate(cr.return_doc_date) }}
+                        </div>
+                      </div>
+                      <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                        <div class="fw-bold" style="min-width: 150px">
+                          เลขที่เอกสารส่งกลับ :
+                        </div>
+                        <div>
+                          {{ cr.return_doc_no }}
+                        </div>
+                      </div>
+                      <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                        <div class="fw-bold" style="min-width: 150px">
+                          เหตุผลการส่งกลับ :
+                        </div>
+                        <div>
+                          {{ cr.return_detail }}
+                        </div>
+                      </div>
+                      <div
+                        class="mt-0 pt-0 pb-0 d-flex text-danger"
+                        v-if="cr.return_doc_filename"
+                      >
+                        <div class="fw-bold" style="min-width: 150px">
+                          ไฟล์แนบ :
+                        </div>
+                        <div>
+                          <a
+                            :href="cr.return_doc_filename"
+                            target="_blank"
+                            class="text-danger"
+                          >
+                            ดาวน์โหลด
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -777,103 +911,116 @@
                   รายงานถึง {{ cr.to_inspector.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
-                  <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_date">
-                    <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
-                    </div>
-                    <div>
-                      {{ showDate(cr.report_doc_date) }}
-                    </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
-                    <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
-                    </div>
-                    <div>
-                      {{ cr.report_doc_no }}
-                    </div>
-                  </div>
                   <div
-                    class="mt-0 pt-0 pb-0 d-flex"
-                    v-if="cr.proceed_status.name_th"
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 3 ||
+                      userData.role_id == 5 ||
+                      userData.role_id == 6
+                    "
                   >
-                    <div class="fw-bold" style="min-width: 100px">
-                      ผลดำเนินการ :
-                    </div>
-                    <div>
-                      {{ cr.proceed_status.name_th }}
-                    </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_detail">
-                    <div class="fw-bold" style="min-width: 100px">
-                      หมายเหตุ :
-                    </div>
-                    <div>
-                      {{ cr.report_detail }}
-                    </div>
-                  </div>
-                  <div
-                    class="mt-0 pt-0 pb-0 d-flex"
-                    v-if="complaint_report_state.state16.report_doc_filename"
-                  >
-                    <div class="fw-bold" style="min-width: 100px">
-                      ไฟล์แนบ :
-                    </div>
-                    <div>
-                      <a
-                        :href="
-                          complaint_report_state.state16.report_doc_filename
-                        "
-                        target="_blank"
-                      >
-                        ดาวน์โหลด
-                      </a>
-                    </div>
-                  </div>
-
-                  <!-- Return -->
-                  <div v-if="cr.status == 3">
-                    <hr />
-                    <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
-                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
-                      <div class="fw-bold" style="min-width: 150px">
-                        วันที่เอกสารส่งกลับ :
+                    <div
+                      class="mb-0 pt-0 pb-0 d-flex"
+                      v-if="cr.report_doc_date"
+                    >
+                      <div class="fw-bold" style="min-width: 100px">
+                        วันที่เอกสาร :
                       </div>
                       <div>
-                        {{ showDate(cr.return_doc_date) }}
+                        {{ showDate(cr.report_doc_date) }}
                       </div>
                     </div>
-                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
-                      <div class="fw-bold" style="min-width: 150px">
-                        เลขที่เอกสารส่งกลับ :
+                    <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
+                      <div class="fw-bold" style="min-width: 100px">
+                        เลขที่เอกสาร :
                       </div>
                       <div>
-                        {{ cr.return_doc_no }}
-                      </div>
-                    </div>
-                    <div class="mt-0 pt-0 pb-0 d-flex text-danger">
-                      <div class="fw-bold" style="min-width: 150px">
-                        เหตุผลการส่งกลับ :
-                      </div>
-                      <div>
-                        {{ cr.return_detail }}
+                        {{ cr.report_doc_no }}
                       </div>
                     </div>
                     <div
-                      class="mt-0 pt-0 pb-0 d-flex text-danger"
-                      v-if="cr.return_doc_filename"
+                      class="mt-0 pt-0 pb-0 d-flex"
+                      v-if="cr.proceed_status.name_th"
                     >
-                      <div class="fw-bold" style="min-width: 150px">
+                      <div class="fw-bold" style="min-width: 100px">
+                        ผลดำเนินการ :
+                      </div>
+                      <div>
+                        {{ cr.proceed_status.name_th }}
+                      </div>
+                    </div>
+                    <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_detail">
+                      <div class="fw-bold" style="min-width: 100px">
+                        หมายเหตุ :
+                      </div>
+                      <div>
+                        {{ cr.report_detail }}
+                      </div>
+                    </div>
+                    <div
+                      class="mt-0 pt-0 pb-0 d-flex"
+                      v-if="complaint_report_state.state16.report_doc_filename"
+                    >
+                      <div class="fw-bold" style="min-width: 100px">
                         ไฟล์แนบ :
                       </div>
                       <div>
                         <a
-                          :href="cr.return_doc_filename"
+                          :href="
+                            complaint_report_state.state16.report_doc_filename
+                          "
                           target="_blank"
-                          class="text-danger"
                         >
                           ดาวน์โหลด
                         </a>
+                      </div>
+                    </div>
+
+                    <!-- Return -->
+                    <div v-if="cr.status == 3">
+                      <hr />
+                      <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
+                      <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                        <div class="fw-bold" style="min-width: 150px">
+                          วันที่เอกสารส่งกลับ :
+                        </div>
+                        <div>
+                          {{ showDate(cr.return_doc_date) }}
+                        </div>
+                      </div>
+                      <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                        <div class="fw-bold" style="min-width: 150px">
+                          เลขที่เอกสารส่งกลับ :
+                        </div>
+                        <div>
+                          {{ cr.return_doc_no }}
+                        </div>
+                      </div>
+                      <div class="mt-0 pt-0 pb-0 d-flex text-danger">
+                        <div class="fw-bold" style="min-width: 150px">
+                          เหตุผลการส่งกลับ :
+                        </div>
+                        <div>
+                          {{ cr.return_detail }}
+                        </div>
+                      </div>
+                      <div
+                        class="mt-0 pt-0 pb-0 d-flex text-danger"
+                        v-if="cr.return_doc_filename"
+                      >
+                        <div class="fw-bold" style="min-width: 150px">
+                          ไฟล์แนบ :
+                        </div>
+                        <div>
+                          <a
+                            :href="cr.return_doc_filename"
+                            target="_blank"
+                            class="text-danger"
+                          >
+                            ดาวน์โหลด
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -926,10 +1073,22 @@
                 {{ complaint_item.inspector.name_th_abbr }} ปิดเรื่อง
               </td>
               <td class="p-3 text-green">
-                <div class="mt-0 pt-0 pb-0 d-flex">
-                  <div class="fw-bold" style="min-width: 100px">หมายเหตุ :</div>
-                  <div>
-                    {{ complaint_item.closed_comment }}
+                <div
+                  v-if="
+                    userData.role_id == 1 ||
+                    userData.role_id == 2 ||
+                    userData.role_id == 3 ||
+                    userData.role_id == 5 ||
+                    userData.role_id == 6
+                  "
+                >
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      หมายเหตุ :
+                    </div>
+                    <div>
+                      {{ complaint_item.closed_comment }}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -1327,9 +1486,7 @@
                 <td class="p-3">
                   {{ showDate(cf.created_at) }}
                 </td>
-                <td class="fw-bold p-3">
-                  ผบ.ตร. เร่งรัดเรื่อง
-                </td>
+                <td class="fw-bold p-3">ผบ.ตร. เร่งรัดเรื่อง</td>
                 <td class="p-3">
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
@@ -1564,6 +1721,7 @@ export default defineComponent({
   setup(props) {
     // Variable
     const { complaint_item } = toRefs(props);
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const complaint_forward = reactive<any>([]);
     const complaint_report = reactive<any>([]);
@@ -1705,6 +1863,7 @@ export default defineComponent({
       complaint_report_state,
       complaint_follow,
       complaint_extend,
+      userData,
     };
   },
 });
