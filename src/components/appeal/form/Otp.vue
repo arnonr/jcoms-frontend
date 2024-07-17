@@ -111,12 +111,16 @@
                 <span class="fst-italic">{{ APP_BASE_URL }}/tracking</span>
               </div>
               <div class="col-md-12 text-center mt-5">
-                <button @click="downloadImage" class="btn btn-primary">ดาวน์โหลด</button>
+                <button @click="downloadImage" class="btn btn-primary">
+                  ดาวน์โหลด
+                </button>
               </div>
               <div class="separator separator-dotted my-2"></div>
 
               <div class="col-md-12 text-center mt-3">
-                <div class="mb-3">โปรดคลิกที่ EMOJI <br>เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ</div>
+                <div class="mb-3">
+                  โปรดคลิกที่ EMOJI <br />เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ
+                </div>
                 <div class="text-center mx-auto">
                   <span
                     v-for="(emoji, index) in emojis"
@@ -634,7 +638,9 @@ export default defineComponent({
 
           await ApiService[api_sms.type](api_sms.url, {
             msisdn: complainant_item.value.phone_number,
-            message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านรียบร้อยแล้ว เลขคำร้องของท่าน (JCOM No.) : ${
+            message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านรียบร้อยแล้ว ณ วันท่ี ${dayjs()
+              .locale("th")
+              .format("DD MMM BBBB")} เลขคำร้องของท่าน : ${
               result_complaint.value.jcoms_no
             } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${
               import.meta.env.VITE_APP_BASE_URL

@@ -362,14 +362,14 @@ export default defineComponent({
             let message =
               "แจ้งสถานะเรื่องร้องเรียน " +
               item.jcoms_no +
-              " : ฝรท. ไม่รับเรื่อง ณ วันที่ " +
+              " : ฝ่ายรับเรื่องราวร้องทุกข์ ไม่รับเรื่อง ณ วันที่ " +
               dayjs().locale("th").format("DD MMM BBBB");
 
             if (item.receive_status.state_id == 3) {
               message =
                 "แจ้งสถานะเรื่องร้องเรียน " +
                 item.jcoms_no +
-                " : ฝรท. ลงรับเรื่อง ณ วันที่ " +
+                " : ฝ่ายรับเรื่องราวร้องทุกข์ ลงรับเรื่อง ณ วันที่ " +
                 dayjs().locale("th").format("DD MMM BBBB");
             }
 
@@ -377,7 +377,7 @@ export default defineComponent({
               message =
                 "แจ้งสถานะเรื่องร้องเรียน " +
                 item.jcoms_no +
-                " : ฝรท. ไม่รับเรื่อง เพราะ " +
+                " : ฝ่ายรับเรื่องราวร้องทุกข์ ไม่รับเรื่อง เพราะ " +
                 item.receive_comment;
             }
 

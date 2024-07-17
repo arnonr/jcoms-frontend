@@ -601,6 +601,19 @@ export default defineComponent({
       return checkDigit === lastDigit;
     };
 
+    const validatePhoneNumber = (phoneNumber: any) => {
+      // รูปแบบเบอร์โทรศัพท์: 0xxxxxxxxx (เบอร์ 10 หลัก)
+      const phoneRegex = /^0\d{9}$/;
+      return phoneRegex.test(phoneNumber);
+    };
+
+    // ฟังก์ชันตรวจสอบอีเมล
+    const validateEmail = (email: any) => {
+      // รูปแบบอีเมลทั่วไป
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
     // Fetch
 
     // Event
@@ -659,24 +672,52 @@ export default defineComponent({
           return false;
         }
 
+        let checkPhone = validatePhoneNumber(
+          complainant_item.value.phone_number
+        );
+
+        if (checkPhone == false) {
+          errors["phone_number"].error = 1;
+          errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง";
+          useToast(errors["phone_number"].text, "error");
+          return false;
+        }
+
+        let checkEmail = validateEmail(complainant_item.value.email);
+        if (
+          checkEmail == false &&
+          complainant_item.value.email != "" &&
+          complainant_item.value.email != null
+        ) {
+          errors["email"].error = 1;
+          errors["email"].text = "รูปแบบอีเมลไม่ถูกต้อง";
+          useToast(errors["email"].text, "error");
+          return false;
+        }
+
         if (complainant_item.value.card_type.value == 1) {
           let check = validateThaiCitizenId(complainant_item.value.id_card);
 
           if (check == false) {
             errors["id_card"].error = 1;
             errors["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
-            useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
+            useToast(errors["id_card"].text, "error");
             return false;
           }
         }
       } else {
+        let checkPhone = validatePhoneNumber(
+          complainant_item.value.phone_number
+        );
+
         if (
           complainant_item.value.phone_number == "" ||
-          complainant_item.value.phone_number == null
+          complainant_item.value.phone_number == null ||
+          checkPhone == false
         ) {
           errors["phone_number"].error = 1;
-          errors["phone_number"].text = "Phone number is required";
-          useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+          errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง";
+          useToast("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง", "error");
           return false;
         }
       }
@@ -684,8 +725,8 @@ export default defineComponent({
       let checkPhone = isValidPhoneNumber(complainant_item.value.phone_number);
       if (!checkPhone) {
         errors["phone_number"].error = 1;
-        errors["phone_number"].text = "Phone number รูปแบบไม่ถูกต้อง";
-        useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+        errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง";
+        useToast("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง", "error");
         return false;
       }
 
@@ -756,12 +797,10 @@ export default defineComponent({
       window.location.href = authUrl;
     };
 
-    https://jcoms2.police.go.th/thaid-callback?code=Y2QzNjk4MTMtNmJiMi00ZjlhLTgzMzgtYzg1NDQ4YzRkODk5I2IxNmZlNmRmLTBlMTYtNDU0ZC05NTY5LTE2Mzc4NjI4NDFhNQ&state=%22HC1UAbHvRc%22
-
-    
+    //jcoms2.police.go.th/thaid-callback?code=Y2QzNjk4MTMtNmJiMi00ZjlhLTgzMzgtYzg1NDQ4YzRkODk5I2IxNmZlNmRmLTBlMTYtNDU0ZC05NTY5LTE2Mzc4NjI4NDFhNQ&state=%22HC1UAbHvRc%22
 
     // Return
-    return {
+    https: return {
       getAssetPath,
       format,
       selectOptions,
