@@ -27,53 +27,50 @@ export default defineComponent({
       const code = new URLSearchParams(window.location.search).get("code");
       if (code) {
         try {
-          //   const { data } = await ApiService.post(
-          //     "https://imauth.bora.dopa.go.th/api/v2/oauth2/token/",
-          //     {
-          //       grant_type: "authorization_code",
-          //       redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
-          //       code: "Y2QzNjk4MTMtNmJiMi00ZjlhLTgzMzgtYzg1NDQ4YzRkODk5I2IxNmZlNmRmLTBlMTYtNDU0ZC05NTY5LTE2Mzc4NjI4NDFhNQ",
-          //       authorization:
-          //         "Basic " +
-          //         btoa(
-          //           import.meta.env.VITE_APP_THAID_CLIENTID +
-          //             ":" +
-          //             import.meta.env.VITE_APP_THAID_CLIENT_SECRET
-          //         ),
-
-          //       //   bbA1vJhFiMYTZPPHYXZGLnRootVdDg17byrnBTyJ
-          //     }
-          //   );
-
-          const headers = {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization:
+          const { data } = await ApiService.post("getThaiD", {
+            grant_type: "authorization_code",
+            redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
+            code: code,
+            authorization:
               "Basic " +
               btoa(
                 import.meta.env.VITE_APP_THAID_CLIENTID +
                   ":" +
                   import.meta.env.VITE_APP_THAID_CLIENT_SECRET
               ),
-          };
+          });
 
-          console.log(headers.Authorization);
+          router.push(import.meta.env.VITE_APP_BASE_URL + "/appeal?type_id=1");
 
-          axios
-            .post(
-              "https://imauth.bora.dopa.go.th/api/v2/oauth2/token/",
-              {
-                grant_type: "authorization_code",
-                redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
-                code: code,
-              },
-              {
-                headers: headers,
-              }
-            )
-            .then((response) => {
-              console.log(response);
-            })
-            .catch((error) => {});
+          //   const headers = {
+          //     "Content-Type": "application/x-www-form-urlencoded",
+          //     Authorization:
+          //       "Basic " +
+          //       btoa(
+          //         import.meta.env.VITE_APP_THAID_CLIENTID +
+          //           ":" +
+          //           import.meta.env.VITE_APP_THAID_CLIENT_SECRET
+          //       ),
+          //   };
+
+          //   console.log(headers.Authorization);
+
+          //   axios
+          //     .post(
+          //       "https://imauth.bora.dopa.go.th/api/v2/oauth2/token/",
+          //       {
+          //         grant_type: "authorization_code",
+          //         redirect_uri: import.meta.env.VITE_APP_THAID_REDIRECT_URI,
+          //         code: code,
+          //       },
+          //       {
+          //         headers: headers,
+          //       }
+          //     )
+          //     .then((response) => {
+          //       console.log(response);
+          //     })
+          //     .catch((error) => {});
 
           //   const token = data.data.access_token;
           //   console.log("Access Token:", token);

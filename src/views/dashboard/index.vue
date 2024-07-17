@@ -402,12 +402,12 @@ export default defineComponent({
         bgColor: "#FFC107",
         total: 0,
       },
-    //   {
-    //     status_id: 7,
-    //     description: "ฝรท. ตรวจสอบ",
-    //     bgColor: "#FFC107",
-    //     total: 0,
-    //   },
+      //   {
+      //     status_id: 7,
+      //     description: "ฝรท. ตรวจสอบ",
+      //     bgColor: "#FFC107",
+      //     total: 0,
+      //   },
       {
         status_id: 4,
         description: "ส่งหน่วยดำเนินการ",
@@ -427,7 +427,6 @@ export default defineComponent({
         bgColor: "#17c653",
         total: 0,
       },
-
     ]);
 
     const defaultTopicCategories = [
@@ -550,8 +549,8 @@ export default defineComponent({
         { name: "เรื่องร้องเรียนใหม่", value: 2 },
         { name: "รับเข้าระบบ", value: 3 },
         { name: "ส่งหน่วยตรวจสอบ", value: 4 },
-        { name: "ตรวจสอบเสร็จสิ้น", value: 5 },
         { name: "อยู่ระหว่างตรวจสอบ", value: 6 },
+        { name: "ตรวจสอบเสร็จสิ้น", value: 5 },
       ],
       sections: [
         {
@@ -1013,6 +1012,27 @@ export default defineComponent({
           create_from: create_from,
           create_to: create_to,
         };
+
+        if (userData.role_id == 1) {
+        } else if (userData.role_id == 2) {
+        } else if (userData.role_id == 3) {
+          params.bureau_id = userData.bureau_id;
+          params.state_in =
+            "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        } else if (userData.role_id == 4) {
+          params.division_id = userData.division_id;
+          params.state_in = "8,9,11,12,14,15,16,17,20,21,22,23,24,28,29,30";
+        } else if (userData.role_id == 5) {
+          params.inspector_id = userData.inspector_id;
+          params.state_in =
+            "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        } else if (userData.role_id == 6) {
+          params.state_in =
+            "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        } else {
+          return false;
+        }
+
         // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
         const { data } = await ApiService.query("complaint/", {
           params: params,
@@ -1061,8 +1081,8 @@ export default defineComponent({
         // cardStatus.value[1].total = reject_items.value.length;
         cardStatus.value[2].total = receive1_items.value.length;
         cardStatus.value[3].total = send1_items.value.length;
-        cardStatus.value[4].total = success_items.value.length;
-        cardStatus.value[5].total = during_items.value.length;
+        cardStatus.value[4].total = during_items.value.length;
+        cardStatus.value[5].total = success_items.value.length;
 
         reloadData();
       } catch (error) {

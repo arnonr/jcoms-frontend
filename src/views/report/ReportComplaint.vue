@@ -776,6 +776,27 @@ export default defineComponent({
           create_to: create_to,
           complaint_type_id: search.complaint_type_id?.id,
         };
+
+        if (userData.role_id == 1) {
+        } else if (userData.role_id == 2) {
+        } else if (userData.role_id == 3) {
+          params.bureau_id = userData.bureau_id;
+          params.state_in =
+            "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        } else if (userData.role_id == 4) {
+          params.division_id = userData.division_id;
+          params.state_in = "8,9,11,12,14,15,16,17,20,21,22,23,24,28,29,30";
+        } else if (userData.role_id == 5) {
+          params.inspector_id = userData.inspector_id;
+          params.state_in =
+            "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        } else if (userData.role_id == 6) {
+          params.state_in =
+            "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        } else {
+          return false;
+        }
+
         // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
         const { data } = await ApiService.query("complaint/", {
           params: params,
