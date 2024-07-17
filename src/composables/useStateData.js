@@ -118,7 +118,7 @@ export default () => {
     },
     {
       id: 19,
-      name_th: "บช./ภ. รับเรื่อง",
+      name_th: "บช./ภ. รับเรื่องแล้ว",
       name_en: null,
       bg_color: "#ff8c00",
       bg_bureau_color: "#ff8c00",
@@ -126,7 +126,7 @@ export default () => {
     },
     {
       id: 20,
-      name_th: "ภ.จว./บก. รับเรื่อง",
+      name_th: "ภ.จว./บก. รับเรื่องแล้ว",
       name_en: null,
       bg_color: "#ff8c00",
       bg_bureau_color: "#ff8c00",
@@ -134,7 +134,7 @@ export default () => {
     },
     {
       id: 21,
-      name_th: "กก./สถานี รับเรื่อง",
+      name_th: "กก./สถานี รับเรื่องแล้ว",
       name_en: null,
       bg_color: "#ff8c00",
       bg_bureau_color: "#ff8c00",
@@ -142,7 +142,7 @@ export default () => {
     },
     {
       id: 22,
-      name_th: "ภ.จว./บก. รับรายงาน",
+      name_th: "ภ.จว./บก. รับรายงานแล้ว",
       name_en: null,
       bg_color: "#ff8c00",
       bg_bureau_color: "#ff8c00",
@@ -150,7 +150,7 @@ export default () => {
     },
     {
       id: 23,
-      name_th: "บช./ภ. รับรายงาน",
+      name_th: "บช./ภ. รับรายงานแล้ว",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",
@@ -158,7 +158,7 @@ export default () => {
     },
     {
       id: 24,
-      name_th: "จต. รับรายงาน",
+      name_th: "จต. รับรายงานแล้ว",
       name_en: null,
       bg_color: "#7be382",
       bg_bureau_color: "#7be382",

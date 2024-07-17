@@ -51,7 +51,7 @@
                     </tr>
 
                     <!-- ฝรท. รับเรื่อง -->
-                    <tr v-if="complaint_item.receive_doc_date">
+                    <tr v-if="complaint_item.receive_status == 1">
                       <td class="p-3">
                         {{ showDate(complaint_item.receive_at) }}
                       </td>
@@ -59,42 +59,50 @@
                         ฝรท.
                         {{
                           complaint_item.receive_status == 1
-                            ? "รับเรื่อง"
+                            ? "รับเรื่อง/ดำเนินการ"
                             : "ไม่รับเรื่อง"
                         }}
                       </td>
                       <td class="p-3">
-                        <div class="mb-0 pt-0 pb-0 d-flex">
-                          <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                        <div
+                          v-if="
+                            userData.role_id == 1 ||
+                            userData.role_id == 2 ||
+                            userData.role_id == 6
+                          "
+                        >
+                          <div class="mb-0 pt-0 pb-0 d-flex">
+                            <div class="fw-bold" style="min-width: 100px">
+                              วันที่เอกสาร :
+                            </div>
+                            <div>
+                              {{ showDate(complaint_item.receive_doc_date) }}
+                            </div>
                           </div>
-                          <div>
-                            {{ showDate(complaint_item.receive_doc_date) }}
+                          <div class="mt-0 pt-0 pb-0 d-flex">
+                            <div class="fw-bold" style="min-width: 100px">
+                              เลขที่เอกสาร :
+                            </div>
+                            <div>{{ complaint_item.receive_doc_no }}</div>
                           </div>
-                        </div>
-                        <div class="mt-0 pt-0 pb-0 d-flex">
-                          <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                          <div class="mt-0 pt-0 pb-0 d-flex">
+                            <div class="fw-bold" style="min-width: 100px">
+                              หมายเหตุ :
+                            </div>
+                            <div>{{ complaint_item.receive_comment }}</div>
                           </div>
-                          <div>{{ complaint_item.receive_doc_no }}</div>
-                        </div>
-                        <div class="mt-0 pt-0 pb-0 d-flex">
-                          <div class="fw-bold" style="min-width: 100px">
-                            หมายเหตุ :
-                          </div>
-                          <div>{{ complaint_item.receive_comment }}</div>
-                        </div>
-                        <div class="mt-0 pt-0 pb-0 d-flex">
-                          <div class="fw-bold" style="min-width: 100px">
-                            ไฟล์แนบ :
-                          </div>
-                          <div>
-                            <a
-                              :href="complaint_item.receive_doc_filename"
-                              target="_blank"
-                            >
-                              เอกสาร
-                            </a>
+                          <div class="mt-0 pt-0 pb-0 d-flex">
+                            <div class="fw-bold" style="min-width: 100px">
+                              ไฟล์แนบ :
+                            </div>
+                            <div>
+                              <a
+                                :href="complaint_item.receive_doc_filename"
+                                target="_blank"
+                              >
+                                เอกสาร
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -1180,6 +1188,7 @@ export default defineComponent({
       day_times: useBasicData().day_times,
       states: useStateData().states,
     });
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     const complaint_item = reactive<any>({});
     const complainant_item = reactive<any>({});
@@ -1438,6 +1447,7 @@ export default defineComponent({
       complaint_forward,
       complaint_report_state,
       complaint_report,
+      userData,
     };
   },
 });

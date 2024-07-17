@@ -95,14 +95,42 @@
               </div> -->
 
               <div class="mb-7 col-12 col-lg-12">
-                <label for="close_comment">หมายเหตุ : </label>
+                <label for="">ผลการพิจารณา : </label>
+                <v-select
+                  v-model="item.closed_state_id"
+                  id="slt-search-order-id-2"
+                  name="slt-search-order-2"
+                  :options="[
+                    { name_th: 'ยุติเรื่อง', id: 1 },
+                    { name_th: 'ดำเนินการทางวินัย', id: 2 },
+                  ]"
+                  label="name_th"
+                  placeholder="ผลการพิจารณา"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
+
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="close_comment">รายละเอียดผลการพิจารณา : </label>
                 <input
                   v-model="item.closed_comment"
                   type="text"
                   class="form-control"
-                  placeholder="หมายเหตุ"
-                  aria-label="หมายเหตุ"
+                  placeholder="รายละเอียดผลการพิจารณา"
+                  aria-label="รายละเอียดผลการพิจารณา"
                   aria-describedby="basic-addon2"
+                />
+              </div>
+
+              <div class="mb-7 col-12 col-lg-12">
+                <label for="formFile" class="form-label">แนบไฟล์ (ถ้ามี)</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  @change="onFileChange"
+                  ref="closedDocFilename"
                 />
               </div>
 
@@ -174,6 +202,7 @@ export default defineComponent({
 
     // Variable
     const receiveDocFilename = ref<any>(null);
+    const closedDocFilename = ref<any>(null);
     const selectOptions = ref({
       //   organizations: useOrganizationData().organization_mapping("bureau"),
       //   orders: useBasicData().orders,
@@ -229,6 +258,7 @@ export default defineComponent({
         item.state_id = data.data.state_id;
         item.phone_number = data.data.complainant?.phone_number;
         item.receive_at = data.data.complainant?.receive_at;
+        item.inspector_name_th_abbr = data.data.inspector.name_th_abbr;
 
         isLoading.value = false;
       } catch (error) {
@@ -239,7 +269,7 @@ export default defineComponent({
 
     // Event
     const onFileChange = (event: any) => {
-      item.receive_doc_filename = event.target.files[0];
+      item.closed_doc_filename = event.target.files[0];
     };
     const onValidate = async () => {
       isLoading.value = true;
@@ -273,15 +303,17 @@ export default defineComponent({
 
       let data_item = {
         // receive_doc_filename:
-        //   item.receive_doc_filename.length != 0
-        //     ? item.receive_doc_filename
-        //     : undefined,
         // receive_doc_no: item.receive_doc_no,
         // receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
+        closed_state_id: item.closed_state_id.id,
         closed_user_id: userData.id,
         closed_at: dayjs().format("YYYY-MM-DD"),
         closed_comment: item.closed_comment,
         state_id: state_id,
+        closed_doc_filename:
+          item.closed_doc_filename.length != 0
+            ? item.closed_doc_filename
+            : undefined,
       };
 
       await ApiService.postFormData("complaint/" + item.complaint_id, {
@@ -292,12 +324,16 @@ export default defineComponent({
             throw new Error("ERROR");
           }
 
-          //   if 1111
-          await ApiService.post("opm/add-operating/" + item.complaint_id, {
-            detail: item.closed_comment,
-            date_opened: dayjs(item.receive_at).format("YYYY-MM-DD HH:ii:ss"),
-            date_closed: dayjs().format("YYYY-MM-DD HH:ii:ss"),
+          await ApiService.post("complaint/" + item.complaint_id, {
+            inspector_state_id: null,
           });
+
+          //   if 1111
+          //   await ApiService.post("opm/add-operating/" + item.complaint_id, {
+          //     detail: item.closed_comment,
+          //     date_opened: dayjs(item.receive_at).format("YYYY-MM-DD HH:mm:ss"),
+          //     date_closed: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+          //   });
 
           //   SMS
           let msisdn = item.phone_number;
@@ -305,8 +341,14 @@ export default defineComponent({
             let message =
               "แจ้งสถานะเรื่องร้องเรียน " +
               item.jcoms_no +
-              " : จต. ปิดเรื่อง ณ วันที่ " +
-              dayjs().locale("th").format("DD MMM BBBB");
+              " : " +
+              item.inspector_name_th_abbr +
+              " ปิดเรื่อง ณ วันที่ " +
+              dayjs().locale("th").format("DD MMM BBBB") +
+              " ผลการพิจารณา " +
+              item.closed_state_id.name_th +
+              ", " +
+              item.closed_comment;
 
             await ApiService.post("sms/send-sms", {
               msisdn,
@@ -374,6 +416,7 @@ export default defineComponent({
       onFileChange,
       onClose,
       mainModalRef,
+      closedDocFilename,
     };
   },
 });

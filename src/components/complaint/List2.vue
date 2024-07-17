@@ -91,7 +91,7 @@
                     >รายละเอียด</a
                   >
                 </li>
-                <li>
+                <li v-if="it.state_id != 17">
                   <a
                     class="dropdown-item cursor-pointer"
                     @click="
@@ -289,7 +289,7 @@
                   >
                 </li>
 
-                <li>
+                <li v-if="it.state_id != 17">
                   <a
                     class="dropdown-item cursor-pointer"
                     v-if="
@@ -304,6 +304,24 @@
                       })
                     "
                     >จต. ปิดเรื่อง</a
+                  >
+                </li>
+
+                <li v-if="it.state_id != 17">
+                  <a
+                    class="dropdown-item cursor-pointer"
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 5
+                    "
+                    @click="
+                      handleSuccessAnotherReport({
+                        id: it.id,
+                        complainant_id: it.complainant_id,
+                      })
+                    "
+                    >ส่งเรื่องให้หน่วยอื่นดำเนินการ</a
                   >
                 </li>
 
@@ -322,7 +340,7 @@
                   >
                 </li>
 
-                <li v-if="it.inspector_state_id == 1">
+                <li v-if="it.inspector_state_id == 1 && it.state_id != 17">
                   <a
                     v-if="userData.role_id == 1 || userData.role_id == 5"
                     class="dropdown-item cursor-pointer"
@@ -343,7 +361,8 @@
                     it.inspector_state_id != 9 &&
                     it.inspector_state_id != 10 &&
                     it.inspector_state_id != 14 &&
-                    it.inspector_state_id != 4
+                    it.inspector_state_id != 4 &&
+                    it.state_id != 17
                   "
                 >
                   <a
@@ -359,7 +378,7 @@
                   >
                 </li>
 
-                <li v-if="it.inspector_state_id == 9">
+                <li v-if="it.inspector_state_id == 9 && it.state_id != 17">
                   <a
                     v-if="userData.role_id == 1 || userData.role_id == 6"
                     class="dropdown-item cursor-pointer"
@@ -421,6 +440,7 @@
                 <li
                   v-if="
                     it.inspector_state_id == 3 &&
+                    it.state_id != 17 &&
                     (userData.role_id == 1 || userData.role_id == 3)
                   "
                 >
@@ -688,6 +708,10 @@ export default defineComponent({
       emit("approveExtend", item);
     };
 
+    const handleSuccessAnotherReport = (item: any) => {
+      emit("successAnotherReport", item);
+    };
+
     const convertDate = (date: any) => {
       return dayjs(date).locale("th").format("DD MMM BBBB");
     };
@@ -780,6 +804,7 @@ export default defineComponent({
       handleReceiveReport2,
       handleReceiveReport0,
       handleSuccessReport,
+      handleSuccessAnotherReport,
       handleReturnReport1,
       handleReturnReport2,
       handleSendToInspector,

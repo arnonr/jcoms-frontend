@@ -52,7 +52,7 @@
 
       <div
         class="mb-0 mt-0 col-12 col-lg-12"
-        v-if="parseInt(complaint_item.is_anonymous) == 1"
+        v-if="parseInt(complaint_item.is_anonymous) == 1 && parseInt(complainant_item.is_anonymous)"
       >
         <button @click="loginWithThaiD" class="btn" style="padding-left: 0px">
           <!-- Data with ThaiD -->
@@ -782,6 +782,7 @@ export default defineComponent({
       }
     );
 
+ 
     const getLang = () => {
       return localStorage.getItem("lang");
     };

@@ -230,6 +230,7 @@ export default defineComponent({
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
         item.phone_number = data.data.complainant?.phone_number;
+        item.bureau_name_th_abbr = data.data.bureau?.name_th_abbr;
       } catch (error) {
         isLoading.value = false;
         console.log(error);
@@ -320,7 +321,9 @@ export default defineComponent({
               let message =
                 "แจ้งสถานะเรื่องร้องเรียน " +
                 item.jcoms_no +
-                " : บช./ภ. รับรายงานผล ณ วันที่ " +
+                " : " +
+                item.bureau_name_th_abbr +
+                " รับรายงานผล ณ วันที่ " +
                 dayjs().locale("th").format("DD MMM BBBB");
 
               await ApiService.post("sms/send-sms", {
