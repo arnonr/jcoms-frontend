@@ -326,7 +326,7 @@
                 </li>
 
                 <!--  -->
-                <li v-if="it.inspector_state_id == null">
+                <li v-if="it.inspector_state_id == null && it.state_id != 17">
                   <a
                     v-if="userData.role_id == 1 || userData.role_id == 2"
                     class="dropdown-item cursor-pointer"

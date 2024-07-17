@@ -49,7 +49,15 @@
                       type="button"
                       class="btn btn-success"
                     >
-                      พิมพ์ข้อมูลส่วนบุคคล
+                      พิมพ์รายละเอียดเรื่องร้องเรียน
+                    </button>
+
+                    <button
+                      @click="generatePDF2"
+                      type="button"
+                      class="btn btn-primary ms-2"
+                    >
+                      พิมพ์รายละเอียดเรื่องร้องเรียน (ไม่รวมข้อมูลส่วนบุคค)
                     </button>
                   </div>
                 </div>
@@ -62,6 +70,7 @@
     </div>
 
     <!-- PDF -->
+
     <vue3-html2pdf
       :show-layout="false"
       :float-layout="true"
@@ -97,6 +106,50 @@
             :new_item="new_item"
           />
 
+          <SectionPDF3
+            :complaint_type="complaint_type"
+            :complaint_item="complaint_item"
+            :complainant_item="complainant_item"
+            :new_item="new_item"
+            :accused_item="accused_item"
+            :complaint_file_attach="complaint_file_attach"
+          />
+
+          <div class="text-danger text-center">
+            <h1 class="text-danger">ลับ</h1>
+          </div>
+        </div>
+      </template>
+    </vue3-html2pdf>
+
+    <vue3-html2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :paginate-elements-by-height="1400"
+      filename="jcoms_data"
+      :pdf-quality="2"
+      :manual-pagination="false"
+      pdf-format="a4"
+      pdf-orientation="portrait"
+      pdf-content-width="800px"
+      ref="html2Pdf2"
+    >
+      <template v-slot:pdf-content>
+        <div
+          style="
+            margin-top: 50px;
+            margin-right: 50px;
+            margin-bottom: 50px;
+            margin-left: 50px;
+          "
+          class="generate-pdf"
+        >
+          <!-- <SectionPDF1 :complaint_item="complaint_item" /> -->
+          <div class="text-danger text-center">
+            <h1 class="text-danger">ลับ</h1>
+          </div>
           <SectionPDF3
             :complaint_type="complaint_type"
             :complaint_item="complaint_item"
@@ -172,6 +225,7 @@ export default defineComponent({
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const html2Pdf = ref<any>(null);
+    const html2Pdf2 = ref<any>(null);
 
     // Variable
     const selectOptions = ref({
@@ -205,6 +259,10 @@ export default defineComponent({
 
     const generatePDF = () => {
       html2Pdf.value.generatePdf();
+    };
+
+    const generatePDF2 = () => {
+      html2Pdf2.value.generatePdf();
     };
 
     // Fetch
@@ -391,7 +449,9 @@ export default defineComponent({
       new_item,
       onClose,
       generatePDF,
+      generatePDF2,
       html2Pdf,
+      html2Pdf2,
     };
   },
 });

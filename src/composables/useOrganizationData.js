@@ -44389,7 +44389,9 @@ export default () => {
   const organization_mapping = (type = "all") => {
     const a = agency_organizations.map((el) => {
       el.label =
-        (el.agency_th_abbr != null ? el.agency_th_abbr : el.agency_th) +
+        (el.agency_th_abbr != null && el.agency_th_abbr != ""
+          ? el.agency_th_abbr
+          : el.agency_th) +
         " > " +
         el.division_th +
         " > " +
@@ -44422,6 +44424,10 @@ export default () => {
 
     if (type == "inspector") {
       return i;
+    }
+
+    if (type == "agency") {
+      return a;
     }
 
     return [...b, ...d, ...a].sort((e, f) => {

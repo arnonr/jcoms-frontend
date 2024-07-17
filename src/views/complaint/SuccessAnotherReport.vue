@@ -11,7 +11,7 @@
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
             <h3 class="modal-title">
-              บก/ภ.จว. ส่งต่อเรื่อง ({{ item.jcoms_no }})
+              จต. ส่งเรื่องให้หน่วยอื่นดำเนินการ ({{ item.jcoms_no }})
             </h3>
             <button
               @click="onClose({ reload: false })"
@@ -51,7 +51,7 @@
                       <div class="accordion-body" style="padding: 0">
                         <DetailPage
                           v-if="item.id"
-                          :complaint_id="item.id"
+                          :complaint_id="item.complaint_id"
                           :complainant_id="item.complainant_id"
                         />
                         <hr />
@@ -61,58 +61,24 @@
                 </div>
               </div>
 
-              <div class="mb-7 col-12 col-lg-12">
-                <label for="organization_all" class="form-label"
-                  >หน่วยงานระดับ กก./สถานี</label
-                >
-                <v-select
-                  name="accused_organization_all"
-                  placeholder="หน่วยงาน/Organization"
-                  :options="selectOptions.organizations"
-                  class="form-control"
-                  :clearable="false"
-                  v-model="item.organization_all"
-                >
-                </v-select>
-                <div
-                  class="d-block mt-1"
-                  v-if="item_errors.organization_all.error == 1"
-                >
-                  <span role="alert" class="text-danger">{{
-                    item_errors.organization_all.text
-                  }}</span>
-                </div>
-              </div>
-
-              <div class="mb-7 col-12 col-lg-12">
-                <label for="email" class="form-label">Email</label>
-                <input
-                  type="text"
-                  v-model="item.email"
-                  class="form-control"
-                  placeholder=""
-                  aria-label=""
-                />
-              </div>
-
-              <div class="mb-7 col-12 col-lg-6">
+              <!-- <div class="mb-7 col-12 col-lg-6">
                 <label for="send" class="form-label"
-                  >เลขทะเบียนหนังสือส่ง</label
+                  >เลขทะเบียนหนังสือรับ</label
                 >
                 <input
                   type="text"
-                  v-model="item.forward_doc_no"
+                  v-model="item.receive_doc_no"
                   class="form-control"
                   placeholder=""
                   aria-label=""
                 />
-              </div>
+              </div> -->
 
-              <div class="mb-7 col-12 col-lg-6">
+              <!-- <div class="mb-7 col-12 col-lg-6">
                 <label for="surname" class="form-label">วันที่หนังสือ</label>
 
                 <VueDatePicker
-                  v-model="item.forward_doc_date"
+                  v-model="item.receive_doc_date"
                   :max-date="new Date()"
                   :enable-time-picker="false"
                   :locale="'th'"
@@ -128,30 +94,32 @@
                     {{ value + 543 }}
                   </template>
                 </VueDatePicker>
-              </div>
+              </div> -->
 
               <div class="mb-7 col-12 col-lg-12">
-                <label for="">ข้อสั่งการ : </label>
+                <label for="">ผลการพิจารณา : </label>
                 <v-select
-                  v-model="item.order_id"
+                  v-model="item.closed_state_id"
                   id="slt-search-order-id-2"
                   name="slt-search-order-2"
-                  :options="selectOptions.orders"
-                  label="name"
-                  placeholder="ข้อสั่งการ"
+                  :options="[
+                    { name_th: 'ส่งเรื่องให้หน่วยอื่นดำเนินการ', id: 3 },
+                  ]"
+                  label="name_th"
+                  placeholder="ผลการพิจารณา"
                   class="form-control"
                   :clearable="true"
                 ></v-select>
               </div>
 
               <div class="mb-7 col-12 col-lg-12">
-                <label for="">หมายเหตุ : </label>
+                <label for="close_comment">รายละเอียดผลการพิจารณา : </label>
                 <input
-                  v-model="item.order_detail"
+                  v-model="item.closed_comment"
                   type="text"
                   class="form-control"
-                  placeholder="หมายเหตุ"
-                  aria-label="หมายเหตุ"
+                  placeholder="รายละเอียดผลการพิจารณา"
+                  aria-label="รายละเอียดผลการพิจารณา"
                   aria-describedby="basic-addon2"
                 />
               </div>
@@ -163,13 +131,13 @@
                   type="file"
                   id="formFile"
                   @change="onFileChange"
-                  ref="forwardDocFilename"
+                  ref="closedDocFilename"
                 />
               </div>
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  ส่งต่อเรื่อง
+                  ปิดเรื่อง
                 </button>
               </div>
             </div>
@@ -212,7 +180,7 @@ import DetailPage from "@/views/new-complaint/Detail.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
 
 export default defineComponent({
-  name: "send-complaint-2",
+  name: "receive-report-complaint-1",
   props: {
     complaint_id: {
       type: Number,
@@ -234,10 +202,11 @@ export default defineComponent({
     const mainModalObj = ref<any>(null);
 
     // Variable
-    const forwardDocFilename = ref<any>(null);
+    const receiveDocFilename = ref<any>(null);
+    const closedDocFilename = ref<any>(null);
     const selectOptions = ref({
-      organizations: useOrganizationData().organization_mapping("agency"),
-      orders: useBasicData().orders,
+      //   organizations: useOrganizationData().organization_mapping("bureau"),
+      //   orders: useBasicData().orders,
     });
 
     const format = (date: any) => {
@@ -248,19 +217,31 @@ export default defineComponent({
     };
 
     // Validate Schema
-    const validationItemSchema = Yup.object().shape({
-      forward_doc_no: Yup.string().nullable().label(""),
-      forward_doc_date: Yup.date().nullable().label("วันที่ส่งหนังสือ"),
-    });
+    // const validationItemSchema = Yup.object().shape({
+    //   receive_doc_no: Yup.string().nullable().label(""),
+    //   receive_doc_date: Yup.date().nullable().label("วันที่รับหนังสือ"),
+    // });
 
     // Item Variable
-    const item = reactive<any>({});
-    // Item Errors
-    const item_errors = reactive<any>({
-      forward_doc_no: { error: 0, text: "" },
-      forward_doc_date: { error: 0, text: "" },
-      organization_all: { error: 0, text: "" },
+    const item = reactive<any>({
+      id: null,
+      complaint_id: props.complaint_id,
+      //   receive_doc_no: null,
+      //   receive_doc_date: null,
+      //   receive_doc_filename: [],
+      closed_user_id: null,
+      closed_at: dayjs().format("YYYY-MM-DD"),
+      //   organization_all: null,
+      closed_comment: null,
+      //   receive_status: null,
+      state_id: null, //
     });
+    // Item Errors
+    // const item_errors = reactive<any>({
+    //   receive_doc_no: { error: 0, text: "" },
+    //   receive_doc_date: { error: 0, text: "" },
+    //   organization_all: { error: 0, text: "" },
+    // });
 
     //Fetch
     const fetchComplaint = async () => {
@@ -276,11 +257,9 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
-
-        selectOptions.value.organizations =
-          selectOptions.value.organizations.filter((x: any) => {
-            return x.division_id == data.data.division_id;
-          });
+        item.phone_number = data.data.complainant?.phone_number;
+        item.receive_at = data.data.complainant?.receive_at;
+        item.inspector_name_th_abbr = data.data.inspector.name_th_abbr;
 
         isLoading.value = false;
       } catch (error) {
@@ -291,102 +270,100 @@ export default defineComponent({
 
     // Event
     const onFileChange = (event: any) => {
-      item.forward_doc_filename = event.target.files[0];
+      item.closed_doc_filename = event.target.files[0];
     };
     const onValidate = async () => {
       isLoading.value = true;
-      Object.assign(item_errors, {
-        forward_doc_no: { error: 0, text: "" },
-        forward_doc_date: { error: 0, text: "" },
-      });
+      //   Object.assign(item_errors, {
+      //     receive_doc_no: { error: 0, text: "" },
+      //     receive_doc_date: { error: 0, text: "" },
+      //   });
 
-      try {
-        await validationItemSchema.validate(item, {
-          abortEarly: false,
-        });
-      } catch (err: any) {
-        err.inner.forEach((error: any) => {
-          const fieldName = error.path;
-          const errorMessage = error.message;
-          item_errors[fieldName].error = 1;
-          item_errors[fieldName].text = errorMessage;
-          isLoading.value = false;
-        });
+      //   try {
+      //     await validationItemSchema.validate(item, {
+      //       abortEarly: false,
+      //     });
+      //   } catch (err: any) {
+      //     err.inner.forEach((error: any) => {
+      //       const fieldName = error.path;
+      //       const errorMessage = error.message;
+      //       item_errors[fieldName].error = 1;
+      //       item_errors[fieldName].text = errorMessage;
+      //       isLoading.value = false;
+      //     });
 
-        useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
-        return false;
-      }
+      //     useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+      //     return false;
+      //   }
 
       onSaveComplaint();
     };
     const onSaveComplaint = async () => {
       //
-      let state_id = 12;
+      let state_id = 17;
 
       let data_item = {
-        complaint_id: item.complaint_id,
-        forward_doc_filename:
-          item.forward_doc_filename?.length != 0
-            ? item.forward_doc_filename
-            : undefined,
-        forward_doc_no: item.forward_doc_no,
-        forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
-        forward_user_id: userData.id,
-        forward_at: dayjs().format("YYYY-MM-DD"),
-        to_bureau_id: item.organization_all?.bureau_id,
-        to_division_id: item.organization_all?.division_id,
-        to_agency_id: item.organization_all?.agency_id,
-        order_id: item.order_id?.value,
-        order_detail: item.order_detail,
+        // receive_doc_filename:
+        // receive_doc_no: item.receive_doc_no,
+        // receive_doc_date: dayjs(item.receive_doc_date).format("YYYY-MM-DD"),
+        closed_state_id: item.closed_state_id.id,
+        closed_user_id: userData.id,
+        closed_at: dayjs().format("YYYY-MM-DD"),
+        closed_comment: item.closed_comment,
         state_id: state_id,
-        is_active: 1,
+        closed_doc_filename:
+          item.closed_doc_filename.length != 0
+            ? item.closed_doc_filename
+            : undefined,
       };
 
-      await ApiService.postFormData("complaint-forward/", data_item)
+      await ApiService.postFormData("complaint/" + item.complaint_id, {
+        ...data_item,
+      })
         .then(async ({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
 
-          //   ปรับสถานะ
-          await ApiService.postFormData("complaint/" + item.complaint_id, {
-            state_id: state_id,
-          }).then(({ data }) => {
-            if (data.msg != "success") {
-              throw new Error("ERROR");
-            }
-
-            isLoading.value = true;
-            useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
-            onClose({ reload: true });
+          await ApiService.post("complaint/" + item.complaint_id, {
+            inspector_state_id: null,
           });
 
-          await ApiService.post("email/send-email", {
-            mailto: item.email,
-            subject:
-              "ระบบ JCOMS : เรื่องร้องเรียนถึง " +
-              item.organization_all.agency_th,
-            body:
-              "เลขทะเบียนหนังสือส่ง: " +
-              item.forward_doc_no +
-              "<br>วันที่หนังสือ: " +
-              dayjs(item.forward_doc_date).locale("th").format("DD MMM BBBB") +
-              " <br>ข้อสั่งการ: " +
-              item.order_id?.name +
-              "<br>หมายเหตุ: " +
-              item.order_detail +
-              "<br>ลิ้งค์ไฟล์: " +
-              data.forward_doc_filename,
-          })
-            .then(async ({ data }) => {
-              if (data.msg != "success") {
-                throw new Error("ERROR");
-              }
+          //   if 1111
+          //   await ApiService.post("opm/add-operating/" + item.complaint_id, {
+          //     detail: item.closed_comment,
+          //     date_opened: dayjs(item.receive_at).format("YYYY-MM-DD HH:mm:ss"),
+          //     date_closed: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+          //   });
+
+          //   SMS
+          let msisdn = item.phone_number;
+          if (msisdn != null) {
+            let message =
+              "แจ้งสถานะเรื่องร้องเรียน " +
+              item.jcoms_no +
+              " : " +
+              item.inspector_name_th_abbr +
+              " ปิดเรื่อง ณ วันที่ " +
+              dayjs().locale("th").format("DD MMM BBBB") +
+              " ผลการพิจารณา " +
+              item.closed_state_id.name_th +
+              ", " +
+              item.closed_comment;
+
+            await ApiService.post("sms/send-sms", {
+              msisdn,
+              message,
             })
-            .catch(({ response }) => {
-              isLoading.value = false;
-              console.log(response);
-            });
+              .then(() => {
+                isLoading.value = false;
+                useToast("บันทึกข้อมูลเสร็จสิ้น", "success");
+                onClose({ reload: true });
+              })
+              .catch(({ response }) => {
+                console.log(response);
+              });
+          }
         })
         .catch(({ response }) => {
           isLoading.value = false;
@@ -405,6 +382,7 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await fetchComplaint();
+        // await fetchComplaintReport();
         mainModalObj.value = new Modal(mainModalRef.value, {});
         mainModalObj.value.show();
         mainModalRef.value.addEventListener("hidden.bs.modal", () =>
@@ -432,14 +410,14 @@ export default defineComponent({
       isLoading,
       selectOptions,
       item,
-      item_errors,
       format,
-      forwardDocFilename,
+      //   receiveDocFilename,
       // event
       onValidate,
       onFileChange,
       onClose,
       mainModalRef,
+      closedDocFilename,
     };
   },
 });

@@ -120,6 +120,10 @@
                 Object.assign(item, it);
                 openSuccessReportModal = true;
               }"
+          @successAnotherReport="  (it: any) => {
+                Object.assign(item, it);
+                openSuccessAnotherReportModal = true;
+              }"
           @returnReport1=" (it: any) => {
                 Object.assign(item, it);
                 openReturnReport1Modal = true;
@@ -412,6 +416,20 @@
         />
       </div>
 
+      <!-- Modal Success Another Report จต. ส่งต่อหน่วยงานอื่น -->
+      <div id="success-report-modal">
+        <SuccessAnotherReportPage
+          v-if="openSuccessAnotherReportModal == true"
+          :complaint_id="item.id"
+          @close-modal="
+            () => {
+              openSuccessAnotherReportModal = false;
+            }
+          "
+          @reload="fetchItems"
+        />
+      </div>
+
       <!-- Flow Inspector -->
 
       <div id="sendToCommissioner-modal">
@@ -603,6 +621,7 @@ import ReceiveReport0Page from "@/views/complaint/ReceiveReport0.vue";
 import ReceiveReport1Page from "@/views/complaint/ReceiveReport1.vue";
 import ReceiveReport2Page from "@/views/complaint/ReceiveReport2.vue";
 import SuccessReportPage from "@/views/complaint/SuccessReport.vue";
+import SuccessAnotherReportPage from "@/views/complaint/SuccessAnotherReport.vue";
 import ReturnReport1Page from "@/views/complaint/ReturnReport1.vue";
 import ReturnReport2Page from "@/views/complaint/ReturnReport2.vue";
 import SendToInspectorPage from "@/views/complaint/SendToInspector.vue";
@@ -641,6 +660,7 @@ export default defineComponent({
     SendToCommissionerPage,
     SendCommissionerHurryPage,
     ReceiveCommissionerPage,
+    SuccessAnotherReportPage,
     SendHurryPage,
     ReceiveHurryPage,
     SendExtendPage,
@@ -715,6 +735,7 @@ export default defineComponent({
     const openSendToCommissionerModal = ref(false);
     const openReceiveCommissionerModal = ref(false);
     const openSendCommissionerHurryModal = ref(false);
+    const openSuccessAnotherReportModal = ref(false);
 
     const prefix_names = ref([]);
     const fetchPrefixName = async (params: any) => {
@@ -1156,6 +1177,7 @@ export default defineComponent({
       canUpdate,
       canDelete,
       canExport,
+      openSuccessAnotherReportModal,
     };
   },
 });

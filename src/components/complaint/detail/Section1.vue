@@ -685,7 +685,9 @@
                   {{ showDate(cr.receive_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ complaint_forward_state.state11.to_division?.name_th_abbr }}
+                  {{
+                    complaint_forward_state.state11.to_division?.name_th_abbr
+                  }}
                   รับรายงาน
                 </td>
                 <td class="p-3 text-green">
@@ -744,7 +746,9 @@
                   {{ showDate(cr.created_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ complaint_forward_state.state11.to_division?.name_th_abbr }}
+                  {{
+                    complaint_forward_state.state11.to_division?.name_th_abbr
+                  }}
                   รายงานถึง {{ cr.to_bureau?.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
@@ -907,7 +911,9 @@
                   {{ showDate(cr.created_at) }}
                 </td>
                 <td class="fw-bold p-3 text-green">
-                  {{ complaint_report_state.state15[0].to_bureau?.name_th_abbr }}
+                  {{
+                    complaint_report_state.state15[0].to_bureau?.name_th_abbr
+                  }}
                   รายงานถึง {{ cr.to_inspector?.name_th_abbr }}
                 </td>
                 <td class="p-3 text-green">
@@ -1036,28 +1042,38 @@
                   {{ cr.to_inspector?.name_th_abbr }} รับรายงาน
                 </td>
                 <td class="p-3 text-green">
-                  <div class="mb-0 pt-0 pb-0 d-flex">
-                    <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                  <div
+                    v-if="
+                      userData.role_id == 1 ||
+                      userData.role_id == 2 ||
+                      userData.role_id == 3 ||
+                      userData.role_id == 5 ||
+                      userData.role_id == 6
+                    "
+                  >
+                    <div class="mb-0 pt-0 pb-0 d-flex">
+                      <div class="fw-bold" style="min-width: 100px">
+                        วันที่เอกสาร :
+                      </div>
+                      <div>
+                        {{ showDate(cr.receive_doc_date) }}
+                      </div>
                     </div>
-                    <div>
-                      {{ showDate(cr.receive_doc_date) }}
+                    <div class="mt-0 pt-0 pb-0 d-flex">
+                      <div class="fw-bold" style="min-width: 100px">
+                        เลขที่เอกสาร :
+                      </div>
+                      <div>
+                        {{ cr.receive_doc_no }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex">
-                    <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
-                    </div>
-                    <div>
-                      {{ cr.receive_doc_no }}
-                    </div>
-                  </div>
-                  <div class="mt-0 pt-0 pb-0 d-flex">
-                    <div class="fw-bold" style="min-width: 100px">
-                      หมายเหตุ :
-                    </div>
-                    <div>
-                      {{ cr.receive_comment }}
+                    <div class="mt-0 pt-0 pb-0 d-flex">
+                      <div class="fw-bold" style="min-width: 100px">
+                        หมายเหตุ :
+                      </div>
+                      <div>
+                        {{ cr.receive_comment }}
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -1084,10 +1100,34 @@
                 >
                   <div class="mt-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      หมายเหตุ :
+                      ผลการพิจารณา :
+                    </div>
+                    <div>
+                      {{ showClosedState(complaint_item.closed_state_id) }}
+                    </div>
+                  </div>
+                  <div class="mt-0 pt-0 pb-0 d-flex">
+                    <div class="fw-bold" style="min-width: 100px">
+                      รายละเอียดผลการพิจารณา :
                     </div>
                     <div>
                       {{ complaint_item.closed_comment }}
+                    </div>
+                  </div>
+                  <div
+                    class="mt-0 pt-0 pb-0 d-flex"
+                    v-if="complaint_item.closed_doc_filename"
+                  >
+                    <div class="fw-bold" style="min-width: 150px">
+                      ไฟล์แนบ :
+                    </div>
+                    <div>
+                      <a
+                        :href="complaint_item.closed_doc_filename"
+                        target="_blank"
+                      >
+                        ดาวน์โหลด
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -1845,6 +1885,12 @@ export default defineComponent({
       state22: null,
     });
 
+    const closed_states = [
+      { name_th: "ยุติเรื่อง", id: 1 },
+      { name_th: "ดำเนินการทางวินัย", id: 2 },
+      { name_th: "ส่งเรื่องให้หน่วยงานอื่นดำเนินการ", id: 3 },
+    ];
+
     // Fetch
     const fetchForward = async () => {
       try {
@@ -1950,6 +1996,13 @@ export default defineComponent({
       return dayjs(date).locale("th").format("DD MMM BBBB");
     };
 
+    const showClosedState = (closed_state_id: any) => {
+      let findClosedState: any = closed_states.find((x: any) => {
+        return x.id == closed_state_id;
+      });
+      return findClosedState?.name_th;
+    };
+
     // Mounted
     onMounted(async () => {
       await fetchForward();
@@ -1968,6 +2021,7 @@ export default defineComponent({
       complaint_follow,
       complaint_extend,
       userData,
+      showClosedState,
     };
   },
 });

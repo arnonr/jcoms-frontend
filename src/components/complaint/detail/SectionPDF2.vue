@@ -12,7 +12,9 @@
         </div>
         <div class="col-md-6">
           <span class="fw-bold">หมายเลขโทรศัพท์ : </span>
-          <span class="fst-italic">{{ complainant_item.phone_number }}</span>
+          <span class="fst-italic">{{
+            complainant_item.phone_number?.slice(0, -5) + "xxxxx"
+          }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
         <div class="col-md-12" v-if="complaint_item.is_anonymous == 1">
@@ -26,7 +28,9 @@
             </div>
             <div class="col-md-6">
               <span class="fw-bold">หมายเลขบัตรประชาชน/Passport : </span>
-              <span class="fst-italic">{{ complainant_item.id_card }}</span>
+              <span class="fst-italic">{{
+                complainant_item.id_card?.slice(0, -7) + "xxxxxxx"
+              }}</span>
               <div class="separator separator-dotted my-2"></div>
             </div>
             <div class="col-md-6">
