@@ -166,7 +166,7 @@
         </div>
       </div>
     </div>
-        <Preloader :isLoading="isLoading" :position="'absolute'" />
+    <Preloader :isLoading="isLoading" :position="'absolute'" />
   </div>
 </template>
 
@@ -265,6 +265,11 @@ export default defineComponent({
         item.complainant_id = data.data.complainant_id;
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
+
+        selectOptions.value.organizations =
+          selectOptions.value.organizations.filter((x: any) => {
+            return x.bureau_id == data.data.bureau_id;
+          });
 
         isLoading.value = false;
       } catch (error) {

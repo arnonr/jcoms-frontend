@@ -287,6 +287,12 @@ export default defineComponent({
         item.jcoms_no = data.data.jcoms_no;
         item.state_id = data.data.state_id;
         item.time_no = 1;
+
+        selectOptions.value.organizations =
+          selectOptions.value.organizations.filter((x: any) => {
+            return x.inspector_id == data.data.inspector_id;
+          });
+
         isLoading.value = false;
       } catch (error) {
         isLoading.value = false;
