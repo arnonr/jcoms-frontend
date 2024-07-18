@@ -272,7 +272,7 @@ export default defineComponent({
       if (value == 5) {
         rating_text.value = "พึงพอใจมาก";
       }
-      console.log("Selected rating:", value);
+      
     };
 
     // const rating = ref(0);

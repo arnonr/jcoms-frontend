@@ -723,7 +723,6 @@ export default defineComponent({
 
         return el;
       });
-      console.log(props.accused)
       Object.assign(props.accused, ac);
     };
 

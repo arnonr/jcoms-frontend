@@ -893,7 +893,6 @@ export default defineComponent({
 
       const uniqueOrganizations = new Set();
 
-      console.log(groupedMapData);
       groupedMapData.forEach((item: any) => {
         item.organization.forEach((org: any) => {
           if (org.name) {
@@ -905,7 +904,6 @@ export default defineComponent({
       });
 
       grouped_map_data.value = Array.from(uniqueOrganizations);
-      console.log(grouped_map_data.value);
       chartMapData.value.series[0].data = groupedMapData;
     };
 

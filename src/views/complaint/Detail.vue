@@ -1293,7 +1293,6 @@ export default defineComponent({
           return x.state_id == 12;
         });
 
-        console.log(complaint_forward_state);
       } catch (error) {
         console.log(error);
       }

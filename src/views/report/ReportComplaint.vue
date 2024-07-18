@@ -565,7 +565,6 @@ export default defineComponent({
           });
 
           complaintCheck = complaintCheck.filter((complaint: any) => {
-            console.log(complaint.district.name_th);
             return complaint.district.name_th == districtName;
           });
 
@@ -914,7 +913,7 @@ export default defineComponent({
           currentYear--;
         }
       }
-      console.log(months);
+      
       return months;
     };
     const reloadMonthData = async () => {

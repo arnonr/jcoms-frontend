@@ -749,7 +749,6 @@ export default defineComponent({
               ],
             });
 
-            console.log(groupedMapData);
           }
         }
       }

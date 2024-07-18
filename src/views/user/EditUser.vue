@@ -789,7 +789,6 @@ export default defineComponent({
           //  หน่วยงาน
         });
         previewImage.value = item.file_attach_old;
-        console.log(previewImage.value);
       } catch (error) {
         console.log(error);
       }
@@ -869,7 +868,6 @@ export default defineComponent({
 
     const onSaveUser = async () => {
       //
-      console.log(item);
       let data_item = {
         file_attach: item.file_attach != null ? item.file_attach : null,
         id_card: item.id_card,
@@ -896,7 +894,6 @@ export default defineComponent({
         // updated_by: item.value.firstname + " " + item.value.lastname,
         // รูป
       };
-      console.log(data_item);
 
       const formData = createFormData(data_item);
 

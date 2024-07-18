@@ -107,7 +107,7 @@ export const useAuthStore = defineStore("auth", () => {
         const abilityStore = useAbilityStore();
 
         abilityStore.setAbility(userAbilities);
-        console.log(userAbilities);
+
 
         // [
         //   { menu: "Dashboard", action: "view" },

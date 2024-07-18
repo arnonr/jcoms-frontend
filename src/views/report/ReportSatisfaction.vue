@@ -451,7 +451,7 @@ export default defineComponent({
       });
 
       const result = Object.values(groupedData).map((x: any) => {
-        console.log(x);
+        
         const tc = selectOptions.value.levels.find((e: any) => e.id == x.level);
         x.level = tc ? tc.name_th : "Unknown";
 
@@ -509,7 +509,7 @@ export default defineComponent({
           currentYear--;
         }
       }
-      console.log(months);
+
       return months;
     };
     const reloadMonthData = async () => {
@@ -544,8 +544,7 @@ export default defineComponent({
             data: [],
           };
         }
-        console.log(yearMonth);
-        console.log(level);
+
         const monthIndex = groupedData[level].yearMonth.indexOf(yearMonth);
         if (monthIndex === -1) {
           groupedData[level].yearMonth.push(yearMonth);

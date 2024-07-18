@@ -232,7 +232,6 @@ export default defineComponent({
       ability.can("view", "สิทธิระหว่างหน่วยงาน")
     );
 
-    console.log(canViewDashboard.value);
 
     onMounted(() => {
       if (scrollElRef.value) {
@@ -253,7 +252,7 @@ export default defineComponent({
     };
 
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-    // console.log(userData);
+
     return {
       hasActiveChildren,
       MainMenuConfig,

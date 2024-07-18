@@ -480,7 +480,7 @@ export default defineComponent({
           currentYear--;
         }
       }
-      console.log(months);
+      
       return months;
     };
     const reloadMonthData = async () => {
