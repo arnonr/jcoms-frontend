@@ -792,18 +792,32 @@ export default defineComponent({
         state_in: undefined,
       };
 
+      //
+
       if (userData.role_id == 1) {
       } else if (userData.role_id == 2) {
       } else if (userData.role_id == 3) {
         params.bureau_id = userData.bureau_id;
         params.state_in = "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
+        if (userData.organization_permissions.resp_division_id.length != 0) {
+          params.resp_division_id =
+            userData.organization_permissions.resp_division_id.join(",");
+        }
       } else if (userData.role_id == 4) {
         params.division_id = userData.division_id;
         params.state_in = "8,9,11,12,15,16,17,20,21,22,23,24";
+        if (userData.organization_permissions.resp_agency_id.length != 0) {
+          params.resp_agency_id =
+            userData.organization_permissions.resp_agency_id.join(",");
+        }
       } else if (userData.role_id == 5) {
         params.inspector_id = userData.inspector_id;
         params.state_in =
           "3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
+        if (userData.organization_permissions.resp_bureau_id.length != 0) {
+          params.resp_bureau_id =
+            userData.organization_permissions.resp_bureau_id.join(",");
+        }
       } else if (userData.role_id == 6) {
       } else {
         return false;
