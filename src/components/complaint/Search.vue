@@ -722,7 +722,7 @@ export default defineComponent({
       let states = await searchComplaintStore.fetchState({
         perPage: 500,
       });
-      console.log(props);
+      
       if (props.state_new == true) {
         selectOptions.value.states = states.filter((x: any) => {
           return x.id == 1 || x.id == 18;
