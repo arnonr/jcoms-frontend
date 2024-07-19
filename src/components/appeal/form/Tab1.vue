@@ -102,6 +102,7 @@
               class="form-control"
               :clearable="false"
               v-model="complainant_item.card_type"
+              :disabled="isThaid"
             >
             </v-select>
             <div class="d-block mt-1" v-if="errors.card_type.error == 1">
@@ -121,6 +122,7 @@
               placeholder="หมายเลขบัตรประชาชน/Passport"
               aria-label="หมายเลขบัตรประชาชน/Passport"
               v-model="complainant_item.id_card"
+              :disabled="isThaid"
             />
             <div class="d-block mt-1" v-if="errors.id_card.error == 1">
               <span role="alert" class="text-danger">{{
@@ -158,6 +160,7 @@
               placeholder="ชื่อ/Firstname"
               aria-label="ชื่อ/Firstname"
               v-model="complainant_item.firstname"
+              :disabled="isThaid"
             />
             <div class="d-block mt-1" v-if="errors.firstname.error == 1">
               <span role="alert" class="text-danger">{{
@@ -174,6 +177,7 @@
               placeholder="นามสกุล/Surname"
               aria-label="นามสกุล/Surname"
               v-model="complainant_item.lastname"
+              :disabled="isThaid"
             />
             <div class="d-block mt-1" v-if="errors.lastname.error == 1">
               <span role="alert" class="text-danger">{{
@@ -485,6 +489,7 @@ export default defineComponent({
     const previewCardPhoto = ref<any>(null);
 
     const { complainant_item, complaint_item } = toRefs(props);
+    const isThaid = ref(false);
 
     const pid: any = new URLSearchParams(window.location.search).get("pid");
     const firstname: any = new URLSearchParams(window.location.search).get(
@@ -500,6 +505,7 @@ export default defineComponent({
         name: "หมายเลขบัตรประชาชน",
         value: 1,
       };
+      isThaid.value = true;
     }
 
     if (firstname) {
@@ -850,6 +856,7 @@ export default defineComponent({
       openFileInput,
       getLang,
       loginWithThaiD,
+      isThaid,
     };
   },
 });
