@@ -487,9 +487,23 @@ export default defineComponent({
     const { complainant_item, complaint_item } = toRefs(props);
 
     const pid: any = new URLSearchParams(window.location.search).get("pid");
+    const firstname: any = new URLSearchParams(window.location.search).get(
+      "firstname"
+    );
+    const lastname: any = new URLSearchParams(window.location.search).get(
+      "lastname"
+    );
 
     if (pid) {
       complainant_item.value.id_card = pid;
+    }
+
+    if (firstname) {
+      complainant_item.value.firstname = firstname;
+    }
+
+    if (lastname) {
+      complainant_item.value.lastname = lastname;
     }
 
     const format = (date: any) => {
