@@ -48,7 +48,8 @@
                 (menuItem.route == '/report-visit-website-log' &&
                   canViewReportLogin) ||
                 (menuItem.route == '/user' && canViewUser) ||
-                (menuItem.route == '/permission-org' && canViewPermissionOrg)
+                (menuItem.route == '/permission-org' && canViewPermissionOrg) ||
+                (menuItem.route == '/find-complaint' && canViewComplaint)
               "
             >
               <!-- v-if="
@@ -231,7 +232,6 @@ export default defineComponent({
     const canViewPermissionOrg = computed(() =>
       ability.can("view", "สิทธิระหว่างหน่วยงาน")
     );
-
 
     onMounted(() => {
       if (scrollElRef.value) {

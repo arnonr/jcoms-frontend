@@ -48,6 +48,12 @@ export default () => {
       name_en: null,
       is_active: 1,
     },
+    {
+      id: 9,
+      name_th: "ค้นหาเรื่องร้องเรียน",
+      name_en: null,
+      is_active: 1,
+    },
     // {
     //   id: 9,
     //   name_th: "รายงานการเยี่ยมชมเว็บไซต์",

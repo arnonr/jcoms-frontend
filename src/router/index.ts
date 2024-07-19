@@ -88,6 +88,14 @@ const routes: Array<RouteRecordRaw> = [
           pageTitle: "บัญชีรวมเรื่องร้องเรียน/แจ้งเบาะแส",
         },
       },
+      {
+        path: "/find-complaint",
+        name: "find-complaint",
+        component: () => import("@/views/complaint/FindIndex.vue"),
+        meta: {
+          pageTitle: "ค้นหาเรื่องร้องเรียน",
+        },
+      },
 
       {
         path: "/dashboard",
