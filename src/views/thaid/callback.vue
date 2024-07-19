@@ -44,7 +44,7 @@ export default defineComponent({
             // });
             console.log(data1.data);
             setTimeout(function () {
-              window.location.href = `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data1.data.pid}&firstname=${data1.data.given_name}&lastname=${data1.data.family_name}`;
+              window.location.href = `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data1.data.data.pid}&firstname=${data1.data.data.given_name}&lastname=${data1.data.data.family_name}`;
             }, 3000);
 
             // router.push({
