@@ -33,9 +33,19 @@ export default defineComponent({
           await ApiService.query("thaid/token-request", {
             params: { code: code },
           }).then((data: any) => {
+            console.log("FREEFDOM");
             router.push({
-              path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
+              name: "appeal",
+              params: {
+                type_id: 1,
+                pid: data.pid,
+                firstname: data.given_name,
+                lastname: data.family_name,
+              },
             });
+            // router.push({
+            //   path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
+            // });
           });
           //   state
           //   const encodedJson = encodeURIComponent(JSON.stringify(data));
