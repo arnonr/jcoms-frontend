@@ -3,13 +3,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onBeforeMount, onMounted } from "vue";
+import {
+  defineComponent,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  watch,
+} from "vue";
 import { RouterView } from "vue-router";
 import { useConfigStore } from "@/stores/config";
 import { useThemeStore } from "@/stores/theme";
 import { useBodyStore } from "@/stores/body";
 import { themeConfigValue } from "@/layouts/default-layout/config/helper";
 import { initializeComponents } from "@/core/plugins/keenthemes";
+
+// App.vue or any component
+import { useAuthStore } from "@/stores/auth";
+import { useUserInactivity } from "@/composables/useUserInactivity";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "app",
@@ -18,8 +29,22 @@ export default defineComponent({
   },
   setup() {
     const configStore = useConfigStore();
+    const router = useRouter();
     const themeStore = useThemeStore();
     const bodyStore = useBodyStore();
+    const store = useAuthStore();
+    // 300000
+    const { isInactive } = useUserInactivity(60000); // 5 minutes
+
+    watch(isInactive, (newValue) => {
+      if (newValue) {
+        console.log("User has been inactive for 1 minutes");
+        store.logout();
+        router.push({ name: "sign-in" });
+
+        // Perform actions like showing a modal, logging out, etc.
+      }
+    });
 
     onBeforeMount(() => {
       /**
