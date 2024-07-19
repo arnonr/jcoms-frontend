@@ -34,14 +34,16 @@ export default defineComponent({
             params: { code: code },
           }).then((data: any) => {
             console.log("FREEDOM");
-            router.push({
-              name: "appeal",
-              query: {
-                pid: data.pid,
-                firstname: data.given_name,
-                lastname: data.family_name,
-              },
-            });
+            // router.push({
+            //   name: "appeal",
+            //   query: {
+            //     pid: data.pid,
+            //     firstname: data.given_name,
+            //     lastname: data.family_name,
+            //   },
+            // });
+
+            window.location.href = `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`;
             // router.push({
             //   path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
             // });
