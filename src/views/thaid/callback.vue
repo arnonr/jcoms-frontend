@@ -31,7 +31,7 @@ export default defineComponent({
       if (code) {
         try {
           const { data } = await ApiService.query("thaid/token-request", {
-            code: code,
+            params: { code: code },
           });
           //   state
           const encodedJson = encodeURIComponent(JSON.stringify(data));
