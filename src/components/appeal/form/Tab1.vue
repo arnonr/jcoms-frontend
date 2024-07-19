@@ -53,8 +53,7 @@
       <div
         class="mb-0 mt-0 col-12 col-lg-12"
         v-if="
-          parseInt(complaint_item.is_anonymous) == 1 &&
-          parseInt(complainant_item.is_anonymous)
+          parseInt(complaint_item.is_anonymous) == 1
         "
       >
         <button @click="loginWithThaiD" class="btn" style="padding-left: 0px">
