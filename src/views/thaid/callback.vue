@@ -30,15 +30,15 @@ export default defineComponent({
       );
       if (code) {
         try {
-          const { data } = await ApiService.query("thaid/token-request", {
+          await ApiService.query("thaid/token-request", {
             params: { code: code },
+          }).then((data: any) => {
+            router.push({
+              path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
+            });
           });
           //   state
-        //   const encodedJson = encodeURIComponent(JSON.stringify(data));
-
-          router.push({
-            path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
-          });
+          //   const encodedJson = encodeURIComponent(JSON.stringify(data));
         } catch (error) {
           console.error("Error fetching access token:", error);
         }
