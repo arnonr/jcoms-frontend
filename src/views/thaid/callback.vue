@@ -32,7 +32,7 @@ export default defineComponent({
         try {
           await ApiService.query("thaid/token-request", {
             params: { code: code },
-          }).then((data: any) => {
+          }).then((data1: any) => {
             console.log("FREEDOM");
             // router.push({
             //   name: "appeal",
@@ -42,8 +42,13 @@ export default defineComponent({
             //     lastname: data.family_name,
             //   },
             // });
+            console.log(data1);
+            setTimeout(function () {
+              console.log(
+                `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data1.pid}&firstname=${data1.given_name}&lastname=${data1.family_name}`
+              );
+            }, 3000);
 
-            window.location.href = `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`;
             // router.push({
             //   path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
             // });
