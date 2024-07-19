@@ -34,11 +34,10 @@ export default defineComponent({
             params: { code: code },
           });
           //   state
-          const encodedJson = encodeURIComponent(JSON.stringify(data));
+        //   const encodedJson = encodeURIComponent(JSON.stringify(data));
 
           router.push({
-            path: atob(state),
-            query: { data: encodedJson },
+            path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
           });
         } catch (error) {
           console.error("Error fetching access token:", error);

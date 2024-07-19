@@ -52,9 +52,7 @@
 
       <div
         class="mb-0 mt-0 col-12 col-lg-12"
-        v-if="
-          parseInt(complaint_item.is_anonymous) == 1
-        "
+        v-if="parseInt(complaint_item.is_anonymous) == 1"
       >
         <button @click="loginWithThaiD" class="btn" style="padding-left: 0px">
           <!-- Data with ThaiD -->
@@ -487,6 +485,12 @@ export default defineComponent({
     const previewCardPhoto = ref<any>(null);
 
     const { complainant_item, complaint_item } = toRefs(props);
+
+    const pid: any = new URLSearchParams(window.location.search).get("pid");
+
+    if (pid) {
+      complainant_item.value.id_card = pid;
+    }
 
     const format = (date: any) => {
       const day = dayjs(date).locale("th").format("DD");
