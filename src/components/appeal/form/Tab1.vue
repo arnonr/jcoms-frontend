@@ -496,6 +496,10 @@ export default defineComponent({
 
     if (pid) {
       complainant_item.value.id_card = pid;
+      complainant_item.value.card_type = {
+        name: "หมายเลขบัตรประชาชน",
+        value: 1,
+      };
     }
 
     if (firstname) {

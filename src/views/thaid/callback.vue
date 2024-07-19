@@ -33,23 +33,10 @@ export default defineComponent({
           await ApiService.query("thaid/token-request", {
             params: { code: code },
           }).then((data1: any) => {
-            console.log("FREEDOM");
-            // router.push({
-            //   name: "appeal",
-            //   query: {
-            //     pid: data.pid,
-            //     firstname: data.given_name,
-            //     lastname: data.family_name,
-            //   },
-            // });
             console.log(data1.data);
             setTimeout(function () {
               window.location.href = `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data1.data.data.pid}&firstname=${data1.data.data.given_name}&lastname=${data1.data.data.family_name}`;
             }, 3000);
-
-            // router.push({
-            //   path: `https://jcoms2.police.go.th/appeal?type_id=1&pid=${data.pid}&firstname=${data.given_name}&lastname=${data.family_name}`,
-            // });
           });
           //   state
           //   const encodedJson = encodeURIComponent(JSON.stringify(data));
