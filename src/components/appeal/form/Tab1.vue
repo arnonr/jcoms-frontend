@@ -52,7 +52,10 @@
 
       <div
         class="mb-0 mt-0 col-12 col-lg-12"
-        v-if="parseInt(complaint_item.is_anonymous) == 1 && parseInt(complainant_item.is_anonymous)"
+        v-if="
+          parseInt(complaint_item.is_anonymous) == 1 &&
+          parseInt(complainant_item.is_anonymous)
+        "
       >
         <button @click="loginWithThaiD" class="btn" style="padding-left: 0px">
           <!-- Data with ThaiD -->
@@ -420,7 +423,15 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, ref, reactive, onMounted, watch, toRefs } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  onMounted,
+  watch,
+  toRefs,
+  computed,
+} from "vue";
 // Import Vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -438,6 +449,7 @@ import { TabContent } from "vue3-form-wizard";
 import * as Yup from "yup";
 // Use Toast Composables
 import useToast from "@/composables/useToast";
+import { useRoute } from "vue-router";
 
 // Use Address Composables
 import useBasicData from "@/composables/useBasicData";
@@ -782,17 +794,21 @@ export default defineComponent({
       }
     );
 
- 
     const getLang = () => {
       return localStorage.getItem("lang");
     };
+
+    const route = useRoute();
+    const fullUrl = computed(() => window.location.href);
 
     const loginWithThaiD = () => {
       const clientId = import.meta.env.VITE_APP_THAID_CLIENTID;
       const redirectUri = import.meta.env.VITE_APP_THAID_REDIRECT_URI;
       const responseType = "code";
       const scope = import.meta.env.VITE_APP_THAID_SCOPE;
-      const state = import.meta.env.VITE_APP_THAID_STATE;
+      const state = btoa(fullUrl.value);
+      //import.meta.env.VITE_APP_THAID_STATE;
+      //   http://localhost:5173/jcoms/appeal?type_id=1
 
       const authUrl = `https://imauth.bora.dopa.go.th/api/v2/oauth2/auth/?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
       window.location.href = authUrl;
