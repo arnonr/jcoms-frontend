@@ -54,14 +54,20 @@
         class="mb-0 mt-0 col-12 col-lg-12"
         v-if="parseInt(complaint_item.is_anonymous) == 1"
       >
-        <button @click="loginWithThaiD" class="btn" style="padding-left: 0px">
+        <button
+          @click="loginWithThaiD"
+          class="btn d-flex text-start"
+          style="padding-left: 0px"
+        >
           <!-- Data with ThaiD -->
           <img
             src="/media/logos/thaid.png"
             alt=""
             style="width: 100px; border-radius: 0.5em"
           />
-          ระบุตัวตนด้วย ThaiD
+          <span class="ms-2 mt-5"
+            >คลิก Icon กรณีต้องการ<br />ระบุตัวตนด้วย Application ThaiD</span
+          >
         </button>
       </div>
 
@@ -833,7 +839,7 @@ export default defineComponent({
       const redirectUri = import.meta.env.VITE_APP_THAID_REDIRECT_URI;
       const responseType = "code";
       const scope = import.meta.env.VITE_APP_THAID_SCOPE;
-      const state = btoa(fullUrl.value);
+      const state = route.params.type_id;
       //import.meta.env.VITE_APP_THAID_STATE;
       //   http://localhost:5173/jcoms/appeal?type_id=1
 
