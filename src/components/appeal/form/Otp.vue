@@ -457,8 +457,8 @@ export default defineComponent({
         type: "postFormData",
         url: "complainant/",
       };
-
-      let check_duplicate_complainant = await ApiService.query(api.url, {
+      
+      let check_duplicate_complainant = await ApiService.query('complainant', {
         params: { phone_number: complainant_item.value.phone_number },
       }).then(({ data }) => {
         if (data.msg != "success") {
