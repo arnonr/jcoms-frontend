@@ -637,13 +637,13 @@ export default defineComponent({
 
           await ApiService[api_sms.type](api_sms.url, {
             msisdn: complainant_item.value.phone_number,
-            message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านรียบร้อยแล้ว ณ วันท่ี ${dayjs()
+            message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว ณ วันที่ ${dayjs()
               .locale("th")
               .format("DD MMM BBBB")} เลขคำร้องของท่าน : ${
               result_complaint.value.jcoms_no
             } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${
               import.meta.env.VITE_APP_BASE_URL
-            }/jcoms/tracking`,
+            }jcoms/tracking`,
           })
             .then(({ data }) => {
               if (data.msg != "success") {
