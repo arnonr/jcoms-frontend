@@ -408,10 +408,10 @@ export default defineComponent({
     // Mounted
     const checkComplainantUUID = ref(null);
     onMounted(() => {
-      checkComplainantUUID.value = getComplainantUUIDWithExpiry();
-      if (checkComplainantUUID.value != null) {
-        fetchComplainant();
-      }
+    //   checkComplainantUUID.value = getComplainantUUIDWithExpiry();
+    //   if (checkComplainantUUID.value != null) {
+    //     fetchComplainant();
+    //   }
     });
 
     // Watch

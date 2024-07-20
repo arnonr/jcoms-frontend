@@ -416,6 +416,8 @@ export default defineComponent({
           return x;
         })
       );
+
+      console.log(items_export  )
       isLoading.value = false;
     };
 

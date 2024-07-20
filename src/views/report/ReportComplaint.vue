@@ -774,6 +774,8 @@ export default defineComponent({
           create_from: create_from,
           create_to: create_to,
           complaint_type_id: search.complaint_type_id?.id,
+          province_id: search.province_id?.id,
+          district_id: search.district_id?.id,
         };
 
         if (userData.role_id == 1) {
@@ -913,7 +915,7 @@ export default defineComponent({
           currentYear--;
         }
       }
-      
+
       return months;
     };
     const reloadMonthData = async () => {

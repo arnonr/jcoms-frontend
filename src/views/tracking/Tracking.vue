@@ -272,7 +272,6 @@ export default defineComponent({
       if (value == 5) {
         rating_text.value = "พึงพอใจมาก";
       }
-      
     };
 
     // const rating = ref(0);
@@ -313,8 +312,14 @@ export default defineComponent({
             throw new Error("ERROR");
           }
 
+          let d = data.data;
+          if (search.type_of_track == 1) {
+            d = data.data.filter((x: any) => {
+              return x.jcoms_no == search.id_card_or_jcoms_no;
+            });
+          }
           items.length = 0;
-          Object.assign(items, data.data);
+          Object.assign(items, d);
           paginationData.totalPage = data.totalPage;
           paginationData.totalItems = data.totalData;
           paginationData.currentPage = data.currentPage;
@@ -436,11 +441,11 @@ export default defineComponent({
     onMounted(async () => {
       evalModalObj.value = new Modal(evalModalRef.value, {});
       checkComplainantUUID.value = getComplainantUUIDWithExpiry();
-      if (checkComplainantUUID.value != null) {
-        fetchItems(checkComplainantUUID.value);
-      } else {
-        captcha_modal.value = true;
-      }
+      //   if (checkComplainantUUID.value != null) {
+      //     fetchItems(checkComplainantUUID.value);
+      //   } else {
+      captcha_modal.value = true;
+      //   }
     });
 
     // Watch

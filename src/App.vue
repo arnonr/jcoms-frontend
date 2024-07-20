@@ -34,17 +34,17 @@ export default defineComponent({
     const bodyStore = useBodyStore();
     const store = useAuthStore();
     // 300000
-    const { isInactive } = useUserInactivity(60000); // 5 minutes
+    // const { isInactive } = useUserInactivity(18000000); // 5 minutes
 
-    watch(isInactive, (newValue) => {
-      if (newValue) {
-        console.log("User has been inactive for 1 minutes");
-        store.logout();
-        router.push({ name: "sign-in" });
+    // watch(isInactive, (newValue) => {
+    //   if (newValue) {
+    //     console.log("User has been inactive for 1 minutes");
+    //     store.logout();
+    //     router.push({ name: "sign-in" });
 
-        // Perform actions like showing a modal, logging out, etc.
-      }
-    });
+    //     // Perform actions like showing a modal, logging out, etc.
+    //   }
+    // });
 
     onBeforeMount(() => {
       /**
