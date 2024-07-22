@@ -179,8 +179,9 @@
                   <th class="text-center text-white">
                     ประเภทเรื่อง {{ complaint_type.name_th }}
                   </th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                  <th class="text-center text-white">จำนวนผู้ถูกร้องเรียน</th>
+                  <th class="text-center text-white">รับเรื่อง</th>
+                  <th class="text-center text-white">ค้าง</th>
+                  <th class="text-center text-white">เสร็จ</th>
                 </tr>
               </thead>
               <tbody v-if="topic_category_data.datas.length != 0">
@@ -188,10 +189,13 @@
                   <td class="text-center">{{ tc.name }}</td>
 
                   <td class="text-center">
-                    {{ tc.value }}
+                    {{ tc.count_receive }}
                   </td>
                   <td class="text-center">
-                    {{ tc.count_accused }}
+                    {{ tc.count_send }}
+                  </td>
+                  <td class="text-center">
+                    {{ tc.count_success }}
                   </td>
                 </tr>
               </tbody>
@@ -215,8 +219,9 @@
               <thead class="bg-color-police">
                 <tr>
                   <th class="text-center text-white">ช่องทางการร้องเรียน</th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                  <th class="text-center text-white">จำนวนผู้ถูกร้องเรียน</th>
+                  <th class="text-center text-white">รับเรื่อง</th>
+                  <th class="text-center text-white">ค้าง</th>
+                  <th class="text-center text-white">เสร็จ</th>
                 </tr>
               </thead>
               <tbody v-if="complaint_channel_data.datas.length != 0">
@@ -225,11 +230,18 @@
                   :key="idx"
                 >
                   <td class="text-center">{{ cc.name }}</td>
-                  <td class="text-center">
+                  <!-- <td class="text-center">
                     {{ cc.value }}
+                  </td> -->
+
+                  <td class="text-center">
+                    {{ cc.count_receive }}
                   </td>
                   <td class="text-center">
-                    {{ cc.count_accused }}
+                    {{ cc.count_send }}
+                  </td>
+                  <td class="text-center">
+                    {{ cc.count_success }}
                   </td>
                 </tr>
               </tbody>
@@ -246,9 +258,9 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card mt-5">
         <div class="card-body row">
-          <div class="col-12 col-md-6 mb-3 mt-10">
+          <div class="col-12 col-md-12 mb-3 mt-10">
             <h6>สถิติเรื่องร้องเรียน (แยกตามสายงาน)</h6>
             <table
               class="table table-bordered table-striped bg-sky"
@@ -256,19 +268,25 @@
             >
               <thead class="bg-color-police">
                 <tr>
-                  <th class="text-center text-white">สายงาน</th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                  <th class="text-center text-white">จำนวนผู้ถูกร้องเรียน</th>
+                  <th class="text-center text-white">หน่วยงาน</th>
+                  <th
+                    class="text-center text-white"
+                    v-for="(sc, idx) in selectOptions.sections"
+                    :key="idx"
+                  >
+                    {{ sc.name_th }}
+                  </th>
                 </tr>
               </thead>
-              <tbody v-if="section_data.datas.length != 0">
-                <tr v-for="(ss, idx) in section_data.datas" :key="idx">
-                  <td class="text-center">{{ ss.name }}</td>
-                  <td class="text-center">
-                    {{ ss.value }}
-                  </td>
-                  <td class="text-center">
-                    {{ ss.count_accused }}
+              <tbody v-if="organization_data.datas.length != 0">
+                <tr v-for="(or, idx) in organization_data.datas" :key="idx">
+                  <td class="text-center">{{ or.name }}</td>
+                  <td
+                    class="text-center"
+                    v-for="(ors, idx) in or.sections"
+                    :key="idx"
+                  >
+                    {{ ors.count_section_org }}
                   </td>
                 </tr>
               </tbody>
@@ -282,7 +300,12 @@
               </tbody>
             </table>
           </div>
-          <div class="col-12 col-md-6 mb-3 mt-10">
+        </div>
+      </div>
+
+      <div class="card mt-5">
+        <div class="card-body row">
+          <div class="col-12 col-md-12 mb-3 mt-10">
             <h6>สถิติเรื่องร้องเรียน (แยกตามหน่วยงาน)</h6>
             <table
               class="table table-bordered table-striped bg-sky"
@@ -291,18 +314,24 @@
               <thead class="bg-color-police">
                 <tr>
                   <th class="text-center text-white">หน่วยงาน</th>
-                  <th class="text-center text-white">จำนวนเรื่อง</th>
-                  <th class="text-center text-white">จำนวนผู้ถูกร้องเรียน</th>
+                  <th class="text-center text-white">รับเรื่อง</th>
+                  <th class="text-center text-white">ค้าง</th>
+                  <th class="text-center text-white">เสร็จ</th>
                 </tr>
               </thead>
               <tbody v-if="organization_data.datas.length != 0">
                 <tr v-for="(or, idx) in organization_data.datas" :key="idx">
                   <td class="text-center">{{ or.name }}</td>
                   <td class="text-center">
-                    {{ or.value }}
+                    {{ or.receive }}
                   </td>
+
                   <td class="text-center">
-                    {{ or.count_accused }}
+                    {{ or.send }}
+                  </td>
+
+                  <td class="text-center">
+                    {{ or.success }}
                   </td>
                 </tr>
               </tbody>
@@ -683,6 +712,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 2,
@@ -691,6 +721,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 3,
@@ -699,6 +730,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 4,
@@ -707,6 +739,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 5,
@@ -715,6 +748,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 6,
@@ -723,6 +757,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 7,
@@ -731,6 +766,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 8,
@@ -739,6 +775,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 9,
@@ -747,6 +784,7 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 10,
@@ -755,14 +793,16 @@ export default defineComponent({
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
         {
           id: 11,
-          name_th: "อื่นๆ",
+          name_th: "ไม่ระบุ",
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
           count_section: 0,
+          count_section_org: 0,
         },
       ],
       complaint_channels: [
@@ -1173,7 +1213,6 @@ export default defineComponent({
           ...item_statuses.value.send_items,
           ...item_statuses.value.success_items,
         ];
-        console.log(item_statuses.value.send_items);
 
         cardStatus.value[0].total = item_statuses.value.all_items.length;
 
@@ -1192,15 +1231,64 @@ export default defineComponent({
         .map((x: any) => {
           x.count = 0;
           x.count_accused = 0;
+          x.count_receive = 0;
+          x.count_send = 0;
+          x.count_success = 0;
           return x;
         });
       selectOptions.value.topic_categories.push({
         name_th: "ไม่ระบุ",
         id: 999,
         count: 0,
+        count_accused: 0,
+        count_receive: 0,
+        count_send: 0,
+        count_success: 0,
       });
 
-      item_statuses.value.all_items.forEach((e: any) => {
+      //   item_statuses.value.all_items.forEach((e: any) => {
+      //     if (e.topic_type.topic_category.id) {
+      //       let check = selectOptions.value.topic_categories.find((x: any) => {
+      //         return e.topic_type.topic_category.id == x.id;
+      //       });
+
+      //       if (check) {
+      //         check.count = check.count + 1;
+      //         check.count_accused = check.count_accused + e.accused.length;
+      //       } else {
+      //         console.log(e);
+      //         selectOptions.value.topic_categories[
+      //           selectOptions.value.topic_categories.length - 1
+      //         ].count =
+      //           selectOptions.value.topic_categories[
+      //             selectOptions.value.topic_categories.length - 1
+      //           ].count + 1;
+      //         // accused
+      //         selectOptions.value.topic_categories[
+      //           selectOptions.value.topic_categories.length - 1
+      //         ].count_accused =
+      //           selectOptions.value.topic_categories[
+      //             selectOptions.value.topic_categories.length - 1
+      //           ].count_accused + e.accused.length;
+      //       }
+      //     } else {
+      //       selectOptions.value.topic_categories[
+      //         selectOptions.value.topic_categories.length - 1
+      //       ].count =
+      //         selectOptions.value.topic_categories[
+      //           selectOptions.value.topic_categories.length - 1
+      //         ].count + 1;
+      //       // accused
+      //       selectOptions.value.topic_categories[
+      //         selectOptions.value.topic_categories.length - 1
+      //       ].count_accused =
+      //         selectOptions.value.topic_categories[
+      //           selectOptions.value.topic_categories.length - 1
+      //         ].count_accused + e.accused.length;
+      //     }
+      //   });
+
+      item_statuses.value.receive_items.forEach((e: any) => {
         if (e.topic_type.topic_category.id) {
           let check = selectOptions.value.topic_categories.find((x: any) => {
             return e.topic_type.topic_category.id == x.id;
@@ -1209,8 +1297,8 @@ export default defineComponent({
           if (check) {
             check.count = check.count + 1;
             check.count_accused = check.count_accused + e.accused.length;
+            check.count_receive += 1;
           } else {
-            console.log(e);
             selectOptions.value.topic_categories[
               selectOptions.value.topic_categories.length - 1
             ].count =
@@ -1224,6 +1312,10 @@ export default defineComponent({
               selectOptions.value.topic_categories[
                 selectOptions.value.topic_categories.length - 1
               ].count_accused + e.accused.length;
+
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_receive += 1;
           }
         } else {
           selectOptions.value.topic_categories[
@@ -1239,6 +1331,110 @@ export default defineComponent({
             selectOptions.value.topic_categories[
               selectOptions.value.topic_categories.length - 1
             ].count_accused + e.accused.length;
+
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count_receive += 1;
+        }
+      });
+
+      item_statuses.value.send_items.forEach((e: any) => {
+        if (e.topic_type.topic_category.id) {
+          let check = selectOptions.value.topic_categories.find((x: any) => {
+            return e.topic_type.topic_category.id == x.id;
+          });
+
+          if (check) {
+            check.count = check.count + 1;
+            check.count_accused = check.count_accused + e.accused.length;
+            check.count_send += 1;
+          } else {
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count =
+              selectOptions.value.topic_categories[
+                selectOptions.value.topic_categories.length - 1
+              ].count + 1;
+            // accused
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_accused =
+              selectOptions.value.topic_categories[
+                selectOptions.value.topic_categories.length - 1
+              ].count_accused + e.accused.length;
+
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_send += 1;
+          }
+        } else {
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count =
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count + 1;
+          // accused
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count_accused =
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_accused + e.accused.length;
+
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count_send += 1;
+        }
+      });
+
+      item_statuses.value.success_items.forEach((e: any) => {
+        if (e.topic_type.topic_category.id) {
+          let check = selectOptions.value.topic_categories.find((x: any) => {
+            return e.topic_type.topic_category.id == x.id;
+          });
+
+          if (check) {
+            check.count = check.count + 1;
+            check.count_accused = check.count_accused + e.accused.length;
+            check.count_success += 1;
+          } else {
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count =
+              selectOptions.value.topic_categories[
+                selectOptions.value.topic_categories.length - 1
+              ].count + 1;
+            // accused
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_accused =
+              selectOptions.value.topic_categories[
+                selectOptions.value.topic_categories.length - 1
+              ].count_accused + e.accused.length;
+
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_success += 1;
+          }
+        } else {
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count =
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count + 1;
+          // accused
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count_accused =
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_accused + e.accused.length;
+
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count_success += 1;
         }
       });
 
@@ -1252,6 +1448,9 @@ export default defineComponent({
               name: x.name_th,
               value: x.count,
               count_accused: x.count_accused,
+              count_receive: x.count_receive,
+              count_send: x.count_send,
+              count_success: x.count_success,
             };
           })
           .filter((x: any) => {
@@ -1271,10 +1470,40 @@ export default defineComponent({
         selectOptions.value.complaint_channels.map((x: any) => {
           x.count = 0;
           x.count_accused = 0;
+          x.count_receive = 0;
+          x.count_send = 0;
+          x.count_success = 0;
           return x;
         });
 
-      item_statuses.value.all_items.forEach((e: any) => {
+      //   item_statuses.value.all_items.forEach((e: any) => {
+      //     if (e.complaint_channel_id) {
+      //       let check = selectOptions.value.complaint_channels.find((x: any) => {
+      //         return x.id == e.complaint_channel_id;
+      //       });
+
+      //       if (check) {
+      //         check.count = check.count + 1;
+      //         check.count_accused = check.count_accused + e.accused.length;
+      //       } else {
+      //         selectOptions.value.complaint_channels[8]["count"] =
+      //           selectOptions.value.complaint_channels[8]["count"] + 1;
+
+      //         selectOptions.value.complaint_channels[8]["count_accused"] =
+      //           selectOptions.value.complaint_channels[8]["count_accused"] +
+      //           e.accused.length;
+      //       }
+      //     } else {
+      //       selectOptions.value.complaint_channels[8]["count"] =
+      //         selectOptions.value.complaint_channels[8]["count"] + 1;
+
+      //       selectOptions.value.complaint_channels[8]["count_accused"] =
+      //         selectOptions.value.complaint_channels[8]["count_accused"] +
+      //         e.accused.length;
+      //     }
+      //   });
+
+      item_statuses.value.receive_items.forEach((e: any) => {
         if (e.complaint_channel_id) {
           let check = selectOptions.value.complaint_channels.find((x: any) => {
             return x.id == e.complaint_channel_id;
@@ -1283,6 +1512,7 @@ export default defineComponent({
           if (check) {
             check.count = check.count + 1;
             check.count_accused = check.count_accused + e.accused.length;
+            check.count_receive += 1;
           } else {
             selectOptions.value.complaint_channels[8]["count"] =
               selectOptions.value.complaint_channels[8]["count"] + 1;
@@ -1290,6 +1520,8 @@ export default defineComponent({
             selectOptions.value.complaint_channels[8]["count_accused"] =
               selectOptions.value.complaint_channels[8]["count_accused"] +
               e.accused.length;
+
+            selectOptions.value.complaint_channels[8].count_receive += 1;
           }
         } else {
           selectOptions.value.complaint_channels[8]["count"] =
@@ -1298,6 +1530,68 @@ export default defineComponent({
           selectOptions.value.complaint_channels[8]["count_accused"] =
             selectOptions.value.complaint_channels[8]["count_accused"] +
             e.accused.length;
+
+          selectOptions.value.complaint_channels[8].count_receive += 1;
+        }
+      });
+
+      item_statuses.value.send_items.forEach((e: any) => {
+        if (e.complaint_channel_id) {
+          let check = selectOptions.value.complaint_channels.find((x: any) => {
+            return x.id == e.complaint_channel_id;
+          });
+
+          if (check) {
+            check.count = check.count + 1;
+            check.count_accused = check.count_accused + e.accused.length;
+            check.count_send += 1;
+          } else {
+            selectOptions.value.complaint_channels[8]["count"] =
+              selectOptions.value.complaint_channels[8]["count"] + 1;
+
+            selectOptions.value.complaint_channels[8]["count_accused"] =
+              selectOptions.value.complaint_channels[8]["count_accused"] +
+              e.accused.length;
+            selectOptions.value.complaint_channels[8].count_send += 1;
+          }
+        } else {
+          selectOptions.value.complaint_channels[8]["count"] =
+            selectOptions.value.complaint_channels[8]["count"] + 1;
+
+          selectOptions.value.complaint_channels[8]["count_accused"] =
+            selectOptions.value.complaint_channels[8]["count_accused"] +
+            e.accused.length;
+          selectOptions.value.complaint_channels[8].count_send += 1;
+        }
+      });
+
+      item_statuses.value.success_items.forEach((e: any) => {
+        if (e.complaint_channel_id) {
+          let check = selectOptions.value.complaint_channels.find((x: any) => {
+            return x.id == e.complaint_channel_id;
+          });
+
+          if (check) {
+            check.count = check.count + 1;
+            check.count_accused = check.count_accused + e.accused.length;
+            check.count_success += 1;
+          } else {
+            selectOptions.value.complaint_channels[8]["count"] =
+              selectOptions.value.complaint_channels[8]["count"] + 1;
+
+            selectOptions.value.complaint_channels[8]["count_accused"] =
+              selectOptions.value.complaint_channels[8]["count_accused"] +
+              e.accused.length;
+            selectOptions.value.complaint_channels[8].count_success += 1;
+          }
+        } else {
+          selectOptions.value.complaint_channels[8]["count"] =
+            selectOptions.value.complaint_channels[8]["count"] + 1;
+
+          selectOptions.value.complaint_channels[8]["count_accused"] =
+            selectOptions.value.complaint_channels[8]["count_accused"] +
+            e.accused.length;
+          selectOptions.value.complaint_channels[8].count_success += 1;
         }
       });
 
@@ -1308,6 +1602,9 @@ export default defineComponent({
               name: x.name_th,
               value: x.count,
               count_accused: x.count_accused,
+              count_receive: x.count_receive,
+              count_send: x.count_send,
+              count_success: x.count_success,
             };
           })
           .filter((x: any) => {
@@ -1379,6 +1676,10 @@ export default defineComponent({
             x.count_receive = 0;
             x.count_send = 0;
             x.count_success = 0;
+            x.sections = JSON.parse(
+              JSON.stringify(selectOptions.value.sections)
+            );
+            // [...selectOptions.value.sections];
             return x;
           });
 
@@ -1391,13 +1692,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_receive = check.count_receive + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_receive"] =
                   selectOptions.value.organizations[10]["count_receive"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_receive"] =
                 selectOptions.value.organizations[10]["count_receive"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1411,13 +1721,23 @@ export default defineComponent({
 
               if (check) {
                 check.count_send = check.count_send + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_send"] =
                   selectOptions.value.organizations[10]["count_send"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_send"] =
                 selectOptions.value.organizations[10]["count_send"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1431,13 +1751,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_success = check.count_success + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_success"] =
                   selectOptions.value.organizations[10]["count_success"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_success"] =
                 selectOptions.value.organizations[10]["count_success"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1451,6 +1780,7 @@ export default defineComponent({
               receive: x.count_receive,
               send: x.count_send,
               success: x.count_success,
+              sections: x.sections,
             };
           }),
         };
@@ -1529,6 +1859,8 @@ export default defineComponent({
           },
           series: chartOrganizationData.value.series,
         };
+
+        console.log(organization_data.value);
       }
 
       // End Chart 4  filter_type 1
@@ -1541,6 +1873,9 @@ export default defineComponent({
             x.count_receive = 0;
             x.count_send = 0;
             x.count_success = 0;
+            x.sections = JSON.parse(
+              JSON.stringify(selectOptions.value.sections)
+            );
             return x;
           });
 
@@ -1553,13 +1888,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_receive = check.count_receive + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_receive"] =
                   selectOptions.value.organizations[10]["count_receive"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_receive"] =
                 selectOptions.value.organizations[10]["count_receive"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1573,13 +1917,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_send = check.count_send + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_send"] =
                   selectOptions.value.organizations[10]["count_send"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_send"] =
                 selectOptions.value.organizations[10]["count_send"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1593,13 +1946,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_success = check.count_success + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_success"] =
                   selectOptions.value.organizations[10]["count_success"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_success"] =
                 selectOptions.value.organizations[10]["count_success"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1613,6 +1975,7 @@ export default defineComponent({
               receive: x.count_receive,
               send: x.count_send,
               success: x.count_success,
+              sections: x.sections,
             };
           }),
         };
@@ -1702,6 +2065,9 @@ export default defineComponent({
             x.count_receive = 0;
             x.count_send = 0;
             x.count_success = 0;
+            x.sections = JSON.parse(
+              JSON.stringify(selectOptions.value.sections)
+            );
             return x;
           });
 
@@ -1714,13 +2080,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_receive = check.count_receive + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_receive"] =
                   selectOptions.value.organizations[10]["count_receive"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_receive"] =
                 selectOptions.value.organizations[10]["count_receive"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1734,13 +2109,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_send = check.count_send + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_send"] =
                   selectOptions.value.organizations[10]["count_send"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_send"] =
                 selectOptions.value.organizations[10]["count_send"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1754,13 +2138,22 @@ export default defineComponent({
 
               if (check) {
                 check.count_success = check.count_success + 1;
+
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
               } else {
                 selectOptions.value.organizations[10]["count_success"] =
                   selectOptions.value.organizations[10]["count_success"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_success"] =
                 selectOptions.value.organizations[10]["count_success"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1772,6 +2165,7 @@ export default defineComponent({
               receive: x.count_receive,
               send: x.count_send,
               success: x.count_success,
+              sections: x.sections,
             };
           }),
         };
@@ -1846,8 +2240,6 @@ export default defineComponent({
         };
       }
       // End Chart 4 filter_type 3
-
-      return;
     };
 
     // Event
