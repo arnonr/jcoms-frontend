@@ -1451,7 +1451,7 @@
                   showDate(complaint_forward_state.inspector_state_9.created_at)
                 }}
               </td>
-              <td class="fw-bold p-3">ฝรท. ส่งถึง ผบ.ตร.</td>
+              <td class="fw-bold p-3">ฝรท. ส่งถึง ตร.</td>
               <td class="p-3">
                 <div
                   v-if="
@@ -1532,7 +1532,7 @@
                   showDate(complaint_forward_state.inspector_state_9.receive_at)
                 }}
               </td>
-              <td class="fw-bold p-3">ผบ.ตร. รับเรื่อง/ดำเนินการ</td>
+              <td class="fw-bold p-3">ตร. รับเรื่อง/ดำเนินการ</td>
               <td class="p-3">
                 <div
                   v-if="
@@ -1590,7 +1590,7 @@
                 <td class="p-3">
                   {{ showDate(cf.created_at) }}
                 </td>
-                <td class="fw-bold p-3">ผบ.ตร. เร่งรัดเรื่อง</td>
+                <td class="fw-bold p-3">ตร. เร่งรัดเรื่อง</td>
                 <td class="p-3">
                   <div
                     v-if="

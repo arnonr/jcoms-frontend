@@ -374,7 +374,7 @@
                         complainant_id: it.complainant_id,
                       })
                     "
-                    >ส่งต่อเรื่องถึง ผบ.ตร.</a
+                    >ส่งต่อเรื่องถึง ตร.</a
                   >
                 </li>
 
@@ -388,7 +388,7 @@
                         complainant_id: it.complainant_id,
                       })
                     "
-                    >ผบ.ตร. รับเรื่อง
+                    >ตร. รับเรื่อง
                   </a>
                 </li>
                 <!--  -->

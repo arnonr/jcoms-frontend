@@ -10,7 +10,7 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">แจ้งเรื่อง ผบ.ตร. ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">แจ้งเรื่อง ตร. ({{ item.jcoms_no }})</h3>
             <button
               @click="onClose({ reload: false })"
               type="button"

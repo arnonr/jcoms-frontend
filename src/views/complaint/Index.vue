@@ -952,14 +952,19 @@ export default defineComponent({
 
     // Event
     const onClear = () => {
-      Object.keys(search).forEach((key) => {
-        if (typeof search[key] === "object" && search[key] !== null) {
-          Object.keys(search[key]).forEach((subKey) => {
-            search[key][subKey] = null;
-          });
-        } else {
-          search[key] = null;
-        }
+      Object.assign(search, {
+        complaint_type_id: null,
+        state_id: null,
+        inspector_state_id: null,
+        year: null,
+        complaint_title: "",
+        jcoms_no: "",
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        agency_id: null,
+        complainant_fullname: "",
+        accused_fullname: "",
       });
     };
 

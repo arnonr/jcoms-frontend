@@ -292,7 +292,7 @@ export default () => {
     {
       value: 1,
       name_th: "ผู้บัญชาการตำรวจแห่งชาติ ",
-      name_th_abbr: "ผบ.ตร.",
+      name_th_abbr: "ตร.",
       name_en: null,
       name_en_abbr: null,
     },

@@ -20,7 +20,7 @@ export default () => {
     },
     {
       id: 4,
-      name_th: "ผบ.ตร. เร่งรัด",
+      name_th: "ตร. เร่งรัด",
       name_en: null,
       bg_color: "#17c653",
     },
@@ -50,13 +50,13 @@ export default () => {
     },
     {
       id: 9,
-      name_th: "ส่งต่อเรื่องถึง ผบ.ตร.",
+      name_th: "ส่งต่อเรื่องถึง ตร.",
       name_en: null,
       bg_color: "#17c653",
     },
     {
       id: 10,
-      name_th: "ผบ.ตร. รับเรื่อง",
+      name_th: "ตร. รับเรื่อง",
       name_en: null,
       bg_color: "#17c653",
     },

@@ -11,7 +11,7 @@
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
             <h3 class="modal-title">
-              ผบ.ตร. รับเรื่อง ({{ item.jcoms_no }})
+              ตร. รับเรื่อง ({{ item.jcoms_no }})
             </h3>
             <button
               @click="onClose({ reload: false })"
