@@ -2438,6 +2438,11 @@ export default defineComponent({
 .bg-sky {
   background-color: #d9f4fe;
 }
+
+.table-bordered td,
+.table-bordered th {
+  border: 2px solid #000; /* เปลี่ยนสีและความหนาของเส้นขอบ */
+}
 </style>
 
 <style scoped></style>
