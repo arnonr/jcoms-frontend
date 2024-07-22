@@ -32,7 +32,7 @@
             </thead>
             <tbody v-if="subOrganizations.length">
               <tr v-for="(org, idx) in subOrganizations" :key="idx">
-                <td class="text-center fw-bold">{{ org.name }}</td>
+                <td class="text-center fw-bold">{{ org.name}}</td>
                 <td class="text-center">{{ org.count_receive }}</td>
                 <td class="text-center">{{ org.count_send }}</td>
                 <td class="text-center">{{ org.count_success }}</td>

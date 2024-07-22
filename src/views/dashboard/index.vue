@@ -391,7 +391,7 @@
     </div>
 
     <div>
-      <!-- <sub-organization-modal
+      <sub-organization-modal
         v-if="openSubOrgModal == true"
         :subOrganizations="selectedSubOrganizations"
         @close-modal="
@@ -399,7 +399,7 @@
             openSubOrgModal = false;
           }
         "
-      ></sub-organization-modal> -->
+      ></sub-organization-modal>
     </div>
   </div>
 </template>
@@ -911,6 +911,8 @@ export default defineComponent({
         },
       ],
       organizations: defaultBureaus,
+      divisionsDefault: useOrganizationData().division_organizations,
+      agencysDefault: useOrganizationData().agency_organizations,
       topic_categories: [],
     });
 
@@ -1177,7 +1179,7 @@ export default defineComponent({
         item_statuses.value.success_items = [];
 
         // api 1 get สถานะรอรับเรื่องของแต่ละหน่วยงาน
-        console.log( complaint_type.value.id )
+        console.log(complaint_type.value.id);
         const params1 = {
           ...search,
           perPage: 1000000,
@@ -1702,6 +1704,7 @@ export default defineComponent({
             x.sections = JSON.parse(
               JSON.stringify(selectOptions.value.sections)
             );
+            x.divisions = [];
             // [...selectOptions.value.sections];
             return x;
           });
@@ -1721,6 +1724,24 @@ export default defineComponent({
                 bureau.sections.find((s: any) => s.id === a.section_id) ||
                 bureau.sections[6];
               section.count_section_org += 1;
+
+              if (!bureau.divisions.some((d: any) => d.id === a.division_id)) {
+                let dv = selectOptions.value.divisionsDefault.find((j: any) => {
+                  return j.division_id == Number(a.division_id);
+                });
+                bureau.divisions.push({
+                  id: a.division_id,
+                  name: dv?.division_th_abbr,
+                  count_receive: 1,
+                  count_send: 0,
+                  count_success: 0,
+                });
+              } else {
+                const division = bureau.divisions.find(
+                  (d: any) => d.id === a.division_id
+                );
+                if (division) division.count_receive += 1;
+              }
             }
           });
         });
@@ -1732,7 +1753,6 @@ export default defineComponent({
                   (x: any) => x.id === a.bureau_id
                 )
               : selectOptions.value.organizations[10];
-
             if (bureau) {
               bureau.count_send += 1;
 
@@ -1740,6 +1760,26 @@ export default defineComponent({
                 bureau.sections.find((s: any) => s.id === a.section_id) ||
                 bureau.sections[6];
               section.count_section_org += 1;
+
+              // Add to divisions if not already added
+              if (!bureau.divisions.some((d: any) => d.id === a.division_id)) {
+                let dv = selectOptions.value.divisionsDefault.find((j: any) => {
+                  return j.division_id == Number(a.division_id);
+                });
+                console.log(dv);
+                bureau.divisions.push({
+                  id: a.division_id,
+                  name: dv?.division_th_abbr,
+                  count_receive: 0,
+                  count_send: 1,
+                  count_success: 0,
+                });
+              } else {
+                const division = bureau.divisions.find(
+                  (d: any) => d.id === a.division_id
+                );
+                if (division) division.count_send += 1;
+              }
             }
           });
         });
@@ -1759,6 +1799,25 @@ export default defineComponent({
                 bureau.sections.find((s: any) => s.id === a.section_id) ||
                 bureau.sections[6];
               section.count_section_org += 1;
+
+              // Add to divisions if not already added
+              if (!bureau.divisions.some((d: any) => d.id === a.division_id)) {
+                let dv = selectOptions.value.divisionsDefault.find((j: any) => {
+                  return j.division_id == Number(a.division_id);
+                });
+                bureau.divisions.push({
+                  id: a.division_id,
+                  name: dv?.division_th_abbr,
+                  count_receive: 0,
+                  count_send: 0,
+                  count_success: 1,
+                });
+              } else {
+                const division = bureau.divisions.find(
+                  (d: any) => d.id === a.division_id
+                );
+                if (division) division.count_success += 1;
+              }
             }
           });
         });
@@ -1795,6 +1854,7 @@ export default defineComponent({
                 send: x.count_send,
                 success: x.count_success,
                 sections: x.sections,
+                divisions: x.divisions,
               };
             }),
             // {
@@ -1890,8 +1950,6 @@ export default defineComponent({
           },
           series: chartOrganizationData.value.series,
         };
-
-        console.log(organization_data.value);
       }
 
       // End Chart 4  filter_type 1
@@ -1907,128 +1965,84 @@ export default defineComponent({
             x.sections = JSON.parse(
               JSON.stringify(selectOptions.value.sections)
             );
+            x.agencys = [];
             return x;
           });
 
-        item_statuses.value.receive_items.forEach((e: any) => {
-          e.accused.forEach((a: any) => {
-            if (a.division_id) {
-              let check = selectOptions.value.organizations.find((x: any) => {
-                return x.id == a.division_id;
-              });
+        const processItems = (items: any[], statusKey: string) => {
+          items.forEach((e: any) => {
+            e.accused.forEach((a: any) => {
+              const organization = a.division_id
+                ? selectOptions.value.organizations.find(
+                    (x: any) => x.id === a.division_id
+                  )
+                : selectOptions.value.organizations[10];
 
-              if (check) {
-                check.count_receive = check.count_receive + 1;
+              if (organization) {
+                organization[statusKey] += 1;
 
-                let check_sc = check.sections.find((s: any) => {
-                  return s.id == a.section_id;
-                });
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10]["count_receive"] =
-                  selectOptions.value.organizations[10]["count_receive"] + 1;
+                const section =
+                  organization.sections.find(
+                    (s: any) => s.id === a.section_id
+                  ) || organization.sections[6];
+                section.count_section_org += 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                // Add to divisions if not already added
+
+                if (
+                  !organization.agencys.some((e: any) => e.id === a.agency_id)
+                ) {
+                  let ag = selectOptions.value.agencysDefault.find((j: any) => {
+                    return j.agency_id == Number(a.agency_id);
+                  });
+                  organization.agencys.push({
+                    id: a.agency_id,
+                    name: ag?.agency_th_abbr,
+                    count_receive: statusKey === "count_receive" ? 1 : 0,
+                    count_send: statusKey === "count_send" ? 1 : 0,
+                    count_success: statusKey === "count_success" ? 1 : 0,
+                    agencys: [], // Initialize agencys array
+                  });
+                } else {
+                  const agency = organization.agencys.find(
+                    (d: any) => d.id === a.agency_id
+                  );
+                  if (agency) agency[statusKey] += 1;
+                }
               }
-            } else {
-              selectOptions.value.organizations[10]["count_receive"] =
-                selectOptions.value.organizations[10]["count_receive"] + 1;
+            });
+          });
+        };
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
+        // Process received items
+        processItems(item_statuses.value.receive_items, "count_receive");
 
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+        // Process send items
+        processItems(item_statuses.value.send_items, "count_send");
+
+        // Process success items
+        processItems(item_statuses.value.success_items, "count_success");
+
+        // Summarize the totals for sections
+        const totalSections = JSON.parse(
+          JSON.stringify(selectOptions.value.sections)
+        );
+        totalSections.forEach((section: any) => {
+          section.count_section_org = 0;
+        });
+
+        selectOptions.value.organizations.forEach((org: any) => {
+          org.sections.forEach((section: any) => {
+            const totalSection = totalSections.find(
+              (s: any) => s.id === section.id
+            );
+            if (totalSection) {
+              totalSection.count_section_org += section.count_section_org;
             }
           });
         });
 
-        item_statuses.value.send_items.forEach((e: any) => {
-          e.accused.forEach((a: any) => {
-            if (a.division_id) {
-              let check = selectOptions.value.organizations.find((x: any) => {
-                return x.id == a.division_id;
-              });
-
-              if (check) {
-                check.count_send = check.count_send + 1;
-
-                let check_sc = check.sections.find((s: any) => {
-                  return s.id == a.section_id;
-                });
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10]["count_send"] =
-                  selectOptions.value.organizations[10]["count_send"] + 1;
-
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
-              }
-            } else {
-              selectOptions.value.organizations[10]["count_send"] =
-                selectOptions.value.organizations[10]["count_send"] + 1;
-
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
-            }
-          });
-        });
-
-        item_statuses.value.success_items.forEach((e: any) => {
-          e.accused.forEach((a: any) => {
-            if (a.division_id) {
-              let check = selectOptions.value.organizations.find((x: any) => {
-                return x.id == a.division_id;
-              });
-
-              if (check) {
-                check.count_success = check.count_success + 1;
-
-                let check_sc = check.sections.find((s: any) => {
-                  return s.id == a.section_id;
-                });
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10]["count_success"] =
-                  selectOptions.value.organizations[10]["count_success"] + 1;
-
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
-              }
-            } else {
-              selectOptions.value.organizations[10]["count_success"] =
-                selectOptions.value.organizations[10]["count_success"] + 1;
-
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
-            }
-          });
-        });
+        totalSections1.value = totalSections;
 
         organization_data.value = {
           datas: selectOptions.value.organizations.map((x: any) => {
@@ -2040,6 +2054,7 @@ export default defineComponent({
               send: x.count_send,
               success: x.count_success,
               sections: x.sections,
+              divisions: x.agencys,
             };
           }),
         };
