@@ -158,6 +158,24 @@ const MainMenuConfig: Array<MenuItem> = [
       //   },
     ],
   },
+//   {
+//     heading: "คู่มือ",
+//     route: "/crafted",
+//     pages: [
+//       {
+//         heading: "คู่มือเจ้าหน้าที่",
+//         route: "/staff-manual",
+//         keenthemesIcon: "element-11",
+//         bootstrapIcon: "bi-app-indicator",
+//       },
+//       {
+//         heading: "คู่มือ ADMIN",
+//         route: "/admin-manual",
+//         keenthemesIcon: "element-11",
+//         bootstrapIcon: "bi-app-indicator",
+//       },
+//     ],
+//   },
 
   //   {
   //     heading: "craft",

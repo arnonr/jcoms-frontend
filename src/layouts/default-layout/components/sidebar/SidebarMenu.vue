@@ -184,6 +184,46 @@
           </template>
         </template>
 
+        <div class="menu-item">
+          <div class="menu-link">
+            <span class="menu-bullet">
+              <span class="bullet bullet-dot"></span>
+            </span>
+            <span class="menu-title">
+              <a
+                href="https://jcoms2.police.go.th/static/uploads/manual/staff_manual.pdf"
+                target="_blank"
+              >
+                คู่มือเจ้าหน้าที่
+              </a>
+            </span>
+          </div>
+        </div>
+        <div
+          class="menu-item"
+          v-if="userData.role_id == 1 || userData.role_id == 2"
+        >
+          <div class="menu-link">
+            <span class="menu-bullet">
+              <span class="bullet bullet-dot"></span>
+            </span>
+            <span class="menu-title">
+              <a
+                href="https://jcoms2.police.go.th/static/uploads/manual/admin_manual.pdf"
+                target="_blank"
+              >
+                คู่มือ ADMIN
+              </a>
+            </span>
+          </div>
+        </div>
+
+        <!-- <template> -->
+        <!--  -->
+
+        <!--  -->
+        <!-- </template> -->
+
         <!--end:Menu item-->
       </div>
       <!--end::Menu-->

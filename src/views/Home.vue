@@ -138,12 +138,16 @@ export default defineComponent({
     ];
 
     const onRouterLink = (hm: any) => {
-      router.push({
-        path: hm.route,
-        query: {
-          type_id: hm.id,
-        },
-      });
+      if (hm.route == "/manual") {
+        window.open("https://jcoms2.police.go.th/static/uploads/manual/people_manual.pdf", "_blank");
+      } else {
+        router.push({
+          path: hm.route,
+          query: {
+            type_id: hm.id,
+          },
+        });
+      }
     };
 
     const getBrowserInfo = () => {
@@ -154,7 +158,7 @@ export default defineComponent({
 
     onMounted(async () => {
       let ua = getBrowserInfo();
-      
+
       await ApiService.post("visit-website-log/", {
         ...ua,
         created_at: dayjs().format("YYYY-MM-DD"),
