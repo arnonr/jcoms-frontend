@@ -49,7 +49,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <span>รหัสเจ้าหน้าที่ : </span>
+                    <span>เลขบัตรข้าราชการ : </span>
                     <span class="fst-italic">{{ item.officer_code }}</span>
                     <div class="separator separator-dotted my-2"></div>
                   </div>

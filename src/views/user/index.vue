@@ -132,7 +132,7 @@
         <table class="table table-bordered table-striped" style="width: 100%">
           <thead class="bg-color-police">
             <tr>
-              <th class="text-center text-white">รหัสเจ้าหน้าที่</th>
+              <th class="text-center text-white">เลขบัตรข้าราชการ</th>
               <th class="text-center text-white">ชื่อผู้ใช้งาน</th>
               <th class="text-center text-white">หน่วยงาน</th>
               <th class="text-center text-white">กลุ่มผู้ใช้งาน</th>

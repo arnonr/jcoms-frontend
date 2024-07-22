@@ -150,12 +150,12 @@
       </div>
 
       <div class="col-xl-6 mb-7">
-        <label for="line_id" class="form-label">รหัสเจ้าหน้าที่</label>
+        <label for="line_id" class="form-label">เลขบัตรข้าราชการ</label>
         <input
           type="text"
           class="form-control"
-          placeholder="รหัสเจ้าหน้าที่"
-          aria-label="รหัสเจ้าหน้าที่"
+          placeholder="เลขบัตรข้าราชการ"
+          aria-label="เลขบัตรข้าราชการ"
           v-model="item.officer_code"
         />
         <div class="d-block mt-1" v-if="errors.officer_code.error == 1">
@@ -553,7 +553,7 @@ export default defineComponent({
         .label("สิทธิผู้ใช้งาน"),
       officer_code: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
-        .label("รหัสเจ้าหน้าที่"),
+        .label("เลขบัตรข้าราชการ"),
       id_card: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
         .min(13, "หมายเลขบัตรประชาชนไม่ถูกต้อง")
