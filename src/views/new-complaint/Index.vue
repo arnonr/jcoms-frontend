@@ -637,15 +637,15 @@ export default defineComponent({
 
     // Mounted
     onMounted(() => {
-      search.complaint_type_id = {
-        id: 1,
-        name_th: "ร้องเรียน",
-        name_en: null,
-        is_active: 1,
-        due_date: 30,
-        extend_time: 10,
-        extend_date: 15,
-      };
+    //   search.complaint_type_id = {
+    //     id: 1,
+    //     name_th: "ร้องเรียน",
+    //     name_en: null,
+    //     is_active: 1,
+    //     due_date: 30,
+    //     extend_time: 10,
+    //     extend_date: 15,
+    //   };
 
       fetchItems();
     });
