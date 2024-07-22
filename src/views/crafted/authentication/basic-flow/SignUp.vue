@@ -718,7 +718,7 @@ export default defineComponent({
             throw new Error("ERROR");
           }
           selectOptions.value.roles = data.data.filter((x: any) => {
-            return x.id != 7;
+            return x.id != 7 && x.id != 1;
           });
         })
         .catch(({ response }) => {
