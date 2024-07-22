@@ -18,6 +18,19 @@
         >
           <div class="accordion-body">
             <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
+              <div>
+                <label for="">หมวดหมู่เรื่อง : </label>
+                <v-select
+                  id="slt-search-complain-type-id-2"
+                  name="slt-search-complain-type-id-2"
+                  label="name_th"
+                  placeholder="ทั้งหมด"
+                  :options="selectOptions.complaint_types"
+                  v-model="search.complaint_type_id"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
               <div class="col-12 col-md-4 my-2">
                 <label for="">ปีที่ร้องเรียน</label>
                 <v-select
@@ -722,7 +735,7 @@ export default defineComponent({
       let states = await searchComplaintStore.fetchState({
         perPage: 500,
       });
-      
+
       if (props.state_new == true) {
         selectOptions.value.states = states.filter((x: any) => {
           return x.id == 1 || x.id == 18;
@@ -777,6 +790,8 @@ export default defineComponent({
         await searchComplaintStore.fetchComplaintChannel({
           perPage: 100000,
         });
+
+     
     });
 
     // Watch

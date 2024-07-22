@@ -7,7 +7,7 @@
         <div class="card-body">
           <div class="row ps-5 pe-5 ps-md-0 pe-md-0">
             <!-- ปีที่ร้องเรียน -->
-            <div class="col-12 col-md-5 my-2">
+            <div class="col-12 col-md-6 my-2">
               <label for="slt-search-year">ปีที่ร้องเรียน</label>
               <v-select
                 id="slt-search-year"
@@ -22,7 +22,7 @@
             </div>
 
             <!-- เดือน -->
-            <div class="col-12 col-md-5 my-2">
+            <div class="col-12 col-md-6 my-2">
               <label for="slt-search-month">เดือน</label>
               <v-select
                 id="slt-search-month"
@@ -33,6 +33,38 @@
                 v-model="search.month"
                 class="form-control"
                 :clearable="true"
+              ></v-select>
+            </div>
+
+            <!-- หน่วยงาน บช./ภ. -->
+            <div class="col-12 col-md-5 my-2">
+              <label for="slt-search-month">บช./ภ.</label>
+              <v-select
+                id="slt-search-bureau-id"
+                name="slt-search-bureau-id"
+                label="name_th_abbr"
+                placeholder="บช./ภ."
+                :options="selectOptions.bureaus"
+                v-model="search.bureau_id"
+                class="form-control"
+                :clearable="true"
+                :disabled="disabledSearchBureau"
+              ></v-select>
+            </div>
+
+            <!-- หน่วยงาน บก./ภ.จว -->
+            <div class="col-12 col-md-5 my-2">
+              <label for="slt-search-month">บก./ภ.จว.</label>
+              <v-select
+                id="slt-search-division-id"
+                name="slt-search-division-id"
+                label="name_th_abbr"
+                placeholder="บก./ภ.จว."
+                :options="selectOptions.divisions"
+                v-model="search.division_id"
+                class="form-control"
+                :clearable="true"
+                :disabled="disabledSearchDivision"
               ></v-select>
             </div>
 
@@ -52,9 +84,10 @@
               class="nav-link"
               v-for="(ct, idx) in selectOptions.complaint_types"
               :key="idx"
-              :class="{ active: activeTab === ct.name_abbr_en }"
+              :class="{ active: activeTab === ct.name_abbr_en, 'fs-3': true }"
               aria-current="page"
               href="#"
+              style="line-height: 3em"
               @click.prevent="setActiveTab(ct.name_abbr_en)"
             >
               {{ ct.name_th }}
@@ -63,17 +96,11 @@
         </div>
       </div>
 
-      <!-- <div class="mb-5 mt-5">
-        <span
-          >เรื่อง{{ complaint_type.name_th }} {{ cardStatus[0].description }}
-          {{ cardStatus[0].total }} เรื่อง</span
-        >
-      </div> -->
       <div class="row justify-content-center ms-1 d-flex">
         <div
           class="card col-sm-12 col-md-2 col-lg-2 mx-1"
           :style="[{ backgroundColor: it.bgColor }]"
-          v-for="(it, idx) in cardStatus.slice(1, 7)"
+          v-for="(it, idx) in cardStatus.slice(0, 5)"
           :key="idx"
         >
           <a
@@ -296,15 +323,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  reactive,
-  watch,
-  provide,
-  shallowRef,
-} from "vue";
+import { defineComponent, onMounted, ref, reactive, watch, provide } from "vue";
 import ApiService from "@/core/services/ApiService";
 import { useRouter } from "vue-router";
 // Import Vue-select
@@ -326,17 +345,23 @@ import {
   TitleComponent,
   TooltipComponent,
   GridComponent,
+  LegendComponent,
 } from "echarts/components";
 import VChart, { THEME_KEY } from "vue-echarts";
+
+// Import Store
+import { useSearchComplaintStore } from "@/stores/searchComplaint";
 
 // Components
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
+import useOrganizationData from "@/composables/useOrganizationData";
 
 echarts.use([
   TitleComponent,
   TooltipComponent,
   GridComponent,
+  LegendComponent,
   BarChart,
   PieChart,
   CanvasRenderer,
@@ -353,9 +378,9 @@ export default defineComponent({
   },
   setup() {
     // UI
-
     provide(THEME_KEY, "light");
     const activeTab = ref("complaints"); // ค่าเริ่มต้น
+    const searchComplaintStore = useSearchComplaintStore();
     const setActiveTab = (tab: string) => {
       activeTab.value = tab;
       complaint_type.value = selectOptions.value.complaint_types.find(
@@ -382,48 +407,37 @@ export default defineComponent({
       const year = date.getFullYear() + 543;
       return `${day} ${month} ${year}`;
     };
+    const disabledSearchDivision = ref(true);
+    const disabledSearchBureau = ref(true);
 
     const cardStatus = ref([
       {
         status_id: 1,
         description: "ทั้งหมด",
-        bgColor: "#F8285A",
+        bgColor: "#1B84FF",
         total: 0,
       },
       {
         status_id: 2,
-        description: "เรื่องร้องเรียนใหม่",
+        description: "รอตรวจสอบ",
         bgColor: "#F8285A",
         total: 0,
       },
       {
         status_id: 3,
-        description: "รับเข้าระบบ",
+        description: "รับเรื่อง/รอดำเนินการ",
         bgColor: "#FFC107",
         total: 0,
       },
-      //   {
-      //     status_id: 7,
-      //     description: "ฝรท. ตรวจสอบ",
-      //     bgColor: "#FFC107",
-      //     total: 0,
-      //   },
       {
         status_id: 4,
-        description: "ส่งหน่วยดำเนินการ",
+        description: "ส่งหน่วย/ระหว่างดำเนินการ",
         bgColor: "#A00001",
-        total: 0,
-      },
-
-      {
-        status_id: 6,
-        description: "อยู่ระหว่างดำเนินการ",
-        bgColor: "#1B84FF",
         total: 0,
       },
       {
         status_id: 5,
-        description: "ดำเนินการเสร็จสิ้น",
+        description: "ตรวจสอบเสร็จสิ้น",
         bgColor: "#17c653",
         total: 0,
       },
@@ -520,7 +534,116 @@ export default defineComponent({
       },
     ];
 
+    const defaultBureaus = [
+      {
+        id: 27,
+        name_th: "กองบัญชาการตำรวจนครบาล",
+        name_th_abbr: "บช.น.",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 10,
+        count_org: 0,
+      },
+      {
+        id: 28,
+        name_th: "ตำรวจภูธรภาค 1",
+        name_th_abbr: "ภ.1",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 1,
+        count_org: 0,
+      },
+      {
+        id: 29,
+        name_th: "ตำรวจภูธรภาค 2",
+        name_th_abbr: "ภ.2",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 2,
+        count_org: 0,
+      },
+      {
+        id: 30,
+        name_th: "ตำรวจภูธรภาค 3",
+        name_th_abbr: "ภ.3",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 3,
+        count_org: 0,
+        count_section: 0,
+      },
+      {
+        id: 31,
+        name_th: "ตำรวจภูธรภาค 4",
+        name_th_abbr: "ภ.4",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 4,
+        count_org: 0,
+      },
+      {
+        id: 32,
+        name_th: "ตำรวจภูธรภาค 5",
+        name_th_abbr: "ภ.5",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 5,
+        count_org: 0,
+      },
+      {
+        id: 33,
+        name_th: "ตำรวจภูธรภาค 6",
+        name_th_abbr: "ภ.6",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 6,
+        count_org: 0,
+      },
+      {
+        id: 34,
+        name_th: "ตำรวจภูธรภาค 7",
+        name_th_abbr: "ภ.7",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 7,
+        count_org: 0,
+      },
+      {
+        id: 35,
+        name_th: "ตำรวจภูธรภาค 8",
+        name_th_abbr: "ภ.8",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 8,
+        count_org: 0,
+      },
+      {
+        id: 36,
+        name_th: "ตำรวจภูธรภาค 9",
+        name_th_abbr: "ภ.9",
+        name_en: null,
+        name_en_abbr: null,
+        inspector_id: 9,
+        count_org: 0,
+      },
+      {
+        id: 100,
+        name_th: "อื่น ๆ",
+        name_th_abbr: "อื่น ๆ",
+        name_en: null,
+        count_org: 0,
+      },
+    ];
+
+    const defaultDivisions = useOrganizationData().division_organizations;
+
+    const defaultAgencys = useOrganizationData().agency_organizations;
+
     const selectOptions = ref<any>({
+      inspectors: [],
+      bureaus: [],
+      divisions: [],
+      agency: [],
       years: [],
       months: [
         { value: null, name: "ทั้งหมด" },
@@ -707,106 +830,7 @@ export default defineComponent({
           count_accused: 0,
         },
       ],
-      organizations: [
-        {
-          id: 27,
-          name_th: "กองบัญชาการตำรวจนครบาล",
-          name_th_abbr: "บช.น.",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 10,
-          count_org: 0,
-        },
-        {
-          id: 28,
-          name_th: "ตำรวจภูธรภาค 1",
-          name_th_abbr: "ภ.1",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 1,
-          count_org: 0,
-        },
-        {
-          id: 29,
-          name_th: "ตำรวจภูธรภาค 2",
-          name_th_abbr: "ภ.2",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 2,
-          count_org: 0,
-        },
-        {
-          id: 30,
-          name_th: "ตำรวจภูธรภาค 3",
-          name_th_abbr: "ภ.3",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 3,
-          count_org: 0,
-          count_section: 0,
-        },
-        {
-          id: 31,
-          name_th: "ตำรวจภูธรภาค 4",
-          name_th_abbr: "ภ.4",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 4,
-          count_org: 0,
-        },
-        {
-          id: 32,
-          name_th: "ตำรวจภูธรภาค 5",
-          name_th_abbr: "ภ.5",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 5,
-          count_org: 0,
-        },
-        {
-          id: 33,
-          name_th: "ตำรวจภูธรภาค 6",
-          name_th_abbr: "ภ.6",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 6,
-          count_org: 0,
-        },
-        {
-          id: 34,
-          name_th: "ตำรวจภูธรภาค 7",
-          name_th_abbr: "ภ.7",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 7,
-          count_org: 0,
-        },
-        {
-          id: 35,
-          name_th: "ตำรวจภูธรภาค 8",
-          name_th_abbr: "ภ.8",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 8,
-          count_org: 0,
-        },
-        {
-          id: 36,
-          name_th: "ตำรวจภูธรภาค 9",
-          name_th_abbr: "ภ.9",
-          name_en: null,
-          name_en_abbr: null,
-          inspector_id: 9,
-          count_org: 0,
-        },
-        {
-          id: 100,
-          name_th: "อื่น ๆ",
-          name_th_abbr: "อื่น ๆ",
-          name_en: null,
-          count_org: 0,
-        },
-      ],
+      organizations: defaultBureaus,
       topic_categories: [],
     });
 
@@ -820,6 +844,18 @@ export default defineComponent({
     const during_items = ref<any>([]);
     const success_items = ref<any>([]);
     const wating1_items = ref<any>([]);
+
+    const filter_type = ref<any>(1);
+
+    const item_statuses = ref<any>({
+      all_items: [],
+      wating_items: <any>[],
+      receive_items: [],
+      send_items: [],
+      success_items: [],
+    });
+
+    const defaultParams = { perPage: 100000, orderBy: "name_th", order: "asc" };
 
     const calYear = () => {
       let year = new Date().getFullYear();
@@ -955,7 +991,7 @@ export default defineComponent({
       ],
     };
 
-    const chartOrganizationData = ref({
+    const chartOrganizationData = ref<any>({
       ...defaultBarChart,
       title: {
         text: "สถิติเรื่องร้องเรียน (แยกตามหน่วยงาน)",
@@ -979,6 +1015,50 @@ export default defineComponent({
     // Fetch Data
     const fetchItems = async () => {
       try {
+        // check ว่าเป็นการกรองระดับไหน 1 ใหญ่, 2 ภาค, 3, จังหวัด
+
+        let status_api_1: any = null;
+        let status_api_2: any = null;
+        let status_api_3: any = null;
+        let status_api_4: any = null;
+        if (search.division_id) {
+          filter_type.value = 3;
+          status_api_1 = 11;
+          status_api_2 = 20;
+          status_api_3 = "12,13,14,21,22,25,26,27,28,29";
+          status_api_4 = "15,16,17,22,24";
+
+          selectOptions.value.organizations = [...defaultAgencys].filter(
+            (x: any) => {
+              x.id = x.agency_id;
+              x.name_th_abbr =
+                x.agency_th_abbr != null ? x.agency_th_abbr : x.agency_th;
+              return x.division_id == search.division_id.id;
+            }
+          );
+        } else if (search.bureau_id) {
+          filter_type.value = 2;
+          status_api_1 = 10;
+          status_api_2 = 19;
+          status_api_3 = "11,12,13,14,15,20,21,22,23,25,26,27,28,29,30";
+          status_api_4 = "16,17,24";
+          selectOptions.value.organizations = [...defaultDivisions].filter(
+            (x: any) => {
+              x.id = x.division_id;
+              x.name_th_abbr = x.division_th_abbr;
+              return x.bureau_id == search.bureau_id.id;
+            }
+          );
+        } else {
+          filter_type.value = 1;
+          status_api_1 = 1;
+          status_api_2 = 3;
+          status_api_3 =
+            "10,11,12,13,14,15,16,19,20,21,22,23,24,25,26,27,28,29,30";
+          status_api_4 = "17";
+          selectOptions.value.organizations = [...defaultBureaus];
+        }
+
         let create_from: any = undefined;
         let create_to: any = undefined;
         if (search.month?.value != null) {
@@ -1004,85 +1084,98 @@ export default defineComponent({
         } else {
         }
 
-        const params = {
+        item_statuses.value.all_items = [];
+        item_statuses.value.wating_items = [];
+        item_statuses.value.receive_items = [];
+        item_statuses.value.send_items = [];
+        item_statuses.value.success_items = [];
+
+        // api 1 get สถานะรอรับเรื่องของแต่ละหน่วยงาน
+        const params1 = {
+          ...search,
           perPage: 1000000,
           currentPage: 1,
-          ...search,
           complaint_type_id: complaint_type.value.id,
           create_from: create_from,
           create_to: create_to,
+          bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
+          division_id: search.division_id ? search.division_id.id : undefined,
+
+          state_id: status_api_1,
         };
 
-        if (userData.role_id == 1) {
-        } else if (userData.role_id == 2) {
-        } else if (userData.role_id == 3) {
-          params.bureau_id = userData.bureau_id;
-          params.state_in =
-            "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
-        } else if (userData.role_id == 4) {
-          params.division_id = userData.division_id;
-          params.state_in = "8,9,11,12,14,15,16,17,20,21,22,23,24,28,29,30";
-        } else if (userData.role_id == 5) {
-          params.inspector_id = userData.inspector_id;
-          params.state_in =
-            "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
-        } else if (userData.role_id == 6) {
-          params.state_in =
-            "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
-        } else {
-          return false;
-        }
-
-        // ได้ DATA ทั้งหมดที่กรองจากปี เดือนและประเภทการร้องเรียน
-        const { data } = await ApiService.query("complaint/", {
-          params: params,
+        const res1 = await ApiService.query("complaint", {
+          params: params1,
         });
+        item_statuses.value.wating_items = res1.data.data;
+        cardStatus.value[1].total = item_statuses.value.wating_items.length;
 
-        // ต้องการแยกเฉพาะส่วนที่รับ และไม่รับ
-        Object.assign(items, data.data);
-        items.value = [];
-        reject_items.value = [];
-        receive1_items.value = [];
-        send1_items.value = [];
-        during_items.value = [];
-        success_items.value = [];
-        wating1_items.value = [];
+        // api 2 get
+        const params2 = {
+          ...search,
+          perPage: 1000000,
+          currentPage: 1,
+          complaint_type_id: complaint_type.value.id,
+          create_from: create_from,
+          create_to: create_to,
+          bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
+          division_id: search.division_id ? search.division_id.id : undefined,
 
-        data.data.forEach((x: any) => {
-          if (x.state_id == 18) {
-            reject_items.value.push(x);
-          } else if (x.state_id >= 3) {
-            receive1_items.value.push(x);
-          } else {
-          }
-
-          if (x.state_id == 1) {
-            wating1_items.value.push(x);
-          }
+          state_id: status_api_2,
+        };
+        const res2 = await ApiService.query("complaint", {
+          params: params2,
         });
+        item_statuses.value.receive_items = res2.data.data;
+        cardStatus.value[2].total = item_statuses.value.receive_items.length;
 
-        receive1_items.value.forEach((x: any) => {
-          if (x.state_id != 3) {
-            send1_items.value.push(x);
-          }
+        // api 3 get
+        const params3 = {
+          ...search,
+          perPage: 1000000,
+          currentPage: 1,
+          complaint_type_id: complaint_type.value.id,
+          create_from: create_from,
+          create_to: create_to,
+          bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
+          division_id: search.division_id ? search.division_id.id : undefined,
 
-          if (x.state_id == 17) {
-            success_items.value.push(x);
-          } else {
-            if (x.state_id > 3) {
-              during_items.value.push(x);
-            }
-          }
+          state_in: status_api_3,
+        };
+        const res3 = await ApiService.query("complaint", {
+          params: params3,
         });
+        item_statuses.value.send_items = res3.data.data;
+        cardStatus.value[3].total = item_statuses.value.send_items.length;
 
-        cardStatus.value[0].total = items.length;
+        // api 4 get
+        const params4 = {
+          ...search,
+          perPage: 1000000,
+          currentPage: 1,
+          complaint_type_id: complaint_type.value.id,
+          create_from: create_from,
+          create_to: create_to,
+          bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
+          division_id: search.division_id ? search.division_id.id : undefined,
 
-        cardStatus.value[1].total = wating1_items.value.length;
-        // cardStatus.value[1].total = reject_items.value.length;
-        cardStatus.value[2].total = receive1_items.value.length;
-        cardStatus.value[3].total = send1_items.value.length;
-        cardStatus.value[4].total = during_items.value.length;
-        cardStatus.value[5].total = success_items.value.length;
+          state_in: status_api_4,
+        };
+
+        const res4 = await ApiService.query("complaint", {
+          params: params4,
+        });
+        item_statuses.value.success_items = res4.data.data;
+        cardStatus.value[4].total = item_statuses.value.success_items.length;
+
+        item_statuses.value.all_items = [
+          ...item_statuses.value.receive_items,
+          ...item_statuses.value.send_items,
+          ...item_statuses.value.success_items,
+        ];
+        console.log(item_statuses.value.send_items);
+
+        cardStatus.value[0].total = item_statuses.value.all_items.length;
 
         reloadData();
       } catch (error) {
@@ -1101,8 +1194,13 @@ export default defineComponent({
           x.count_accused = 0;
           return x;
         });
+      selectOptions.value.topic_categories.push({
+        name_th: "ไม่ระบุ",
+        id: 999,
+        count: 0,
+      });
 
-      receive1_items.value.forEach((e: any) => {
+      item_statuses.value.all_items.forEach((e: any) => {
         if (e.topic_type.topic_category.id) {
           let check = selectOptions.value.topic_categories.find((x: any) => {
             return e.topic_type.topic_category.id == x.id;
@@ -1111,7 +1209,36 @@ export default defineComponent({
           if (check) {
             check.count = check.count + 1;
             check.count_accused = check.count_accused + e.accused.length;
+          } else {
+            console.log(e);
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count =
+              selectOptions.value.topic_categories[
+                selectOptions.value.topic_categories.length - 1
+              ].count + 1;
+            // accused
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_accused =
+              selectOptions.value.topic_categories[
+                selectOptions.value.topic_categories.length - 1
+              ].count_accused + e.accused.length;
           }
+        } else {
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count =
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count + 1;
+          // accused
+          selectOptions.value.topic_categories[
+            selectOptions.value.topic_categories.length - 1
+          ].count_accused =
+            selectOptions.value.topic_categories[
+              selectOptions.value.topic_categories.length - 1
+            ].count_accused + e.accused.length;
         }
       });
 
@@ -1140,7 +1267,6 @@ export default defineComponent({
       ];
 
       // chart2
-
       selectOptions.value.complaint_channels =
         selectOptions.value.complaint_channels.map((x: any) => {
           x.count = 0;
@@ -1148,7 +1274,7 @@ export default defineComponent({
           return x;
         });
 
-      receive1_items.value.forEach((e: any) => {
+      item_statuses.value.all_items.forEach((e: any) => {
         if (e.complaint_channel_id) {
           let check = selectOptions.value.complaint_channels.find((x: any) => {
             return x.id == e.complaint_channel_id;
@@ -1196,7 +1322,7 @@ export default defineComponent({
         },
       ];
 
-      //   Section
+      // chart 3
       selectOptions.value.sections = selectOptions.value.sections.map(
         (x: any) => {
           x.count_section = 0;
@@ -1204,7 +1330,7 @@ export default defineComponent({
         }
       );
 
-      receive1_items.value.forEach((e: any) => {
+      item_statuses.value.all_items.forEach((e: any) => {
         e.accused.forEach((a: any) => {
           if (a.section_id) {
             let check = selectOptions.value.sections.find((x: any) => {
@@ -1245,52 +1371,483 @@ export default defineComponent({
         },
       ];
 
-      //   chart4
-      selectOptions.value.organizations = selectOptions.value.organizations.map(
-        (x: any) => {
-          x.count_org = 0;
-          return x;
-        }
-      );
+      // chart4  filter_type 1
+      if (filter_type.value == 1) {
+        selectOptions.value.organizations =
+          selectOptions.value.organizations.map((x: any) => {
+            x.count_org = 0;
+            x.count_receive = 0;
+            x.count_send = 0;
+            x.count_success = 0;
+            return x;
+          });
 
-      receive1_items.value.forEach((e: any) => {
-        e.accused.forEach((a: any) => {
-          if (a.bureau_id) {
-            let check = selectOptions.value.organizations.find((x: any) => {
-              return x.id == a.bureau_id;
-            });
+        item_statuses.value.receive_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.bureau_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.bureau_id;
+              });
 
-            if (check) {
-              check.count_org = check.count_org + 1;
+              if (check) {
+                check.count_receive = check.count_receive + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_receive"] =
+                  selectOptions.value.organizations[10]["count_receive"] + 1;
+              }
             } else {
-              selectOptions.value.organizations[10]["count_org"] =
-                selectOptions.value.organizations[10]["count_org"] + 1;
+              selectOptions.value.organizations[10]["count_receive"] =
+                selectOptions.value.organizations[10]["count_receive"] + 1;
             }
-          } else {
-            selectOptions.value.organizations[10]["count_org"] =
-              selectOptions.value.organizations[10]["count_org"] + 1;
-          }
+          });
         });
-      });
 
-      organization_data.value = {
-        datas: selectOptions.value.organizations.map((x: any) => {
-          return {
-            name: x.name_th_abbr,
-            value: x.count_org,
-            count_accused: x.count_org,
-          };
-        }),
-      };
+        item_statuses.value.send_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.bureau_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.bureau_id;
+              });
 
-      chartOrganizationData.value.series = [
-        {
-          data: organization_data.value.datas.map((x: any) => {
-            return { value: x.value, itemStyle: { color: getRandomColor() } };
+              if (check) {
+                check.count_send = check.count_send + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_send"] =
+                  selectOptions.value.organizations[10]["count_send"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_send"] =
+                selectOptions.value.organizations[10]["count_send"] + 1;
+            }
+          });
+        });
+
+        item_statuses.value.success_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.bureau_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.bureau_id;
+              });
+
+              if (check) {
+                check.count_success = check.count_success + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_success"] =
+                  selectOptions.value.organizations[10]["count_success"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_success"] =
+                selectOptions.value.organizations[10]["count_success"] + 1;
+            }
+          });
+        });
+
+        organization_data.value = {
+          datas: selectOptions.value.organizations.map((x: any) => {
+            return {
+              name: x.name_th_abbr,
+              // value: x.count_org,
+              // count_accused: x.count_org,
+              receive: x.count_receive,
+              send: x.count_send,
+              success: x.count_success,
+            };
           }),
-          type: "bar",
-        },
-      ];
+        };
+
+        chartOrganizationData.value.series = [
+          {
+            name: "รับเรื่อง",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.receive, name: x.name };
+            }),
+            itemStyle: { color: "#FFC107" }, // กำหนดสีสำหรับแถบ 'Received'
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          {
+            name: "อยู่ระหว่างตรวจสอบ",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.send, name: x.name };
+            }),
+            itemStyle: { color: "#A00001" },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          {
+            name: "เสร็จสิ้น",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.success, name: x.name };
+            }),
+            itemStyle: { color: "#17c653" },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          // {
+          //   data: organization_data.value.datas.map((x: any) => {
+          //     return { value: x.value, itemStyle: { color: getRandomColor() } };
+          //   }),
+          //   type: "bar",
+          // },
+        ];
+
+        chartOrganizationData.value = {
+          ...chartOrganizationData.value,
+          legend: {
+            data: ["รับเรื่อง", "อยู่ระหว่างตรวจสอบ", "เสร็จสิ้น"],
+            top: "bottom", // ย้าย legend ไปด้านล่างของกราฟ
+            left: "center",
+          },
+          xAxis: {
+            type: "category",
+            data: organization_data.value.datas.map((x: any) => x.name),
+            axisLabel: {
+              interval: 0,
+              rotate: 45, // หมุนป้ายหมวดหมู่ให้ทำมุม 45 องศา
+            },
+          },
+          yAxis: {
+            type: "value",
+          },
+          series: chartOrganizationData.value.series,
+        };
+      }
+
+      // End Chart 4  filter_type 1
+
+      // chart4  filter_type 2
+      if (filter_type.value == 2) {
+        selectOptions.value.organizations =
+          selectOptions.value.organizations.map((x: any) => {
+            x.count_org = 0;
+            x.count_receive = 0;
+            x.count_send = 0;
+            x.count_success = 0;
+            return x;
+          });
+
+        item_statuses.value.receive_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.division_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.division_id;
+              });
+
+              if (check) {
+                check.count_receive = check.count_receive + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_receive"] =
+                  selectOptions.value.organizations[10]["count_receive"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_receive"] =
+                selectOptions.value.organizations[10]["count_receive"] + 1;
+            }
+          });
+        });
+
+        item_statuses.value.send_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.division_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.division_id;
+              });
+
+              if (check) {
+                check.count_send = check.count_send + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_send"] =
+                  selectOptions.value.organizations[10]["count_send"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_send"] =
+                selectOptions.value.organizations[10]["count_send"] + 1;
+            }
+          });
+        });
+
+        item_statuses.value.success_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.division_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.division_id;
+              });
+
+              if (check) {
+                check.count_success = check.count_success + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_success"] =
+                  selectOptions.value.organizations[10]["count_success"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_success"] =
+                selectOptions.value.organizations[10]["count_success"] + 1;
+            }
+          });
+        });
+
+        organization_data.value = {
+          datas: selectOptions.value.organizations.map((x: any) => {
+            return {
+              name: x.name_th_abbr,
+              // value: x.count_org,
+              // count_accused: x.count_org,
+              receive: x.count_receive,
+              send: x.count_send,
+              success: x.count_success,
+            };
+          }),
+        };
+
+        chartOrganizationData.value.series = [
+          {
+            name: "รับเรื่อง",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.receive, name: x.name };
+            }),
+            itemStyle: { color: "#FFC107" }, // กำหนดสีสำหรับแถบ 'Received'
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          {
+            name: "อยู่ระหว่างตรวจสอบ",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.send, name: x.name };
+            }),
+            itemStyle: { color: "#A00001" },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          {
+            name: "เสร็จสิ้น",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.success, name: x.name };
+            }),
+            itemStyle: { color: "#17c653" },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          // {
+          //   data: organization_data.value.datas.map((x: any) => {
+          //     return { value: x.value, itemStyle: { color: getRandomColor() } };
+          //   }),
+          //   type: "bar",
+          // },
+        ];
+
+        chartOrganizationData.value = {
+          ...chartOrganizationData.value,
+          legend: {
+            data: ["รับเรื่อง", "อยู่ระหว่างตรวจสอบ", "เสร็จสิ้น"],
+            top: "bottom", // ย้าย legend ไปด้านล่างของกราฟ
+            left: "center",
+          },
+          xAxis: {
+            type: "category",
+            data: organization_data.value.datas.map((x: any) => x.name),
+            axisLabel: {
+              interval: 0,
+              rotate: 45, // หมุนป้ายหมวดหมู่ให้ทำมุม 45 องศา
+            },
+          },
+          yAxis: {
+            type: "value",
+          },
+          series: chartOrganizationData.value.series,
+        };
+      }
+      // End Chart 4 filter_type 2
+
+      // chart4  filter_type 3
+      if (filter_type.value == 3) {
+        selectOptions.value.organizations =
+          selectOptions.value.organizations.map((x: any) => {
+            x.count_org = 0;
+            x.count_receive = 0;
+            x.count_send = 0;
+            x.count_success = 0;
+            return x;
+          });
+
+        item_statuses.value.receive_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.agency_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.agency_id;
+              });
+
+              if (check) {
+                check.count_receive = check.count_receive + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_receive"] =
+                  selectOptions.value.organizations[10]["count_receive"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_receive"] =
+                selectOptions.value.organizations[10]["count_receive"] + 1;
+            }
+          });
+        });
+
+        item_statuses.value.send_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.agency_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.agency_id;
+              });
+
+              if (check) {
+                check.count_send = check.count_send + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_send"] =
+                  selectOptions.value.organizations[10]["count_send"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_send"] =
+                selectOptions.value.organizations[10]["count_send"] + 1;
+            }
+          });
+        });
+
+        item_statuses.value.success_items.forEach((e: any) => {
+          e.accused.forEach((a: any) => {
+            if (a.agency_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.agency_id;
+              });
+
+              if (check) {
+                check.count_success = check.count_success + 1;
+              } else {
+                selectOptions.value.organizations[10]["count_success"] =
+                  selectOptions.value.organizations[10]["count_success"] + 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_success"] =
+                selectOptions.value.organizations[10]["count_success"] + 1;
+            }
+          });
+        });
+
+        organization_data.value = {
+          datas: selectOptions.value.organizations.map((x: any) => {
+            return {
+              name: x.name_th_abbr,
+              receive: x.count_receive,
+              send: x.count_send,
+              success: x.count_success,
+            };
+          }),
+        };
+
+        chartOrganizationData.value.series = [
+          {
+            name: "รับเรื่อง",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.receive, name: x.name };
+            }),
+            itemStyle: { color: "#FFC107" }, // กำหนดสีสำหรับแถบ 'Received'
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          {
+            name: "อยู่ระหว่างตรวจสอบ",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.send, name: x.name };
+            }),
+            itemStyle: { color: "#A00001" },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+          {
+            name: "เสร็จสิ้น",
+            type: "bar",
+            //   stack: "total",
+            data: organization_data.value.datas.map((x: any) => {
+              return { value: x.success, name: x.name };
+            }),
+            itemStyle: { color: "#17c653" },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (params: any) =>
+                params.value === 0 ? "" : params.value,
+            },
+          },
+        ];
+
+        chartOrganizationData.value = {
+          ...chartOrganizationData.value,
+          legend: {
+            data: ["รับเรื่อง", "อยู่ระหว่างตรวจสอบ", "เสร็จสิ้น"],
+            top: "bottom", // ย้าย legend ไปด้านล่างของกราฟ
+            left: "center",
+          },
+          xAxis: {
+            type: "category",
+            data: organization_data.value.datas.map((x: any) => x.name),
+            axisLabel: {
+              interval: 0,
+              rotate: 45, // หมุนป้ายหมวดหมู่ให้ทำมุม 45 องศา
+            },
+          },
+          yAxis: {
+            type: "value",
+          },
+          series: chartOrganizationData.value.series,
+        };
+      }
+      // End Chart 4 filter_type 3
+
+      return;
     };
 
     // Event
@@ -1299,12 +1856,63 @@ export default defineComponent({
     };
 
     const onClear = async () => {
-      search.value = {};
+      //   search.value = {};
+      Object.assign(search, {});
     };
 
     // Mounted
     onMounted(async () => {
+      selectOptions.value.inspectors =
+        await searchComplaintStore.fetchInspector({
+          perPage: 100000,
+          orderBy: "name_th",
+          order: "asc",
+        });
+
+      selectOptions.value.bureaus = await searchComplaintStore.fetchBureau({
+        perPage: 100000,
+        orderBy: "name_th",
+        order: "asc",
+      });
+
       search.year = selectOptions.value.years[0];
+
+      if (userData.role_id == 1) {
+        disabledSearchBureau.value = false;
+        disabledSearchDivision.value = false;
+      } else if (userData.role_id == 2) {
+        disabledSearchBureau.value = false;
+        disabledSearchDivision.value = false;
+      } else if (userData.role_id == 3) {
+        search.bureau_id = {
+          id: userData.bureau_id,
+          name_th_abbr: userData.bureau.name_th,
+        };
+        disabledSearchDivision.value = false;
+      } else if (userData.role_id == 4) {
+        search.bureau_id = {
+          id: userData.bureau_id,
+          name_th_abbr: userData.bureau.name_th_abbr,
+        };
+        search.division_id = {
+          id: userData.division_id,
+          name_th_abbr: userData.division.name_th_abbr,
+        };
+      } else if (userData.role_id == 5) {
+        disabledSearchBureau.value = false;
+        disabledSearchDivision.value = false;
+        search.inspector_id = userData.inspector_id;
+        // params.state_in =
+        //   "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+      } else if (userData.role_id == 6) {
+        disabledSearchBureau.value = false;
+        disabledSearchDivision.value = false;
+        // params.state_in =
+        //   "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+      } else {
+        return false;
+      }
+
       await fetchItems();
     });
 
@@ -1313,6 +1921,45 @@ export default defineComponent({
       () => activeTab.value,
       () => {
         fetchItems();
+      }
+    );
+
+    watch(
+      () => search.bureau_id,
+      async () => {
+        search.division_id = null;
+        search.agency_id = null;
+        selectOptions.value.divisions = [];
+
+        if (search.bureau_id) {
+          selectOptions.value.divisions =
+            await searchComplaintStore.fetchDivision({
+              ...defaultParams,
+              bureau_id: search.bureau_id?.id,
+            });
+
+          if (userData.role_id == 4) {
+            search.division_id = {
+              id: userData.division_id,
+              name_th_abbr: userData.division.name_th_abbr,
+            };
+          }
+        }
+      }
+    );
+
+    watch(
+      () => search.division_id,
+      async () => {
+        search.agency_id = null;
+        selectOptions.agencies = [];
+
+        if (search.division_id) {
+          selectOptions.agencies = await searchComplaintStore.fetchAgency({
+            ...defaultParams,
+            division_id: search.division_id?.id,
+          });
+        }
       }
     );
 
@@ -1337,6 +1984,8 @@ export default defineComponent({
       complaint_channel_data,
       section_data,
       organization_data,
+      disabledSearchDivision,
+      disabledSearchBureau,
     };
   },
 });
