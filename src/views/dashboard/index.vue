@@ -186,7 +186,7 @@
               </thead>
               <tbody v-if="topic_category_data.datas.length != 0">
                 <tr v-for="(tc, idx) in topic_category_data.datas" :key="idx">
-                  <td class="text-center">{{ tc.name }}</td>
+                  <td class="text-center  fw-bold">{{ tc.name }}</td>
 
                   <td class="text-center">
                     {{ tc.count_receive }}
@@ -229,7 +229,7 @@
                   v-for="(cc, idx) in complaint_channel_data.datas"
                   :key="idx"
                 >
-                  <td class="text-center">{{ cc.name }}</td>
+                  <td class="text-center  fw-bold">{{ cc.name }}</td>
                   <!-- <td class="text-center">
                     {{ cc.value }}
                   </td> -->
@@ -280,7 +280,7 @@
               </thead>
               <tbody v-if="organization_data.datas.length != 0">
                 <tr v-for="(or, idx) in organization_data.datas" :key="idx">
-                  <td class="text-center">{{ or.name }}</td>
+                  <td class="text-center  fw-bold">{{ or.name }}</td>
                   <td
                     class="text-center"
                     v-for="(ors, idx) in or.sections"
@@ -321,7 +321,7 @@
               </thead>
               <tbody v-if="organization_data.datas.length != 0">
                 <tr v-for="(or, idx) in organization_data.datas" :key="idx">
-                  <td class="text-center">{{ or.name }}</td>
+                  <td class="text-center  fw-bold">{{ or.name }}</td>
                   <td class="text-center">
                     {{ or.receive }}
                   </td>
@@ -2441,6 +2441,8 @@ export default defineComponent({
 
 .table-bordered td,
 .table-bordered th {
+  /* font-weight: bold; */
+  font-size: 1.4em;
   border: 2px solid #000; /* เปลี่ยนสีและความหนาของเส้นขอบ */
 }
 </style>
