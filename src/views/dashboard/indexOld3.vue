@@ -202,12 +202,6 @@
                     {{ or.success }}
                   </td>
                 </tr>
-                <tr>
-                  <td class="text-center fw-bold">รวม</td>
-                  <td class="text-center fw-bold">{{ totalOrgReceive }}</td>
-                  <td class="text-center fw-bold">{{ totalOrgSend }}</td>
-                  <td class="text-center fw-bold">{{ totalOrgSuccess }}</td>
-                </tr>
               </tbody>
 
               <tbody v-else>
@@ -253,16 +247,6 @@
                     {{ ors.count_section_org }}
                   </td>
                 </tr>
-                <tr>
-                  <td class="fw-bold text-center">รวม</td>
-                  <td
-                    v-for="(ts, idx) in totalSections1"
-                    :key="idx"
-                    class="fw-bold text-center"
-                  >
-                    {{ ts.count_section_org }}
-                  </td>
-                </tr>
               </tbody>
 
               <tbody v-else>
@@ -297,7 +281,7 @@
               </thead>
               <tbody v-if="topic_category_data.datas.length != 0">
                 <tr v-for="(tc, idx) in topic_category_data.datas" :key="idx">
-                  <td class="fw-bold">{{ tc.name }}</td>
+                  <td class="text-center fw-bold">{{ tc.name }}</td>
 
                   <td class="text-center">
                     {{ tc.count_receive }}
@@ -307,16 +291,6 @@
                   </td>
                   <td class="text-center">
                     {{ tc.count_success }}
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-center fw-bold">รวม</td>
-                  <td class="text-center fw-bold">
-                    {{ totalCategoryReceive }}
-                  </td>
-                  <td class="text-center fw-bold">{{ totalCategorySend }}</td>
-                  <td class="text-center fw-bold">
-                    {{ totalCategorySuccess }}
                   </td>
                 </tr>
               </tbody>
@@ -350,7 +324,7 @@
                   v-for="(cc, idx) in complaint_channel_data.datas"
                   :key="idx"
                 >
-                  <td class="fw-bold">{{ cc.name }}</td>
+                  <td class="text-center fw-bold">{{ cc.name }}</td>
                   <!-- <td class="text-center">
                         {{ cc.value }}
                     </td> -->
@@ -363,16 +337,6 @@
                   </td>
                   <td class="text-center">
                     {{ cc.count_success }}
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-center fw-bold">รวม</td>
-                  <td class="text-center fw-bold">
-                    {{ totalChannelReceive }}
-                  </td>
-                  <td class="text-center fw-bold">{{ totalChannelSend }}</td>
-                  <td class="text-center fw-bold">
-                    {{ totalChannelSuccess }}
                   </td>
                 </tr>
               </tbody>
@@ -391,7 +355,7 @@
     </div>
 
     <div>
-      <!-- <sub-organization-modal
+      <sub-organization-modal
         v-if="openSubOrgModal == true"
         :subOrganizations="selectedSubOrganizations"
         @close-modal="
@@ -399,21 +363,13 @@
             openSubOrgModal = false;
           }
         "
-      ></sub-organization-modal> -->
+      ></sub-organization-modal>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  reactive,
-  watch,
-  provide,
-  computed,
-} from "vue";
+import { defineComponent, onMounted, ref, reactive, watch, provide } from "vue";
 import ApiService from "@/core/services/ApiService";
 import { Modal } from "bootstrap";
 import { useRouter } from "vue-router";
@@ -472,7 +428,7 @@ export default defineComponent({
   setup() {
     // UI
     provide(THEME_KEY, "light");
-    const activeTab = ref("all"); // ค่าเริ่มต้น
+    const activeTab = ref("complaints"); // ค่าเริ่มต้น
     const searchComplaintStore = useSearchComplaintStore();
     const setActiveTab = (tab: string) => {
       activeTab.value = tab;
@@ -484,13 +440,12 @@ export default defineComponent({
     };
 
     const openSubOrgModal = ref(false);
-    const totalSections1 = ref<any>([]);
 
     const complaint_type = ref({
-      id: 0,
-      name_th: "ทุกหมวดหมู่",
+      id: 1,
+      name_th: "ร้องเรียน",
       name_en: null,
-      name_abbr_en: "all",
+      name_abbr_en: "complaints",
       is_active: 1,
     });
 
@@ -500,7 +455,7 @@ export default defineComponent({
 
     const openSubOrganizationModal = (subOrgs: any) => {
       selectedSubOrganizations.value = subOrgs;
-      console.log(subOrgs);
+      console.log(subOrgs)
       openSubOrgModal.value = true;
     };
 
@@ -630,7 +585,7 @@ export default defineComponent({
       },
       {
         id: 12,
-        name_th: "ทุจริตต่อหน้าที่ (ตำรวจร้องเรียนตำรวจ)",
+        name_th: "ทุจริตต่อหน้าที่",
         name_en: null,
         complaint_type_id: 4,
         count: 0,
@@ -765,7 +720,6 @@ export default defineComponent({
         { value: "12", name: "ธันวาคม" },
       ],
       complaint_types: useComplaintTypeData().complaint_types.map((x: any) => {
-        if (x.id == 0) x.name_abbr_en = "all";
         if (x.id == 1) x.name_abbr_en = "complaints";
         if (x.id == 2) x.name_abbr_en = "tips";
         if (x.id == 3) x.name_abbr_en = "drug-tips";
@@ -782,17 +736,8 @@ export default defineComponent({
       ],
       sections: [
         {
-          id: 2,
-          name_th: "งานอำนวยการ",
-          name_th_abbr: null,
-          name_en: null,
-          name_en_abbr: null,
-          count_section: 0,
-          count_section_org: 0,
-        },
-        {
           id: 1,
-          name_th: "งานป้องกันและปราบปราม",
+          name_th: "การป้องกันและปราบปราม",
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
@@ -800,8 +745,17 @@ export default defineComponent({
           count_section_org: 0,
         },
         {
-          id: 6,
-          name_th: "งานจราจร",
+          id: 2,
+          name_th: "อำนวยการ",
+          name_th_abbr: null,
+          name_en: null,
+          name_en_abbr: null,
+          count_section: 0,
+          count_section_org: 0,
+        },
+        {
+          id: 3,
+          name_th: "บริหาร",
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
@@ -810,7 +764,7 @@ export default defineComponent({
         },
         {
           id: 4,
-          name_th: "งานสืบสวน",
+          name_th: "สืบสวน",
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
@@ -819,7 +773,7 @@ export default defineComponent({
         },
         {
           id: 5,
-          name_th: "งานสอบสวน",
+          name_th: "สอบสวน",
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
@@ -827,8 +781,44 @@ export default defineComponent({
           count_section_org: 0,
         },
         {
-          id: 999,
-          name_th: "อื่น ๆ",
+          id: 6,
+          name_th: "จราจร",
+          name_th_abbr: null,
+          name_en: null,
+          name_en_abbr: null,
+          count_section: 0,
+          count_section_org: 0,
+        },
+        {
+          id: 7,
+          name_th: "ป้องกันปราบปรามยาเสพติด",
+          name_th_abbr: null,
+          name_en: null,
+          name_en_abbr: null,
+          count_section: 0,
+          count_section_org: 0,
+        },
+        {
+          id: 8,
+          name_th: "กิจการพิเศษ",
+          name_th_abbr: null,
+          name_en: null,
+          name_en_abbr: null,
+          count_section: 0,
+          count_section_org: 0,
+        },
+        {
+          id: 9,
+          name_th: "ธุรการ",
+          name_th_abbr: null,
+          name_en: null,
+          name_en_abbr: null,
+          count_section: 0,
+          count_section_org: 0,
+        },
+        {
+          id: 10,
+          name_th: "ปฎิบัติการพิเศษ",
           name_th_abbr: null,
           name_en: null,
           name_en_abbr: null,
@@ -912,12 +902,6 @@ export default defineComponent({
       ],
       organizations: defaultBureaus,
       topic_categories: [],
-    });
-
-    selectOptions.value.complaint_types.unshift({
-      id: 0,
-      name_abbr_en: "all",
-      name_th: "ทุกหมวดหมู่",
     });
 
     const search = reactive<any>({});
@@ -1177,13 +1161,11 @@ export default defineComponent({
         item_statuses.value.success_items = [];
 
         // api 1 get สถานะรอรับเรื่องของแต่ละหน่วยงาน
-        console.log( complaint_type.value.id )
         const params1 = {
           ...search,
           perPage: 1000000,
           currentPage: 1,
-          complaint_type_id:
-            complaint_type.value.id != 0 ? complaint_type.value.id : undefined,
+          complaint_type_id: complaint_type.value.id,
           create_from: create_from,
           create_to: create_to,
           bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
@@ -1203,8 +1185,7 @@ export default defineComponent({
           ...search,
           perPage: 1000000,
           currentPage: 1,
-          complaint_type_id:
-            complaint_type.value.id != 0 ? complaint_type.value.id : undefined,
+          complaint_type_id: complaint_type.value.id,
           create_from: create_from,
           create_to: create_to,
           bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
@@ -1223,8 +1204,7 @@ export default defineComponent({
           ...search,
           perPage: 1000000,
           currentPage: 1,
-          complaint_type_id:
-            complaint_type.value.id != 0 ? complaint_type.value.id : undefined,
+          complaint_type_id: complaint_type.value.id,
           create_from: create_from,
           create_to: create_to,
           bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
@@ -1243,8 +1223,7 @@ export default defineComponent({
           ...search,
           perPage: 1000000,
           currentPage: 1,
-          complaint_type_id:
-            complaint_type.value.id != 0 ? complaint_type.value.id : undefined,
+          complaint_type_id: complaint_type.value.id,
           create_from: create_from,
           create_to: create_to,
           bureau_id: search.bureau_id ? search.bureau_id.id : undefined,
@@ -1277,9 +1256,6 @@ export default defineComponent({
       // chart1
       selectOptions.value.topic_categories = defaultTopicCategories
         .filter((x: any) => {
-          if (complaint_type.value.id == 0) {
-            return true;
-          }
           return x.complaint_type_id == complaint_type.value.id;
         })
         .map((x: any) => {
@@ -1496,24 +1472,26 @@ export default defineComponent({
         labels: selectOptions.value.topic_categories.map((x: any) => {
           return x.name_th;
         }),
-        datas: selectOptions.value.topic_categories.map((x: any) => {
-          return {
-            name: x.name_th,
-            value: x.count,
-            count_accused: x.count_accused,
-            count_receive: x.count_receive,
-            count_send: x.count_send,
-            count_success: x.count_success,
-          };
-        }),
+        datas: selectOptions.value.topic_categories
+          .map((x: any) => {
+            return {
+              name: x.name_th,
+              value: x.count,
+              count_accused: x.count_accused,
+              count_receive: x.count_receive,
+              count_send: x.count_send,
+              count_success: x.count_success,
+            };
+          })
+          .filter((x: any) => {
+            return x.value != 0;
+          }),
       };
 
       chartTopicCategoryData.value.series = [
         {
           ...chartTopicCategoryData.value.series[0],
-          data: topic_category_data.value.datas.filter((x: any) => {
-            return x.value != 0;
-          }),
+          data: topic_category_data.value.datas,
         },
       ];
 
@@ -1527,6 +1505,33 @@ export default defineComponent({
           x.count_success = 0;
           return x;
         });
+
+      //   item_statuses.value.all_items.forEach((e: any) => {
+      //     if (e.complaint_channel_id) {
+      //       let check = selectOptions.value.complaint_channels.find((x: any) => {
+      //         return x.id == e.complaint_channel_id;
+      //       });
+
+      //       if (check) {
+      //         check.count = check.count + 1;
+      //         check.count_accused = check.count_accused + e.accused.length;
+      //       } else {
+      //         selectOptions.value.complaint_channels[8]["count"] =
+      //           selectOptions.value.complaint_channels[8]["count"] + 1;
+
+      //         selectOptions.value.complaint_channels[8]["count_accused"] =
+      //           selectOptions.value.complaint_channels[8]["count_accused"] +
+      //           e.accused.length;
+      //       }
+      //     } else {
+      //       selectOptions.value.complaint_channels[8]["count"] =
+      //         selectOptions.value.complaint_channels[8]["count"] + 1;
+
+      //       selectOptions.value.complaint_channels[8]["count_accused"] =
+      //         selectOptions.value.complaint_channels[8]["count_accused"] +
+      //         e.accused.length;
+      //     }
+      //   });
 
       item_statuses.value.receive_items.forEach((e: any) => {
         if (e.complaint_channel_id) {
@@ -1621,24 +1626,26 @@ export default defineComponent({
       });
 
       complaint_channel_data.value = {
-        datas: selectOptions.value.complaint_channels.map((x: any) => {
-          return {
-            name: x.name_th,
-            value: x.count,
-            count_accused: x.count_accused,
-            count_receive: x.count_receive,
-            count_send: x.count_send,
-            count_success: x.count_success,
-          };
-        }),
+        datas: selectOptions.value.complaint_channels
+          .map((x: any) => {
+            return {
+              name: x.name_th,
+              value: x.count,
+              count_accused: x.count_accused,
+              count_receive: x.count_receive,
+              count_send: x.count_send,
+              count_success: x.count_success,
+            };
+          })
+          .filter((x: any) => {
+            return x.value != 0;
+          }),
       };
 
       chartChannelData.value.series = [
         {
           ...chartTopicCategoryData.value.series[0],
-          data: complaint_channel_data.value.datas.filter((x: any) => {
-            return x.value != 0;
-          }),
+          data: complaint_channel_data.value.datas,
         },
       ];
 
@@ -1660,12 +1667,12 @@ export default defineComponent({
             if (check) {
               check.count_section = check.count_section + 1;
             } else {
-              selectOptions.value.sections[5]["count_section"] =
-                selectOptions.value.sections[5]["count_section"] + 1;
+              selectOptions.value.sections[10]["count_section"] =
+                selectOptions.value.sections[10]["count_section"] + 1;
             }
           } else {
-            selectOptions.value.sections[6]["count_section"] =
-              selectOptions.value.sections[6]["count_section"] + 1;
+            selectOptions.value.sections[10]["count_section"] =
+              selectOptions.value.sections[10]["count_section"] + 1;
           }
         });
       });
@@ -1708,112 +1715,104 @@ export default defineComponent({
 
         item_statuses.value.receive_items.forEach((e: any) => {
           e.accused.forEach((a: any) => {
-            const bureau = a.bureau_id
-              ? selectOptions.value.organizations.find(
-                  (x: any) => x.id === a.bureau_id
-                )
-              : selectOptions.value.organizations[10];
+            if (a.bureau_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.bureau_id;
+              });
 
-            if (bureau) {
-              bureau.count_receive += 1;
+              if (check) {
+                check.count_receive = check.count_receive + 1;
 
-              const section =
-                bureau.sections.find((s: any) => s.id === a.section_id) ||
-                bureau.sections[6];
-              section.count_section_org += 1;
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
+              } else {
+                selectOptions.value.organizations[10]["count_receive"] =
+                  selectOptions.value.organizations[10]["count_receive"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_receive"] =
+                selectOptions.value.organizations[10]["count_receive"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
 
         item_statuses.value.send_items.forEach((e: any) => {
           e.accused.forEach((a: any) => {
-            const bureau = a.bureau_id
-              ? selectOptions.value.organizations.find(
-                  (x: any) => x.id === a.bureau_id
-                )
-              : selectOptions.value.organizations[10];
+            if (a.bureau_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.bureau_id;
+              });
 
-            if (bureau) {
-              bureau.count_send += 1;
+              if (check) {
+                check.count_send = check.count_send + 1;
 
-              const section =
-                bureau.sections.find((s: any) => s.id === a.section_id) ||
-                bureau.sections[6];
-              section.count_section_org += 1;
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+
+                check_sc.count_section_org += 1;
+              } else {
+                selectOptions.value.organizations[10]["count_send"] =
+                  selectOptions.value.organizations[10]["count_send"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_send"] =
+                selectOptions.value.organizations[10]["count_send"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
 
         item_statuses.value.success_items.forEach((e: any) => {
           e.accused.forEach((a: any) => {
-            const bureau = a.bureau_id
-              ? selectOptions.value.organizations.find(
-                  (x: any) => x.id === a.bureau_id
-                )
-              : selectOptions.value.organizations[10];
+            if (a.bureau_id) {
+              let check = selectOptions.value.organizations.find((x: any) => {
+                return x.id == a.bureau_id;
+              });
 
-            if (bureau) {
-              bureau.count_success += 1;
+              if (check) {
+                check.count_success = check.count_success + 1;
 
-              const section =
-                bureau.sections.find((s: any) => s.id === a.section_id) ||
-                bureau.sections[6];
-              section.count_section_org += 1;
+                let check_sc = check.sections.find((s: any) => {
+                  return s.id == a.section_id;
+                });
+                check_sc.count_section_org += 1;
+              } else {
+                selectOptions.value.organizations[10]["count_success"] =
+                  selectOptions.value.organizations[10]["count_success"] + 1;
+
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
+              }
+            } else {
+              selectOptions.value.organizations[10]["count_success"] =
+                selectOptions.value.organizations[10]["count_success"] + 1;
+
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
-
-        // Summarize the totals for sections
-        const totalSections = JSON.parse(
-          JSON.stringify(selectOptions.value.sections)
-        );
-        totalSections.forEach((section: any) => {
-          section.count_section_org = 0;
-        });
-
-        selectOptions.value.organizations.forEach((org: any) => {
-          org.sections.forEach((section: any) => {
-            const totalSection = totalSections.find(
-              (s: any) => s.id === section.id
-            );
-            if (totalSection) {
-              totalSection.count_section_org += section.count_section_org;
-            }
-          });
-        });
-
-        totalSections1.value = totalSections;
 
         organization_data.value = {
-          datas: [
-            ...selectOptions.value.organizations.map((x: any) => {
-              return {
-                name: x.name_th_abbr,
-                // value: x.count_org,
-                // count_accused: x.count_org,
-                receive: x.count_receive,
-                send: x.count_send,
-                success: x.count_success,
-                sections: x.sections,
-              };
-            }),
-            // {
-            //   name: "รวม",
-            // //   receive: selectOptions.value.organizations.reduce(
-            // //     (sum: number, org: any) => sum + org.count_receive,
-            // //     0
-            // //   ),
-            // //   send: selectOptions.value.organizations.reduce(
-            // //     (sum: number, org: any) => sum + org.count_send,
-            // //     0
-            // //   ),
-            // //   success: selectOptions.value.organizations.reduce(
-            // //     (sum: number, org: any) => sum + org.count_success,
-            // //     0
-            // //   ),
-            //   sections: totalSections,
-            // },
-          ],
+          datas: selectOptions.value.organizations.map((x: any) => {
+            return {
+              name: x.name_th_abbr,
+              // value: x.count_org,
+              // count_accused: x.count_org,
+              receive: x.count_receive,
+              send: x.count_send,
+              success: x.count_success,
+              sections: x.sections,
+            };
+          }),
         };
 
         chartOrganizationData.value.series = [
@@ -1928,24 +1927,13 @@ export default defineComponent({
                 selectOptions.value.organizations[10]["count_receive"] =
                   selectOptions.value.organizations[10]["count_receive"] + 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_receive"] =
                 selectOptions.value.organizations[10]["count_receive"] + 1;
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -1968,24 +1956,13 @@ export default defineComponent({
                 selectOptions.value.organizations[10]["count_send"] =
                   selectOptions.value.organizations[10]["count_send"] + 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_send"] =
                 selectOptions.value.organizations[10]["count_send"] + 1;
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -2008,24 +1985,13 @@ export default defineComponent({
                 selectOptions.value.organizations[10]["count_success"] =
                   selectOptions.value.organizations[10]["count_success"] + 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_success"] =
                 selectOptions.value.organizations[10]["count_success"] + 1;
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -2153,24 +2119,13 @@ export default defineComponent({
                 selectOptions.value.organizations[10]["count_receive"] =
                   selectOptions.value.organizations[10]["count_receive"] + 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_receive"] =
                 selectOptions.value.organizations[10]["count_receive"] + 1;
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -2193,24 +2148,13 @@ export default defineComponent({
                 selectOptions.value.organizations[10]["count_send"] =
                   selectOptions.value.organizations[10]["count_send"] + 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_send"] =
                 selectOptions.value.organizations[10]["count_send"] + 1;
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -2233,24 +2177,13 @@ export default defineComponent({
                 selectOptions.value.organizations[10]["count_success"] =
                   selectOptions.value.organizations[10]["count_success"] + 1;
 
-                selectOptions.value.organizations[10].sections[5].count_section_org += 1;
+                selectOptions.value.organizations[10].sections[10].count_section_org += 1;
               }
             } else {
               selectOptions.value.organizations[10]["count_success"] =
                 selectOptions.value.organizations[10]["count_success"] + 1;
 
-              let check_sc =
-                selectOptions.value.organizations[10].sections.find(
-                  (s: any) => {
-                    return s.id == a.section_id;
-                  }
-                );
-
-              if (check_sc) {
-                check_sc.count_section_org += 1;
-              } else {
-                selectOptions.value.organizations[10].sections[6].count_section_org += 1;
-              }
+              selectOptions.value.organizations[10].sections[10].count_section_org += 1;
             }
           });
         });
@@ -2348,94 +2281,6 @@ export default defineComponent({
       //   search.value = {};
       Object.assign(search, {});
     };
-
-    const totalOrgReceive = computed(() => {
-      console.log();
-      return organization_data.value.datas.reduce(
-        (sum: number, org: any) => sum + org.receive,
-        0
-      );
-    });
-
-    const totalOrgSend = computed(() => {
-      return organization_data.value.datas.reduce(
-        (sum: number, org: any) => sum + org.send,
-        0
-      );
-    });
-
-    const totalOrgSuccess = computed(() => {
-      return organization_data.value.datas.reduce(
-        (sum: number, org: any) => sum + org.success,
-        0
-      );
-    });
-
-    // const totalSectionReceive = computed(() => {
-    //   console.log();
-    //   return section_data.value.datas.reduce(
-    //     (sum: number, sc: any) => sum + sc.count_receive,
-    //     0
-    //   );
-    // });
-
-    // const totalSectionSend = computed(() => {
-    //   return organization_data.value.datas.reduce(
-    //     (sum: number, sc: any) => sum + sc.count_send,
-    //     0
-    //   );
-    // });
-
-    // const totalSectionSuccess = computed(() => {
-    //   return organization_data.value.datas.reduce(
-    //     (sum: number, sc: any) => sum + sc.count_success,
-    //     0
-    //   );
-    // });
-
-    //
-    const totalCategoryReceive = computed(() => {
-      return topic_category_data.value.datas.reduce(
-        (sum: number, sc: any) => sum + sc.count_receive,
-        0
-      );
-    });
-
-    const totalCategorySend = computed(() => {
-      return topic_category_data.value.datas.reduce(
-        (sum: number, sc: any) => sum + sc.count_send,
-        0
-      );
-    });
-
-    const totalCategorySuccess = computed(() => {
-      return topic_category_data.value.datas.reduce(
-        (sum: number, sc: any) => sum + sc.count_success,
-        0
-      );
-    });
-
-    //
-    const totalChannelReceive = computed(() => {
-      return complaint_channel_data.value.datas.reduce(
-        (sum: number, sc: any) => sum + sc.count_receive,
-        0
-      );
-    });
-
-    const totalChannelSend = computed(() => {
-      return complaint_channel_data.value.datas.reduce(
-        (sum: number, sc: any) => sum + sc.count_send,
-        0
-      );
-    });
-
-    const totalChannelSuccess = computed(() => {
-      return complaint_channel_data.value.datas.reduce(
-        (sum: number, sc: any) => sum + sc.count_success,
-        0
-      );
-    });
 
     // Mounted
     onMounted(async () => {
@@ -2565,17 +2410,7 @@ export default defineComponent({
       disabledSearchBureau,
       openSubOrgModal,
       selectedSubOrganizations,
-      openSubOrganizationModal,
-      totalSections1,
-      totalOrgReceive,
-      totalOrgSend,
-      totalOrgSuccess,
-      totalCategoryReceive,
-      totalCategorySend,
-      totalCategorySuccess,
-      totalChannelReceive,
-      totalChannelSend,
-      totalChannelSuccess,
+      openSubOrganizationModal, 
     };
   },
 });
