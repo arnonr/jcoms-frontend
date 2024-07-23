@@ -845,14 +845,14 @@ export default defineComponent({
         return false;
       }
 
-      let check = validateThaiCitizenId(item.id_card);
+    //   let check = validateThaiCitizenId(item.id_card);
 
-      if (check == false) {
-        errors.value["id_card"].error = 1;
-        errors.value["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
-        useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
-        return false;
-      }
+    //   if (check == false) {
+    //     errors.value["id_card"].error = 1;
+    //     errors.value["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
+    //     useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
+    //     return false;
+    //   }
 
       //   Save and swal success
       await onSaveUser();
