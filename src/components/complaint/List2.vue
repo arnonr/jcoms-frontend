@@ -303,7 +303,7 @@
                         complainant_id: it.complainant_id,
                       })
                     "
-                    >จต. ปิดเรื่อง</a
+                    >จต. ยุติเรื่อง</a
                   >
                 </li>
 

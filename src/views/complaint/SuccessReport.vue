@@ -10,7 +10,7 @@
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header" v-if="item.id != null">
-            <h3 class="modal-title">จต. ปิดเรื่อง ({{ item.jcoms_no }})</h3>
+            <h3 class="modal-title">จต. ยุติเรื่อง ({{ item.jcoms_no }})</h3>
             <button
               @click="onClose({ reload: false })"
               type="button"
@@ -136,7 +136,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  ปิดเรื่อง
+                    ยุติเรื่อง
                 </button>
               </div>
             </div>
@@ -345,7 +345,7 @@ export default defineComponent({
               item.jcoms_no +
               " : " +
               item.inspector_name_th_abbr +
-              " ปิดเรื่อง ณ วันที่ " +
+              " ยุติเรื่อง ณ วันที่ " +
               dayjs().utc().locale("th").format("DD MMM BBBB") +
               " ผลการพิจารณา " +
               item.closed_state_id.name_th +

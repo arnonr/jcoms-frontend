@@ -137,7 +137,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                  ปิดเรื่อง
+                    ยุติเรื่อง
                 </button>
               </div>
             </div>
@@ -346,7 +346,7 @@ export default defineComponent({
               item.jcoms_no +
               " : " +
               item.inspector_name_th_abbr +
-              " ปิดเรื่อง ณ วันที่ " +
+              " ยุติเรื่อง ณ วันที่ " +
               dayjs().utc().locale("th").format("DD MMM BBBB") +
               " ผลการพิจารณา " +
               item.closed_state_id.name_th +

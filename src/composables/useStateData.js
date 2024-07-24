@@ -106,7 +106,7 @@ export default () => {
     },
     {
       id: 17,
-      name_th: "ปิดเรื่อง",
+      name_th: "ยุติเรื่อง",
       name_en: null,
       bg_color: "#17c653",
     },

@@ -1080,13 +1080,13 @@
               </tr>
             </template>
 
-            <!-- กต. ปิดเรื่อง -->
+            <!-- กต. ยุติเรื่อง -->
             <tr v-if="complaint_item.closed_at != null">
               <td class="p-3 text-green">
                 {{ showDate(complaint_item.closed_at) }}
               </td>
               <td class="fw-bold p-3 text-green">
-                {{ complaint_item.inspector?.name_th_abbr }} ปิดเรื่อง
+                {{ complaint_item.inspector?.name_th_abbr }} ยุติเรื่อง
               </td>
               <td class="p-3 text-green">
                 <div

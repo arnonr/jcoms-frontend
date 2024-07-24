@@ -358,12 +358,12 @@
               </tr>
             </template>
 
-            <!-- จต. ปิดเรื่อง -->
+            <!-- จต. ยุติเรื่อง -->
             <tr v-if="complaint_item.closed_at != null">
               <td class="p-3 text-green">
                 {{ showDate(complaint_item.closed_at) }}
               </td>
-              <td class="fw-bold p-3 text-green">จต. ปิดเรื่อง</td>
+              <td class="fw-bold p-3 text-green">จต. ยุติเรื่อง</td>
               <td class="p-3 text-green"></td>
             </tr>
           </tbody>

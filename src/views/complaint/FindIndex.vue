@@ -402,7 +402,7 @@
         />
       </div>
 
-      <!-- Modal Success Report จต. ปิดเรื่อง -->
+      <!-- Modal Success Report จต. ยุติเรื่อง -->
       <div id="success-report-modal">
         <SuccessReportPage
           v-if="openSuccessReportModal == true"
