@@ -116,7 +116,7 @@
                   v-if="complaint_forward_state.state32.forward_doc_date"
                 >
                   <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                    วันที่หนังสือ :
                   </div>
                   <div>
                     {{
@@ -129,7 +129,7 @@
                   v-if="complaint_forward_state.state32.forward_doc_no"
                 >
                   <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                    เลขทะเบียนหนังสือส่ง :
                   </div>
                   <div>
                     {{ complaint_forward_state.state32.forward_doc_no }}
@@ -288,7 +288,7 @@
                     <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
                     <div class="mt-0 pt-0 pb-0 d-flex text-danger">
                       <div class="fw-bold" style="min-width: 150px">
-                        วันที่เอกสารส่งกลับ :
+                        วันที่หนังสือส่งกลับ :
                       </div>
                       <div>
                         {{ showDate(cr.return_doc_date) }}
@@ -338,7 +338,7 @@
                     <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
                     <div class="mt-0 pt-0 pb-0 d-flex text-danger">
                       <div class="fw-bold" style="min-width: 150px">
-                        วันที่เอกสารส่งกลับ :
+                        วันที่หนังสือส่งกลับ :
                       </div>
                       <div>
                         {{ showDate(cr.return_doc_date) }}

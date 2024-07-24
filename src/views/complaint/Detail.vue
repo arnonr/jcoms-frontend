@@ -73,7 +73,7 @@
                         >
                           <div class="mb-0 pt-0 pb-0 d-flex">
                             <div class="fw-bold" style="min-width: 100px">
-                              วันที่เอกสาร :
+                              วันที่หนังสือ :
                             </div>
                             <div>
                               {{ showDate(complaint_item.receive_doc_date) }}
@@ -81,7 +81,7 @@
                           </div>
                           <div class="mt-0 pt-0 pb-0 d-flex">
                             <div class="fw-bold" style="min-width: 100px">
-                              เลขที่เอกสาร :
+                              เลขทะเบียนหนังสือรับ :
                             </div>
                             <div>{{ complaint_item.receive_doc_no }}</div>
                           </div>
@@ -124,7 +124,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -136,7 +136,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือส่ง :
                           </div>
                           <div>
                             {{ complaint_forward_state.state10.forward_doc_no }}
@@ -197,7 +197,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -209,7 +209,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือรับ :
                           </div>
                           <div>
                             {{ complaint_forward_state.state10.receive_doc_no }}
@@ -260,7 +260,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -272,7 +272,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือส่ง :
                           </div>
                           <div>
                             {{ complaint_forward_state.state11.forward_doc_no }}
@@ -333,7 +333,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -345,7 +345,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือรับ :
                           </div>
                           <div>
                             {{ complaint_forward_state.state11.receive_doc_no }}
@@ -401,7 +401,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -413,7 +413,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือส่ง :
                           </div>
                           <div>
                             {{ complaint_forward_state.state12.forward_doc_no }}
@@ -470,7 +470,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -482,7 +482,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือส่ง :
                           </div>
                           <div>
                             {{ complaint_report_state.state15.report_doc_no }}
@@ -542,7 +542,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -554,7 +554,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือรับ :
                           </div>
                           <div>
                             {{ complaint_report_state.state15.receive_doc_no }}
@@ -608,7 +608,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -620,7 +620,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือส่ง :
                           </div>
                           <div>
                             {{ complaint_report_state.state16.report_doc_no }}
@@ -680,7 +680,7 @@
                       <td class="p-3">
                         <div class="mb-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            วันที่เอกสาร :
+                            วันที่หนังสือ :
                           </div>
                           <div>
                             {{
@@ -692,7 +692,7 @@
                         </div>
                         <div class="mt-0 pt-0 pb-0 d-flex">
                           <div class="fw-bold" style="min-width: 100px">
-                            เลขที่เอกสาร :
+                            เลขทะเบียนหนังสือรับ :
                           </div>
                           <div>
                             {{ complaint_report_state.state16.receive_doc_no }}
@@ -747,7 +747,7 @@
               complaint_item.receive_status == 1 ? "รับเรื่อง" : "ไม่รับเรื่อง"
             }}
           </span>
-          <span> เลขที่เอกสาร : {{ complaint_item.receive_doc_no }}, </span
+          <span> เลขทะเบียนหนังสือ : {{ complaint_item.receive_doc_no }}, </span
           ><span>หมายเหตุ : {{ complaint_item.receive_comment }}, </span
           ><span v-if="complaint_item.receive_doc_filename"
             >ไฟล์แนบ :
@@ -762,7 +762,7 @@
         <div class="col-md-12" v-if="complaint_item.receive_doc_date">
           <span> {{ showDate(complaint_item.receive_doc_date) }} : </span>
           <span class="fw-bold me-10">ฝรท. ส่งเรื่องต่อ </span>
-          <span> เลขที่เอกสาร : {{ complaint_item.receive_doc_no }}, </span
+          <span> เลขทะเบียนหนังสือ : {{ complaint_item.receive_doc_no }}, </span
           ><span>หมายเหตุ : {{ complaint_item.receive_comment }}, </span
           ><span v-if="complaint_item.receive_doc_filename"
             >ไฟล์แนบ :
@@ -784,7 +784,7 @@
             >({{ complaint_forward_state.state10.to_bureau?.name_th }})</span
           >
           <span>
-            เลขที่เอกสาร :
+            เลขทะเบียนหนังสือ :
             {{ complaint_forward_state.state10.forward_doc_no }}, </span
           ><span
             >หมายเหตุ :
@@ -818,7 +818,7 @@
             {{ complaint_forward_state.state10.to_bureau.name_th }}
           </span>
           <span>
-            เลขที่เอกสาร :
+            เลขทะเบียนหนังสือ :
             {{ complaint_forward_state.state10.receive_doc_no }}, </span
           ><span
             >หมายเหตุ :
@@ -848,7 +848,7 @@
             >({{ complaint_forward_state.state11.to_division?.name_th }})</span
           >
           <span>
-            เลขที่เอกสาร :
+            เลขทะเบียนหนังสือ :
             {{ complaint_forward_state.state11.forward_doc_no }}, </span
           ><span
             >หมายเหตุ :
@@ -883,7 +883,7 @@
             {{ complaint_forward_state.state11.to_division.name_th }}
           </span>
           <span>
-            เลขที่เอกสาร :
+            เลขทะเบียนหนังสือ :
             {{ complaint_forward_state.state11.receive_doc_no }}, </span
           ><span
             >หมายเหตุ :
@@ -1320,15 +1320,15 @@ export default defineComponent({
       }
     };
 
-    // สถานะ ตั้งแต่ receive ใน complaint เมื่อไหร่ เอกสาร เลขที่เอกสาร หมายเหตุ
+    // สถานะ ตั้งแต่ receive ใน complaint เมื่อไหร่ เอกสาร เลขทะเบียนหนังสือ หมายเหตุ
 
     // Forward
-    // สถานะ ตั้งแต่ send ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขที่เอกสาร หมายเหตุ
-    // สถานะ receive ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขที่เอกสาร หมายเหตุ
+    // สถานะ ตั้งแต่ send ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขทะเบียนหนังสือ หมายเหตุ
+    // สถานะ receive ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขทะเบียนหนังสือ หมายเหตุ
 
     // Report
-    // สถานะ ตั้งแต่ send ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขที่เอกสาร หมายเหตุ
-    // สถานะ receive ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขที่เอกสาร หมายเหตุ
+    // สถานะ ตั้งแต่ send ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขทะเบียนหนังสือ หมายเหตุ
+    // สถานะ receive ใน complaint เวลา ส่งไปที่หน่วยงานไหน เอกสาร เลขทะเบียนหนังสือ หมายเหตุ
 
     const previewImage = ref<any>(null);
     const new_item = reactive<any>({

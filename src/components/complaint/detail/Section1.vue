@@ -73,7 +73,7 @@
                     v-if="complaint_item.receive_doc_date"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div class="fst-italic">
                       {{ showDate(complaint_item.receive_doc_date) }}
@@ -84,7 +84,7 @@
                     v-if="complaint_item.receive_doc_no"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div class="fst-italic">
                       {{ complaint_item.receive_doc_no }}
@@ -167,7 +167,7 @@
                     v-if="complaint_item.receive_doc_date"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div class="fst-italic">
                       {{ showDate(complaint_item.receive_doc_date) }}
@@ -178,7 +178,7 @@
                     v-if="complaint_item.receive_doc_no"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div class="fst-italic">
                       {{ complaint_item.receive_doc_no }}
@@ -243,7 +243,7 @@
                     v-if="complaint_forward_state.state10.forward_doc_date"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -258,7 +258,7 @@
                     v-if="complaint_forward_state.state10.forward_doc_no"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือส่ง :
                     </div>
                     <div>
                       {{ complaint_forward_state.state10.forward_doc_no }}
@@ -334,7 +334,7 @@
                 >
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -346,7 +346,7 @@
                   </div>
                   <div class="mt-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div>
                       {{ complaint_forward_state.state10.receive_doc_no }}
@@ -394,7 +394,7 @@
                     v-if="complaint_forward_state.state11.forward_doc_date"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -409,7 +409,7 @@
                     v-if="complaint_forward_state.state11.forward_doc_no"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือส่ง :
                     </div>
                     <div>
                       {{ complaint_forward_state.state11.forward_doc_no }}
@@ -489,7 +489,7 @@
                     v-if="complaint_forward_state.state11.forward_doc_date"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -504,7 +504,7 @@
                     v-if="complaint_forward_state.state11.receive_doc_no"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div>
                       {{ complaint_forward_state.state11.receive_doc_no }}
@@ -555,7 +555,7 @@
                     v-if="complaint_forward_state.state12.forward_doc_date"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -570,7 +570,7 @@
                     v-if="complaint_forward_state.state12.forward_doc_no"
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือส่ง :
                     </div>
                     <div>
                       {{ complaint_forward_state.state12.forward_doc_no }}
@@ -634,7 +634,7 @@
               <td class="p-3">
                 <div class="mb-0 pt-0 pb-0 d-flex">
                   <div class="fw-bold" style="min-width: 100px">
-                    วันที่เอกสาร :
+                    วันที่หนังสือ :
                   </div>
                   <div>
                     {{
@@ -644,7 +644,7 @@
                 </div>
                 <div class="mt-0 pt-0 pb-0 d-flex">
                   <div class="fw-bold" style="min-width: 100px">
-                    เลขที่เอกสาร :
+                    เลขทะเบียนหนังสือรับ :
                   </div>
                   <div>
                     {{ complaint_report_state.state15.receive_doc_no }}
@@ -706,7 +706,7 @@
                       v-if="cr.receive_doc_date"
                     >
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cr.receive_doc_date) }}
@@ -714,7 +714,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_no">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือรับ :
                       </div>
                       <div>
                         {{ cr.receive_doc_no }}
@@ -767,7 +767,7 @@
                       v-if="cr.report_doc_date"
                     >
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cr.report_doc_date) }}
@@ -775,7 +775,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือส่ง :
                       </div>
                       <div>
                         {{ cr.report_doc_no }}
@@ -820,7 +820,7 @@
                       <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
                       <div class="mt-0 pt-0 pb-0 d-flex text-danger">
                         <div class="fw-bold" style="min-width: 150px">
-                          วันที่เอกสารส่งกลับ :
+                          วันที่หนังสือ :
                         </div>
                         <div>
                           {{ showDate(cr.return_doc_date) }}
@@ -828,7 +828,7 @@
                       </div>
                       <div class="mt-0 pt-0 pb-0 d-flex text-danger">
                         <div class="fw-bold" style="min-width: 150px">
-                          เลขที่เอกสารส่งกลับ :
+                          เลขทะเบียนหนังสือส่ง :
                         </div>
                         <div>
                           {{ cr.return_doc_no }}
@@ -875,7 +875,7 @@
                 <td class="p-3 text-green">
                   <div class="mb-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_date">
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{ showDate(cr.receive_doc_date) }}
@@ -883,7 +883,7 @@
                   </div>
                   <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.receive_doc_no">
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div>
                       {{ cr.receive_doc_no }}
@@ -931,7 +931,7 @@
                       v-if="cr.report_doc_date"
                     >
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cr.report_doc_date) }}
@@ -939,7 +939,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex" v-if="cr.report_doc_no">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือส่ง :
                       </div>
                       <div>
                         {{ cr.report_doc_no }}
@@ -989,7 +989,7 @@
                       <h6 class="text-danger">ส่งกลับให้แก้ไขเอกสาร</h6>
                       <div class="mt-0 pt-0 pb-0 d-flex text-danger">
                         <div class="fw-bold" style="min-width: 150px">
-                          วันที่เอกสารส่งกลับ :
+                          วันที่หนังสือ :
                         </div>
                         <div>
                           {{ showDate(cr.return_doc_date) }}
@@ -997,7 +997,7 @@
                       </div>
                       <div class="mt-0 pt-0 pb-0 d-flex text-danger">
                         <div class="fw-bold" style="min-width: 150px">
-                          เลขที่เอกสารส่งกลับ :
+                          เลขทะเบียนหนังสือส่ง :
                         </div>
                         <div>
                           {{ cr.return_doc_no }}
@@ -1053,7 +1053,7 @@
                   >
                     <div class="mb-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cr.receive_doc_date) }}
@@ -1061,7 +1061,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือรับ :
                       </div>
                       <div>
                         {{ cr.receive_doc_no }}
@@ -1184,7 +1184,7 @@
                     "
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -1202,7 +1202,7 @@
                     "
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือส่ง :
                     </div>
                     <div>
                       {{
@@ -1296,7 +1296,7 @@
                 >
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -1309,7 +1309,7 @@
                   </div>
                   <div class="mt-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div>
                       {{
@@ -1358,7 +1358,7 @@
                   >
                     <div class="mb-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cf.follow_doc_date) }}
@@ -1366,7 +1366,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือส่ง :
                       </div>
                       <div>
                         {{ cf.follow_doc_no }}
@@ -1405,7 +1405,7 @@
                 <td class="p-3">
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{ showDate(cf.receive_doc_date) }}
@@ -1413,7 +1413,7 @@
                   </div>
                   <div class="mt-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือรับ :
                     </div>
                     <div>
                       {{ cf.receive_doc_no }}
@@ -1444,7 +1444,7 @@
               </tr>
             </template>
 
-            <!-- ฝรท. แจ้งเรื่อง ไป ผบ.ตร. -->
+            <!-- ฝรท. แจ้งเรื่อง ไป ตร. -->
             <tr v-if="complaint_forward_state.inspector_state_9 != null">
               <td class="p-3">
                 {{
@@ -1468,7 +1468,7 @@
                     "
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -1486,7 +1486,7 @@
                     "
                   >
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือส่ง :
                     </div>
                     <div>
                       {{
@@ -1520,7 +1520,7 @@
               </td>
             </tr>
 
-            <!-- ผบ. ตร. รับเรื่อง -->
+            <!-- ตร. รับเรื่อง -->
             <tr
               v-if="
                 complaint_forward_state.inspector_state_9 != null &&
@@ -1544,7 +1544,7 @@
                 >
                   <div class="mb-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      วันที่เอกสาร :
+                      วันที่หนังสือ :
                     </div>
                     <div>
                       {{
@@ -1557,7 +1557,7 @@
                   </div>
                   <div class="mt-0 pt-0 pb-0 d-flex">
                     <div class="fw-bold" style="min-width: 100px">
-                      เลขที่เอกสาร :
+                      เลขทะเบียนหนังสือส่ง :
                     </div>
                     <div>
                       {{
@@ -1580,7 +1580,7 @@
               </td>
             </tr>
 
-            <!-- ผบ. ตร. เร่งรัด -->
+            <!-- ตร. เร่งรัด -->
             <template
               v-if="complaint_follow.length != 0"
               v-for="(cf, idx) in complaint_follow"
@@ -1603,7 +1603,7 @@
                   >
                     <div class="mb-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cf.follow_doc_date) }}
@@ -1611,7 +1611,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือส่ง :
                       </div>
                       <div>
                         {{ cf.follow_doc_no }}
@@ -1659,7 +1659,7 @@
                   >
                     <div class="mb-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(cf.receive_doc_date) }}
@@ -1667,7 +1667,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือรับ :
                       </div>
                       <div>
                         {{ cf.receive_doc_no }}
@@ -1724,7 +1724,7 @@
                   >
                     <div class="mb-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(ce.extend_doc_date) }}
@@ -1732,7 +1732,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือส่ง :
                       </div>
                       <div>
                         {{ ce.extend_doc_no }}
@@ -1795,7 +1795,7 @@
                   >
                     <div class="mb-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        วันที่เอกสาร :
+                        วันที่หนังสือ :
                       </div>
                       <div>
                         {{ showDate(ce.approved_doc_date) }}
@@ -1803,7 +1803,7 @@
                     </div>
                     <div class="mt-0 pt-0 pb-0 d-flex">
                       <div class="fw-bold" style="min-width: 100px">
-                        เลขที่เอกสาร :
+                        เลขทะเบียนหนังสือรับ :
                       </div>
                       <div>
                         {{ ce.approved_doc_no }}
