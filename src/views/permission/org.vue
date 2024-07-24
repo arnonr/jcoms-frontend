@@ -82,7 +82,7 @@
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="openAddPermissionOrgModal = true"
           >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+            <i class="fa fa-download fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2"
               >เพิ่มสิทธิการแสดงหน่วยงาน</span
             >

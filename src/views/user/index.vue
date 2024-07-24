@@ -110,7 +110,7 @@
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="openPermissionGroupModal = true"
           >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+            <i class="fa fa-edit fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2"
               >จัดการสิทธิกลุ่มผู้ใช้งาน</span
             >
