@@ -908,7 +908,7 @@
           <div class="separator separator-dotted my-2"></div>
         </div>
         <div class="col-md-6">
-          <span>หมายเลขโทรศัพท์ : </span>
+          <span>หมายเลขโทรศัพท์มือถือ : </span>
           <span class="fst-italic">{{ complainant_item.phone_number }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>

@@ -373,7 +373,7 @@ const messages = {
     Manual: "คู่มือการใช้งาน",
     Choose_Menu: "เลือกเมนูร้องเรียน/แจ้งเบาะแส",
     sign_in: "เข้าสู่ระบบสำหรับเจ้าหน้าที่",
-    phone_number: "หมายเลขโทรศัพท์",
+    phone_number: "หมายเลขโทรศัพท์มือถือ",
 
     dashboard: "Dashboard",
     layoutBuilder: "Layout builder",

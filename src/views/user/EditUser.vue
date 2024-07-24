@@ -572,9 +572,9 @@ export default defineComponent({
         .required("${path} จำเป็นต้องระบุ")
         .label("นามสกุล"),
       phone_number: Yup.string()
-        .matches(thaiPhoneNumberRegex, "หมายเลขโทรศัพท์ไม่ถูกต้อง")
+        .matches(thaiPhoneNumberRegex, "หมายเลขโทรศัพท์มือถือไม่ถูกต้อง")
         .required("${path} จำเป็นต้องระบุ")
-        .label("หมายเลขโทรศัพท์"),
+        .label("หมายเลขโทรศัพท์มือถือ"),
       email: Yup.string()
         .email()
         .required("${path} จำเป็นต้องระบุ")

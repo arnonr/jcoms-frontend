@@ -152,12 +152,12 @@
             :class="[item.type_of_identity == 1 ? 'col-lg-4' : 'col-lg-12']"
           >
             <label for="surname" class="required form-label"
-              >หมายเลขโทรศัพท์</label
+              >หมายเลขโทรศัพท์มือถือ</label
             >
             <input
               type="text"
               class="form-control"
-              placeholder="หมายเลขโทรศัพท์"
+              placeholder="หมายเลขโทรศัพท์มือถือ"
               aria-label="นามสกุล"
               aria-describedby="basic-addon2"
             />
@@ -533,7 +533,7 @@
             <div class="separator separator-dotted my-2"></div>
           </div>
           <div>
-            <span>หมายเลขโทรศัพท์ : </span>
+            <span>หมายเลขโทรศัพท์มือถือ : </span>
             <span class="fst-italic">0802112900</span>
             <div class="separator separator-dotted my-2"></div>
           </div>

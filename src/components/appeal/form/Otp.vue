@@ -18,15 +18,15 @@
           <div class="modal-body">
             <div class="row">
               <label for="otp_data_phone" class="required form-label"
-                >หมายเลขโทรศัพท์</label
+                >หมายเลขโทรศัพท์มือถือ</label
               >
               <div class="mb-7 col-12 col-lg-12 d-flex">
                 <input
                   type="text"
                   disabled
                   class="form-control me-2"
-                  placeholder="หมายเลขโทรศัพท์"
-                  aria-label="หมายเลขโทรศัพท์"
+                  placeholder="หมายเลขโทรศัพท์มือถือ"
+                  aria-label="หมายเลขโทรศัพท์มือถือ"
                   v-model="complainant_item.phone_number"
                 />
 

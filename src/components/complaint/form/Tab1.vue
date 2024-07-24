@@ -46,14 +46,14 @@
         <div class="row">
           <div class="mb-7 col-12 col-lg-4 col-lg-12">
             <label for="phone_number" class="required form-label"
-              >หมายเลขโทรศัพท์</label
+              >หมายเลขโทรศัพท์มือถือ</label
             >
             <div class="d-flex">
               <input
                 type="text"
                 class="form-control"
-                placeholder="หมายเลขโทรศัพท์"
-                aria-label="หมายเลขโทรศัพท์"
+                placeholder="หมายเลขโทรศัพท์มือถือ"
+                aria-label="หมายเลขโทรศัพท์มือถือ"
                 v-model="complainant_item.phone_number"
               />
             </div>
@@ -481,7 +481,7 @@ export default defineComponent({
     const validationComplainantSchema = Yup.object().shape({
       phone_number: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
-        .label("หมายเลขโทรศัพท์"),
+        .label("หมายเลขโทรศัพท์มือถือ"),
       card_type: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
         .label("ประเภทบัตร"),

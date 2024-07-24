@@ -81,8 +81,8 @@
               <input
                 type="text"
                 class="form-control"
-                placeholder="หมายเลขโทรศัพท์"
-                aria-label="หมายเลขโทรศัพท์"
+                placeholder="หมายเลขโทรศัพท์มือถือ"
+                aria-label="หมายเลขโทรศัพท์มือถือ"
                 v-model="complainant_item.phone_number"
               />
             </div>
@@ -552,7 +552,7 @@ export default defineComponent({
     const validationComplainantSchema = Yup.object().shape({
       phone_number: Yup.string()
         .required("${path} จำเป็นต้องระบุ")
-        .label("หมายเลขโทรศัพท์"),
+        .label("หมายเลขโทรศัพท์มือถือ"),
       card_type: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
         .label("ประเภทบัตร"),
@@ -723,7 +723,7 @@ export default defineComponent({
 
         if (checkPhone == false) {
           errors["phone_number"].error = 1;
-          errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง";
+          errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์มือถือไม่ถูกต้อง";
           useToast(errors["phone_number"].text, "error");
           return false;
         }
@@ -761,8 +761,8 @@ export default defineComponent({
           checkPhone == false
         ) {
           errors["phone_number"].error = 1;
-          errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง";
-          useToast("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง", "error");
+          errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์มือถือไม่ถูกต้อง";
+          useToast("รูปแบบหมายเลขโทรศัพท์มือถือไม่ถูกต้อง", "error");
           return false;
         }
       }
@@ -770,8 +770,8 @@ export default defineComponent({
       let checkPhone = isValidPhoneNumber(complainant_item.value.phone_number);
       if (!checkPhone) {
         errors["phone_number"].error = 1;
-        errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง";
-        useToast("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง", "error");
+        errors["phone_number"].text = "รูปแบบหมายเลขโทรศัพท์มือถือไม่ถูกต้อง";
+        useToast("รูปแบบหมายเลขโทรศัพท์มือถือไม่ถูกต้อง", "error");
         return false;
       }
 

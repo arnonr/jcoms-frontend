@@ -12,7 +12,7 @@
             <div class="separator separator-dotted my-2"></div>
           </div>
           <div class="col-md-6">
-            <span class="fw-bold">หมายเลขโทรศัพท์ : </span>
+            <span class="fw-bold">หมายเลขโทรศัพท์มือถือ : </span>
             <span class="fst-italic">{{ complainant_item.phone_number }}</span>
             <div class="separator separator-dotted my-2"></div>
           </div>

@@ -28,7 +28,7 @@
                   </h4>
                 </div>
                 <div class="col-md-12">
-                  <span>หมายเลขโทรศัพท์ : </span>
+                  <span>หมายเลขโทรศัพท์มือถือ : </span>
                   <span class="fst-italic">{{ complainant.phone_number }}</span>
                   <div class="separator separator-dotted my-2"></div>
                 </div>

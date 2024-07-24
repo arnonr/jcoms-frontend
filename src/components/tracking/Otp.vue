@@ -18,7 +18,7 @@
           <div class="modal-body">
             <div class="row">
               <label for="otp_data_phone" class="required form-label"
-                >หมายเลขโทรศัพท์</label
+                >หมายเลขโทรศัพท์มือถือ</label
               >
 
               <div class="mb-7 col-12 col-lg-12 d-flex">
@@ -26,8 +26,8 @@
                   type="text"
                   disabled
                   class="form-control me-2"
-                  placeholder="หมายเลขโทรศัพท์"
-                  aria-label="หมายเลขโทรศัพท์"
+                  placeholder="หมายเลขโทรศัพท์มือถือ"
+                  aria-label="หมายเลขโทรศัพท์มือถือ"
                   v-model="request_otp.phone_number_show"
                 />
 
