@@ -146,6 +146,8 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
@@ -326,7 +328,7 @@ export default defineComponent({
                 " : " +
                 item.bureau_name_th_abbr +
                 " รับเรื่อง ณ วันที่ " +
-                dayjs().locale("th").format("DD MMM BBBB");
+                dayjs().utc().locale("th").format("DD MMM BBBB");
 
               await ApiService.post("sms/send-sms", {
                 msisdn,

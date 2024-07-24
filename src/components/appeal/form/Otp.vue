@@ -170,6 +170,8 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Modal } from "bootstrap";
 // Import Dayjs
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 // Use Toast Composables
 import useToast from "@/composables/useToast";
 
@@ -384,8 +386,6 @@ export default defineComponent({
         occupation_id: undefined,
         occupation_text: complainant_item.value.occupation_text
           ? complainant_item.value.occupation_text
-          : undefined
-          ? complainant_item.value.occupation_text
           : undefined,
         phone_number: complainant_item.value.phone_number,
         email: complainant_item.value.email
@@ -457,8 +457,8 @@ export default defineComponent({
         type: "postFormData",
         url: "complainant/",
       };
-      
-      let check_duplicate_complainant = await ApiService.query('complainant', {
+
+      let check_duplicate_complainant = await ApiService.query("complainant", {
         params: { phone_number: complainant_item.value.phone_number },
       }).then(({ data }) => {
         if (data.msg != "success") {
@@ -639,6 +639,7 @@ export default defineComponent({
             msisdn: complainant_item.value.phone_number,
             message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว ณ วันที่ ${dayjs()
               .locale("th")
+              .utc()
               .format("DD MMM BBBB")} เลขคำร้องของท่าน : ${
               result_complaint.value.jcoms_no
             } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${

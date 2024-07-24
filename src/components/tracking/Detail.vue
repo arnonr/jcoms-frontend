@@ -261,6 +261,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 // Import Modal Bootstrap
 import { Modal } from "bootstrap";
 import useComplaintTopicData from "@/composables/useComplaintTopicData";
@@ -395,9 +397,9 @@ export default defineComponent({
 
     const showDate = (date: any, time: any = false) => {
       if (time == true) {
-        return dayjs(date).locale("th").format("DD MMM BBBB HH:mm");
+        return dayjs(date).utc().locale("th").format("DD MMM BBBB HH:mm");
       }
-      return dayjs(date).locale("th").format("DD MMM BBBB");
+      return dayjs(date).utc().locale("th").format("DD MMM BBBB");
     };
 
     const showPhoto = (image: any) => {

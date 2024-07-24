@@ -34,7 +34,7 @@ export default defineComponent({
     const bodyStore = useBodyStore();
     const store = useAuthStore();
     // 300000
-    // const { isInactive } = useUserInactivity(18000000); // 5 minutes
+    // const { isInactive } = useUserInactivity(38000000); // 10 minutes
 
     // watch(isInactive, (newValue) => {
     //   if (newValue) {

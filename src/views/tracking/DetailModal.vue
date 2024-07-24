@@ -50,7 +50,9 @@
                       class="btn btn-danger"
                       data-bs-dismiss="modal"
                       aria-label="Close"
-                    >ปิด</button>
+                    >
+                      ปิด
+                    </button>
                   </div>
                 </div>
               </div>
@@ -80,6 +82,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 // Use Composables
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
@@ -254,6 +258,7 @@ export default defineComponent({
       if (complaint_item.incident_datetime) {
         new_item.incident_date = dayjs(complaint_item.incident_datetime)
           .locale("th")
+          .utc()
           .format("DD MMM BBBB HH:mm");
 
         new_item.day_time = selectOptions.value.day_times.find((x: any) => {

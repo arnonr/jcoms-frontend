@@ -537,6 +537,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 import { useAbility } from "@casl/vue";
 
 // Import Pagination
@@ -713,7 +715,7 @@ export default defineComponent({
     };
 
     const convertDate = (date: any) => {
-      return dayjs(date).locale("th").format("DD MMM BBBB");
+      return dayjs(date).utc().locale("th").format("DD MMM BBBB");
     };
 
     const convertState = (state: any) => {

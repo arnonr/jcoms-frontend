@@ -1849,6 +1849,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 export default defineComponent({
   name: "complaint-detail-section1",
@@ -1993,7 +1995,7 @@ export default defineComponent({
       if (date == null) {
         return "";
       }
-      return dayjs(date).locale("th").format("DD MMM BBBB");
+      return dayjs(date).utc().locale("th").format("DD MMM BBBB");
     };
 
     const showClosedState = (closed_state_id: any) => {

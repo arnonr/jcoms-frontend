@@ -320,6 +320,7 @@ export default defineComponent({
         topic_category_id: search.topic_category_id?.id ?? undefined,
         topic_type_id: search.topic_type_id?.id ?? undefined,
         complaint_channel_id: search.complaint_channel_id?.id ?? undefined,
+        card_type: search.card_type?.id ?? undefined,
         incident_datetime: search.incident_date
           ? dayjs(search.incident_date).format("YYYY-MM-DD")
           : undefined,
@@ -334,6 +335,15 @@ export default defineComponent({
         perPage: paginationData.perPage,
         currentPage: paginationData.currentPage,
       };
+
+      if (
+        (search.complainant_fullname != null &&
+          search.complainant_fullname != "") ||
+        (search.card_type != null && search.card_type != "") ||
+        (search.id_card != null && search.id_card != "")
+      ) {
+        params.is_anonymous = 1;
+      }
 
       const { data } = await ApiService.query("complaint", {
         params: params,
@@ -444,14 +454,42 @@ export default defineComponent({
 
     // Event
     const onClear = () => {
-      Object.keys(search).forEach((key) => {
-        if (typeof search[key] === "object" && search[key] !== null) {
-          Object.keys(search[key]).forEach((subKey) => {
-            search[key][subKey] = null;
-          });
-        } else {
-          search[key] = null;
-        }
+      //   Object.keys(search).forEach((key) => {
+      //     if (typeof search[key] === "object" && search[key] !== null) {
+      //       Object.keys(search[key]).forEach((subKey) => {
+      //         search[key][subKey] = null;
+      //       });
+      //     } else {
+      //       search[key] = null;
+      //     }
+      //   });
+
+      Object.assign(search, {
+        complaint_type_id: null,
+        year: null,
+        complaint_title: "",
+        jcoms_no: "",
+        complainant_fullname: "",
+        accused_fullname: "",
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        agency_id: null,
+        state_id: null,
+        inspector_state_id: null,
+        create_from: null,
+        create_to: null,
+        topic_category_id: null,
+        topic_type_id: null,
+        complaint_channel_id: null,
+        incident_datetime: null,
+        province_id: null,
+        district_id: null,
+        sub_district_id: null,
+        card_type: null,
+        id_card: "",
+        is_anonymous: null,
+        receive_doc_no: "",
       });
     };
 
@@ -637,15 +675,15 @@ export default defineComponent({
 
     // Mounted
     onMounted(() => {
-    //   search.complaint_type_id = {
-    //     id: 1,
-    //     name_th: "ร้องเรียน",
-    //     name_en: null,
-    //     is_active: 1,
-    //     due_date: 30,
-    //     extend_time: 10,
-    //     extend_date: 15,
-    //   };
+      //   search.complaint_type_id = {
+      //     id: 1,
+      //     name_th: "ร้องเรียน",
+      //     name_en: null,
+      //     is_active: 1,
+      //     due_date: 30,
+      //     extend_time: 10,
+      //     extend_date: 15,
+      //   };
 
       fetchItems();
     });

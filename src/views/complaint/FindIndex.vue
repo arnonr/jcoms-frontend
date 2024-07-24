@@ -775,6 +775,7 @@ export default defineComponent({
         topic_category_id: search.topic_category_id?.id ?? undefined,
         topic_type_id: search.topic_type_id?.id ?? undefined,
         complaint_channel_id: search.complaint_channel_id?.id ?? undefined,
+        card_type: search.card_type?.id ?? undefined,
         incident_datetime: search.incident_date
           ? dayjs(search.incident_date).format("YYYY-MM-DD")
           : undefined,
@@ -788,11 +789,18 @@ export default defineComponent({
         order: "desc",
         perPage: paginationData.perPage,
         currentPage: paginationData.currentPage,
-        receive_status: 1,
+        receive_status: undefined,
         state_in: undefined,
       };
 
-      //
+      if (
+        (search.complainant_fullname != null &&
+          search.complainant_fullname != "") ||
+        (search.card_type != null && search.card_type != "") ||
+        (search.id_card != null && search.id_card != "")
+      ) {
+        params.is_anonymous = 1;
+      }
 
       if (userData.role_id == 1) {
       } else if (userData.role_id == 2) {
@@ -841,6 +849,7 @@ export default defineComponent({
         ...search,
         create_year: search.year ?? undefined,
         state_id: search.state_id?.id ?? undefined,
+        inspector_state_id: search.inspector_state_id?.id ?? undefined,
         inspector_id: search.inspector_id?.id ?? undefined,
         bureau_id: search.bureau_id?.id ?? undefined,
         division_id: search.division_id?.id ?? undefined,
@@ -853,6 +862,7 @@ export default defineComponent({
         topic_category_id: search.topic_category_id?.id ?? undefined,
         topic_type_id: search.topic_type_id?.id ?? undefined,
         complaint_channel_id: search.complaint_channel_id?.id ?? undefined,
+        card_type: search.card_type?.id ?? undefined,
         incident_datetime: search.incident_date
           ? dayjs(search.incident_date).format("YYYY-MM-DD")
           : undefined,
@@ -866,26 +876,44 @@ export default defineComponent({
         order: "desc",
         perPage: 1000000,
         currentPage: paginationData.currentPage,
-        receive_status: 1,
+        receive_status: undefined,
         state_in: undefined,
       };
+
+      if (
+        (search.complainant_fullname != null &&
+          search.complainant_fullname != "") ||
+        (search.card_type != null && search.card_type != "") ||
+        (search.id_card != null && search.id_card != "")
+      ) {
+        params.is_anonymous = 1;
+      }
 
       if (userData.role_id == 1) {
       } else if (userData.role_id == 2) {
       } else if (userData.role_id == 3) {
         params.bureau_id = userData.bureau_id;
-        params.state_in =
-          "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+        params.state_in = "8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
+        if (userData.organization_permissions.resp_division_id.length != 0) {
+          params.resp_division_id =
+            userData.organization_permissions.resp_division_id.join(",");
+        }
       } else if (userData.role_id == 4) {
         params.division_id = userData.division_id;
-        params.state_in = "8,9,11,12,14,15,16,17,20,21,22,23,24,28,29,30";
+        params.state_in = "8,9,11,12,15,16,17,20,21,22,23,24";
+        if (userData.organization_permissions.resp_agency_id.length != 0) {
+          params.resp_agency_id =
+            userData.organization_permissions.resp_agency_id.join(",");
+        }
       } else if (userData.role_id == 5) {
         params.inspector_id = userData.inspector_id;
         params.state_in =
-          "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
+          "3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24";
+        if (userData.organization_permissions.resp_bureau_id.length != 0) {
+          params.resp_bureau_id =
+            userData.organization_permissions.resp_bureau_id.join(",");
+        }
       } else if (userData.role_id == 6) {
-        params.state_in =
-          "4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22,23,24,28,29,30";
       } else {
         return false;
       }
@@ -952,14 +980,32 @@ export default defineComponent({
 
     // Event
     const onClear = () => {
-      Object.keys(search).forEach((key) => {
-        if (typeof search[key] === "object" && search[key] !== null) {
-          Object.keys(search[key]).forEach((subKey) => {
-            search[key][subKey] = null;
-          });
-        } else {
-          search[key] = null;
-        }
+      Object.assign(search, {
+        complaint_type_id: null,
+        year: null,
+        complaint_title: "",
+        jcoms_no: "",
+        complainant_fullname: "",
+        accused_fullname: "",
+        inspector_id: null,
+        bureau_id: null,
+        division_id: null,
+        agency_id: null,
+        state_id: null,
+        inspector_state_id: null,
+        create_from: null,
+        create_to: null,
+        topic_category_id: null,
+        topic_type_id: null,
+        complaint_channel_id: null,
+        incident_datetime: null,
+        province_id: null,
+        district_id: null,
+        sub_district_id: null,
+        card_type: null,
+        id_card: "",
+        is_anonymous: null,
+        receive_doc_no: "",
       });
     };
 

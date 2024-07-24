@@ -1162,6 +1162,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 // Use Composables
 import useComplaintTypeData from "@/composables/useComplaintTypeData";
@@ -1292,7 +1294,6 @@ export default defineComponent({
         complaint_forward_state.state12 = complaint_forward.find((x: any) => {
           return x.state_id == 12;
         });
-
       } catch (error) {
         console.log(error);
       }
@@ -1427,7 +1428,7 @@ export default defineComponent({
       if (date == null) {
         return "";
       }
-      return dayjs(date).locale("th").format("DD MMM BBBB");
+      return dayjs(date).utc().locale("th").format("DD MMM BBBB");
     };
 
     // Return

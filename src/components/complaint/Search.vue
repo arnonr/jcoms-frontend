@@ -346,6 +346,37 @@
                   :clearable="true"
                 ></v-select>
               </div>
+
+              <div class="col-md-12 mb-7">
+                <label for="">วิธีการระบุตัวตน</label>
+                <v-select
+                  id="slt-search-card-type"
+                  name="slt-search-card-type"
+                  label="name"
+                  placeholder="วิธีการระบุตัวตน"
+                  :options="[
+                    { id: 1, name: 'หมายเลขบัตรประจำตัวประชาชน' },
+                    { id: 2, name: 'หมายเลขหนังสือเดินทาง' },
+                  ]"
+                  v-model="search.card_type"
+                  class="form-control"
+                  :clearable="true"
+                ></v-select>
+              </div>
+
+              <div class="col-md-12 mb-7">
+                <label for=""
+                  >หมายเลขประจําตัวประชาชน/หมายเลขหนังสือเดินทาง</label
+                >
+                <input
+                  id="txt-search-id-card"
+                  name="txt-search-id-card"
+                  type="text"
+                  class="form-control"
+                  v-model="search.id_card"
+                />
+              </div>
+
               <div class="col-md-12 mb-7">
                 <label for="">สถานะเรื่องร้องเรียน</label>
                 <v-select
@@ -542,16 +573,16 @@
                   v-model="search.jcoms_no"
                 />
               </div>
-              <!-- <div class="col-md-6 mb-7">
-              <label for="">เลขที่ POL : </label>
-              <input
-                id="slt-search-pol-no-2"
-                name="slt-search-pol-no-2"
-                type="text"
-                class="form-control"
-                v-model="search.pol_no"
-              />
-            </div> -->
+              <div class="col-md-12 mb-7">
+                <label for="">เลขรหัสรับเรื่อง (ฝรท.) : </label>
+                <input
+                  id="slt-search-receive-doc-no"
+                  name="slt-search-receive-doc-no"
+                  type="text"
+                  class="form-control"
+                  v-model="search.receive_doc_no"
+                />
+              </div>
 
               <!-- <div class="col-md-6 mb-7">
               <label for="">เลขรับ ฝรท. : </label>
@@ -790,8 +821,6 @@ export default defineComponent({
         await searchComplaintStore.fetchComplaintChannel({
           perPage: 100000,
         });
-
-     
     });
 
     // Watch

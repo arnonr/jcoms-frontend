@@ -146,8 +146,10 @@ import { defineComponent, toRefs, ref, computed } from "vue";
 // Import Dayjs
 import dayjs from "dayjs";
 import "dayjs/locale/th";
+import utc from "dayjs/plugin/utc";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+dayjs.extend(utc);
 
 // Import Pagination
 import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
@@ -221,7 +223,7 @@ export default defineComponent({
     };
 
     const convertDate = (date: any) => {
-      return dayjs(date).locale("th").format("DD MMM BBBB");
+      return dayjs(date).utc().locale("th").format("DD MMM BBBB");
     };
 
     const convertState = (state: any) => {

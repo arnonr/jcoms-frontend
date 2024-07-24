@@ -38,6 +38,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 // Use Composables
 import useComplaintTypeData from "@/composables/useComplaintTypeData";

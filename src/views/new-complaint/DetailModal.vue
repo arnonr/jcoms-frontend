@@ -178,6 +178,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 // PDF
 import { jsPDF } from "jspdf";
 import Vue3Html2pdf from "vue3-html2pdf";

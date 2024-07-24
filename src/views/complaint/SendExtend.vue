@@ -224,6 +224,8 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 import useBasicData from "@/composables/useBasicData";
 import useOrganizationData from "@/composables/useOrganizationData";
@@ -307,6 +309,7 @@ export default defineComponent({
         item.bureau_id = data.data.bureau_id;
         item.time_no = 1;
         item.show_due_date = dayjs(data.data.due_date)
+          .utc()
           .locale("th")
           .format("DD MMM BBBB");
 

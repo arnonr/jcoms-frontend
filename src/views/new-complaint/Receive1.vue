@@ -199,6 +199,8 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 import useBasicData from "@/composables/useBasicData";
 import Preloader from "@/components/preloader/Preloader.vue";
@@ -363,14 +365,14 @@ export default defineComponent({
               "แจ้งสถานะเรื่องร้องเรียน " +
               item.jcoms_no +
               " : ฝ่ายรับเรื่องราวร้องทุกข์ ไม่รับเรื่อง ณ วันที่ " +
-              dayjs().locale("th").format("DD MMM BBBB");
+              dayjs().utc().locale("th").format("DD MMM BBBB");
 
             if (item.receive_status.state_id == 3) {
               message =
                 "แจ้งสถานะเรื่องร้องเรียน " +
                 item.jcoms_no +
                 " : ฝ่ายรับเรื่องราวร้องทุกข์ ลงรับเรื่อง ณ วันที่ " +
-                dayjs().locale("th").format("DD MMM BBBB");
+                dayjs().utc().locale("th").format("DD MMM BBBB");
             }
 
             if (item.receive_status.state_id == 18) {

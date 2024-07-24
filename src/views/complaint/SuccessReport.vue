@@ -171,6 +171,8 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 import useBasicData from "@/composables/useBasicData";
 import useOrganizationData from "@/composables/useOrganizationData";
@@ -344,7 +346,7 @@ export default defineComponent({
               " : " +
               item.inspector_name_th_abbr +
               " ปิดเรื่อง ณ วันที่ " +
-              dayjs().locale("th").format("DD MMM BBBB") +
+              dayjs().utc().locale("th").format("DD MMM BBBB") +
               " ผลการพิจารณา " +
               item.closed_state_id.name_th +
               ", " +

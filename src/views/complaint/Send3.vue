@@ -204,6 +204,8 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 import useBasicData from "@/composables/useBasicData";
 import useOrganizationData from "@/composables/useOrganizationData";
@@ -370,7 +372,7 @@ export default defineComponent({
               "เลขทะเบียนหนังสือส่ง: " +
               item.forward_doc_no +
               "<br>วันที่หนังสือ: " +
-              dayjs(item.forward_doc_date).locale("th").format("DD MMM BBBB") +
+              dayjs(item.forward_doc_date).utc().locale("th").format("DD MMM BBBB") +
               " <br>ข้อสั่งการ: " +
               item.order_id?.name +
               "<br>หมายเหตุ: " +

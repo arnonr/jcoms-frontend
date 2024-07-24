@@ -263,6 +263,8 @@
                   :clearable="true"
                 ></v-select>
               </div>
+
+
               <div class="col-md-6 mb-7">
                 <label for="">สถานะเรื่องร้องเรียน</label>
                 <v-select
