@@ -15,9 +15,9 @@
             v-if="canCreate"
             @click="onAddModal()"
           >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+            <i class="fa fa-plus fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2"
-              >เพิ่มเรื่องร้องเรียน</span
+              >เพิ่มเรื่องร้องเรียน/แจ้งเบาะแส</span
             >
           </button>
 
@@ -25,7 +25,7 @@
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="onImport1111()"
           >
-            <i class="bi bi-file-earmark-plus-fill fs-4"></i>
+            <i class="fa fa-cloud-download fs-4"></i>
             <span class="d-none d-lg-inline-block ms-2">โหลดข้อมูล 1111</span>
           </button>
 
@@ -37,7 +37,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
+              <i class="fa fa-download fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">

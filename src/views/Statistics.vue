@@ -305,7 +305,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
+              <i class="fa fa-download fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -450,9 +450,7 @@
 
     <div class="card shadow-sm my-5 mt-20">
       <div class="card-header bg-white">
-        <h4 class="card-title">
-          สรุปจำนวนเรื่องร้องเรียน/แจ้งเบาะแส (บช/ภ)
-        </h4>
+        <h4 class="card-title">สรุปจำนวนเรื่องร้องเรียน/แจ้งเบาะแส (บช/ภ)</h4>
         <div class="card-toolbar">
           <div class="dropdown">
             <button
@@ -462,7 +460,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
+              <i class="fa fa-download  fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -539,7 +537,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
+              <i class="fa fa-download  fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -616,7 +614,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
+              <i class="fa fa-download  fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -1691,104 +1689,93 @@ export default defineComponent({
       search.value = {};
     };
     const onExport = async () => {
-    //   setTimeout(async () => {
-    //     const workbook = new ExcelJS.Workbook();
-    //     const worksheet = workbook.addWorksheet("รายการเรื่องร้องเรียน", {
-    //       pageSetup: { orientation: "landscape" },
-    //       headerFooter: {
-    //         firstHeader: "Hello Exceljs",
-    //         firstFooter: "Hello World",
-    //       },
-    //     });
-
-    //     worksheet.columns = [
-    //       {
-    //         header: "หมายเลขคำร้อง",
-    //         key: "หมายเลขครุภัณฑ์",
-    //         width: 25,
-    //         outlineLevel: 1,
-    //       },
-    //       {
-    //         header: "วันที่ขอเปลี่ยน",
-    //         key: "วันที่ขอเปลี่ยน",
-    //         width: 20,
-    //         outlineLevel: 1,
-    //       },
-    //       {
-    //         header: "ผู้แจ้ง",
-    //         key: "ผู้แจ้ง",
-    //         width: 20,
-    //         outlineLevel: 1,
-    //       },
-
-    //       {
-    //         header: "สถานะ",
-    //         key: "สถานะ",
-    //         width: 20,
-    //         outlineLevel: 1,
-    //       },
-    //     ];
-
-    //     worksheet.properties.defaultRowHeight = 45;
-
-    //     worksheet.addRows(json_data.value);
-
-    //     worksheet.eachRow((row) => {
-    //       row.height = 45;
-    //       row.eachCell(function (cell) {
-    //         cell.alignment = {
-    //           vertical: "middle",
-    //           horizontal: "center",
-    //           wrapText: true,
-    //         };
-    //       });
-    //     });
-
-    //     const row = worksheet.getRow(1);
-    //     row.height = 20;
-
-    //     worksheet.insertRow(1, "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์");
-    //     worksheet.mergeCells("A1:K1");
-    //     worksheet.getCell("A1").value =
-    //       "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์";
-    //     worksheet.getCell("A1").alignment = {
-    //       vertical: "middle",
-    //       horizontal: "center",
-    //     };
-    //     const font = { name: "Arial", size: 18, bold: true };
-    //     worksheet.getCell("A1").font = font;
-
-    //     let start_date =
-    //       search.created_at_from != null
-    //         ? dayjs(search.created_at_from).locale("th").format("DD MMM BBBB")
-    //         : "-";
-
-    //     let end_date =
-    //       search.created_at_to != null
-    //         ? dayjs(search.created_at_to).locale("th").format("DD MMM BBBB")
-    //         : "-";
-
-    //     worksheet.insertRow(2);
-    //     worksheet.mergeCells("A2:K2");
-    //     worksheet.getCell("A2").value =
-    //       "ระหว่างวันที่ " + start_date + " ถึง " + end_date;
-    //     worksheet.getCell("A2").alignment = {
-    //       vertical: "middle",
-    //       horizontal: "center",
-    //     };
-    //     const font1 = { name: "Arial", size: 18, bold: true };
-    //     worksheet.getCell("A1").font = font1;
-
-    //     const buffer = await workbook.xlsx.writeBuffer();
-    //     const blob = new Blob([buffer], { type: "application/octet-stream" });
-    //     const href = URL.createObjectURL(blob);
-    //     const link = document.createElement("a");
-    //     link.href = href;
-    //     link.download = "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์.xlsx";
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //   }, 3000);
+      //   setTimeout(async () => {
+      //     const workbook = new ExcelJS.Workbook();
+      //     const worksheet = workbook.addWorksheet("รายการเรื่องร้องเรียน", {
+      //       pageSetup: { orientation: "landscape" },
+      //       headerFooter: {
+      //         firstHeader: "Hello Exceljs",
+      //         firstFooter: "Hello World",
+      //       },
+      //     });
+      //     worksheet.columns = [
+      //       {
+      //         header: "หมายเลขคำร้อง",
+      //         key: "หมายเลขครุภัณฑ์",
+      //         width: 25,
+      //         outlineLevel: 1,
+      //       },
+      //       {
+      //         header: "วันที่ขอเปลี่ยน",
+      //         key: "วันที่ขอเปลี่ยน",
+      //         width: 20,
+      //         outlineLevel: 1,
+      //       },
+      //       {
+      //         header: "ผู้แจ้ง",
+      //         key: "ผู้แจ้ง",
+      //         width: 20,
+      //         outlineLevel: 1,
+      //       },
+      //       {
+      //         header: "สถานะ",
+      //         key: "สถานะ",
+      //         width: 20,
+      //         outlineLevel: 1,
+      //       },
+      //     ];
+      //     worksheet.properties.defaultRowHeight = 45;
+      //     worksheet.addRows(json_data.value);
+      //     worksheet.eachRow((row) => {
+      //       row.height = 45;
+      //       row.eachCell(function (cell) {
+      //         cell.alignment = {
+      //           vertical: "middle",
+      //           horizontal: "center",
+      //           wrapText: true,
+      //         };
+      //       });
+      //     });
+      //     const row = worksheet.getRow(1);
+      //     row.height = 20;
+      //     worksheet.insertRow(1, "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์");
+      //     worksheet.mergeCells("A1:K1");
+      //     worksheet.getCell("A1").value =
+      //       "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์";
+      //     worksheet.getCell("A1").alignment = {
+      //       vertical: "middle",
+      //       horizontal: "center",
+      //     };
+      //     const font = { name: "Arial", size: 18, bold: true };
+      //     worksheet.getCell("A1").font = font;
+      //     let start_date =
+      //       search.created_at_from != null
+      //         ? dayjs(search.created_at_from).locale("th").format("DD MMM BBBB")
+      //         : "-";
+      //     let end_date =
+      //       search.created_at_to != null
+      //         ? dayjs(search.created_at_to).locale("th").format("DD MMM BBBB")
+      //         : "-";
+      //     worksheet.insertRow(2);
+      //     worksheet.mergeCells("A2:K2");
+      //     worksheet.getCell("A2").value =
+      //       "ระหว่างวันที่ " + start_date + " ถึง " + end_date;
+      //     worksheet.getCell("A2").alignment = {
+      //       vertical: "middle",
+      //       horizontal: "center",
+      //     };
+      //     const font1 = { name: "Arial", size: 18, bold: true };
+      //     worksheet.getCell("A1").font = font1;
+      //     const buffer = await workbook.xlsx.writeBuffer();
+      //     const blob = new Blob([buffer], { type: "application/octet-stream" });
+      //     const href = URL.createObjectURL(blob);
+      //     const link = document.createElement("a");
+      //     link.href = href;
+      //     link.download = "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์.xlsx";
+      //     document.body.appendChild(link);
+      //     link.click();
+      //     document.body.removeChild(link);
+      //   }, 3000);
     };
     const onAddModal = () => {
       addModalObj.value.show();
