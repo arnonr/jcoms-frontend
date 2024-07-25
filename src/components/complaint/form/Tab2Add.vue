@@ -48,6 +48,27 @@
       </div>
 
       <div class="mb-7 col-12 col-lg-12">
+        <label for="complaint_channel_id" class="required form-label"
+          >ช่องทาง</label
+        >
+        <v-select
+          name="id"
+          label="name_th"
+          placeholder="ช่องทาง"
+          :options="selectOptions.complaint_channels"
+          class="form-control"
+          :clearable="false"
+          v-model="complaint_item.complaint_channel_id"
+        >
+        </v-select>
+        <div class="d-block mt-1" v-if="errors.complaint_channel_id.error == 1">
+          <span role="alert" class="text-danger">{{
+            errors.complaint_channel_id.text
+          }}</span>
+        </div>
+      </div>
+
+      <div class="mb-7 col-12 col-lg-12">
         <label for="complaint_topic" class="required form-label"
           >ประเภท/ลักษณะเรื่อง</label
         >
@@ -650,6 +671,9 @@ export default defineComponent({
         .label(
           "เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด"
         ),
+      complaint_channel_id: Yup.object()
+        .required("${path} จำเป็นต้องระบุ")
+        .label("ช่องทาง"),
     });
     const validationAccusedSchema = Yup.object().shape({
       prefix_name_id: Yup.object().nullable().label("คำนำหน้า"),
