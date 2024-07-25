@@ -935,6 +935,9 @@ export default defineComponent({
           },
         };
 
+        showDistricts.value = false;
+        chartMapData.value = { ...defaultMapChart };
+
         if (search.report_type.value == 1) {
           reloadData();
           reloadMapData();
