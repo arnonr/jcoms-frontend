@@ -137,7 +137,7 @@
 
               <div class="mt-12 col-12 col-lg-12 text-center">
                 <button class="btn btn-success" @click="onValidate">
-                    ยุติเรื่อง
+                  ยุติเรื่อง
                 </button>
               </div>
             </div>
@@ -331,12 +331,26 @@ export default defineComponent({
             inspector_state_id: null,
           });
 
-          //   if 1111
-          //   await ApiService.post("opm/add-operating/" + item.complaint_id, {
-          //     detail: item.closed_comment,
-          //     date_opened: dayjs(item.receive_at).format("YYYY-MM-DD HH:mm:ss"),
-          //     date_closed: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-          //   });
+          //   1111
+          //   if (data.case_id) {
+          //     await ApiService.post("opm/add-operating/" + item.case_id, {
+          //       detail: item.closed_comment,
+          //       type_id: "",
+          //     });
+          //     await ApiService.post(
+          //       "opm/set-org-summary-result/" + item.case_id,
+          //       {
+          //         statue_id: 1,
+          //         result:
+          //           " ยุติเรื่อง ณ วันที่ " +
+          //           dayjs().utc().locale("th").format("DD MMM BBBB") +
+          //           " ผลการพิจารณา " +
+          //           item.closed_state_id.name_th +
+          //           ", " +
+          //           item.closed_comment,
+          //       }
+          //     );
+          //   }
 
           //   SMS
           let msisdn = item.phone_number;

@@ -358,6 +358,39 @@ export default defineComponent({
             throw new Error("ERROR");
           }
 
+          // 1111
+          //   if (data.case_id) {
+          //     let type_id = 14;
+          //     let set_org = 3;
+          //     let message1 =
+          //       "แจ้งสถานะเรื่องร้องเรียน " +
+          //       item.jcoms_no +
+          //       " : ฝ่ายรับเรื่องราวร้องทุกข์ ไม่รับเรื่อง ณ วันที่ " +
+          //       dayjs().utc().locale("th").format("DD MMM BBBB");
+
+          //     if (item.state_id == 3) {
+          //       type_id = 15;
+          //       set_org = 0;
+          //       message1 =
+          //         "แจ้งสถานะเรื่องร้องเรียน " +
+          //         item.jcoms_no +
+          //         " : ฝ่ายรับเรื่องราวร้องทุกข์ ลงรับเรื่อง ณ วันที่ " +
+          //         dayjs().utc().locale("th").format("DD MMM BBBB");
+          //     }
+          //     await ApiService.post("opm/add-operating/" + item.case_id, {
+          //       detail: message1,
+          //       type_id: type_id,
+          //     });
+          //     await ApiService.post(
+          //       "opm/set-org-summary-result/" + item.case_id,
+          //       {
+          //         statue_id: set_org,
+
+          //         result: message1,
+          //       }
+          //     );
+          //   }
+
           //   SMS
           let msisdn = item.phone_number;
           if (msisdn != null) {
