@@ -102,6 +102,9 @@
               <div class="col-md-12 text-center" ref="captureElement">
                 <span>สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว</span
                 ><br />
+                <span
+                  >ณ วันที่ {{ showDate(result_complaint.created_at) }} </span
+                ><br />
                 <span>เลขคำร้องของท่าน (JCOM No.) : </span><br />
                 <span class="fst-italic fs-3 text-success">{{
                   result_complaint.jcoms_no
@@ -122,11 +125,15 @@
                   โปรดคลิกที่ EMOJI <br />เพื่อให้คะแนนความพึงพอใจการใช้งานระบบ
                 </div>
                 <div class="text-center mx-auto">
+                  <!-- class="rating-emoji" -->
                   <span
                     v-for="(emoji, index) in emojis"
                     :key="index"
                     @click="setRating(index + 1)"
-                    class="rating-emoji"
+                    :class="{
+                      'rating-emoji': true,
+                      'grey-scale': !rating || rating <= index,
+                    }"
                   >
                     {{ emoji }}
                   </span>
@@ -247,6 +254,7 @@ export default defineComponent({
     const result_complaint = ref<any>({
       complainant_id: null,
       complaint_id: null,
+      created_at: null,
       jcoms_no: "",
     });
 
@@ -547,6 +555,7 @@ export default defineComponent({
 
           result_complaint.value.complaint_id = data.id;
           result_complaint.value.jcoms_no = data.jcoms_no;
+          result_complaint.value.created_at = data.created_at;
         })
         .catch(({ response }) => {
           console.log(response);
@@ -706,6 +715,13 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const showDate = (date: any) => {
+      if (date == null) {
+        return "";
+      }
+      return dayjs(date).utc().locale("th").format("DD MMM BBBB");
+    };
+
     // watch(rating.value, (value: any) => {});
 
     // Return
@@ -736,6 +752,7 @@ export default defineComponent({
       emojis,
       downloadImage,
       captureElement,
+      showDate,
     };
   },
 });
@@ -757,5 +774,9 @@ export default defineComponent({
   font-size: 4rem;
   cursor: pointer;
   margin: 0 0.5rem;
+}
+
+.grey-scale {
+  filter: grayscale(100%);
 }
 </style>
