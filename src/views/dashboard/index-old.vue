@@ -673,7 +673,7 @@ export default defineComponent({
         },
         {
           id: 5,
-          name_th: "ผู้บังคับบัญชาสั่งการ",
+          name_th: "ผู้บังคับบัญชา",
           name_en: null,
           count: 0,
           count_accused: 0,
@@ -687,7 +687,7 @@ export default defineComponent({
         },
         {
           id: 7,
-          name_th: "หน่วยงานราชการอื่นๆ",
+          name_th: "",
           name_en: null,
           count: 0,
           count_accused: 0,

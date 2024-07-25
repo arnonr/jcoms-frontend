@@ -381,7 +381,7 @@
 
           <div class="mb-7 col-12 col-lg-12">
             <label for="surname" class="form-label"
-              >เคยร้องเรียนเรื่องนี้ผ่านช่องทางใด</label
+              >เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด</label
             >
             <div class="d-flex">
               <div class="form-check">

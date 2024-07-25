@@ -128,11 +128,12 @@
                 <VueDatePicker
                   v-model="search.day_range"
                   class="form-control"
-                  :enable-time-picker="false"
+                  :enable-time-picker="true"
                   :locale="'th'"
                   placeholder="ช่วงวันที่"
                   range
-                  :format="dayFormat"
+                  :format="dayTimeFormat"
+                  time-picker-inline
                 >
                   <template #year-overlay-value="{ text }">
                     {{ parseInt(text) + 543 }}
@@ -263,7 +264,6 @@
                   :clearable="true"
                 ></v-select>
               </div>
-
 
               <div class="col-md-6 mb-7">
                 <label for="">สถานะเรื่องร้องเรียน</label>
@@ -677,6 +677,36 @@ export default defineComponent({
       return `${day1} ${month1} ${year1} - ${day2} ${month2} ${year2}`;
     };
 
+    const dayTimeFormat = (date: any) => {
+      let day1 = dayjs(date[0]).locale("th").format("DD");
+      let month1 = dayjs(date[0]).locale("th").format("MMM");
+      let year1 = date[0].getFullYear() + 543;
+      let hour1 = dayjs(date[0]).locale("th").format("HH");
+      let minute1 = dayjs(date[0]).locale("th").format("mm");
+
+      let day2: any = null;
+      let month2: any = null;
+      let year2: any = null;
+      let hour2: any = null;
+      let minute2: any = null;
+
+      if (date[1] != undefined) {
+        day2 = dayjs(date[1]).locale("th").format("DD");
+        month2 = dayjs(date[1]).locale("th").format("MMM");
+        year2 = date[1].getFullYear() + 543;
+        hour2 = dayjs(date[1]).locale("th").format("HH");
+        minute2 = dayjs(date[1]).locale("th").format("mm");
+      } else {
+        day2 = dayjs(date[0]).locale("th").format("DD");
+        month2 = dayjs(date[0]).locale("th").format("MMM");
+        year2 = date[0].getFullYear() + 543;
+        hour2 = dayjs(date[0]).locale("th").format("HH");
+        minute2 = dayjs(date[0]).locale("th").format("mm");
+      }
+
+      return `${day1} ${month1} ${year1} ${hour1}:${minute1} - ${day2} ${month2} ${year2} ${hour2}:${minute2}`;
+    };
+
     const calYear = () => {
       let year = new Date().getFullYear();
       for (let i = 0; i <= 10; i++) {
@@ -880,6 +910,7 @@ export default defineComponent({
       monthFormat,
       weekFormat,
       dayFormat,
+      dayTimeFormat,
     };
   },
 });

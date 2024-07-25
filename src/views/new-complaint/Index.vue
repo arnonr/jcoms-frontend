@@ -10,16 +10,40 @@
       <div class="card-header bg-white">
         <h4 class="card-title">รายการเรื่องรอการตรวจสอบ</h4>
         <div class="card-toolbar">
-          <button
-            class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
-            v-if="canCreate"
-            @click="onAddModal()"
-          >
-            <i class="fa fa-plus fs-4"></i>
-            <span class="d-none d-lg-inline-block ms-2"
-              >เพิ่มเรื่องร้องเรียน/แจ้งเบาะแส</span
+          <div class="dropdown" v-if="canCreate">
+            <button
+              class="btn btn-outline btn-outline-primary pe-sm-3 ps-sm-5 me-2 dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
-          </button>
+              <i class="fa fa-plus fs-4"></i>
+              <span class="d-none d-lg-inline-block ms-2"
+                >เพิ่มเรื่องร้องเรียน/แจ้งเบาะแส</span
+              >
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <a class="dropdown-item" @click="onAddModal(1)">ร้องเรียน</a>
+              </li>
+              <li>
+                <a class="dropdown-item" @click="onAddModal(2)"
+                  >ร้องทุกข์/แจ้งเบาะแส</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" @click="onAddModal(3)"
+                  >แจ้งเบาะแสยาเสพติด</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" @click="onAddModal(4)"
+                  >ตำรวจร้องเรียนตำรวจ</a
+                >
+              </li>
+            </ul>
+          </div>
 
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
@@ -109,6 +133,7 @@
       <div id="add-modal">
         <AddPage
           v-if="openAddModal == true"
+          :complaint_type_id="add_complaint_type_id"
           @close-modal="
             () => {
               openAddModal = false;
@@ -248,6 +273,8 @@ export default defineComponent({
     // let { states } = useStateData();
 
     const search = reactive<any>({});
+
+    const add_complaint_type_id = ref<any>();
 
     const items = reactive<any[]>([]);
     const items_export = reactive<any[]>([]);
@@ -658,7 +685,8 @@ export default defineComponent({
     };
 
     // Modal action
-    const onAddModal = () => {
+    const onAddModal = (complaint_type_id: any) => {
+      add_complaint_type_id.value = complaint_type_id;
       openAddModal.value = true;
     };
 
@@ -720,6 +748,7 @@ export default defineComponent({
       canUpdate,
       canDelete,
       canExport,
+      add_complaint_type_id,
     };
   },
 });

@@ -1141,7 +1141,7 @@
         </div>
 
         <div class="col-md-12">
-          <span>เคยร้องเรียนเรื่องนี้ผ่านช่องทางใด : </span>
+          <span>เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด : </span>
           <span class="fst-italic">{{ new_item.complaint_channel_all }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>

@@ -109,23 +109,6 @@
         />
       </div>
     </div>
-
-    <div id="otp-before-confirm">
-      <Otp
-        :complaint_item="item"
-        :complainant_item="complainant_item"
-        :accused="accused"
-        :complaint_type="complaint_type"
-        :r="r"
-        v-if="otp_modal"
-        @close-otp-modal="
-          () => {
-            otp_modal = false;
-            onClose({ reload: true });
-          }
-        "
-      />
-    </div>
   </div>
 </template>
 
@@ -156,7 +139,6 @@ import Tab1 from "@/components/complaint/form/Tab1.vue";
 import Tab2 from "@/components/complaint/form/Tab2Add.vue";
 import Tab3 from "@/components/complaint/form/Tab3.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
-import Otp from "@/components/appeal/form/OtpStaff.vue";
 
 export default defineComponent({
   name: "edit-complaint",
@@ -171,7 +153,6 @@ export default defineComponent({
     Tab2,
     Tab3,
     Preloader,
-    Otp,
   },
   setup(props, { emit }) {
     // UI Variable
@@ -179,7 +160,6 @@ export default defineComponent({
     const mainModalRef = ref<any>(null);
     const mainModalObj = ref<any>(null);
     const tab_index = ref(0);
-    const otp_modal = ref(false);
     const onTabChange = (prevIndex: number, nextIndex: number) => {
       tab_index.value = nextIndex;
     };
@@ -304,8 +284,20 @@ export default defineComponent({
     };
 
     const onComplete = async () => {
-      otp_modal.value = true;
-      return false;
+      try {
+        isLoading.value = true;
+        await onSaveComplainant();
+        await onSaveComplaint();
+        await onSaveAccused();
+        isLoading.value = false;
+        useToast("บันทึกข้อมูลเสร็จสิ้น");
+        // useToast("บันทึกข้อมูลเสร็จสิ้น", "success","top","right");
+        onClose({ reload: true });
+      } catch (error) {
+        isLoading.value = false;
+        useToast("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error");
+        console.error("Error saving data:", error);
+      }
     };
     // Save Event
     const onSaveComplainant = async () => {
@@ -571,7 +563,6 @@ export default defineComponent({
       onTab1Clear,
       onTab2Clear,
       r,
-      otp_modal,
     };
   },
 });

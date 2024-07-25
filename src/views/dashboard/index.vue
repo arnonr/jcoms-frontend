@@ -98,7 +98,8 @@
 
       <div class="row justify-content-center ms-1 d-flex">
         <div
-          class="card col-sm-12 col-md-2 col-lg-2 mx-1"
+          class="card col-sm-12 col-md-2 col-lg-2 mx-1 "
+          :class="idx == 0 ?['me-20'] : ''"
           :style="[{ backgroundColor: it.bgColor }]"
           v-for="(it, idx) in cardStatus.slice(0, 5)"
           :key="idx"
@@ -178,7 +179,7 @@
                 <tr>
                   <th class="text-center text-white">หน่วยงาน</th>
                   <th class="text-center text-white">รับเรื่อง</th>
-                  <th class="text-center text-white">ค้าง</th>
+                  <th class="text-center text-white">ดำเนินการ</th>
                   <th class="text-center text-white">เสร็จ</th>
                 </tr>
               </thead>
@@ -291,7 +292,7 @@
                     ประเภทเรื่อง {{ complaint_type.name_th }}
                   </th>
                   <th class="text-center text-white">รับเรื่อง</th>
-                  <th class="text-center text-white">ค้าง</th>
+                  <th class="text-center text-white">ดำเนินการ</th>
                   <th class="text-center text-white">เสร็จ</th>
                 </tr>
               </thead>
@@ -341,7 +342,7 @@
                 <tr>
                   <th class="text-center text-white">ช่องทางการร้องเรียน</th>
                   <th class="text-center text-white">รับเรื่อง</th>
-                  <th class="text-center text-white">ค้าง</th>
+                  <th class="text-center text-white">ดำเนินการ</th>
                   <th class="text-center text-white">เสร็จ</th>
                 </tr>
               </thead>
@@ -516,15 +517,15 @@ export default defineComponent({
 
     const cardStatus = ref([
       {
-        status_id: 1,
-        description: "ทั้งหมด",
-        bgColor: "#1B84FF",
-        total: 0,
-      },
-      {
         status_id: 2,
         description: "รอตรวจสอบ",
         bgColor: "#F8285A",
+        total: 0,
+      },
+      {
+        status_id: 1,
+        description: "ทั้งหมด",
+        bgColor: "#1B84FF",
         total: 0,
       },
       {
@@ -876,7 +877,7 @@ export default defineComponent({
         },
         {
           id: 5,
-          name_th: "ผู้บังคับบัญชาสั่งการ",
+          name_th: "ผู้บังคับบัญชา",
           name_en: null,
           count: 0,
           count_accused: 0,
@@ -890,7 +891,7 @@ export default defineComponent({
         },
         {
           id: 7,
-          name_th: "หน่วยงานราชการอื่นๆ",
+          name_th: "หน่วยงานราชการอื่น ๆ",
           name_en: null,
           count: 0,
           count_accused: 0,
@@ -1198,7 +1199,7 @@ export default defineComponent({
           params: params1,
         });
         item_statuses.value.wating_items = res1.data.data;
-        cardStatus.value[1].total = item_statuses.value.wating_items.length;
+        cardStatus.value[0].total = item_statuses.value.wating_items.length;
 
         // api 2 get
         const params2 = {
@@ -1267,7 +1268,7 @@ export default defineComponent({
           ...item_statuses.value.success_items,
         ];
 
-        cardStatus.value[0].total = item_statuses.value.all_items.length;
+        cardStatus.value[1].total = item_statuses.value.all_items.length;
 
         reloadData();
       } catch (error) {

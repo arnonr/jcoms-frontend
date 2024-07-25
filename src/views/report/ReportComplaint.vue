@@ -41,7 +41,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i class="fa fa-download  fs-4"></i>
+                <i class="fa fa-download fs-4"></i>
                 <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -125,7 +125,7 @@
             >
               <thead class="bg-color-police">
                 <tr>
-                  <th class="text-white">จังหวัด</th>
+                  <th class="text-white">พื้นที่</th>
                   <th class="text-center text-white">จำนวน/เรื่อง</th>
                   <th class="text-center text-white">จำนวน/คน</th>
                   <th class="text-center text-white">เสร็จสิ้น</th>
@@ -399,21 +399,9 @@ export default defineComponent({
         left: "right",
         min: 0,
         max: 1000,
-        text: ["High", "Low"],
+        text: ["High Density", "Low Density"],
         inRange: {
-          color: [
-            "#313695",
-            "#4575b4",
-            "#74add1",
-            "#abd9e9",
-            "#e0f3f8",
-            "#ffffbf",
-            "#fee090",
-            "#fdae61",
-            "#f46d43",
-            "#d73027",
-            "#a50026",
-          ],
+          color: ["#e0f3f8", "#4575b4", "#a50026"], // สีจากน้อยไปหามาก
         },
         top: "bottom",
         calculable: true,
@@ -460,13 +448,99 @@ export default defineComponent({
     };
     const chartMapData = ref<any>({ ...defaultMapChart });
 
+    const allProvinces = [
+      "กรุงเทพมหานคร",
+      "สมุทรปราการ",
+      "นนทบุรี",
+      "ปทุมธานี",
+      "พระนครศรีอยุธยา",
+      "อ่างทอง",
+      "ลพบุรี",
+      "สิงห์บุรี",
+      "ชัยนาท",
+      "สระบุรี",
+      "ชลบุรี",
+      "ระยอง",
+      "จันทบุรี",
+      "ตราด",
+      "ฉะเชิงเทรา",
+      "ปราจีนบุรี",
+      "นครนายก",
+      "สระแก้ว",
+      "นครราชสีมา",
+      "บุรีรัมย์",
+      "สุรินทร์",
+      "ศรีสะเกษ",
+      "อุบลราชธานี",
+      "ยโสธร",
+      "ชัยภูมิ",
+      "อำนาจเจริญ",
+      "หนองบัวลำภู",
+      "ขอนแก่น",
+      "อุดรธานี",
+      "เลย",
+      "หนองคาย",
+      "มหาสารคาม",
+      "ร้อยเอ็ด",
+      "กาฬสินธุ์",
+      "สกลนคร",
+      "นครพนม",
+      "มุกดาหาร",
+      "เชียงใหม่",
+      "ลำพูน",
+      "ลำปาง",
+      "อุตรดิตถ์",
+      "แพร่",
+      "น่าน",
+      "พะเยา",
+      "เชียงราย",
+      "แม่ฮ่องสอน",
+      "นครสวรรค์",
+      "อุทัยธานี",
+      "กำแพงเพชร",
+      "ตาก",
+      "สุโขทัย",
+      "พิษณุโลก",
+      "พิจิตร",
+      "เพชรบูรณ์",
+      "ราชบุรี",
+      "กาญจนบุรี",
+      "สุพรรณบุรี",
+      "นครปฐม",
+      "สมุทรสาคร",
+      "สมุทรสงคราม",
+      "เพชรบุรี",
+      "ประจวบคีรีขันธ์",
+      "นครศรีธรรมราช",
+      "กระบี่",
+      "พังงา",
+      "ภูเก็ต",
+      "สุราษฎร์ธานี",
+      "ระนอง",
+      "ชุมพร",
+      "สงขลา",
+      "สตูล",
+      "ตรัง",
+      "พัทลุง",
+      "ปัตตานี",
+      "ยะลา",
+      "นราธิวาส",
+      "บึงกาฬ",
+    ];
+
     const reloadMapData = async () => {
       yearsRange.value = generateYearRange(
         search.year_range[0],
         search.year_range[1]
       ).map((year: any) => year + 543); // Convert to Buddhist calendar year
 
-      let groupedMapData: any = [];
+      let groupedMapData: any = allProvinces.map((provinceName: any) => ({
+        name: provinceName,
+        value: 0, // จำนวนเรื่องร้องเรียน
+        person: 0, // จำนวนผู้ถูกร้องเรียน
+        finished: 0, // เสร็จแล้ว
+        unfinished: 0, // ยังไม่เสร็จ
+      }));
 
       for (const complaint of receive1_items.value) {
         let checkSearchRange: any = false;
@@ -556,19 +630,37 @@ export default defineComponent({
         }
       }
 
+      const maxComplaints = Math.max(
+        ...groupedMapData.map((item: any) => item.value)
+      );
+
+      chartMapData.value.visualMap.max = maxComplaints;
       chartMapData.value.series[0].data = groupedMapData;
     };
 
     const getDistrictDataForProvince = (provinceName: any) => {
       if (provinceName != "") {
-        const districts = districtJson.features.filter(
-          (feature) => feature.properties.pro_th === provinceName
-        );
+        let allDistricts: any = [];
+
+        const districts = districtJson.features.filter((feature) => {
+          if (feature.properties.pro_th === provinceName) {
+            allDistricts.push(feature.properties.name);
+          }
+          return feature.properties.pro_th === provinceName;
+        });
         let districtsGeo: any = { ...districtJson, features: districts };
         // echarts.registerMap("districts", districtJson as any, {});
         echarts.registerMap("districts", districtsGeo as any, {});
 
-        let districtComplaintData: any = [];
+        let districtComplaintData: any = allDistricts.map(
+          (districtName: any) => ({
+            name: districtName,
+            value: 0, // จำนวนเรื่องร้องเรียน
+            person: 0, // จำนวนผู้ถูกร้องเรียน
+            finished: 0, // เสร็จแล้ว
+            unfinished: 0, // ยังไม่เสร็จ
+          })
+        );
 
         districts.forEach((district: any) => {
           const districtName = district.properties.name; // Replace with actual property name for district name
@@ -654,13 +746,24 @@ export default defineComponent({
           let complaintCount = complaintCheck.length;
 
           if (complaintCount > 0) {
-            districtComplaintData.push({
-              name: districtName,
-              value: complaintCount,
-              person: person,
-              finished,
-              unfinished,
+            let checkDis = districtComplaintData.find((x: any) => {
+              return x.name == districtName;
             });
+
+            if (checkDis) {
+              checkDis.value = complaintCount;
+              checkDis.person = person;
+              checkDis.finished = finished;
+              checkDis.unfinished = unfinished;
+            } else {
+              districtComplaintData.push({
+                name: districtName,
+                value: complaintCount,
+                person: person,
+                finished,
+                unfinished,
+              });
+            }
           }
         });
 
@@ -687,7 +790,7 @@ export default defineComponent({
           formatter: (params: any) => {
             const data = params.data;
             return `
-            จังหวัด: ${data?.name}<br/>
+            อำเภอ: ${data?.name}<br/>
             จำนวนเรื่องร้องเรียน: ${data?.value}<br/>
             จำนวนผู้ถูกร้องเรียน: ${data?.person}<br/>
             เสร็จแล้ว: ${data?.finished}<br/>
@@ -699,21 +802,9 @@ export default defineComponent({
           left: "right",
           min: 0,
           max: 1000,
-          text: ["High", "Low"],
+          text: ["High Density", "Low Density"],
           inRange: {
-            color: [
-              "#313695",
-              "#4575b4",
-              "#74add1",
-              "#abd9e9",
-              "#e0f3f8",
-              "#ffffbf",
-              "#fee090",
-              "#fdae61",
-              "#f46d43",
-              "#d73027",
-              "#a50026",
-            ],
+            color: ["#e0f3f8", "#4575b4", "#a50026"], // สีจากน้อยไปหามาก
           },
           top: "bottom",
           calculable: true,
@@ -761,6 +852,11 @@ export default defineComponent({
         ],
       };
 
+      const maxComplaints = Math.max(
+        ...districtData.map((item: any) => item.value)
+      );
+
+      districtChartData.visualMap.max = maxComplaints;
       chartMapData.value = districtChartData;
     };
 
@@ -1100,6 +1196,8 @@ export default defineComponent({
     }
 
     const reloadDayData = async () => {
+      console.log(search);
+
       const allDays = generateAllDaysInRange(
         search.day_range[0],
         search.day_range[1]

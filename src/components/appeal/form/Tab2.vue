@@ -10,13 +10,13 @@
 
       <div class="mb-7 col-12 col-lg-12">
         <label for="complaint_title" class="required form-label"
-          >หัวข้อเรื่องร้องเรียน/แจ้งเบาะแส</label
+          >หัวข้อเรื่อง</label
         >
         <input
           type="text"
           class="form-control"
-          :placeholder="`หัวข้อเรื่องเรื่องร้องเรียน/แจ้งเบาะแส`"
-          :aria-label="`หัวข้อเรื่องเรื่องร้องเรียน/แจ้งเบาะแส`"
+          :placeholder="`หัวข้อเรื่อง`"
+          :aria-label="`หัวข้อเรื่อง`"
           v-model="complaint_item.complaint_title"
         />
         <div class="d-block mt-1" v-if="errors.complaint_title.error == 1">
@@ -392,11 +392,11 @@
 
       <div class="mb-7 col-12 col-lg-12">
         <label for="channel" class="form-label"
-          >เคย{{ complaint_type.name_th }}เรื่องนี้ผ่านช่องทางใด</label
+          >เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด</label
         >
-        <div class="row ms-2">
+        <div class="row">
           <div
-            class="form-check col-md-3 mt-3"
+            class="form-check col-md-3 mt-3 ms-2"
             v-for="(cc, idx) in selectOptions.complaint_channels"
             :key="idx"
           >
@@ -411,7 +411,10 @@
               {{ cc.name_th }}
             </label>
           </div>
-          <div class="mb-7 col-6 col-lg-6">
+          <div class="mb-7 col-6 col-lg-6 mt-7">
+            <label for="channel_history_text" class="form-label"
+              >ช่องทางร้องเรียนอื่น ๆ โปรดระบุ</label
+            >
             <input
               type="text"
               class="form-control"
@@ -849,10 +852,15 @@ export default defineComponent({
         perPage: 500,
       });
 
-      selectOptions.value.complaint_channels =
-        await useMasterData().fetchComplaintChannel({
+      selectOptions.value.complaint_channels = await useMasterData()
+        .fetchComplaintChannel({
           is_active: 1,
           perPage: 500,
+        })
+        .then((res: any) => {
+          return res.filter((x: any) => {
+            return x.name_th != "RPA";
+          });
         });
 
       //   getUserLocation();
