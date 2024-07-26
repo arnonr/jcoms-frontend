@@ -127,6 +127,18 @@
                         >แก้ไขข้อมูล</a
                       >
                     </li>
+                    <li>
+                      <a
+                        class="dropdown-item cursor-pointer"
+                        @click="
+                          () => {
+                            Object.assign(item, it);
+                            onDelete();
+                          }
+                        "
+                        >ลบ</a
+                      >
+                    </li>
                   </ul>
                 </div>
               </td>
@@ -157,7 +169,7 @@
 
     <!-- Modal แก้ไขข้อมูล -->
     <div id="edit-modal">
-      <EditUser
+      <EditUserAPI
         :id="item.id"
         v-if="openEditModal == true"
         @reload="
@@ -212,6 +224,9 @@ import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
 
+// Use Toast Composables
+import useToast from "@/composables/useToast";
+
 // Import Vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -226,6 +241,7 @@ import BlogPagination from "@/components/common/pagination/BlogPagination.vue";
 import EditUser from "@/views/user/EditUser.vue";
 import PermissionGroup from "@/views/user/PermissionGroup.vue";
 import AddUserAPI from "@/views/user/AddUserAPI.vue";
+import EditUserAPI from "@/views/user/EditUserAPI.vue";
 
 import useBasicData from "@/composables/useBasicData";
 import { useAbility } from "@casl/vue";
@@ -241,6 +257,7 @@ export default defineComponent({
     EditUser,
     PermissionGroup,
     AddUserAPI,
+    EditUserAPI,
   },
   setup() {
     // Variable
@@ -387,6 +404,21 @@ export default defineComponent({
 
     const onPermissionGroup = () => {};
 
+    const onDelete = async () => {
+      await ApiService.delete("api-user/" + item.id)
+        .then(({ data }) => {
+          if (data.msg != "success") {
+            throw new Error("ERROR");
+          }
+
+          useToast("ลบเสร็จสิ้น", "success");
+          fetchItems();
+        })
+        .catch(({ response }) => {
+          console.log(response.data.errors);
+        });
+    };
+
     // Mounted
     onMounted(() => {
       fetchPrefixName();
@@ -449,6 +481,7 @@ export default defineComponent({
       canUpdate,
       canDelete,
       canExport,
+      onDelete,
     };
   },
 });

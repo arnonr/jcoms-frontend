@@ -49,7 +49,8 @@
                   canViewReportLogin) ||
                 (menuItem.route == '/user' && canViewUser) ||
                 (menuItem.route == '/permission-org' && canViewPermissionOrg) ||
-                (menuItem.route == '/find-complaint' && canViewComplaint)
+                (menuItem.route == '/find-complaint' && canViewComplaint) ||
+                (menuItem.route == '/user-api' && userData.role_id == 1)
               "
             >
               <!-- v-if="

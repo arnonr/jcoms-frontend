@@ -118,6 +118,12 @@ const MainMenuConfig: Array<MenuItem> = [
         keenthemesIcon: "element-11",
         bootstrapIcon: "bi-app-indicator",
       },
+      {
+        heading: "ทะเบียนผู้ใช้งาน API",
+        route: "/user-api",
+        keenthemesIcon: "element-11",
+        bootstrapIcon: "bi-app-indicator",
+      },
       //   {
       //     sectionTitle: "Master Data",
       //     route: "/dashboard",
@@ -158,24 +164,24 @@ const MainMenuConfig: Array<MenuItem> = [
       //   },
     ],
   },
-//   {
-//     heading: "คู่มือ",
-//     route: "/crafted",
-//     pages: [
-//       {
-//         heading: "คู่มือเจ้าหน้าที่",
-//         route: "/staff-manual",
-//         keenthemesIcon: "element-11",
-//         bootstrapIcon: "bi-app-indicator",
-//       },
-//       {
-//         heading: "คู่มือ ADMIN",
-//         route: "/admin-manual",
-//         keenthemesIcon: "element-11",
-//         bootstrapIcon: "bi-app-indicator",
-//       },
-//     ],
-//   },
+  //   {
+  //     heading: "คู่มือ",
+  //     route: "/crafted",
+  //     pages: [
+  //       {
+  //         heading: "คู่มือเจ้าหน้าที่",
+  //         route: "/staff-manual",
+  //         keenthemesIcon: "element-11",
+  //         bootstrapIcon: "bi-app-indicator",
+  //       },
+  //       {
+  //         heading: "คู่มือ ADMIN",
+  //         route: "/admin-manual",
+  //         keenthemesIcon: "element-11",
+  //         bootstrapIcon: "bi-app-indicator",
+  //       },
+  //     ],
+  //   },
 
   //   {
   //     heading: "craft",
