@@ -833,20 +833,19 @@ export default defineComponent({
 
     const route = useRoute();
     const fullUrl = computed(() => window.location.href);
-
+  
     const loginWithThaiD = () => {
       const clientId = import.meta.env.VITE_APP_THAID_CLIENTID;
       const redirectUri = import.meta.env.VITE_APP_THAID_REDIRECT_URI;
       const responseType = "code";
       const scope = import.meta.env.VITE_APP_THAID_SCOPE;
-      const state = 1;
+      const state = route.query.type_id;
       //import.meta.env.VITE_APP_THAID_STATE;
       //   http://localhost:5173/jcoms/appeal?type_id=1
 
       const authUrl = `https://imauth.bora.dopa.go.th/api/v2/oauth2/auth/?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
       window.location.href = authUrl;
     };
-    
 
     //jcoms2.police.go.th/thaid-callback?code=Y2QzNjk4MTMtNmJiMi00ZjlhLTgzMzgtYzg1NDQ4YzRkODk5I2IxNmZlNmRmLTBlMTYtNDU0ZC05NTY5LTE2Mzc4NjI4NDFhNQ&state=%22HC1UAbHvRc%22
 
