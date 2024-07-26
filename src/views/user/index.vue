@@ -146,7 +146,8 @@
                 {{ it.officer_code }}
               </td>
               <td class="text-center">
-                {{ it.firstname + " " + it.lastname }}
+                {{ it.fullname }}
+                <!-- {{ it.prefix_name.id+it.firstname + " " + it.lastname }} -->
               </td>
               <td>
                 <span v-if="it.division_id"
