@@ -65,6 +65,14 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: "/user-api",
+        name: "user-api",
+        component: () => import("@/views/user/indexAPI.vue"),
+        meta: {
+          pageTitle: "จัดการผู้ใช้งาน API",
+        },
+      },
+      {
         path: "/permission-org",
         name: "permission-org",
         component: () => import("@/views/permission/org.vue"),
