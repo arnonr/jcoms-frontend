@@ -28,7 +28,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="fa fa-download  fs-4"></i>
+              <i class="fa fa-download fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -832,6 +832,8 @@ export default defineComponent({
       } else {
         return false;
       }
+
+      params.get_complaint_follow = true;
 
       const { data } = await ApiService.query("complaint", {
         params: params,

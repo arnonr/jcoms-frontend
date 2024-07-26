@@ -29,7 +29,7 @@ class ApiService {
   public static setHeader(): void {
     ApiService.vueInstance.axios.defaults.headers.common[
       "Authorization"
-    ] = `Token ${JwtService.getToken()}`;
+    ] = `Bearer 53e4883a6980251c56e977a5624618a0e4a57472615a0af7c374832a8efbab46`;
     ApiService.vueInstance.axios.defaults.headers.common["Accept"] =
       "application/json";
   }
@@ -41,6 +41,7 @@ class ApiService {
    * @returns Promise<AxiosResponse>
    */
   public static query(resource: string, params: any): Promise<AxiosResponse> {
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.get(resource, params);
   }
 
@@ -54,6 +55,7 @@ class ApiService {
     resource: string,
     slug = "" as string
   ): Promise<AxiosResponse> {
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.get(`${resource}/${slug}`);
   }
 
@@ -64,6 +66,7 @@ class ApiService {
    * @returns Promise<AxiosResponse>
    */
   public static post(resource: string, params: any): Promise<AxiosResponse> {
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.post(`${resource}`, params);
   }
 
@@ -78,7 +81,7 @@ class ApiService {
         params[key] = null;
       }
     }
-
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.post(`${resource}`, params, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -98,6 +101,7 @@ class ApiService {
     slug: string,
     params: any
   ): Promise<AxiosResponse> {
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.put(`${resource}/${slug}`, params);
   }
 
@@ -108,6 +112,7 @@ class ApiService {
    * @returns Promise<AxiosResponse>
    */
   public static put(resource: string, params: any): Promise<AxiosResponse> {
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.put(`${resource}`, params);
   }
 
@@ -115,7 +120,7 @@ class ApiService {
     resource: string,
     params: any
   ): Promise<AxiosResponse> {
-    
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.post(`${resource}`, params, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -129,6 +134,7 @@ class ApiService {
    * @returns Promise<AxiosResponse>
    */
   public static delete(resource: string): Promise<AxiosResponse> {
+    ApiService.setHeader();
     return ApiService.vueInstance.axios.delete(resource);
   }
 }
