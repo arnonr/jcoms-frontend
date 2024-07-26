@@ -33,7 +33,7 @@ export default defineComponent({
           await ApiService.query("thaid/token-request", {
             params: { code: code },
           }).then((data1: any) => {
-            useToast("ยืนยันตัวตนสำเร็จ", "error");
+            useToast("ยืนยันตัวตนสำเร็จ", "success");
             setTimeout(function () {
               window.location.href = `https://jcoms2.police.go.th/appeal?type_id=${state}&pid=${data1.data.data.pid}&firstname=${data1.data.data.given_name}&lastname=${data1.data.data.family_name}`;
             }, 3000);
