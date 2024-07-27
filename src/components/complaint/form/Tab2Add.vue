@@ -569,7 +569,7 @@ export default defineComponent({
     })
       .use(XHRUpload, {
         headers: {
-          // Authorization: `Bearer ${}`,
+          Authorization: `Bearer ${import.meta.env.VITE_APP_TOKEN_API}`,
         },
         endpoint: `${import.meta.env.VITE_APP_API_URL}/froala/uppy`,
         fieldName: "file",
