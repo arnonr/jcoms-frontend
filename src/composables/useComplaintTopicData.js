@@ -345,6 +345,43 @@ export default () => {
       topic_category_id: 11,
       topic_type_id: 43,
     },
+
+    {
+      id: 43,
+      complaint_type_th: "ร้องเรียน",
+      topic_category_th: "ไม่ระบุ",
+      topic_type_th: "ไม่ระบุ",
+      topic_category_id: 13,
+      complaint_type_id: 1,
+      is_active: 1,
+    },
+    {
+      id: 44,
+      complaint_type_th: "ร้องเรียน",
+      topic_category_th: "ไม่ระบุ2",
+      topic_type_th: "ไม่ระบุ",
+      topic_category_id: 14,
+      complaint_type_id: 2,
+      is_active: 1,
+    },
+    {
+      id: 45,
+      complaint_type_th: "ร้องเรียน",
+      topic_category_th: "ไม่ระบุ3",
+      topic_type_th: "ไม่ระบุ",
+      topic_category_id: 15,
+      complaint_type_id: 3,
+      is_active: 1,
+    },
+    {
+      id: 46,
+      complaint_type_th: "ร้องเรียน",
+      topic_category_th: "ไม่ระบุ4",
+      topic_type_th: "ไม่ระบุ",
+      topic_category_id: 16,
+      complaint_type_id: 4,
+      is_active: 1,
+    },
   ];
 
   const complaint_topic_mapping = (complaint_type_id) => {
