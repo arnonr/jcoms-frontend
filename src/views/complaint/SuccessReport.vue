@@ -331,25 +331,25 @@ export default defineComponent({
           });
 
           //   1111
-          //   if (data.case_id) {
-          //     await ApiService.post("opm/add-operating/" + item.case_id, {
-          //       detail: item.closed_comment,
-          //       type_id: "",
-          //     });
-          //     await ApiService.post(
-          //       "opm/set-org-summary-result/" + item.case_id,
-          //       {
-          //         statue_id: 1,
-          //         result:
-          //           " ยุติเรื่อง ณ วันที่ " +
-          //           dayjs().utc().locale("th").format("DD MMM BBBB") +
-          //           " ผลการพิจารณา " +
-          //           item.closed_state_id.name_th +
-          //           ", " +
-          //           item.closed_comment,
-          //       }
-          //     );
-          //   }
+          if (data.case_id) {
+            // await ApiService.post("opm/add-operating/" + item.id, {
+            //   detail: item.closed_comment,
+            //   type_id: type_id,
+            // });
+            await ApiService.post(
+              "opm/set-org-summary-result/" + item.id,
+              {
+                statue_id: 1,
+                result:
+                  " ยุติเรื่อง ณ วันที่ " +
+                  dayjs().utc().locale("th").format("DD MMM BBBB") +
+                  " ผลการพิจารณา " +
+                  item.closed_state_id.name_th +
+                  ", " +
+                  item.closed_comment,
+              }
+            );
+          }
 
           //   SMS
           let msisdn = item.phone_number;
