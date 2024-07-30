@@ -695,7 +695,9 @@ export default defineComponent({
     };
 
     const onImport1111 = async () => {
-      await ApiService.query("opm/sync-all", {});
+      await ApiService.query("opm/sync-all-case", {
+        params: { timeline_type: "I" },
+      });
 
       //   prefix_names.value = data.data;
       useToast("นำเข้าข้อมูลเสร็จสิ้น");

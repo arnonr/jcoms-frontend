@@ -4,7 +4,7 @@
     :before-change="onTab1Validate"
     color="#800001"
   >
-    <div id="google_translate_element"></div>
+    <!-- <div id="google_translate_element"></div> -->
     <div class="row">
       <!--begin::Input group-->
       <div class="mb-5 mt-5">
