@@ -74,14 +74,21 @@ class ApiService {
     resource: string,
     params: any
   ): Promise<AxiosResponse> {
-    var form_data = new FormData();
-    for (var key in params) {
-      form_data.append(key, params[key]);
-      if (params[key] == null || params[key] == "") {
-        params[key] = null;
-      }
-    }
+    // var form_data = new FormData();
+    // for (var key in params) {
+    //   form_data.append(key, params[key]);
+    //   if (params[key] == null || params[key] == "") {
+    //     params[key] = null;
+    //   }
+    // }
+
+    const formData = new FormData();
+    Object.keys(params).forEach((key) => {
+      formData.append(key, params[key]);
+    });
+
     ApiService.setHeader();
+    // formData
     return ApiService.vueInstance.axios.post(`${resource}`, params, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -121,7 +128,14 @@ class ApiService {
     params: any
   ): Promise<AxiosResponse> {
     ApiService.setHeader();
-    return ApiService.vueInstance.axios.post(`${resource}`, params, {
+
+    const formData = new FormData();
+    Object.keys(params).forEach((key) => {
+      formData.append(key, params[key]);
+    });
+
+    console.log(params);
+    return ApiService.vueInstance.axios.post(`${resource}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
