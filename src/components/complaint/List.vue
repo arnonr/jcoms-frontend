@@ -25,7 +25,13 @@
 
           <td class="text-center">{{ it.topic_type?.name_th }}</td>
           <td>{{ it.complaint_title }}</td>
-          <td>{{ convertAccused(it.accused) }}</td>
+          <td>
+            {{
+              convertAccused(it.accused) != undefined
+                ? convertAccused(it.accused)
+                : ""
+            }}
+          </td>
           <td>
             <span v-if="it.agency_id">{{ it.agency.name_th_abbr }}</span>
             <span v-else-if="it.division_id">{{
