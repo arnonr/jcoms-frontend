@@ -615,7 +615,8 @@ export default defineComponent({
 
     const isValidPhoneNumber = (phoneNumber: any) => {
       // Thai phone number regex pattern
-      const phonePattern = /^(0[689]{1}[0-9]{8}|0[12]{1}[0-9]{8})$/;
+    //   const phonePattern = /^(0[689]{1}[0-9]{8}|0[12]{1}[0-9]{8})$/;
+      const phonePattern = /^0[689]{1}[0-9]{8}$/;
 
       return phonePattern.test(phoneNumber);
     };
