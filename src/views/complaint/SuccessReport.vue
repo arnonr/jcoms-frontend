@@ -260,7 +260,9 @@ export default defineComponent({
         item.state_id = data.data.state_id;
         item.phone_number = data.data.complainant?.phone_number;
         item.receive_at = data.data.complainant?.receive_at;
-        item.inspector_name_th_abbr = data.data.inspector.name_th_abbr;
+        item.inspector_name_th_abbr = data.data.inspector
+          ? data.data.inspector?.name_th_abbr
+          : "กต.";
 
         isLoading.value = false;
       } catch (error) {
@@ -313,7 +315,7 @@ export default defineComponent({
         closed_comment: item.closed_comment,
         state_id: state_id,
         closed_doc_filename:
-          item.closed_doc_filename.length != 0
+          item.closed_doc_filename?.length != 0
             ? item.closed_doc_filename
             : undefined,
       };
@@ -331,25 +333,25 @@ export default defineComponent({
           });
 
           //   1111
-          if (data.case_id) {
-            // await ApiService.post("opm/add-operating/" + item.id, {
-            //   detail: item.closed_comment,
-            //   type_id: type_id,
-            // });
-            await ApiService.post(
-              "opm/set-org-summary-result/" + item.id,
-              {
-                statue_id: 1,
-                result:
-                  " ยุติเรื่อง ณ วันที่ " +
-                  dayjs().utc().locale("th").format("DD MMM BBBB") +
-                  " ผลการพิจารณา " +
-                  item.closed_state_id.name_th +
-                  ", " +
-                  item.closed_comment,
-              }
-            );
-          }
+            if (data.case_id) {
+              // await ApiService.post("opm/add-operating/" + item.id, {
+              //   detail: item.closed_comment,
+              //   type_id: type_id,
+              // });
+              await ApiService.post(
+                "opm/set-org-summary-result/" + item.id,
+                {
+                  statue_id: 1,
+                  result:
+                    " ยุติเรื่อง ณ วันที่ " +
+                    dayjs().utc().locale("th").format("DD MMM BBBB") +
+                    " ผลการพิจารณา " +
+                    item.closed_state_id.name_th +
+                    ", " +
+                    item.closed_comment,
+                }
+              );
+            }
 
           //   SMS
           let msisdn = item.phone_number;

@@ -62,7 +62,7 @@
               <div class="col-12">
                 <div class="row">
                   <div class="mb-7 col-12 col-lg-12">
-                    <label for="organization_all" class="form-label"
+                    <label for="organization_all" class="form-label required"
                       >หน่วยงานระดับ บช./ภ.</label
                     >
                     <v-select
@@ -85,7 +85,7 @@
                   </div>
 
                   <div class="mb-7 col-12 col-lg-6">
-                    <label for="send" class="form-label"
+                    <label for="send" class="form-label required"
                       >เลขทะเบียนหนังสือส่ง</label
                     >
                     <input
@@ -98,7 +98,7 @@
                   </div>
 
                   <div class="mb-7 col-12 col-lg-6">
-                    <label for="surname" class="form-label"
+                    <label for="surname" class="form-label required"
                       >วันที่หนังสือ</label
                     >
 
@@ -122,7 +122,9 @@
                   </div>
 
                   <div class="mb-7 col-12 col-lg-12">
-                    <label for="">ข้อสั่งการ : </label>
+                    <label for="" class="form-label required"
+                      >ข้อสั่งการ :
+                    </label>
                     <v-select
                       v-model="item.order_id"
                       id="slt-search-order-id-2"
@@ -136,7 +138,7 @@
                   </div>
 
                   <div class="mb-7 col-12 col-lg-12">
-                    <label for="">หมายเหตุ : </label>
+                    <label for="" class="form-label">หมายเหตุ : </label>
                     <input
                       v-model="item.order_detail"
                       type="text"
@@ -292,6 +294,7 @@ export default defineComponent({
       Object.assign(item_errors, {
         forward_doc_no: { error: 0, text: "" },
         forward_doc_date: { error: 0, text: "" },
+        // order_id: { error: 0, text: "" },
       });
 
       try {
@@ -352,7 +355,10 @@ export default defineComponent({
             forward_doc_no: item.forward_doc_no,
             forward_doc_date: dayjs(item.forward_doc_date).format("YYYY-MM-DD"),
             due_day: check_ct.due_date,
-            due_date: dayjs(item.forward_doc_date).add(check_ct.due_date, "day"),
+            due_date: dayjs(item.forward_doc_date).add(
+              check_ct.due_date,
+              "day"
+            ),
           }).then(({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");

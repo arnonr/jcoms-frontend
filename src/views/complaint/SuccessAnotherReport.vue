@@ -261,7 +261,9 @@ export default defineComponent({
         item.state_id = data.data.state_id;
         item.phone_number = data.data.complainant?.phone_number;
         item.receive_at = data.data.complainant?.receive_at;
-        item.inspector_name_th_abbr = data.data.inspector.name_th_abbr;
+        item.inspector_name_th_abbr = data.data.inspector
+          ? data.data.inspector?.name_th_abbr
+          : "กต.";
 
         isLoading.value = false;
       } catch (error) {
@@ -337,19 +339,16 @@ export default defineComponent({
             //   detail: item.closed_comment,
             //   type_id: "",
             // });
-            await ApiService.post(
-              "opm/set-org-summary-result/" + item.id,
-              {
-                statue_id: 1,
-                result:
-                  " ยุติเรื่อง ณ วันที่ " +
-                  dayjs().utc().locale("th").format("DD MMM BBBB") +
-                  " ผลการพิจารณา " +
-                  item.closed_state_id.name_th +
-                  ", " +
-                  item.closed_comment,
-              }
-            );
+            await ApiService.post("opm/set-org-summary-result/" + item.id, {
+              statue_id: 1,
+              result:
+                " ยุติเรื่อง ณ วันที่ " +
+                dayjs().utc().locale("th").format("DD MMM BBBB") +
+                " ผลการพิจารณา " +
+                item.closed_state_id.name_th +
+                ", " +
+                item.closed_comment,
+            });
           }
 
           //   SMS
