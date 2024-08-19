@@ -388,6 +388,12 @@ export default defineComponent({
               statue_id: set_org,
               result: message1,
             });
+
+            //   1567
+            await ApiService.post("moi/update-status/" + item.id, {
+              refDescription: message1,
+              code: 4,
+            });
           }
 
           //   SMS
@@ -426,6 +432,12 @@ export default defineComponent({
               .catch(({ response }) => {
                 console.log(response);
               });
+
+            //   1567
+            await ApiService.post("moi/update-status/" + item.id, {
+              refDescription: message,
+              code: 6,
+            });
           }
         })
         .catch(({ response }) => {

@@ -333,25 +333,34 @@ export default defineComponent({
           });
 
           //   1111
-            if (data.case_id) {
-              // await ApiService.post("opm/add-operating/" + item.id, {
-              //   detail: item.closed_comment,
-              //   type_id: type_id,
-              // });
-              await ApiService.post(
-                "opm/set-org-summary-result/" + item.id,
-                {
-                  statue_id: 1,
-                  result:
-                    " ยุติเรื่อง ณ วันที่ " +
-                    dayjs().utc().locale("th").format("DD MMM BBBB") +
-                    " ผลการพิจารณา " +
-                    item.closed_state_id.name_th +
-                    ", " +
-                    item.closed_comment,
-                }
-              );
-            }
+          if (data.case_id) {
+            // await ApiService.post("opm/add-operating/" + item.id, {
+            //   detail: item.closed_comment,
+            //   type_id: type_id,
+            // });
+            await ApiService.post("opm/set-org-summary-result/" + item.id, {
+              statue_id: 1,
+              result:
+                " ยุติเรื่อง ณ วันที่ " +
+                dayjs().utc().locale("th").format("DD MMM BBBB") +
+                " ผลการพิจารณา " +
+                item.closed_state_id.name_th +
+                ", " +
+                item.closed_comment,
+            });
+          }
+
+          //   1567
+          await ApiService.post("moi/update-status/" + item.id, {
+            refDescription:
+              " ยุติเรื่อง ณ วันที่ " +
+              dayjs().utc().locale("th").format("DD MMM BBBB") +
+              " ผลการพิจารณา " +
+              item.closed_state_id.name_th +
+              ", " +
+              item.closed_comment,
+            code: 6,
+          });
 
           //   SMS
           let msisdn = item.phone_number;

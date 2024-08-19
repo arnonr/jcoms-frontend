@@ -47,6 +47,16 @@
 
           <button
             class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
+            @click="onImport1567()"
+          >
+            <i class="fa fa-cloud-download fs-4"></i>
+            <span class="d-none d-lg-inline-block ms-2"
+              >โหลดข้อมูล ศูนย์ดำรงธรรม</span
+            >
+          </button>
+
+          <button
+            class="btn btn-outline btn-outline-primary me-2 pe-sm-3 ps-sm-5"
             @click="onImport1111()"
           >
             <i class="fa fa-cloud-download fs-4"></i>
@@ -703,6 +713,13 @@ export default defineComponent({
       useToast("นำเข้าข้อมูลเสร็จสิ้น");
     };
 
+    const onImport1567 = async () => {
+      await ApiService.post("moi/sync-data", {});
+
+      //   prefix_names.value = data.data;
+      useToast("นำเข้าข้อมูลเสร็จสิ้น");
+    };
+
     // Mounted
     onMounted(() => {
       //   search.complaint_type_id = {
@@ -745,6 +762,7 @@ export default defineComponent({
       html2Pdf,
       generatePDF,
       onImport1111,
+      onImport1567,
       canView,
       canCreate,
       canUpdate,

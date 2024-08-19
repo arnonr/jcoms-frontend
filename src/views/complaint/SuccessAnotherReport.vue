@@ -351,6 +351,18 @@ export default defineComponent({
             });
           }
 
+          //   1567
+          await ApiService.post("moi/update-status/" + item.id, {
+            refDescription:
+              " ยุติเรื่อง ณ วันที่ " +
+              dayjs().utc().locale("th").format("DD MMM BBBB") +
+              " ผลการพิจารณา " +
+              item.closed_state_id.name_th +
+              ", " +
+              item.closed_comment,
+            code: 6,
+          });
+
           //   SMS
           let msisdn = item.phone_number;
           if (msisdn != null) {
