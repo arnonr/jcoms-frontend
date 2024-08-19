@@ -12,7 +12,7 @@
     data-kt-drawer-toggle="#kt_activities_toggle"
     data-kt-drawer-close="#kt_activities_close"
   >
-    <CalendarApp1 />
+    <!-- <CalendarApp1 /> -->
   </div>
   <!--end::Activities drawer-->
 </template>
@@ -20,12 +20,12 @@
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
 import { defineComponent } from "vue";
-import CalendarApp1 from "@/components/calendar/CalendarApp1.vue";
+// import CalendarApp1 from "@/components/calendar/CalendarApp1.vue";
 
 export default defineComponent({
   name: "kt-activity-drawer",
   components: {
-    CalendarApp1,
+    // CalendarApp1,
   },
   setup() {
     return {
