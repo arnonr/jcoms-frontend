@@ -392,8 +392,22 @@ export default defineComponent({
 
           //   1567
           if (data.moi_id) {
+            let message2 =
+              "แจ้งสถานะเรื่องร้องเรียน " +
+              item.jcoms_no +
+              " : ฝ่ายรับเรื่องราวร้องทุกข์ ไม่รับเรื่อง ณ วันที่ " +
+              dayjs().utc().locale("th").format("DD MMM BBBB");
+
+            if (item.state_id == 3) {
+              message2 =
+                "แจ้งสถานะเรื่องร้องเรียน " +
+                item.jcoms_no +
+                " : ฝ่ายรับเรื่องราวร้องทุกข์ ลงรับเรื่อง ณ วันที่ " +
+                dayjs().utc().locale("th").format("DD MMM BBBB");
+            }
+
             await ApiService.post("moi/update-status/" + item.id, {
-              refDescription: message1,
+              refDescription: message2,
               code: 3,
               refCode: item.receive_doc_no,
             });
