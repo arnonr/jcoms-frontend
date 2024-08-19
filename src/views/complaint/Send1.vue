@@ -359,9 +359,19 @@ export default defineComponent({
               check_ct.due_date,
               "day"
             ),
-          }).then(({ data }) => {
+          }).then(async ({ data }) => {
             if (data.msg != "success") {
               throw new Error("ERROR");
+            }
+
+            //   1567
+
+            if (data.moi_id) {
+              await ApiService.post("moi/update-status/" + item.complaint_id, {
+                refDescription: "ดำเนินการ",
+                refCode: item.forward_doc_no,
+                code: 4,
+              });
             }
 
             isLoading.value = true;

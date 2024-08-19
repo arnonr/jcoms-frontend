@@ -388,11 +388,14 @@ export default defineComponent({
               statue_id: set_org,
               result: message1,
             });
+          }
 
-            //   1567
+          //   1567
+          if (data.moi_id) {
             await ApiService.post("moi/update-status/" + item.id, {
               refDescription: message1,
-              code: 4,
+              code: 3,
+              refCode: item.receive_doc_no,
             });
           }
 
@@ -436,7 +439,8 @@ export default defineComponent({
             //   1567
             await ApiService.post("moi/update-status/" + item.id, {
               refDescription: message,
-              code: 6,
+              code: 3,
+              refCode: item.receive_doc_no,
             });
           }
         })

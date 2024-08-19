@@ -715,7 +715,7 @@ export default defineComponent({
 
     const onImport1567 = async () => {
       await ApiService.post("moi/sync-data", {});
-
+      fetchItems();
       //   prefix_names.value = data.data;
       useToast("นำเข้าข้อมูลเสร็จสิ้น");
     };
