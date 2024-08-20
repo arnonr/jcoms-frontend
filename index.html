@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Security-Policy" content="" />
+    <!-- <meta http-equiv="Content-Security-Policy" content="" /> -->
 
     <!-- <meta
       http-equiv="Content-Security-Policy"
@@ -14,24 +14,42 @@
       base-uri 'self';
       upgrade-insecure-requests;
     "
+    
+    /> -->
+    <!-- 
+    <meta
+      http-equiv="Content-Security-Policy-Report-Only"
+      content="
+        default-src 'self';
+        script-src 'self' 'sha256-tikaK6M500I+++jZLigJ96wxee7t0eLS7CTZgdUo1kE=';
+        img-src 'self' data: https:;
+        font-src 'self' https://fonts.gstatic.com;
+        connect-src 'self';
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+        frame-ancestors 'none';
+        upgrade-insecure-requests;
+        report-uri /csp-report-endpoint;
+      "
     /> -->
 
     <meta charset="UTF-8" />
     <meta name="description" content="Jcoms2" />
     <link rel="icon" href="/favicon.ico" />
-    <!-- <link
+    <link
       rel="preload"
       href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700"
     />
     <link
       rel="preload"
       href="https://fonts.googleapis.com/css?family=Prompt:300,400,500,600,700"
-    /> -->
+    />
     <link rel="stylesheet" href="/splash-screen.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ระบบร้องเรียน</title>
     <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script> -->
-    <!-- <script type="text/javascript">
+    <script type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement(
           { pageLanguage: "en" },
@@ -76,7 +94,7 @@
           ? console.warn(p + " only loads once. Ignoring:", g)
           : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)));
       })({ key: "AIzaSyAW9TSuY2zGSjL_1CdoaTkhz2gJApl95Zw", v: "weekly" });
-    </script> -->
+    </script>
   </head>
 
   <body class="page-loading">
@@ -117,10 +135,10 @@
     </div>
     <!--end::Loading markup-->
 
-    <!-- <script
+    <script
       type="text/javascript"
       src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-    ></script> -->
+    ></script>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
