@@ -152,7 +152,7 @@ dayjs.extend(buddhistEra);
 dayjs.extend(customParseFormat);
 
 // Import Component
-import Tab1 from "@/components/complaint/form/Tab1.vue";
+import Tab1 from "@/components/complaint/form-admin/Tab1.vue";
 import Tab2 from "@/components/complaint/form/Tab2Add.vue";
 import Tab3 from "@/components/complaint/form/Tab3.vue";
 import Preloader from "@/components/preloader/Preloader.vue";
