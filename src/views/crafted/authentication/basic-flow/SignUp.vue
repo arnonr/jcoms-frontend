@@ -912,6 +912,9 @@ export default defineComponent({
         })
         .catch(({ response }) => {
           console.log(response);
+
+          useToast(response.data.msg, "error");
+        //   already exist
         });
     };
 
