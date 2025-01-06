@@ -845,14 +845,14 @@ export default defineComponent({
         return false;
       }
 
-    //   let check = validateThaiCitizenId(item.id_card);
+      //   let check = validateThaiCitizenId(item.id_card);
 
-    //   if (check == false) {
-    //     errors.value["id_card"].error = 1;
-    //     errors.value["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
-    //     useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
-    //     return false;
-    //   }
+      //   if (check == false) {
+      //     errors.value["id_card"].error = 1;
+      //     errors.value["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
+      //     useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
+      //     return false;
+      //   }
 
       //   Save and swal success
       await onSaveUser();
@@ -860,9 +860,16 @@ export default defineComponent({
 
     const createFormData = (data) => {
       const formData = new FormData();
+
       for (const key in data) {
-        formData.append(key, data[key]);
+        if (typeof data[key] === "object") {
+          formData.append(key, JSON.stringify(data[key]));
+        } else {
+          formData.append(key, data[key]);
+        }
       }
+
+      console.log(formData);
       return formData;
     };
 
@@ -895,9 +902,11 @@ export default defineComponent({
         // รูป
       };
 
-      const formData = createFormData(data_item);
+    //   const formData = createFormData(data_item);
 
-      await ApiService.putFormData("user/" + item.id, formData)
+    //   console.log(formData);
+
+      await ApiService.putFormData("user/" + item.id, data_item)
         .then(({ data }) => {
           if (data.msg != "success") {
             throw new Error("ERROR");

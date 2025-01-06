@@ -25,14 +25,14 @@ class ApiService {
 
   /**
    * @description set the default HTTP request headers
-   */
+   */  
   public static setHeader(): void {
     ApiService.vueInstance.axios.defaults.headers.common[
       "Authorization"
-    ] = `Bearer 53e4883a6980251c56e977a5624618a0e4a57472615a0af7c374832a8efbab46`;
-    ApiService.vueInstance.axios.defaults.headers.common["Accept"] =
-      "application/json";
-  }
+        ] = `Bearer 53e4883a6980251c56e977a5624618a0e4a57472615a0af7c374832a8efbab46`;
+        ApiService.vueInstance.axios.defaults.headers.common["Accept"] =
+        "application/json";
+    }
 
   /**
    * @description send the GET HTTP request
