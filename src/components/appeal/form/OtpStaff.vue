@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Modal OTP -->
-    <div
+    <!-- <div
       class="modal fade"
       tabindex="-1"
       ref="otpConfirmModalRef"
@@ -80,7 +80,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Modal Evaluate -->
     <div
@@ -283,80 +283,82 @@ export default defineComponent({
       return result;
     };
 
-    const onSendOTP = async () => {
-      otpWrong.value = "d-none";
-      otp_secret_key.value = generateRandomEnglishString(4);
+    // const onSendOTP = async () => {
+    //   otpWrong.value = "d-none";
+    //   otp_secret_key.value = generateRandomEnglishString(4);
 
-      let api_1 = {
-        type: "post",
-        url: "sms/send-otp",
-      };
+    //   let api_1 = {
+    //     type: "post",
+    //     url: "sms/send-otp",
+    //   };
 
-      await ApiService[api_1.type](api_1.url, {
-        phone_number: props.complainant_item.phone_number,
-        otp_secret: otp_secret_key.value,
-      })
-        .then(({ data }) => {
-          if (data.msg != "success") {
-            throw new Error("ERROR");
-          }
-          otpCountdown.value = 120;
-          btnSendOtpDisabled.value = true;
-          btnConfirmOtpDisabled.value = false;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
-    };
+    //   await ApiService[api_1.type](api_1.url, {
+    //     phone_number: props.complainant_item.phone_number,
+    //     otp_secret: otp_secret_key.value,
+    //   })
+    //     .then(({ data }) => {
+    //       if (data.msg != "success") {
+    //         throw new Error("ERROR");
+    //       }
+    //       otpCountdown.value = 120;
+    //       btnSendOtpDisabled.value = true;
+    //       btnConfirmOtpDisabled.value = false;
+    //     })
+    //     .catch(({ response }) => {
+    //       console.log(response);
+    //     });
+    // };
 
-    const onConfirmOTP = async () => {
-      let api_2 = {
-        type: "post",
-        url: "sms/verify-otp",
-      };
+    // const onConfirmOTP = async () => {
+    //   let api_2 = {
+    //     type: "post",
+    //     url: "sms/verify-otp",
+    //   };
 
-      await ApiService[api_2.type](api_2.url, {
-        otp: otpDataCheck.value.code,
-        otp_secret: otp_secret_key.value,
-        phone_number: props.complainant_item.phone_number,
-      })
-        .then(async ({ data }) => {
-          if (data.msg != "success") {
-            throw new Error("ERROR");
-          }
+    //   await ApiService[api_2.type](api_2.url, {
+    //     otp: otpDataCheck.value.code,
+    //     otp_secret: otp_secret_key.value,
+    //     phone_number: props.complainant_item.phone_number,
+    //   })
+    //     .then(async ({ data }) => {
+    //       if (data.msg != "success") {
+    //         throw new Error("ERROR");
+    //       }
 
-          try {
-            await onSaveComplainant();
-            await onSaveComplaint();
-            await onSaveAccused();
+    //       try {
+    //         await onSaveComplainant();
+    //         await onSaveComplaint();
+    //         await onSaveAccused();
 
-            Swal.fire({
-              text: "ยืนยัน OTP สำเร็จ",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "ตกลง",
-              heightAuto: false,
-              customClass: {
-                confirmButton: "btn fw-semibold btn-light-primary",
-              },
-            }).then(() => {
-              // Save Complaint and Send SMS
-              //   otpConfirmModalObj.value.hide();
-              otpWrong.value = "d-none";
-              onEvalModal();
-            });
-          } catch (error) {
-            btnConfirmOtpDisabled.value = false;
-            console.error("Error saving data:", error);
-          }
-        })
-        .catch(({ response }) => {
-          btnConfirmOtpDisabled.value = false;
-          otpWrong.value = "d-block";
-          useToast("OTP ไม่ถูกต้อง", "error");
-          console.log(response);
-        });
-    };
+    //         onEvalModal();
+
+    //         // Swal.fire({
+    //         //   text: "ยืนยัน OTP สำเร็จ",
+    //         //   icon: "success",
+    //         //   buttonsStyling: false,
+    //         //   confirmButtonText: "ตกลง",
+    //         //   heightAuto: false,
+    //         //   customClass: {
+    //         //     confirmButton: "btn fw-semibold btn-light-primary",
+    //         //   },
+    //         // }).then(() => {
+    //         //   // Save Complaint and Send SMS
+    //         //   //   otpConfirmModalObj.value.hide();
+    //         //   otpWrong.value = "d-none";
+    //         //   onEvalModal();
+    //         // });
+    //       } catch (error) {
+    //         btnConfirmOtpDisabled.value = false;
+    //         console.error("Error saving data:", error);
+    //       }
+    //     })
+    //     .catch(({ response }) => {
+    //       btnConfirmOtpDisabled.value = false;
+    //       otpWrong.value = "d-block";
+    //       useToast("OTP ไม่ถูกต้อง", "error");
+    //       console.log(response);
+    //     });
+    // };
 
     const onSaveComplainant = async () => {
       //
@@ -625,43 +627,49 @@ export default defineComponent({
           if (data.msg != "success") {
             throw new Error("ERROR");
           }
-          otpConfirmModalObj.value.hide();
+        //   otpConfirmModalObj.value.hide();
           evalModalObj.value.hide();
           useToast("ร้องเรียนเสร็จสิ้น", "success");
           emit("close-otp-modal");
 
-          let api_sms = {
-            type: "post",
-            url: "sms/send-sms/",
-          };
+          otpWrong.value = "d-none";
 
-          await ApiService[api_sms.type](api_sms.url, {
-            msisdn: complainant_item.value.phone_number,
-            message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว ณ วันที่ ${dayjs()
-              .locale("th")
-              .utc()
-              .format("DD MMM BBBB")} เลขคำร้องของท่าน : ${
-              result_complaint.value.jcoms_no
-            } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${
-              import.meta.env.VITE_APP_BASE_URL
-            }jcoms/tracking`,
-          })
-            .then(({ data }) => {
-              if (data.msg != "success") {
-                throw new Error("ERROR");
-              }
+          setTimeout(() => {
+            router.push({ name: "new-complaint" });
+          }, 1000);
 
-              otpConfirmModalObj.value.hide();
-              otpWrong.value = "d-none";
-              emit("close-otp-modal");
+          //   let api_sms = {
+          //     type: "post",
+          //     url: "sms/send-sms/",
+          //   };
 
-                setTimeout(() => {
-                  router.push({ name: "new-complaint" });
-                }, 1000);
-            })
-            .catch(({ response }) => {
-              console.log(response);
-            });
+          //   await ApiService[api_sms.type](api_sms.url, {
+          //     msisdn: complainant_item.value.phone_number,
+          //     message: `สำนักงานจเรตำรวจได้รับคำร้องของท่านเรียบร้อยแล้ว ณ วันที่ ${dayjs()
+          //       .locale("th")
+          //       .utc()
+          //       .format("DD MMM BBBB")} เลขคำร้องของท่าน : ${
+          //       result_complaint.value.jcoms_no
+          //     } ท่านสามารถตรวจสอบสถานะคำร้องได้ที่ : ${
+          //       import.meta.env.VITE_APP_BASE_URL
+          //     }jcoms/tracking`,
+          //   })
+          //     .then(({ data }) => {
+          //       if (data.msg != "success") {
+          //         throw new Error("ERROR");
+          //       }
+
+          //     //   otpConfirmModalObj.value.hide();
+          //       otpWrong.value = "d-none";
+          //       emit("close-otp-modal");
+
+          //       setTimeout(() => {
+          //         router.push({ name: "new-complaint" });
+          //       }, 1000);
+          //     })
+          //     .catch(({ response }) => {
+          //       console.log(response);
+          //     });
         })
         .catch(({ response }) => {
           console.log(response);
@@ -680,14 +688,20 @@ export default defineComponent({
     };
 
     // Mounted
-    onMounted(() => {
-      otpConfirmModalObj.value = new Modal(otpConfirmModalRef.value, {});
-      onOTPModal();
+    onMounted(async () => {
+      //   otpConfirmModalObj.value = new Modal(otpConfirmModalRef.value, {});
+      //   onOTPModal();
       evalModalObj.value = new Modal(evalModalRef.value, {});
+
+      await onSaveComplainant();
+      await onSaveComplaint();
+      await onSaveAccused();
+
+      onEvalModal();
     });
 
     onUnmounted(() => {
-      otpConfirmModalObj.value.hide();
+    //   otpConfirmModalObj.value.hide();
       evalModalObj.value.hide();
     });
 
@@ -731,8 +745,8 @@ export default defineComponent({
       APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
       otp_secret_key,
       onOTPModal,
-      onSendOTP,
-      onConfirmOTP,
+      //   onSendOTP,
+      //   onConfirmOTP,
       onCancel,
       onEvalModal,
       onEvalConfirm,
