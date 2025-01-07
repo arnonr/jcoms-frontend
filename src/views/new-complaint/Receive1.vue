@@ -390,7 +390,7 @@ export default defineComponent({
           }
 
           //   1567
-          if (data.moi_id) {
+          if (data.moi_id != null && data.moi_id != "null") {
             let message2 =
               "แจ้งสถานะเรื่องร้องเรียน " +
               item.jcoms_no +
@@ -450,11 +450,12 @@ export default defineComponent({
               });
 
             //   1567
-            await ApiService.post("moi/update-status/" + item.id, {
-              refDescription: message,
-              code: 3,
-              refCode: item.receive_doc_no,
-            });
+            if (data.moi_id != null && data.moi_id != "null")
+              await ApiService.post("moi/update-status/" + item.id, {
+                refDescription: message,
+                code: 3,
+                refCode: item.receive_doc_no,
+              });
           }
         })
         .catch(({ response }) => {
