@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="accordion-header">
+    <h2 class="accordion-header" style="margin-top: 20px">
       <h4 class="color-primary">ข้อมูลเรื่อง{{ complaint_type.name_th }}</h4>
     </h2>
     <div id="item4">
@@ -76,56 +76,79 @@
           <div class="separator separator-dotted my-2"></div>
         </div>
 
-        <div v-for="(ac, idx) in accused_item" :key="idx" class="row">
-          <div class="col-md-12">
-            <span class="fw-bold"
-              >ผู้ถูกร้องคนที่ {{ Number(idx) + 1 }} :
-            </span>
-            <span class="fst-italic">
-              {{
-                ac.prefix_name_id
-                  ? ac.prefix_name?.name_th +
-                    "" +
-                    ac.firstname +
-                    " " +
-                    ac.lastname
-                  : ""
-              }}
-            </span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div class="col-md-12">
-            <span class="fw-bold">หน่วยงานผู้ถูกร้อง : </span>
-            <span class="fst-italic">{{ showAccusedOrganization(ac) }}</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div class="col-md-6">
-            <span class="fw-bold">ตำแหน่งงาน : </span>
-            <span class="fst-italic">{{ ac.position?.name_th }}</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
-          <div class="col-md-6">
-            <span class="fw-bold">สายงาน : </span>
-            <span class="fst-italic">{{ ac.section?.name_th }}</span>
-            <div class="separator separator-dotted my-2"></div>
-          </div>
+        <div style="padding-top: 30px"></div>
+
+        <div class="text-danger text-center">
+          <h1 class="text-danger">ลับ</h1>
         </div>
 
-        <div class="col-md-12">
-          <span class="fw-bold">พฤติกรรมการกระทำความผิด : </span>
-          <span class="fst-italic">{{ complaint_item.complaint_detail }}</span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
+        <div class="force-page-break" style="padding-top: 30px"></div>
 
-        <div>
-          <span class="fw-bold"
-            >ไฟล์หลักฐานเพิ่มเติม : {{ complaint_file_attach.length }} รายการ</span
+        <div class="pdf-page">
+          <!-- <div class="text-danger text-center" style="padding-bottom: 20px">
+            <h1 class="text-danger">ลับ</h1>
+          </div> -->
+
+          <div
+            style="text-align: center; font-weight: bold; padding-top: 10px;padding-bottom: 10px;"
+            class="text-danger"
           >
+            <h1 class="text-danger">ลับ</h1>
+          </div>
 
-          <div class="separator separator-dotted my-2"></div>
-        </div>
+          <div v-for="(ac, idx) in accused_item" :key="idx" class="row">
+            <div class="col-md-12">
+              <span class="fw-bold"
+                >ผู้ถูกร้องคนที่ {{ Number(idx) + 1 }} :
+              </span>
+              <span class="fst-italic">
+                {{
+                  ac.prefix_name_id
+                    ? ac.prefix_name?.name_th +
+                      "" +
+                      ac.firstname +
+                      " " +
+                      ac.lastname
+                    : ""
+                }}
+              </span>
+              <div class="separator separator-dotted my-2"></div>
+            </div>
+            <div class="col-md-12">
+              <span class="fw-bold">หน่วยงานผู้ถูกร้อง : </span>
+              <span class="fst-italic">{{ showAccusedOrganization(ac) }}</span>
+              <div class="separator separator-dotted my-2"></div>
+            </div>
+            <div class="col-md-6">
+              <span class="fw-bold">ตำแหน่งงาน : </span>
+              <span class="fst-italic">{{ ac.position?.name_th }}</span>
+              <div class="separator separator-dotted my-2"></div>
+            </div>
+            <div class="col-md-6">
+              <span class="fw-bold">สายงาน : </span>
+              <span class="fst-italic">{{ ac.section?.name_th }}</span>
+              <div class="separator separator-dotted my-2"></div>
+            </div>
+          </div>
 
-        <!-- <div v-for="(cf, idx) in complaint_file_attach" :key="idx">
+          <div class="col-md-12">
+            <span class="fw-bold">พฤติกรรมการกระทำความผิด : </span>
+            <span class="fst-italic">{{
+              complaint_item.complaint_detail
+            }}</span>
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+
+          <div>
+            <span class="fw-bold"
+              >ไฟล์หลักฐานเพิ่มเติม :
+              {{ complaint_file_attach.length }} รายการ</span
+            >
+
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+
+          <!-- <div v-for="(cf, idx) in complaint_file_attach" :key="idx">
           <span class="fw-bold">ไฟล์หลักฐานเพิ่มเติม {{ idx + 1 }} : </span>
           <a :href="cf.filename" target="_blank"
             ><span class="fst-italic">คลิก</span></a
@@ -133,48 +156,59 @@
           <div class="separator separator-dotted my-2"></div>
         </div> -->
 
-        <div class="col-md-12">
-          <span class="fw-bold">ลิ้งค์เพิ่มเติม : </span>
-          <span
-            class="fst-italic"
-            v-for="(eu, idx) in new_item.evidence_url"
-            :key="idx"
-            >{{ idx != 0 ? " , " : "" }}
-            <a :href="eu" target="_blank">{{ eu }}</a>
-          </span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
-
-        <div class="col-md-12">
-          <span class="fw-bold">ช่องทางการร้องเรียน : </span>
-          <span class="fst-italic">{{
-            complaint_item.complaint_channel?.name_th
-          }}</span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
-
-        <div class="col-md-12">
-          <span class="fw-bold">เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด : </span>
-          <span class="fst-italic">{{ new_item.complaint_channel_all }}</span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
-        <div class="col-md-12">
-          <span class="fw-bold">เคยร้องเรียนผ่านช่องทางร้องเรียนอื่น : </span>
-          <span class="fst-italic">{{
-            complaint_item.channel_history_text
-          }}</span>
-          <div class="separator separator-dotted my-2"></div>
-        </div>
-
-        <div class="col-md-12">
-            <span class="fw-bold">วันที่พิมพ์ข้อมูล :  </span>
-            <span class="fst-italic"> {{ new Date() }}</span>
+          <div class="col-md-12">
+            <span class="fw-bold">ลิ้งค์เพิ่มเติม : </span>
+            <span
+              class="fst-italic"
+              v-for="(eu, idx) in new_item.evidence_url"
+              :key="idx"
+              >{{ idx != 0 ? " , " : "" }}
+              <a :href="eu" target="_blank">{{ eu }}</a>
+            </span>
             <div class="separator separator-dotted my-2"></div>
-        </div>
-        <div class="col-md-12">
-            <span class="fw-bold">ผู้พิมพ์ข้อมูล :  </span>
+          </div>
+
+          <div class="col-md-12">
+            <span class="fw-bold">ช่องทางการร้องเรียน : </span>
+            <span class="fst-italic">{{
+              complaint_item.complaint_channel?.name_th
+            }}</span>
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+
+          <div class="col-md-12">
+            <span class="fw-bold"
+              >เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด
+              :
+            </span>
+            <span class="fst-italic">{{ new_item.complaint_channel_all }}</span>
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+          <div class="col-md-12">
+            <span class="fw-bold">เคยร้องเรียนผ่านช่องทางร้องเรียนอื่น : </span>
+            <span class="fst-italic">{{
+              complaint_item.channel_history_text
+            }}</span>
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+
+          <div class="col-md-12">
+            <span class="fw-bold">วันที่พิมพ์ข้อมูล : </span>
+            <span class="fst-italic">
+              {{
+                dayjs(new Date())
+                  .locale("th")
+                  .utc()
+                  .format("DD MMM BBBB HH:mm:ss")
+              }}</span
+            >
+            <div class="separator separator-dotted my-2"></div>
+          </div>
+          <div class="col-md-12">
+            <span class="fw-bold">ผู้พิมพ์ข้อมูล : </span>
             <span class="fst-italic"> {{ userData.fullname }}</span>
             <div class="separator separator-dotted my-2"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -218,13 +252,10 @@ export default defineComponent({
     },
   },
 
-  components: {
-    dayjs,
-  },
+  components: {},
   setup(props) {
     // Variable
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
- 
 
     // Event
     const showAccusedOrganization = (ac: any) => {
@@ -253,7 +284,8 @@ export default defineComponent({
     return {
       getAssetPath,
       showAccusedOrganization,
-      userData
+      userData,
+      dayjs,
     };
   },
 });
@@ -277,5 +309,10 @@ export default defineComponent({
 }
 .color-primary {
   color: #800001;
+}
+
+.force-page-break {
+  page-break-before: always;
+  break-before: page;
 }
 </style>

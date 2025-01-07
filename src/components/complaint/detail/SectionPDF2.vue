@@ -197,4 +197,16 @@ export default defineComponent({
 .color-primary {
   color: #800001;
 }
+
+/* ป้องกันการตัดกลาง block หรือ element */
+.avoid-page-break {
+  page-break-inside: avoid; /* สำหรับบราวเซอร์เก่า ๆ */
+  break-inside: avoid; /* สำหรับบราวเซอร์ใหม่ */
+}
+
+/* ถ้าต้องการตัดขึ้นหน้าถัดไปเสมอ (บังคับ page break) */
+/* .force-page-break {
+  page-break-before: always;
+  break-before: page;
+} */
 </style>

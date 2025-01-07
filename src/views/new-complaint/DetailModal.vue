@@ -78,27 +78,42 @@
       :preview-modal="true"
       :paginate-elements-by-height="1400"
       filename="jcoms_data"
+      :margin="10"
       :pdf-quality="2"
-      :manual-pagination="false"
+      :manual-pagination="true"
       pdf-format="a4"
       pdf-orientation="portrait"
       pdf-content-width="800px"
+      unit="in"
       ref="html2Pdf"
     >
       <template v-slot:pdf-content>
         <div
           style="
-            margin-top: 50px;
             margin-right: 50px;
-            margin-bottom: 50px;
             margin-left: 50px;
+            padding-top: 30px;
+            padding-bottom: 30px;
           "
           class="generate-pdf"
         >
           <!-- <SectionPDF1 :complaint_item="complaint_item" /> -->
-          <div class="text-danger text-center">
+          <!-- <div class="text-danger text-center">
+            <h1 class="text-danger">ลับ</h1>
+          </div> -->
+
+          <div
+            style="
+              text-align: center;
+              font-weight: bold;
+              padding-top: 10px;
+              padding-bottom: 10px;
+            "
+            class="text-danger"
+          >
             <h1 class="text-danger">ลับ</h1>
           </div>
+
           <SectionPDF2
             :complaint_type="complaint_type"
             :complaint_item="complaint_item"
@@ -114,6 +129,8 @@
             :accused_item="accused_item"
             :complaint_file_attach="complaint_file_attach"
           />
+
+          <div style="padding-top: 30px"></div>
 
           <div class="text-danger text-center">
             <h1 class="text-danger">ลับ</h1>
@@ -137,15 +154,7 @@
       ref="html2Pdf2"
     >
       <template v-slot:pdf-content>
-        <div
-          style="
-            margin-top: 50px;
-            margin-right: 50px;
-            margin-bottom: 50px;
-            margin-left: 50px;
-          "
-          class="generate-pdf"
-        >
+        <div style="margin: 50px" class="generate-pdf">
           <!-- <SectionPDF1 :complaint_item="complaint_item" /> -->
           <div class="text-danger text-center">
             <h1 class="text-danger">ลับ</h1>
@@ -478,4 +487,16 @@ export default defineComponent({
 .modal-content {
   background-color: #d9f4fe;
 }
+
+/* ป้องกันการตัดกลาง block หรือ element */
+.avoid-page-break {
+  page-break-inside: avoid; /* สำหรับบราวเซอร์เก่า ๆ */
+  break-inside: avoid; /* สำหรับบราวเซอร์ใหม่ */
+}
+
+/* ถ้าต้องการตัดขึ้นหน้าถัดไปเสมอ (บังคับ page break) */
+/* .force-page-break {
+  page-break-before: always;
+  break-before: page;
+} */
 </style>
