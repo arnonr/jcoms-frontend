@@ -323,20 +323,19 @@ export default defineComponent({
         useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
         return false;
       }
-
-      onSaveComplaint(type);
-
-      //   item.receive_status = selectOptions.value.receive_statuses.find(
-      //     (x: any) => {
-      //       return x.value == result.value.selectValue;
-      //     }
-      //   );
-      //   item.receive_comment = result.value.textValue;
-
+      onSaveComplaint(item.type);
       return true;
     };
-    const onSaveComplaint = async (type: number) => {
-      item.receive_status = selectOptions.value.receive_statuses[0];
+    const onSaveComplaint = async (type: any) => {
+      if (type.value != 0) {
+        item.receive_status = { ...selectOptions.value.receive_statuses[0] };
+      } else {
+        let check = selectOptions.value.receive_statuses.find((x: any) => {
+          return x.value == item.receive_status.value;
+        });
+
+        item.receive_status = { ...check };
+      }
 
       let data_item = {
         receive_doc_filename:
