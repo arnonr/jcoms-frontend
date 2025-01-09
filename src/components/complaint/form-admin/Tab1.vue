@@ -68,7 +68,7 @@
 
         <div v-if="parseInt(complaint_item.is_anonymous) == 1" class="row">
           <div class="mb-7 col-12 col-lg-4">
-            <label for="card_type" class="required form-label"
+            <label for="card_type" class="form-label"
               >ประเภทเลขบัตร</label
             >
             <v-select
@@ -89,7 +89,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-8">
-            <label for="id_card" class="required form-label"
+            <label for="id_card" class="form-label"
               >หมายเลขบัตรประชาชน/Passport</label
             >
             <input
@@ -107,7 +107,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-2">
-            <label for="prefix_name" class="required form-label"
+            <label for="prefix_name" class="form-label"
               >คำนำหน้า</label
             >
             <v-select
@@ -128,7 +128,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-5">
-            <label for="firstname" class="required form-label">ชื่อ</label>
+            <label for="firstname" class="form-label">ชื่อ</label>
             <input
               type="text"
               class="form-control"
@@ -144,7 +144,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-5">
-            <label for="lastname" class="required form-label">นามสกุล</label>
+            <label for="lastname" class="form-label">นามสกุล</label>
             <input
               type="text"
               class="form-control"
@@ -160,7 +160,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-6">
-            <label for="birthday" class="required form-label"
+            <label for="birthday" class="form-label"
               >วัน/เดือน/ปีเกิด</label
             >
             <VueDatePicker
@@ -205,7 +205,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-3">
-            <label for="house_number" class="required form-label"
+            <label for="house_number" class="form-label"
               >บ้านเลขที่</label
             >
             <input
@@ -287,7 +287,7 @@
           </div>
 
           <div class="mb-5 col-12 col-lg-8">
-            <label for="tumbol/amphur/province" class="required form-label"
+            <label for="tumbol/amphur/province" class="form-label"
               >ตำบล/อำเภอ/จังหวัด :</label
             >
             <v-select
