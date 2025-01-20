@@ -549,6 +549,7 @@
               <tr>
                 <th class="text-white">วันที่</th>
                 <th class="text-white">รหัสคำร้อง</th>
+                <th class="text-white">เลขรับ ฝรท.</th>
                 <th class="text-white">หมวดหมู่เรื่อง</th>
                 <th class="text-white">ลักษณะความผิด</th>
                 <th class="text-white">หัวข้อเรื่อง</th>
@@ -565,6 +566,7 @@
               <tr v-for="(it, idx) in items_export" :key="idx">
                 <td>{{ it.show_created_at }}</td>
                 <td>{{ it.show_jcoms_no }}</td>
+                <td>{{ it.show_receive_doc_no }}</td>
                 <td>{{ it.show_topic_category_name }}</td>
                 <td>{{ it.show_topic_type_name }}</td>
                 <td>{{ it.show_complaint_title }}</td>
@@ -915,6 +917,7 @@ export default defineComponent({
             .locale("th")
             .format("DD MMM BB");
           x.show_jcoms_no = x.jcoms_no;
+          x.show_receive_doc_no = x.receive_doc_no;
           x.show_complaint_type_name = x.complaint_type?.name_th;
           x.show_complaint_title = x.complaint_title;
           x.show_topic_type_name = x.topic_type?.name_th;
@@ -1028,6 +1031,12 @@ export default defineComponent({
             {
               header: "รหัสคำร้อง",
               key: "show_jcoms_no",
+              width: 25,
+              outlineLevel: 1,
+            },
+            {
+              header: "เลขรับ ฝรท.",
+              key: "show_receive_doc_no",
               width: 25,
               outlineLevel: 1,
             },

@@ -9,6 +9,7 @@
           <th class="text-white">วันที่ร้องเรียน</th>
           <th class="text-white">ระยะเวลา (วัน)</th>
           <th class="text-white">รหัสคำร้อง</th>
+          <th class="text-white">เลขรับ ฝรท.</th>
           <th class="text-white">ลักษณะความผิด</th>
           <th class="text-white">เรื่องร้องเรียน</th>
           <th class="text-white">ผู้ถูกร้อง</th>
@@ -27,6 +28,7 @@
             {{ convertDueDate(it.forward_doc_date, it.due_day) }}
           </td>
           <td>{{ it.jcoms_no }}</td>
+          <td>{{ it.receive_doc_no }}</td>
 
           <td>{{ it.topic_type?.name_th }}</td>
           <td>{{ it.complaint_title }}</td>
