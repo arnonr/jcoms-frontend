@@ -51,7 +51,7 @@
           <span class="fst-italic">
             {{ new_item.incident_date }}
             {{ new_item.incident_time }}
-            {{ "(" + new_item.day_time?.name + ")" }}
+            {{ "(" + new_item.day_time ? new_item.day_time?.name : "" + ")" }}
           </span>
           <div class="separator separator-dotted my-2"></div>
         </div>
@@ -152,7 +152,10 @@
         </div>
 
         <div class="col-md-12">
-          <span class="fw-bold">เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด : </span>
+          <span class="fw-bold"
+            >เคยร้องเรียน/ร้องทุกข์ขอความช่วยเหลือ/แจ้งเบาะแสเรื่องนี้ผ่านช่องทางใด
+            :
+          </span>
           <span class="fst-italic">{{ new_item.complaint_channel_all }}</span>
           <div class="separator separator-dotted my-2"></div>
         </div>
