@@ -28,7 +28,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="fa fa-download  fs-4"></i>
+              <i class="fa fa-download fs-4"></i>
               <span class="d-none d-lg-inline-block ms-2">ส่งออกข้อมูล</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -969,10 +969,18 @@ export default defineComponent({
               (p: any) => p.id === x.prefix_name_id
             );
 
-            return `${prefix?.name_th !== undefined ? prefix?.name_th : ""}${
-              x.firstname || ""
-            } ${x.lastname || ""}`;
+            let prefix_name = "";
+            if (prefix && prefix.name_th_abbr !== "ไม่ระบุ") {
+              prefix_name = prefix.name_th_abbr || ""; // กำหนดค่าเริ่มต้น
+            }
+
+            // คืนค่า firstname และ lastname พร้อม fallback
+            const firstname = x.firstname || "";
+            const lastname = x.lastname || "";
+
+            return `${prefix_name}${firstname} ${lastname}`.trim();
           })
+          .filter((name: string) => name !== "") // กรองค่าที่ว่างออก
           .join(", ");
       }
       return text;

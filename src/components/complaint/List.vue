@@ -27,9 +27,9 @@
           <td>{{ it.complaint_title }}</td>
           <td>
             {{
-              convertAccused(it.accused) != undefined
-                ? convertAccused(it.accused)
-                : ""
+              convertAccused(it.accused) == "false"
+                ? ""
+                : convertAccused(it.accused)
             }}
           </td>
           <td>
@@ -252,12 +252,27 @@ export default defineComponent({
               (p: any) => p.id === x.prefix_name_id
             );
 
-            return `${prefix?.name_th_abbr}${x.firstname || ""} ${
-              x.lastname || ""
-            }`;
+            let prefix_name = "";
+            if (prefix && prefix.name_th_abbr !== "ไม่ระบุ") {
+              prefix_name = prefix.name_th_abbr || ""; // กำหนดค่าเริ่มต้น
+            }
+
+            // คืนค่า firstname และ lastname พร้อม fallback
+            const firstname = x.firstname || "";
+            const lastname = x.lastname || "";
+
+            return `${prefix_name}${firstname} ${lastname}`.trim();
           })
+          .filter((name: string) => name !== "") // กรองค่าที่ว่างออก
           .join(", ");
       }
+
+      //   if (text == "") {
+      //     text = "false";
+      //   } else {
+      //     text = "true";
+      //   }
+
       return text;
     };
 
