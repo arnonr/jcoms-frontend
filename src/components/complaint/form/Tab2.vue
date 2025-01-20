@@ -595,7 +595,12 @@ export default defineComponent({
       road: Yup.string().nullable().label("ถนน"),
       address_all: Yup.object().nullable().label("จังหวัด/อำเภอ/ตำบล"),
       incident_location: Yup.string().nullable().label("สถานที่เกิดเหตุ"),
-      incident_date: Yup.date().nullable().label("วันที่เกิดเหตุ"),
+      incident_date: Yup.date()
+        .nullable()
+        .transform((value, originalValue) =>
+          originalValue === "" || originalValue === "Invalid Date" ? null : value
+        )
+        .label("วันที่เกิดเหตุ1"),
       incident_time: Yup.object().nullable().label("เวลาเกิดเหตุ"),
       day_time: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
@@ -770,6 +775,7 @@ export default defineComponent({
       });
 
       try {
+        console.log(complaint_item.value);
         await validationItemSchema.validate(complaint_item.value, {
           abortEarly: false,
         });

@@ -45,7 +45,7 @@
       <div class="col-12">
         <div class="row">
           <div class="mb-7 col-12 col-lg-4 col-lg-12">
-            <label for="phone_number" class="required form-label"
+            <label for="phone_number" class="form-label"
               >หมายเลขโทรศัพท์มือถือ</label
             >
             <div class="d-flex">
@@ -68,7 +68,7 @@
 
         <div v-if="parseInt(complaint_item.is_anonymous) == 1" class="row">
           <div class="mb-7 col-12 col-lg-4">
-            <label for="card_type" class="required form-label"
+            <label for="card_type" class="form-label"
               >ประเภทเลขบัตร</label
             >
             <v-select
@@ -89,7 +89,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-8">
-            <label for="id_card" class="required form-label"
+            <label for="id_card" class="form-label"
               >หมายเลขบัตรประชาชน/Passport</label
             >
             <input
@@ -107,7 +107,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-2">
-            <label for="prefix_name" class="required form-label"
+            <label for="prefix_name" class="form-label"
               >คำนำหน้า</label
             >
             <v-select
@@ -128,7 +128,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-5">
-            <label for="firstname" class="required form-label">ชื่อ</label>
+            <label for="firstname" class="form-label">ชื่อ</label>
             <input
               type="text"
               class="form-control"
@@ -144,7 +144,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-5">
-            <label for="lastname" class="required form-label">นามสกุล</label>
+            <label for="lastname" class="form-label">นามสกุล</label>
             <input
               type="text"
               class="form-control"
@@ -160,9 +160,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-6">
-            <label for="birthday" class="required form-label"
-              >วัน/เดือน/ปีเกิด</label
-            >
+            <label for="birthday" class="form-label">วัน/เดือน/ปีเกิด</label>
             <VueDatePicker
               v-model="complainant_item.birthday"
               :enable-time-picker="false"
@@ -205,9 +203,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-3">
-            <label for="house_number" class="required form-label"
-              >บ้านเลขที่</label
-            >
+            <label for="house_number" class="form-label">บ้านเลขที่</label>
             <input
               type="text"
               class="form-control"
@@ -287,7 +283,7 @@
           </div>
 
           <div class="mb-5 col-12 col-lg-8">
-            <label for="tumbol/amphur/province" class="required form-label"
+            <label for="tumbol/amphur/province" class="form-label"
               >ตำบล/อำเภอ/จังหวัด :</label
             >
             <v-select
@@ -339,7 +335,7 @@
             </div>
           </div>
           <div class="mb-7 col-12 col-lg-12">
-            <label for="formFile" class="form-label required"
+            <label for="formFile" class="form-label"
               >ถ่ายรูปตนเองพร้อมบัตร /Take a selfie with an ID card.</label
             >
             <br />
@@ -479,38 +475,24 @@ export default defineComponent({
     });
 
     const validationComplainantSchema = Yup.object().shape({
-      phone_number: Yup.string()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("หมายเลขโทรศัพท์มือถือ"),
-      card_type: Yup.object()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("ประเภทบัตร"),
+      phone_number: Yup.string().nullable().label("หมายเลขโทรศัพท์มือถือ"),
+      card_type: Yup.object().nullable().label("ประเภทบัตร"),
       id_card: Yup.string()
-        .required("${path} จำเป็นต้องระบุ")
+        .nullable()
         .min(13, "Must be exactly 13 digits")
         .max(13, "Must be exactly 13 digits")
         .label("หมายเลขบัตรประชาชน/หนังสือเดินทาง"),
-      prefix_name_id: Yup.object()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("คำนำหน้า"),
-      firstname: Yup.string().required("${path} จำเป็นต้องระบุ").label("ชื่อ"),
-      lastname: Yup.string()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("นามสกุล"),
-      birthday: Yup.date()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("วัน/เดือน/ปีเกิด"),
+      prefix_name_id: Yup.object().nullable().label("คำนำหน้า"),
+      firstname: Yup.string().nullable().label("ชื่อ"),
+      lastname: Yup.string().nullable().label("นามสกุล"),
+      birthday: Yup.date().nullable().label("วัน/เดือน/ปีเกิด"),
       occupation_text: Yup.string().nullable().label("อาชีพ"),
-      house_number: Yup.string()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("บ้านเลขที่"),
+      house_number: Yup.string().nullable().label("บ้านเลขที่"),
       building: Yup.string().nullable().label("หมู่บ้าน"),
       moo: Yup.string().nullable().label("หมู่ที่"),
       soi: Yup.string().nullable().label("ซอย"),
       road: Yup.string().nullable().label("ถนน"),
-      address_all: Yup.object()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("จังหวัด/อำเภอ/ตำบล"),
+      address_all: Yup.object().nullable().label("จังหวัด/อำเภอ/ตำบล"),
       //   card_photo: Yup.string()
       //     .required("${path} จำเป็นต้องระบุ")
       //     .label("รูปถ่ายตนเองพร้อมบัตร"),
@@ -605,13 +587,13 @@ export default defineComponent({
             errors[fieldName].text = errorMessage;
           });
 
-          if (
-            complainant_item.value.card_photo == null &&
-            complainant_item.value.card_photo_old == null
-          ) {
-            errors["card_photo"].error = 1;
-            errors["card_photo"].text = "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
-          }
+        //   if (
+        //     complainant_item.value.card_photo == null &&
+        //     complainant_item.value.card_photo_old == null
+        //   ) {
+        //     errors["card_photo"].error = 1;
+        //     errors["card_photo"].text = "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
+        //   }
 
           useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
           return false;
@@ -621,31 +603,31 @@ export default defineComponent({
           complainant_item.value.card_photo == null &&
           complainant_item.value.card_photo_old == null
         ) {
-          errors["card_photo"].error = 1;
-          errors["card_photo"].text = "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
-          return false;
+        //   errors["card_photo"].error = 1;
+        //   errors["card_photo"].text = "รูปถ่ายตนเองพร้อมบัตร จำเป็นต้องระบุ";
+        //   return false;
         }
 
         if (complainant_item.value.card_type.value == 1) {
-          let check = validateThaiCitizenId(complainant_item.value.id_card);
+        //   let check = validateThaiCitizenId(complainant_item.value.id_card);
 
-          if (check == false) {
-            errors["id_card"].error = 1;
-            errors["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
-            useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
-            return false;
-          }
+        //   if (check == false) {
+        //     errors["id_card"].error = 1;
+        //     errors["id_card"].text = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
+        //     useToast("หมายเลขบัตรประชาชนไม่ถูกต้อง", "error");
+        //     return false;
+        //   }
         }
       } else {
-        if (
-          complainant_item.value.phone_number == "" ||
-          complainant_item.value.phone_number == null
-        ) {
-          errors["phone_number"].error = 1;
-          errors["phone_number"].text = "Phone number is required";
-          useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
-          return false;
-        }
+        // if (
+        //   complainant_item.value.phone_number == "" ||
+        //   complainant_item.value.phone_number == null
+        // ) {
+        //   errors["phone_number"].error = 1;
+        //   errors["phone_number"].text = "Phone number is required";
+        //   useToast("ระบุข้อมูลไม่ครบถ้วน", "error");
+        //   return false;
+        // }
       }
 
       return true;
