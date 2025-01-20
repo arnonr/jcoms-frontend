@@ -219,9 +219,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-6">
-            <label for="surname" class="required form-label"
-              >สถานที่เกิดเหตุ</label
-            >
+            <label for="surname" class="form-label">สถานที่เกิดเหตุ</label>
             <v-select
               :label="'label'"
               placeholder="จังหวัด/อำเภอ/ตำบล"
@@ -235,7 +233,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-6">
-            <label for="surname" class="required form-label"
+            <label for="surname" class="form-label"
               >บันทึกข้อมูลสถานที่เกิดเหตุโดยละเอียด</label
             >
             <input
@@ -248,9 +246,7 @@
           </div>
 
           <div class="mb-7 col-12 col-lg-4">
-            <label for="surname" class="required form-label"
-              >วันที่เกิดเหตุ</label
-            >
+            <label for="surname" class="form-label">วันที่เกิดเหตุ</label>
             <VueDatePicker
               :max-date="new Date()"
               v-model="item.inspection_date"

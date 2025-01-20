@@ -20,7 +20,7 @@
         <div class="col-md-6">
           <span class="fw-bold">หมายเลขโทรศัพท์มือถือ : </span>
           <span class="fst-italic">
-            {{ complainant_item.phone_number?.slice(0, -5) + 'xxxxx' }}
+            {{ complainant_item.phone_number }}
           </span>
           <div class="separator separator-dotted my-2"></div>
         </div>
@@ -35,7 +35,9 @@
             </div>
             <div class="col-md-6">
               <span class="fw-bold">หมายเลขบัตรประชาชน/Passport : </span>
-              <span class="fst-italic">{{ complainant_item.id_card?.slice(0, -7) + 'xxxxxxx'  }}</span>
+              <span class="fst-italic">{{
+                complainant_item.id_card?.slice(0, -7) + "xxxxxxx"
+              }}</span>
               <div class="separator separator-dotted my-2"></div>
             </div>
             <div class="col-md-6">

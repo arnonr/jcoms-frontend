@@ -47,9 +47,7 @@
       </div>
 
       <div class="mb-7 col-12 col-lg-12">
-        <label for="address_all" class="required form-label"
-          >สถานที่เกิดเหตุ</label
-        >
+        <label for="address_all" class="form-label">สถานที่เกิดเหตุ</label>
         <v-select
           :label="'label'"
           id="slt-province-amphur-tumbol"
@@ -68,7 +66,7 @@
       </div>
 
       <div class="mb-7 col-12 col-lg-12">
-        <label for="incident_location" class="required form-label"
+        <label for="incident_location" class="form-label"
           >บันทึกข้อมูลสถานที่เกิดเหตุ (โดยละเอียด
           บ้านเลขที่/หมู่บ้าน/หมู่ที่/ตรอก/ซอย/ถนน)</label
         >
@@ -87,9 +85,7 @@
       </div>
 
       <div class="mb-7 col-12 col-lg-4">
-        <label for="incident_date" class="required form-label"
-          >วันที่เกิดเหตุ</label
-        >
+        <label for="incident_date" class="form-label">วันที่เกิดเหตุ</label>
         <VueDatePicker
           v-model="complaint_item.incident_date"
           :enable-time-picker="false"
@@ -611,15 +607,9 @@ export default defineComponent({
       moo: Yup.string().nullable().label("หมู่ที่"),
       soi: Yup.string().nullable().label("ซอย"),
       road: Yup.string().nullable().label("ถนน"),
-      address_all: Yup.object()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("จังหวัด/อำเภอ/ตำบล"),
-      incident_location: Yup.string()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("สถานที่เกิดเหตุ"),
-      incident_date: Yup.date()
-        .required("${path} จำเป็นต้องระบุ")
-        .label("วันที่เกิดเหตุ"),
+      address_all: Yup.object().nullable().label("จังหวัด/อำเภอ/ตำบล"),
+      incident_location: Yup.string().nullable().label("สถานที่เกิดเหตุ"),
+      incident_date: Yup.date().nullable().label("วันที่เกิดเหตุ"),
       incident_time: Yup.object().nullable().label("เวลาเกิดเหตุ"),
       day_time: Yup.object()
         .required("${path} จำเป็นต้องระบุ")
