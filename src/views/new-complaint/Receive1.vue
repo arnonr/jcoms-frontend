@@ -276,6 +276,7 @@ export default defineComponent({
           {}
         );
         item.id = data.data.id;
+        item.complaint_channel_id = data.data.complaint_channel_id;
         item.receive_doc_no = data.data.receive_doc_no;
         item.receive_doc_date = data.data.receive_doc_date;
         item.receive_comment = data.data.receive_comment;
@@ -290,8 +291,28 @@ export default defineComponent({
         complaint_type.value = useComplaintTypeData().complaint_types.find(
           (x: any) => x.id == item.complaint_type_id
         );
-
+        if (data.receive_doc_no == "" || data.receive_doc_no == null) {
+          fetchGenerateReceiveNumber();
+        }
         isLoading.value = false;
+      } catch (error) {
+        isLoading.value = false;
+        console.log(error);
+      }
+    };
+
+    const fetchGenerateReceiveNumber = async () => {
+      try {
+        isLoading.value = true;
+        const { data } = await ApiService.query(
+          "complaint/generate-receive-number",
+          {
+            params: { complaint_channel_id: item.complaint_channel_id },
+          }
+        );
+
+        item.receive_doc_no = data.receive_doc_no;
+        console.log(data.receive_doc_no);
       } catch (error) {
         isLoading.value = false;
         console.log(error);
