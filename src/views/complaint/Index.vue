@@ -917,7 +917,8 @@ export default defineComponent({
             .locale("th")
             .format("DD MMM BB");
           x.show_jcoms_no = x.jcoms_no;
-          x.show_receive_doc_no = x.receive_doc_no;
+          x.show_receive_doc_no =
+            x.receive_doc_no != null ? x.receive_doc_no : "";
           x.show_complaint_type_name = x.complaint_type?.name_th;
           x.show_complaint_title = x.complaint_title;
           x.show_topic_type_name = x.topic_type?.name_th;
