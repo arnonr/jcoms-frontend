@@ -28,7 +28,13 @@
             {{ convertDueDate(it.forward_doc_date, it.due_day) }}
           </td>
           <td>{{ it.jcoms_no }}</td>
-          <td>{{ it.receive_doc_no != null ? it.receive_doc_no : "" }}</td>
+          <td>
+            {{
+              it.receive_doc_no != null && it.receive_doc_no != "null"
+                ? it.receive_doc_no
+                : ""
+            }}
+          </td>
 
           <td>{{ it.topic_type?.name_th }}</td>
           <td>{{ it.complaint_title }}</td>
